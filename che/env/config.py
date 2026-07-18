@@ -53,11 +53,23 @@ class EnvConfig:
     # in observation.py.
     obs_window: int = 9  # k: egocentric k x k crop, must be odd
     n_food: int = 8  # F food items for the Phase-0 foraging stub
+    # M1.3: static-hazard control. Env-level *training-protocol* knob,
+    # deliberately not in ThetaConfig — it is not a stressor element.
+    # "frozen": burn the CA in for t_gen steps at reset, then freeze h.
+    hazard_mode: str = "dynamic"  # {"dynamic", "frozen"}
+    t_gen: int | None = None  # frozen burn-in CA steps; None -> horizon // 2
     theta: ThetaConfig = dataclasses.field(default_factory=ThetaConfig)
 
     def __post_init__(self) -> None:
         if self.obs_window % 2 != 1:
             raise ValueError(f"obs_window must be odd, got {self.obs_window}")
+        if self.hazard_mode not in ("dynamic", "frozen"):
+            raise ValueError(f"unknown hazard_mode: {self.hazard_mode!r}")
+
+    @property
+    def t_gen_resolved(self) -> int:
+        """Burn-in length for frozen mode (M1.3 default: horizon // 2)."""
+        return self.t_gen if self.t_gen is not None else self.horizon // 2
 
 
 @dataclasses.dataclass(frozen=True)

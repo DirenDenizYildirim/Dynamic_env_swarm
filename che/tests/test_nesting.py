@@ -18,6 +18,10 @@ channels that must remain closed:
 4. death_penalty is reward-only: it may not perturb any state trajectory.
 5. Death logic consumes no PRNG: a hand-built field-only replay of the same
    key schedule reproduces hazard/smoke/structure bitwise while agents die.
+6. M1.3: dynamic<->frozen with the same key differ *only* through the
+   freeze — identical reset (except h), identical structure stream, and
+   identical food/agent trajectories until the first hazard-dependent
+   death diverges them.
 """
 
 import dataclasses
@@ -34,8 +38,14 @@ from che.env.types import COLLAPSED, INTACT
 N_STEPS = 25
 
 
-def _traj(theta: ThetaConfig, seed: int = 3):
-    cfg = EnvConfig(grid_size=16, n_agents=4, horizon=64, theta=theta)
+def _traj(
+    theta: ThetaConfig,
+    seed: int = 3,
+    cfg: EnvConfig | None = None,
+    n_steps: int = N_STEPS,
+):
+    if cfg is None:
+        cfg = EnvConfig(grid_size=16, n_agents=4, horizon=64, theta=theta)
     key = jax.random.PRNGKey(seed)
     key, k_reset = jax.random.split(key)
     _, state = reset(k_reset, cfg)
@@ -55,7 +65,7 @@ def _traj(theta: ThetaConfig, seed: int = 3):
             reward,
         )
 
-    _, out = jax.lax.scan(body, (key, state), None, length=N_STEPS)
+    _, out = jax.lax.scan(body, (key, state), None, length=n_steps)
     names = ("hazard", "smoke", "structure", "food", "pos", "alive", "reward")
     return dict(zip(names, out, strict=True))
 
@@ -163,3 +173,42 @@ def test_death_logic_consumes_no_prng():
     assert (env["hazard"] == hz).all()
     assert (env["smoke"] == sm).all()
     assert (env["structure"] == st).all()
+
+
+def test_dynamic_frozen_diverge_only_through_freeze():
+    """M1.3 nesting extension: hazard_mode is a pure protocol knob.
+
+    Same key, dynamic vs frozen (lambda_load = 0 closes the x -> c load
+    channel): resets are identical except h; the structure stream is
+    bitwise identical throughout; food/agent trajectories are bitwise
+    identical until the first step where a hazard-dependent death differs,
+    and positions still match on that step (fire-kill happens at x').
+    """
+    theta = ThetaConfig(beta=0.5, lambda_0=0.03, lambda_load=0.0)
+    dyn_cfg = EnvConfig(grid_size=16, n_agents=4, horizon=64, theta=theta)
+    # t_gen = 8 keeps live Burning cells in the frozen map on this small
+    # arena (see test_frozen.py) so hazard-dependent deaths can diverge.
+    fro_cfg = dataclasses.replace(dyn_cfg, hazard_mode="frozen", t_gen=8)
+    seed = 0  # verified: a diverging death occurs at t* = 15 of 40
+
+    key = jax.random.PRNGKey(seed)
+    _, k_reset = jax.random.split(key)
+    _, s_dyn = reset(k_reset, dyn_cfg)
+    _, s_fro = reset(k_reset, fro_cfg)
+    assert (s_dyn.hazard != s_fro.hazard).any()  # burn-in is live
+    for f in ("food", "agent_pos", "agent_alive", "structure", "smoke"):
+        assert (getattr(s_dyn, f) == getattr(s_fro, f)).all(), f
+
+    a = _traj(theta, seed=seed, cfg=dyn_cfg, n_steps=40)
+    b = _traj(theta, seed=seed, cfg=fro_cfg, n_steps=40)
+    # Hazard evolves in one and not the other (sanity)...
+    assert (a["hazard"] != b["hazard"]).any()
+    # ...structure never feels it (kappa_A = 0 and no load channel).
+    _assert_bitwise_equal(a, b, ("structure",))
+    # First hazard-dependent divergence: a death that differs across modes.
+    alive_diff = jnp.any(a["alive"] != b["alive"], axis=1)
+    assert alive_diff.any(), "want a diverging death; retune seed/beta"
+    t_star = int(jnp.argmax(alive_diff))
+    assert (a["food"][:t_star] == b["food"][:t_star]).all()
+    assert (a["pos"][: t_star + 1] == b["pos"][: t_star + 1]).all()
+    assert (a["reward"][:t_star] == b["reward"][:t_star]).all()

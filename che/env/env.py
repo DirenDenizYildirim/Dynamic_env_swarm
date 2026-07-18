@@ -89,9 +89,22 @@ def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvStat
     DECISION), all-Fuel hazard with one random ignition (DECISION: gives the
     gate and the obs planes real fire/smoke dynamics; cost is state-
     independent), intact structure, zero smoke.
+
+    M1.3 frozen mode: the CA is burned in for t_gen steps (default
+    horizon / 2) from the single ignition, then h is frozen for the whole
+    episode. Rationale (preserve): with t_gen = horizon / 2 the frozen map
+    is a draw from the *same marginal* the dynamic env passes through
+    mid-episode — the control differs in evolution, not in hazard mass
+    (the system-scale analogue of Thm. 1's fixed-map policy). Smoke is NOT
+    pre-accumulated: it starts at 0 and evolves during the episode from the
+    frozen Burning set (still lethal, still smoke-emitting).
     """
     ll = cfg.grid_size
-    k_food, k_agents, k_fire = jax.random.split(key, 3)
+    th = cfg.theta
+    # Unconditional 4-way split (invariant #3): dynamic mode discards
+    # k_burnin, so dynamic<->frozen resets with the same key place identical
+    # food/agents/ignition and differ only through the freeze.
+    k_food, k_agents, k_fire, k_burnin = jax.random.split(key, 4)
     food = spawn_food(k_food, ll, cfg.n_food)
     agent_pos = jax.random.randint(
         k_agents, (cfg.n_agents, 2), minval=0, maxval=ll, dtype=jnp.int32
@@ -99,6 +112,14 @@ def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvStat
     fire_cell = jax.random.randint(k_fire, (2,), minval=0, maxval=ll)
     hazard = jnp.full((ll, ll), FUEL, dtype=jnp.uint8)
     hazard = hazard.at[fire_cell[0], fire_cell[1]].set(BURNING)
+    if cfg.hazard_mode == "frozen":  # static branch: cfg is a static arg
+
+        def burn(h: jax.Array, k: jax.Array):
+            return hazard_step(k, h, beta=th.beta, iota=th.iota), None
+
+        hazard, _ = jax.lax.scan(
+            burn, hazard, jax.random.split(k_burnin, cfg.t_gen_resolved)
+        )
     state = EnvState(
         agent_pos=agent_pos,
         agent_alive=jnp.ones((cfg.n_agents,), dtype=jnp.bool_),
@@ -141,8 +162,16 @@ def step(
         k_seed, collapse_increment, kappa_A=th.kappa_A, r_seed=th.r_seed
     )
     hazard_ca = hazard_step(k_fire, state.hazard, beta=th.beta, iota=th.iota)
-    hazard_new = seed_ignitions(hazard_ca, seed_mask)
-    seeded_ignitions = hazard_ca != hazard_new  # Fuel cells Coupling A lit
+    if cfg.hazard_mode == "frozen":
+        # M1.3: h is frozen — the CA/seed draws above still happen and are
+        # discarded, so dynamic<->frozen with the same key share every
+        # other stream bitwise (invariant #3). Frozen Burning cells stay
+        # Burning: lethal and smoke-emitting, but never spread or burn out.
+        hazard_new = state.hazard
+        seeded_ignitions = jnp.zeros_like(seed_mask)
+    else:
+        hazard_new = seed_ignitions(hazard_ca, seed_mask)
+        seeded_ignitions = hazard_ca != hazard_new  # Fuel cells Coupling A lit
 
     # 3. rho' from h' (Def. 6; smoke outlives flame).
     smoke_new = smoke_step(state.smoke, hazard_new, sigma_s=th.sigma_s, eta=th.eta)
