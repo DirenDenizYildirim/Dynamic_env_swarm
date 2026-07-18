@@ -144,4 +144,7 @@ def test_sigterm_saves_and_stops_early(tmp_path):
 
 def test_random_baseline_runs():
     b = random_baseline(CFG, n_episodes=8)
-    assert 0.0 <= b <= CFG.env.n_food
+    assert 0.0 <= b["mean_return"] <= CFG.env.n_food
+    assert 0.0 <= b["survival_rate"] <= 1.0
+    assert 0.0 <= b["completion"] <= 1.0
+    assert b["deaths_fire"] >= 0.0 and b["deaths_collapse"] >= 0.0

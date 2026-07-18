@@ -1,0 +1,28 @@
+# M1.5 — Phase 1 acceptance training: single policy at the recorded
+# operating point (phase0 report: n_envs 256; 64², 12 agents). Dynamic
+# hazard, beta 0.35 (placeholder until Phase 2 calibration).
+# death_penalty 0.0 here; the second acceptance run overrides it to 0.5
+# via `--death-penalty 0.5` (report both).
+env:
+  grid_size: 64
+  n_agents: 12
+  horizon: 256
+  obs_window: 9
+  n_food: 32
+
+theta:
+  beta: 0.35
+  kappa_A: 0.0
+  kappa_B: 0.0
+  delta: 0.0
+  death_penalty: 0.0
+  iota: 0.0
+  sigma_s: 1.0
+  eta: 0.5
+
+train:
+  n_envs: 256
+  rollout_len: 128
+  n_minibatches: 4
+  n_epochs: 4
+  ckpt_interval: 50

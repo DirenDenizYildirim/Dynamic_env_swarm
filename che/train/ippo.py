@@ -430,14 +430,30 @@ def train(
     return runner, history
 
 
-def random_baseline(cfg: Config, *, n_episodes: int = 64, seed: int = 0) -> float:
-    """Mean episodic return of the uniform-random policy (the M0.5 bar)."""
+def random_baseline(cfg: Config, *, n_episodes: int = 64, seed: int = 0) -> dict:
+    """Uniform-random-policy episode metrics (the acceptance bar).
+
+    M1.5: the Phase-1 acceptance compares completion AND survival_rate, so
+    the baseline reports the full episode-metric row, not just return.
+    """
     ecfg = cfg.env
     policy = make_random_policy(ecfg.n_agents)
-    rewards, _, _ = jax.jit(
+    rewards, _, infos = jax.jit(
         lambda k: batch_rollout(k, ecfg, policy, ecfg.horizon, n_episodes)
     )(jax.random.PRNGKey(seed))
-    return float(rewards.sum(axis=1).mean())
+    final = {k: v[:, -1] for k, v in infos.items()}  # values at done
+    return {
+        "mean_return": float(rewards.sum(axis=1).mean()),
+        "survival_rate": float(final["survival_rate"].mean()),
+        "completion": float(final["completion"].mean()),
+        "deaths_fire": float(
+            final["ep_deaths_fire"].astype(jnp.float32).mean()
+        ),
+        "deaths_collapse": float(
+            final["ep_deaths_collapse"].astype(jnp.float32).mean()
+        ),
+        "n_episodes": n_episodes,
+    }
 
 
 def main():
@@ -452,13 +468,25 @@ def main():
     p.add_argument("--grid-size", type=int)
     p.add_argument("--n-envs", type=int)
     p.add_argument("--rollout-len", type=int)
+    p.add_argument("--death-penalty", type=float, default=None,
+                   help="override theta.death_penalty (M1.5 acceptance)")
     p.add_argument("--baseline", action="store_true",
-                   help="print the random-policy baseline and exit")
+                   help="print the random-policy baseline metrics and exit")
     args = p.parse_args()
     cfg = load_config(args.config)
     if args.grid_size:
         cfg = dataclasses.replace(
             cfg, env=dataclasses.replace(cfg.env, grid_size=args.grid_size)
+        )
+    if args.death_penalty is not None:
+        cfg = dataclasses.replace(
+            cfg,
+            env=dataclasses.replace(
+                cfg.env,
+                theta=dataclasses.replace(
+                    cfg.env.theta, death_penalty=args.death_penalty
+                ),
+            ),
         )
     train_overrides = {
         k: v
@@ -473,7 +501,7 @@ def main():
             cfg, train=dataclasses.replace(cfg.train, **train_overrides)
         )
     if args.baseline:
-        print(f"random baseline: {random_baseline(cfg):.3f}")
+        print(json.dumps(random_baseline(cfg)))
         return
     train(
         cfg,
