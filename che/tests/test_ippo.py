@@ -91,7 +91,9 @@ def test_gae_closed_form():
 def test_training_smoke_and_params_change():
     fns = make_train_fns(CFG)
     runner = fns.init(jax.random.PRNGKey(0))
-    params_before = jax.tree_util.tree_map(lambda x: x.copy(), runner[0].params)
+    params_before = jax.tree_util.tree_map(
+        lambda x: x.copy(), runner.train_state.params
+    )
     runner, metrics = fns.chunk(runner, 2)
     for name in ("total_loss", "pg_loss", "v_loss", "entropy"):
         assert jnp.isfinite(metrics[name]).all(), name
@@ -99,7 +101,7 @@ def test_training_smoke_and_params_change():
     diffs = jax.tree_util.tree_map(
         lambda a, b: float(jnp.abs(a - b).max()),
         params_before,
-        runner[0].params,
+        runner.train_state.params,
     )
     assert max(jax.tree_util.tree_leaves(diffs)) > 0.0
 

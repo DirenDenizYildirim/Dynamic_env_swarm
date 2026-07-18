@@ -77,9 +77,24 @@ def compute_gae(
     return advantages, advantages + values
 
 
+class Runner(NamedTuple):
+    """Carry of the training loop. `hyper` holds the PBT-mutable
+    hyperparameters (lr, ent_coef) as traced float32 scalars so a population
+    vmap can give every member its own values without recompiling."""
+
+    train_state: TrainState
+    hyper: dict
+    env_states: object
+    obs: dict
+    ep_ret: jax.Array
+    key: jax.Array
+
+
 class TrainFns(NamedTuple):
-    init: object  # (key) -> runner_state
-    chunk: object  # (runner_state, n_updates static) -> (runner_state, metrics)
+    init: object  # jitted (key) -> Runner
+    chunk: object  # jitted (Runner, n_updates static) -> (Runner, metrics)
+    init_raw: object  # unjitted variants for population vmap (pbt.py)
+    chunk_raw: object
 
 
 @functools.lru_cache(maxsize=8)
@@ -96,19 +111,26 @@ def make_train_fns(cfg: Config) -> TrainFns:
             jnp.zeros((1, k, k, 3), jnp.float32),
             jnp.zeros((1, 4), jnp.float32),
         )
+        # lr is applied manually in _update_minibatch (from Runner.hyper) so
+        # PBT can mutate it per member at runtime; tx yields the Adam
+        # direction only.
         tx = optax.chain(
             optax.clip_by_global_norm(tcfg.max_grad_norm),
-            optax.adam(tcfg.lr, eps=1e-5),
+            optax.scale_by_adam(eps=1e-5),
         )
         train_state = TrainState.create(apply_fn=network.apply, params=params, tx=tx)
         obs, env_states = jax.vmap(reset, in_axes=(0, None))(
             jax.random.split(k_reset, tcfg.n_envs), ecfg
         )
+        hyper = {
+            "lr": jnp.asarray(tcfg.lr, jnp.float32),
+            "ent_coef": jnp.asarray(tcfg.ent_coef, jnp.float32),
+        }
         ep_ret = jnp.zeros((tcfg.n_envs,), jnp.float32)
-        return (train_state, env_states, obs, ep_ret, key)
+        return Runner(train_state, hyper, env_states, obs, ep_ret, key)
 
     def _env_step(runner, _):
-        train_state, env_states, last_obs, ep_ret, key = runner
+        train_state, hyper, env_states, last_obs, ep_ret, key = runner
         key, k_sample, k_step = jax.random.split(key, 3)
         logits, value = network.apply(
             train_state.params, last_obs["grid"], last_obs["vec"]
@@ -131,9 +153,9 @@ def make_train_fns(cfg: Config) -> TrainFns:
             finished_return=jnp.where(done, ep_ret, 0.0),
         )
         ep_ret = jnp.where(done, 0.0, ep_ret)
-        return (train_state, env_states, obs, ep_ret, key), trans
+        return Runner(train_state, hyper, env_states, obs, ep_ret, key), trans
 
-    def _loss_fn(params, mb, clip_eps):
+    def _loss_fn(params, mb, clip_eps, ent_coef):
         logits, value = network.apply(params, mb["obs_grid"], mb["obs_vec"])
         pi = distrax.Categorical(logits=logits)
         log_prob = pi.log_prob(mb["action"])
@@ -151,17 +173,28 @@ def make_train_fns(cfg: Config) -> TrainFns:
             (value - mb["target"]) ** 2, (v_clipped - mb["target"]) ** 2
         ).mean()
         entropy = pi.entropy().mean()
-        total = pg_loss + tcfg.vf_coef * v_loss - tcfg.ent_coef * entropy
+        total = pg_loss + tcfg.vf_coef * v_loss - ent_coef * entropy
         return total, (pg_loss, v_loss, entropy)
 
-    def _update_minibatch(train_state, mb):
+    def _update_minibatch(carry, mb):
+        train_state, hyper = carry
         grad_fn = jax.value_and_grad(_loss_fn, has_aux=True)
-        (total, aux), grads = grad_fn(train_state.params, mb, tcfg.clip_eps)
-        train_state = train_state.apply_gradients(grads=grads)
-        return train_state, (total, *aux)
+        (total, aux), grads = grad_fn(
+            train_state.params, mb, tcfg.clip_eps, hyper["ent_coef"]
+        )
+        direction, opt_state = train_state.tx.update(
+            grads, train_state.opt_state, train_state.params
+        )
+        updates = jax.tree_util.tree_map(lambda d: -hyper["lr"] * d, direction)
+        train_state = train_state.replace(
+            params=optax.apply_updates(train_state.params, updates),
+            opt_state=opt_state,
+            step=train_state.step + 1,
+        )
+        return (train_state, hyper), (total, *aux)
 
     def _update_epoch(update_state, _):
-        train_state, batch, key = update_state
+        train_state, hyper, batch, key = update_state
         key, k_perm = jax.random.split(key)
         n = batch["action"].shape[0]
         perm = jax.random.permutation(k_perm, n)
@@ -172,14 +205,14 @@ def make_train_fns(cfg: Config) -> TrainFns:
             ),
             batch,
         )
-        train_state, losses = jax.lax.scan(
-            _update_minibatch, train_state, minibatches
+        (train_state, hyper), losses = jax.lax.scan(
+            _update_minibatch, (train_state, hyper), minibatches
         )
-        return (train_state, batch, key), losses
+        return (train_state, hyper, batch, key), losses
 
     def _update_once(runner, _):
         runner, traj = jax.lax.scan(_env_step, runner, None, tcfg.rollout_len)
-        train_state, env_states, last_obs, ep_ret, key = runner
+        train_state, hyper, env_states, last_obs, ep_ret, key = runner
         _, last_value = network.apply(
             train_state.params, last_obs["grid"], last_obs["vec"]
         )
@@ -202,8 +235,8 @@ def make_train_fns(cfg: Config) -> TrainFns:
             "target": flat(targets),
         }
         key, k_update = jax.random.split(key)
-        (train_state, _, _), losses = jax.lax.scan(
-            _update_epoch, (train_state, batch, k_update), None, tcfg.n_epochs
+        (train_state, hyper, _, _), losses = jax.lax.scan(
+            _update_epoch, (train_state, hyper, batch, k_update), None, tcfg.n_epochs
         )
         n_done = traj.done.sum()
         metrics = {
@@ -215,14 +248,20 @@ def make_train_fns(cfg: Config) -> TrainFns:
             "pg_loss": losses[1].mean(),
             "v_loss": losses[2].mean(),
             "entropy": losses[3].mean(),
+            "lr": hyper["lr"],
+            "ent_coef": hyper["ent_coef"],
         }
-        return (train_state, env_states, last_obs, ep_ret, key), metrics
+        return Runner(train_state, hyper, env_states, last_obs, ep_ret, key), metrics
 
-    @functools.partial(jax.jit, static_argnames="n_updates")
-    def train_chunk(runner, n_updates: int):
+    def chunk_raw(runner, n_updates: int):
         return jax.lax.scan(_update_once, runner, None, n_updates)
 
-    return TrainFns(init=jax.jit(init_runner), chunk=train_chunk)
+    return TrainFns(
+        init=jax.jit(init_runner),
+        chunk=jax.jit(chunk_raw, static_argnames="n_updates"),
+        init_raw=init_runner,
+        chunk_raw=chunk_raw,
+    )
 
 
 # --------------------------------------------------------------- driver
@@ -247,15 +286,15 @@ def _ckpt_manager(ckpt_dir: str | Path) -> ocp.CheckpointManager:
     )
 
 
-def _save(mngr, runner, update: int):
-    train_state = runner[0]
+def _save(mngr, runner: Runner, update: int):
     mngr.save(
         update,
         args=ocp.args.StandardSave(
             {
-                "params": train_state.params,
-                "opt_state": train_state.opt_state,
-                "key": runner[4],
+                "params": runner.train_state.params,
+                "opt_state": runner.train_state.opt_state,
+                "hyper": runner.hyper,
+                "key": runner.key,
                 "update": update,
             }
         ),
@@ -290,18 +329,21 @@ def train(
                     "checkpoint config hash mismatch — refusing to resume"
                 )
             start = mngr.latest_step()
-            train_state = runner[0]
             template = {
-                "params": train_state.params,
-                "opt_state": train_state.opt_state,
-                "key": runner[4],
+                "params": runner.train_state.params,
+                "opt_state": runner.train_state.opt_state,
+                "hyper": runner.hyper,
+                "key": runner.key,
                 "update": 0,
             }
             restored = mngr.restore(start, args=ocp.args.StandardRestore(template))
-            train_state = train_state.replace(
-                params=restored["params"], opt_state=restored["opt_state"]
+            runner = runner._replace(
+                train_state=runner.train_state.replace(
+                    params=restored["params"], opt_state=restored["opt_state"]
+                ),
+                hyper=restored["hyper"],
+                key=restored["key"],
             )
-            runner = (train_state, *runner[1:4], restored["key"])
         else:
             hash_file.parent.mkdir(parents=True, exist_ok=True)
             hash_file.write_text(config_hash(cfg))
