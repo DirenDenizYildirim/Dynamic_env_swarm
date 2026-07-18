@@ -27,6 +27,9 @@ class ThetaConfig:
     kappa_B: float = 0.0  # Beer-Lambert attenuation strength (Def. 6)
     delta: float = 0.0  # comms denial level (Def. 7)
     # Hazard/smoke sub-parameters (Def. 3, Def. 6, D3).
+    # M1.1: optional death penalty, Def.-2 compliant — reads only the alpha
+    # transition (an X variable), never hazard/smoke/structure directly.
+    death_penalty: float = 0.0  # reward -c per newly disabled agent
     iota: float = 0.0  # spontaneous ignition rate per Fuel cell
     sigma_s: float = 1.0  # smoke emission per Burning cell
     eta: float = 0.5  # smoke exponential decay rate

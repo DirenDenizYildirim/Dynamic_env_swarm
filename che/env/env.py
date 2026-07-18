@@ -4,13 +4,16 @@ Step order (CLAUDE.md invariant #2, Prop. 1):
     1. c'   ~ T_C(c, x)            structure_step (reads pre-step occupancy)
     2. h'   ~ T_H(h, c, c')        CA spread, then Coupling A seeds from c'-c
     3. rho' =  e^{-eta} rho + ...  smoke_step (reads h')
-    4. x'   ~ T_X(x, a, h, c)      moves + task collection
+    4. x'   ~ T_X(x, a, h', c')    kills/blocking vs h', c' + task collection
     5. k'   ~ T_K(x')              comms — Phase 5 (not built in Phase 0)
 Observations are drawn from the post-step state O(. | x', h', rho', c', k').
 
-Phase-0 restriction: hazard/smoke/structure run every step (the M0.4 gate
-must measure their real cost) but do NOT affect agents — T_X ignores h and c
-until Phase 1. Deaths, blocking, and Coupling B enter later phases.
+Phase-1 (M1.1) semantics — T_X finally reads the hazard and structure. Per
+the Prop.-1 sequential composition, h' and c' are already-sampled components
+of s' when T_X runs, so lethality/blocking are evaluated against the
+*post-update* fields (a cell igniting under a stationary agent kills it).
+Death logic is deterministic given the sampled fields: it consumes no PRNG,
+so it cannot perturb any other subsystem's stream (invariant #3).
 
 Invariant #5: the coupling-co-active counter (collapse-seeded ignitions
 within perception range of an alive agent) is computed and logged in `info`
@@ -35,18 +38,50 @@ _ACTION_OFFSETS = jnp.array(
 )
 
 
-def move_agents(
-    agent_pos: jax.Array, actions: jax.Array, agent_alive: jax.Array, grid_size: int
-) -> jax.Array:
-    """T_X movement: clip-to-grid von-Neumann moves; dead agents hold still.
+def agent_step(
+    agent_pos: jax.Array,
+    agent_alive: jax.Array,
+    actions: jax.Array,
+    hazard_new: jax.Array,
+    structure_new: jax.Array,
+    collapse_increment: jax.Array,
+    grid_size: int,
+) -> tuple[jax.Array, jax.Array, jax.Array, jax.Array]:
+    """T_X (Def. 1) with M1.1 lethality and blocking, in this order:
 
-    Signature note: T_X(x' | x, a, h, c) may read h and c (Def. 1); in
-    Phase 0 movement ignores them by design (hazard is inert to agents).
+    1. **Collapse-kill (pre-move x).** An alive agent standing on a cell of
+       the collapse increment (c' - c) falls and is disabled. DECISION
+       (human-locked): no escape — the floor gives way before the agent
+       acts; consistent with c' being sampled before x' (Prop. 1).
+    2. **Movement.** Survivors propose clip-to-grid von-Neumann moves; a
+       move into a cell Collapsed in c' is cancelled (agent stays). Burnt
+       cells are passable (ash). Dead agents hold still.
+    3. **Fire-kill (post-move x').** alive' = alive AND NOT(cell(x') is
+       Burning in h') — evaluated against the post-update hazard, so a cell
+       igniting under a stationary agent kills it. Burning cells are
+       enterable (and lethal): avoidance must be learned, not enforced.
+
+    Deterministic given its inputs — consumes no PRNG (invariant #3).
+    Returns (pos', alive', deaths_fire, deaths_collapse) with int32 counts.
     """
     chex.assert_shape(agent_pos, (None, 2))
-    proposed = agent_pos + _ACTION_OFFSETS[actions]
-    proposed = jnp.clip(proposed, 0, grid_size - 1)
-    return jnp.where(agent_alive[:, None], proposed, agent_pos).astype(jnp.int32)
+    chex.assert_type(hazard_new, jnp.uint8)
+    chex.assert_type(structure_new, jnp.uint8)
+    chex.assert_type(collapse_increment, jnp.bool_)
+    fell = agent_alive & collapse_increment[agent_pos[:, 0], agent_pos[:, 1]]
+    alive_mid = agent_alive & ~fell
+    proposed = jnp.clip(agent_pos + _ACTION_OFFSETS[actions], 0, grid_size - 1)
+    blocked = structure_new[proposed[:, 0], proposed[:, 1]] == COLLAPSED
+    can_move = alive_mid & ~blocked
+    pos_new = jnp.where(can_move[:, None], proposed, agent_pos).astype(jnp.int32)
+    burned = alive_mid & (hazard_new[pos_new[:, 0], pos_new[:, 1]] == BURNING)
+    alive_new = alive_mid & ~burned
+    return (
+        pos_new,
+        alive_new,
+        burned.sum().astype(jnp.int32),
+        fell.sum().astype(jnp.int32),
+    )
 
 
 def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvState]:
@@ -112,10 +147,26 @@ def step(
     # 3. rho' from h' (Def. 6; smoke outlives flame).
     smoke_new = smoke_step(state.smoke, hazard_new, sigma_s=th.sigma_s, eta=th.eta)
 
-    # 4. x' ~ T_X(x, a, h, c) + task dynamics (collection on post-move cells).
-    pos_new = move_agents(state.agent_pos, actions, state.agent_alive, cfg.grid_size)
-    occ_post = occupancy_grid(pos_new, state.agent_alive, cfg.grid_size)
-    food_new, reward = task_step(state.food, occ_post)
+    # 4. x' ~ T_X + task dynamics. M1.1: lethality/blocking against h'/c'.
+    # DECISION: an agent disabled this step does not collect food this step
+    # (it died before/on arrival) — occupancy filters on the post-death
+    # alive vector, keeping "dead agents never collect" exact.
+    pos_new, alive_new, deaths_fire, deaths_collapse = agent_step(
+        state.agent_pos,
+        state.agent_alive,
+        actions,
+        hazard_new,
+        structure_new,
+        collapse_increment,
+        cfg.grid_size,
+    )
+    occ_post = occupancy_grid(pos_new, alive_new, cfg.grid_size)
+    food_new, task_reward = task_step(state.food, occ_post)
+    # Def.-2-compliant death penalty: reads only the alpha transition (an X
+    # variable) — never hazard/smoke/structure directly.
+    reward = task_reward - th.death_penalty * (
+        deaths_fire + deaths_collapse
+    ).astype(jnp.float32)
 
     # 5. k' ~ T_K(x'): comms channel — Phase 5.
 
@@ -123,7 +174,7 @@ def step(
     done = t_new >= cfg.horizon
     state_new = EnvState(
         agent_pos=pos_new,
-        agent_alive=state.agent_alive,
+        agent_alive=alive_new,
         food=food_new,
         hazard=hazard_new,
         smoke=smoke_new,
@@ -142,5 +193,7 @@ def step(
     info = {
         "coupling_co_active": co_active,
         "food_remaining": food_new.sum().astype(jnp.int32),
+        "deaths_fire": deaths_fire,
+        "deaths_collapse": deaths_collapse,
     }
     return obs, state_new, reward, done, info

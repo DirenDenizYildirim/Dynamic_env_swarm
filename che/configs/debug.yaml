@@ -11,6 +11,7 @@ theta:
   kappa_A: 0.0
   kappa_B: 0.0
   delta: 0.0
+  death_penalty: 0.0
   iota: 0.0
   sigma_s: 1.0
   eta: 0.5

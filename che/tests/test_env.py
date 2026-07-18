@@ -8,9 +8,9 @@ import jax
 import jax.numpy as jnp
 
 from che.env.config import ThetaConfig, load_config
-from che.env.env import move_agents, reset, step
+from che.env.env import agent_step, reset, step
 from che.env.observation import observe
-from che.env.types import BURNING, FUEL
+from che.env.types import BURNING, FUEL, INTACT
 from che.train.rollout import batch_rollout, make_random_policy, rollout_episode
 
 CONFIG_DIR = Path(__file__).resolve().parent.parent / "configs"
@@ -45,16 +45,27 @@ def test_rollout_deterministic_and_key_sensitive():
 
 
 def test_movement_and_border_clipping():
-    _, s = reset(jax.random.PRNGKey(0), CFG)
+    # Benign fields (no fire, intact, no collapses): agent_step reduces to
+    # clip-to-grid movement with dead agents holding still.
+    ll = CFG.grid_size
+    fuel = jnp.full((ll, ll), FUEL, dtype=jnp.uint8)
+    intact = jnp.full((ll, ll), INTACT, dtype=jnp.uint8)
+    no_inc = jnp.zeros((ll, ll), dtype=jnp.bool_)
     pos = jnp.array([[5, 5], [0, 0], [15, 15], [0, 15]], dtype=jnp.int32)
     alive = jnp.array([True, True, True, False])
     # stay, up (clipped), down (clipped), right (dead: holds still)
     actions = jnp.array([0, 1, 2, 4], dtype=jnp.int32)
-    new = move_agents(pos, actions, alive, CFG.grid_size)
+    new, alive_new, d_fire, d_coll = agent_step(
+        pos, alive, actions, fuel, intact, no_inc, ll
+    )
     expect = jnp.array([[5, 5], [0, 0], [15, 15], [0, 15]], dtype=jnp.int32)
     assert (new == expect).all()
+    assert (alive_new == alive).all()
+    assert int(d_fire) + int(d_coll) == 0
     actions2 = jnp.array([1, 2, 3, 4], dtype=jnp.int32)  # up, down, left, right
-    new2 = move_agents(pos, actions2, jnp.ones(4, bool), CFG.grid_size)
+    new2, _, _, _ = agent_step(
+        pos, jnp.ones(4, bool), actions2, fuel, intact, no_inc, ll
+    )
     expect2 = jnp.array([[4, 5], [1, 0], [15, 14], [0, 15]], dtype=jnp.int32)
     assert (new2 == expect2).all()
 
