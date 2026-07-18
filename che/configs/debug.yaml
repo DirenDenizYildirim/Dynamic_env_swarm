@@ -1,0 +1,22 @@
+# CPU-scale debug config: full test suite must pass with this in <2 min.
+env:
+  grid_size: 16
+  n_agents: 4
+  horizon: 256
+  obs_window: 5
+  n_food: 8
+
+theta:
+  beta: 0.35
+  kappa_A: 0.0
+  kappa_B: 0.0
+  delta: 0.0
+  iota: 0.0
+  sigma_s: 1.0
+  eta: 0.5
+
+train:
+  n_envs: 2
+  pop_size: 2
+  rollout_len: 32
+  n_minibatches: 2

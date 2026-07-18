@@ -216,3 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# KDE folder metadata
+.directory
+
+# bench artifacts kept out of git except committed reports
+che/bench/results/*.tmp
