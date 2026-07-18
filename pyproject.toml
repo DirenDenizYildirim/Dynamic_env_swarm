@@ -13,6 +13,9 @@ dependencies = [
     "pyyaml>=6.0",
 ]
 
+[project.optional-dependencies]
+cuda = ["jax[cuda12]>=0.4.35"]
+
 [dependency-groups]
 dev = [
     "pytest>=8.0",
