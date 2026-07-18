@@ -26,6 +26,25 @@ def make_random_policy(n_agents: int) -> PolicyFn:
     return policy
 
 
+def step_autoreset(
+    key: jax.Array, state, actions: jax.Array, cfg: EnvConfig
+):
+    """Env step that resets when done (the IPPO collector's transition).
+
+    Returns (obs, state', reward, done, info) where `done`, `reward`, and
+    `info` describe the *ending* episode while `obs`/`state'` are already
+    from the fresh reset when done is True. The reset branch is computed
+    unconditionally (invariant #3: key consumption never depends on data).
+    """
+    k_step, k_reset = jax.random.split(key)
+    obs, state_new, reward, done, info = step(k_step, state, actions, cfg)
+    obs_r, state_r = reset(k_reset, cfg)
+    pick = lambda a, b: jnp.where(done, b, a)  # noqa: E731
+    state_out = jax.tree_util.tree_map(pick, state_new, state_r)
+    obs_out = jax.tree_util.tree_map(pick, obs, obs_r)
+    return obs_out, state_out, reward, done, info
+
+
 def rollout_episode(
     key: jax.Array, cfg: EnvConfig, policy_fn: PolicyFn, n_steps: int
 ):

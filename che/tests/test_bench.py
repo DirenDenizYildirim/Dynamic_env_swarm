@@ -2,9 +2,16 @@
 
 import json
 
+import jax
+import pytest
+
 from che.bench.throughput import bench_cell, verdict_for
 
 
+@pytest.mark.skipif(
+    bool(jax.config.jax_disable_jit),
+    reason="bench AOT-compiles by design; meaningless without jit",
+)
 def test_bench_cell_runs_and_is_serializable():
     r = bench_cell(16, 4, 4, windows=2, window_secs=0.3, chunk=8)
     assert r["median"] > 0
