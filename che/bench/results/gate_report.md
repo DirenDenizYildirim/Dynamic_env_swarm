@@ -38,3 +38,12 @@ Budget projection (86e9 aggregate steps; training typically 2-5x slower than env
 | 5x | 2,572,271 | 9 | ~$8 |
 
 Final go/no-go uses *training* throughput measured at M0.6; this env-only figure is the leading indicator.
+
+## M0.6 — second gate measurement: training throughput
+
+- Device: **NVIDIA GeForce RTX 5090**; population 12, n_envs 256, grid 64², 12 agents, rollout 128, K_pbt 20
+- Compile: 57.94 s; window rates: 159,042, 159,011, 159,030, 158,953, 158,996
+- **Aggregate training throughput: 159,011 steps/s** (IQR 61); peak device memory 19.20 GiB
+- **Verdict (training thresholds): PASS — acceptable**
+- Budget: 86e9 steps -> 150.2 GPU-hours; ~$93 at $0.31/h with x2 buffer
+

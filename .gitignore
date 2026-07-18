@@ -222,3 +222,6 @@ __marimo__/
 
 # bench artifacts kept out of git except committed reports
 che/bench/results/*.tmp
+
+# GPU-run scratch artifacts (checkpoints rsynced back from the bench box)
+/m06/
