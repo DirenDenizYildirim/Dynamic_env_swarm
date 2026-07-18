@@ -9,8 +9,8 @@ import jax.numpy as jnp
 
 from che.env.config import ThetaConfig, load_config
 from che.env.env import agent_step, reset, step
-from che.env.observation import observe
-from che.env.types import BURNING, FUEL, INTACT
+from che.env.observation import N_PLANES, observe
+from che.env.types import BURNING, COLLAPSED, FUEL, INTACT
 from che.train.rollout import batch_rollout, make_random_policy, rollout_episode
 
 CONFIG_DIR = Path(__file__).resolve().parent.parent / "configs"
@@ -84,20 +84,27 @@ def test_food_conservation_over_episode():
 
 
 def test_obs_crop_border_correctness():
-    """Agent at the corner: out-of-bounds pads 0; in-bounds cells line up."""
+    """Obs v1 (M1.2): 5 planes in order, out-of-bounds pads 0, in-bounds
+    cells line up, alive-occupancy includes self and drops the dead."""
     _, s = reset(jax.random.PRNGKey(0), CFG)
     ll = CFG.grid_size
     food = jnp.zeros((ll, ll), dtype=jnp.uint8).at[0, 1].set(1)
     hazard = jnp.full((ll, ll), FUEL, dtype=jnp.uint8).at[1, 0].set(BURNING)
+    structure = (
+        jnp.full((ll, ll), INTACT, dtype=jnp.uint8).at[1, 1].set(COLLAPSED)
+    )
     s = dataclasses.replace(
         s,
-        agent_pos=jnp.array([[0, 0], [8, 8], [15, 15], [8, 8]], dtype=jnp.int32),
+        agent_pos=jnp.array([[0, 0], [8, 8], [15, 15], [8, 9]], dtype=jnp.int32),
+        agent_alive=jnp.array([True, True, True, False]),
         food=food,
         hazard=hazard,
+        structure=structure,
     )
     obs = observe(s, CFG)
     grid = obs["grid"]
-    r = CFG.obs_window // 2  # = 2 for k=5
+    assert grid.shape == (CFG.n_agents, CFG.obs_window, CFG.obs_window, N_PLANES)
+    r = CFG.obs_window // 2
     corner = grid[0]  # agent at (0, 0): rows/cols < r are out of bounds
     assert (corner[:r, :, :] == 0).all()
     assert (corner[:, :r, :] == 0).all()
@@ -105,6 +112,15 @@ def test_obs_crop_border_correctness():
     assert corner[r, r + 1, 2] == 1.0
     # Burning at (1, 0) appears at crop cell (r+1, r) in plane 0, value 1/2.
     assert corner[r + 1, r, 0] == 0.5
+    # Collapsed at (1, 1) appears at crop cell (r+1, r+1) in plane 3.
+    assert corner[r + 1, r + 1, 3] == 1.0
+    # Alive occupancy (plane 4) includes the observer itself at the center...
+    assert corner[r, r, 4] == 1.0
+    # ...and dead agents disappear: agent 3 (dead) sits at (8, 9), one cell
+    # right of agent 1 — absent from agent 1's plane 4.
+    mid = grid[1]
+    assert mid[r, r, 4] == 1.0  # self
+    assert mid[r, r + 1, 4] == 0.0  # dead neighbor invisible
     # Bottom-right corner agent: high rows/cols are out of bounds.
     br = grid[2]
     assert (br[-r:, :, :] == 0).all()
@@ -112,6 +128,7 @@ def test_obs_crop_border_correctness():
     # Own-state vec: normalized position, alive, t/horizon.
     assert obs["vec"].shape == (CFG.n_agents, 4)
     assert obs["vec"][0, 2] == 1.0
+    assert obs["vec"][3, 2] == 0.0  # dead agent's own alive flag
 
 
 def test_batch_rollout_shapes_and_finite():

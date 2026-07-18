@@ -29,6 +29,7 @@ from flax.training.train_state import TrainState
 
 from che.env.config import Config, load_config
 from che.env.env import N_ACTIONS, reset
+from che.env.observation import N_PLANES
 from che.train.networks import ActorCritic
 from che.train.rollout import batch_rollout, make_random_policy, step_autoreset
 
@@ -39,7 +40,7 @@ class Transition(NamedTuple):
     value: jax.Array  # [n_envs, n_agents]
     reward: jax.Array  # [n_envs] team reward
     log_prob: jax.Array  # [n_envs, n_agents]
-    obs_grid: jax.Array  # [n_envs, n_agents, k, k, 3]
+    obs_grid: jax.Array  # [n_envs, n_agents, k, k, N_PLANES]
     obs_vec: jax.Array  # [n_envs, n_agents, 4]
     finished_return: jax.Array  # [n_envs] episodic return where done, else 0
 
@@ -108,7 +109,7 @@ def make_train_fns(cfg: Config) -> TrainFns:
         k = ecfg.obs_window
         params = network.init(
             k_net,
-            jnp.zeros((1, k, k, 3), jnp.float32),
+            jnp.zeros((1, k, k, N_PLANES), jnp.float32),
             jnp.zeros((1, 4), jnp.float32),
         )
         # lr is applied manually in _update_minibatch (from Runner.hyper) so

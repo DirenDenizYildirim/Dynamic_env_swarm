@@ -3,7 +3,7 @@ env:
   grid_size: 16
   n_agents: 4
   horizon: 256
-  obs_window: 5
+  obs_window: 9
   n_food: 8
 
 theta:

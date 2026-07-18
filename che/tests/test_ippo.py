@@ -14,6 +14,7 @@ import pytest
 
 from che.env.config import Config, EnvConfig, TrainConfig
 from che.env.env import N_ACTIONS, reset
+from che.env.observation import N_PLANES
 from che.train.ippo import (
     compute_gae,
     config_hash,
@@ -37,10 +38,10 @@ def test_network_shapes_arbitrary_batch_dims():
     k = CFG.env.obs_window
     params = net.init(
         jax.random.PRNGKey(0),
-        jnp.zeros((1, k, k, 3)),
+        jnp.zeros((1, k, k, N_PLANES)),
         jnp.zeros((1, 4)),
     )
-    grid = jnp.zeros((5, 3, k, k, 3))
+    grid = jnp.zeros((5, 3, k, k, N_PLANES))
     vec = jnp.zeros((5, 3, 4))
     logits, value = net.apply(params, grid, vec)
     assert logits.shape == (5, 3, N_ACTIONS)

@@ -49,9 +49,9 @@ class EnvConfig:
     grid_size: int = 16
     n_agents: int = 4
     horizon: int = 256
-    # DECISION: obs_window k=5 is a placeholder crop size until Phase 1
-    # fixes the perception model; only the plumbing depends on it in Phase 0.
-    obs_window: int = 5  # k: egocentric k x k crop, must be odd
+    # M1.2: obs v1 locked — k=9 egocentric crop over the 5 planes defined
+    # in observation.py.
+    obs_window: int = 9  # k: egocentric k x k crop, must be odd
     n_food: int = 8  # F food items for the Phase-0 foraging stub
     theta: ThetaConfig = dataclasses.field(default_factory=ThetaConfig)
 

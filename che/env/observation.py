@@ -1,15 +1,21 @@
-"""Egocentric observations: k x k crops of (hazard, smoke, food) planes.
+"""Egocentric observations, obs v1 (M1.2 — the locked perception model).
 
-Phase-0 status: crops only. Beer-Lambert attenuation (Coupling B, Def. 6)
-enters here in Phase 4 as a transmittance gate on these planes; kappa_B is
-already in ThetaConfig so the signature will not change.
+Planes, in order (all float32, k x k crops centered on the agent):
+    0. hazard / 2      — {0, .5, 1} for {Fuel, Burning, Burnt}
+    1. smoke           — raw rho (bounded by sigma_s / (1 - e^-eta))
+    2. food            — {0, 1}
+    3. structure       — collapsed = 1
+    4. alive occupancy — 1 where an alive agent stands (DECISION,
+       human-locked: includes the observer itself; the own-state vector
+       disambiguates self). Dead agents disappear from this plane —
+       they are attrition, not obstacles (M1.1).
 
-DECISION (placeholders until Phase 1 fixes the perception model):
-- plane normalization: hazard/2 in {0, .5, 1}; smoke raw (bounded by
-  sigma_s / (1 - e^-eta)); food in {0, 1};
-- out-of-bounds cells pad with 0 on all planes (reads as Fuel/no-smoke/no
-  -food; a dedicated out-of-bounds indicator plane is a Phase 1 option);
-- own-state vector: (row/L, col/L, alive, t/horizon).
+Out-of-bounds cells pad 0 on all planes. Own-state vector unchanged:
+(row/L, col/L, alive, t/horizon).
+
+Beer-Lambert attenuation (Coupling B, Def. 6) enters here in Phase 4 as a
+transmittance gate on these planes; kappa_B is already in ThetaConfig so
+the signature will not change.
 """
 
 import chex
@@ -17,22 +23,31 @@ import jax
 import jax.numpy as jnp
 
 from che.env.config import EnvConfig
-from che.env.types import EnvState
+from che.env.tasks import occupancy_grid
+from che.env.types import COLLAPSED, EnvState
+
+# Number of observation planes (obs v1). Networks and tests import this
+# instead of hard-coding the channel count.
+N_PLANES = 5
 
 
 def observe(state: EnvState, cfg: EnvConfig) -> dict[str, jax.Array]:
     """O(. | x', h', rho', c', k'): observations from the post-step state
     (Prop. 1 / CLAUDE.md invariant #2 — call this on the *new* state).
 
-    Returns {"grid": float32 [n_agents, k, k, 3], "vec": float32 [n_agents, 4]}.
+    Returns {"grid": float32 [n_agents, k, k, N_PLANES],
+             "vec": float32 [n_agents, 4]}.
     """
     k = cfg.obs_window
     r = k // 2
+    occ = occupancy_grid(state.agent_pos, state.agent_alive, cfg.grid_size)
     planes = jnp.stack(
         [
             state.hazard.astype(jnp.float32) / 2.0,
             state.smoke,
             state.food.astype(jnp.float32),
+            (state.structure == COLLAPSED).astype(jnp.float32),
+            occ.astype(jnp.float32),
         ],
         axis=-1,
     )
@@ -40,7 +55,7 @@ def observe(state: EnvState, cfg: EnvConfig) -> dict[str, jax.Array]:
 
     def crop_one(pos: jax.Array) -> jax.Array:
         # Padded by r, so the slice starting at `pos` is centered on the agent.
-        return jax.lax.dynamic_slice(padded, (pos[0], pos[1], 0), (k, k, 3))
+        return jax.lax.dynamic_slice(padded, (pos[0], pos[1], 0), (k, k, N_PLANES))
 
     grid = jax.vmap(crop_one)(state.agent_pos)
     vec = jnp.concatenate(
@@ -53,6 +68,6 @@ def observe(state: EnvState, cfg: EnvConfig) -> dict[str, jax.Array]:
         ],
         axis=1,
     )
-    chex.assert_shape(grid, (cfg.n_agents, k, k, 3))
+    chex.assert_shape(grid, (cfg.n_agents, k, k, N_PLANES))
     chex.assert_shape(vec, (cfg.n_agents, 4))
     return {"grid": grid, "vec": vec}

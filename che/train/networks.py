@@ -5,9 +5,11 @@ swarms (identical embodiment/action set), maximizes sample efficiency, and
 matches the theory doc's exchangeable-agent setup. Per-agent identity can be
 appended to the own-state vector later if specialization is ever needed.
 
-Architecture: small CNN over the egocentric [k, k, 3] crop, concatenated
-with the own-state vector, then separate actor/critic MLP heads.
-Orthogonal init per PureJaxRL conventions.
+Architecture: small CNN over the egocentric [k, k, N_PLANES] crop (obs v1:
+5 planes, observation.py), concatenated with the own-state vector, then
+separate actor/critic MLP heads. Orthogonal init per PureJaxRL conventions.
+Channel count is inferred from the input, so the module tracks N_PLANES
+automatically.
 """
 
 import jax
@@ -19,7 +21,7 @@ _ZERO = nn.initializers.constant(0.0)
 
 
 class ActorCritic(nn.Module):
-    """(grid [..., k, k, 3], vec [..., 4]) -> (logits [..., A], value [...])."""
+    """(grid [..., k, k, P], vec [..., 4]) -> (logits [..., A], value [...])."""
 
     n_actions: int
     hidden: int = 128
