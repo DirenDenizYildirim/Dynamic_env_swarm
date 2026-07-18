@@ -47,3 +47,18 @@ Final go/no-go uses *training* throughput measured at M0.6; this env-only figure
 - **Verdict (training thresholds): PASS — acceptable**
 - Budget: 86e9 steps -> 150.2 GPU-hours; ~$93 at $0.31/h with x2 buffer
 
+## Phase 1 obs v1 — reference cell re-measurement (M1.2)
+
+| grid | n_envs | n_agents | compile (s) | median steps/s | IQR | peak mem (GiB) | obs |
+|---|---|---|---|---|---|---|---|
+| 64² ★ | 1024 | 12 | 2.28 | 12,652,933 | 210,353 | 0.12 | v1: k=9, 5 planes |
+
+- Same protocol/device as M0.4 (RTX 5090, jax 0.11.0); raw JSON:
+  `obs_v1_ref_cell.json` (commit 046dccc code state).
+- Env-only cost of the k=5→9, 3→5-plane crop vs the M0.4 row: **−1.6 %**
+  (12,861,356 → 12,652,933) — the obs pipeline is not the bottleneck.
+- Training projection at the measured Phase-0 env:train ratio (÷81):
+  **~156.2k train steps/s**, comfortably above the 100k contingency line —
+  the uint8-obs-storage contingency stays untriggered.
+- **Verdict: PASS — obs v1 locked with no operating-point change.**
+
