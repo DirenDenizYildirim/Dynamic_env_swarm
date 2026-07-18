@@ -1,0 +1,21 @@
+# Gate-scale reference config: the M0.4 reference cell is
+# (grid 64x64, n_envs 1024, n_agents 12); population 12 at M0.6.
+env:
+  grid_size: 64
+  n_agents: 12
+  horizon: 256
+  obs_window: 5
+  n_food: 32
+
+theta:
+  beta: 0.35
+  kappa_A: 0.0
+  kappa_B: 0.0
+  delta: 0.0
+  iota: 0.0
+  sigma_s: 1.0
+  eta: 0.5
+
+train:
+  n_envs: 256
+  pop_size: 12
