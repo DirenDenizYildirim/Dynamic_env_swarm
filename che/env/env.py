@@ -129,6 +129,8 @@ def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvStat
         structure=jnp.full((ll, ll), INTACT, dtype=jnp.uint8),
         t=jnp.zeros((), dtype=jnp.int32),
         key=key,
+        ep_deaths_fire=jnp.zeros((), dtype=jnp.int32),
+        ep_deaths_collapse=jnp.zeros((), dtype=jnp.int32),
     )
     return observe(state, cfg), state
 
@@ -201,6 +203,8 @@ def step(
 
     t_new = state.t + 1
     done = t_new >= cfg.horizon
+    ep_deaths_fire = state.ep_deaths_fire + deaths_fire
+    ep_deaths_collapse = state.ep_deaths_collapse + deaths_collapse
     state_new = EnvState(
         agent_pos=pos_new,
         agent_alive=alive_new,
@@ -210,6 +214,8 @@ def step(
         structure=structure_new,
         t=t_new,
         key=key,
+        ep_deaths_fire=ep_deaths_fire,
+        ep_deaths_collapse=ep_deaths_collapse,
     )
     obs = observe(state_new, cfg)  # post-step state, per Prop. 1
 
@@ -224,5 +230,13 @@ def step(
         "food_remaining": food_new.sum().astype(jnp.int32),
         "deaths_fire": deaths_fire,
         "deaths_collapse": deaths_collapse,
+        # M1.4 episode metrics — emitted every step, *valid at done* (with
+        # autoreset they describe the ending episode; consumers mask by
+        # done and aggregate NaN-safely).
+        "survival_rate": alive_new.mean(dtype=jnp.float32),
+        "completion": 1.0
+        - food_new.sum(dtype=jnp.float32) / jnp.float32(cfg.n_food),
+        "ep_deaths_fire": ep_deaths_fire,
+        "ep_deaths_collapse": ep_deaths_collapse,
     }
     return obs, state_new, reward, done, info

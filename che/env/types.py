@@ -54,6 +54,12 @@ class EnvState:
     # --- bookkeeping ---
     t: jax.Array  # int32 scalar
     key: jax.Array  # PRNG key
+    # --- M1.4 episode accumulators (int32 scalars, reset to 0) ---
+    # Death totals by cause since episode start; surfaced in `info` and
+    # valid as episode metrics at done. Kept in state because per-step
+    # info is not otherwise aggregable inside jitted collectors.
+    ep_deaths_fire: jax.Array
+    ep_deaths_collapse: jax.Array
 
 
 def zeros_state(grid_size: int, n_agents: int, key: jax.Array) -> EnvState:
@@ -71,4 +77,6 @@ def zeros_state(grid_size: int, n_agents: int, key: jax.Array) -> EnvState:
         structure=jnp.full((ll, ll), INTACT, dtype=jnp.uint8),
         t=jnp.zeros((), dtype=jnp.int32),
         key=key,
+        ep_deaths_fire=jnp.zeros((), dtype=jnp.int32),
+        ep_deaths_collapse=jnp.zeros((), dtype=jnp.int32),
     )

@@ -43,6 +43,16 @@ class Transition(NamedTuple):
     obs_grid: jax.Array  # [n_envs, n_agents, k, k, N_PLANES]
     obs_vec: jax.Array  # [n_envs, n_agents, 4]
     finished_return: jax.Array  # [n_envs] episodic return where done, else 0
+    ep_metrics: dict  # M1.4 {name: [n_envs]} episode metrics, done-masked
+
+
+# Episode metrics surfaced at done (M1.4): info key -> logged metric name.
+EP_METRICS = {
+    "survival_rate": "survival_rate",
+    "completion": "completion",
+    "ep_deaths_fire": "deaths_fire",
+    "ep_deaths_collapse": "deaths_collapse",
+}
 
 
 def compute_gae(
@@ -139,7 +149,7 @@ def make_train_fns(cfg: Config) -> TrainFns:
         pi = distrax.Categorical(logits=logits)
         action = pi.sample(seed=k_sample)
         log_prob = pi.log_prob(action)
-        obs, env_states, reward, done, _info = jax.vmap(
+        obs, env_states, reward, done, info = jax.vmap(
             step_autoreset, in_axes=(0, 0, 0, None)
         )(jax.random.split(k_step, tcfg.n_envs), env_states, action, ecfg)
         ep_ret = ep_ret + reward
@@ -152,6 +162,10 @@ def make_train_fns(cfg: Config) -> TrainFns:
             obs_grid=last_obs["grid"],
             obs_vec=last_obs["vec"],
             finished_return=jnp.where(done, ep_ret, 0.0),
+            ep_metrics={
+                name: jnp.where(done, info[k].astype(jnp.float32), 0.0)
+                for k, name in EP_METRICS.items()
+            },
         )
         ep_ret = jnp.where(done, 0.0, ep_ret)
         return Runner(train_state, hyper, env_states, obs, ep_ret, key), trans
@@ -240,10 +254,16 @@ def make_train_fns(cfg: Config) -> TrainFns:
             _update_epoch, (train_state, hyper, batch, k_update), None, tcfg.n_epochs
         )
         n_done = traj.done.sum()
+        # M1.4: NaN-safe per-update means over finished episodes only.
+        ep_means = {
+            name: jnp.where(n_done > 0, vals.sum() / n_done, jnp.nan)
+            for name, vals in traj.ep_metrics.items()
+        }
         metrics = {
             "mean_return": jnp.where(
                 n_done > 0, traj.finished_return.sum() / n_done, jnp.nan
             ),
+            **ep_means,
             "n_episodes": n_done.astype(jnp.int32),
             "total_loss": losses[0].mean(),
             "pg_loss": losses[1].mean(),
@@ -380,15 +400,20 @@ def train(
             if metrics_file:
                 metrics_file.flush()
             if update % log_every < k:
-                recent = [
-                    r["mean_return"]
-                    for r in history[-20:]
-                    if r["mean_return"] == r["mean_return"]  # drop NaN
-                ]
-                mean_ret = sum(recent) / len(recent) if recent else float("nan")
+
+                def recent_mean(name):
+                    vals = [
+                        r[name]
+                        for r in history[-20:]
+                        if r[name] == r[name]  # drop NaN
+                    ]
+                    return sum(vals) / len(vals) if vals else float("nan")
+
                 print(
                     f"[ippo] update {update}/{n_updates} "
-                    f"return~{mean_ret:.2f} "
+                    f"return~{recent_mean('mean_return'):.2f} "
+                    f"survival~{recent_mean('survival_rate'):.2f} "
+                    f"completion~{recent_mean('completion'):.2f} "
                     f"({k * cfg.train.rollout_len * cfg.train.n_envs / dt:,.0f} "
                     "env-steps/s)",
                     flush=True,

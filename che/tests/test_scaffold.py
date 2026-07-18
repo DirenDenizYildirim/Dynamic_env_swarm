@@ -63,7 +63,7 @@ def test_zeros_state_shapes_and_dtypes():
 def test_envstate_is_pytree():
     state = zeros_state(8, 2, jax.random.PRNGKey(0))
     leaves = jax.tree_util.tree_leaves(state)
-    assert len(leaves) == 8
+    assert len(leaves) == 10  # M1.4 added the two episode death counters
     # A mapped identity must preserve structure (chex.dataclass registers
     # EnvState as a pytree; vmap/scan rely on this).
     state2 = jax.tree_util.tree_map(lambda x: x, state)

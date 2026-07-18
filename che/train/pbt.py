@@ -223,6 +223,13 @@ def train_population(
                         "update": r * k_pbt + i + 1,
                         "member": m,
                         "mean_return": float(metrics["mean_return"][m, i]),
+                        # M1.4 episode metrics (NaN when no episode ended).
+                        "survival_rate": float(metrics["survival_rate"][m, i]),
+                        "completion": float(metrics["completion"][m, i]),
+                        "deaths_fire": float(metrics["deaths_fire"][m, i]),
+                        "deaths_collapse": float(
+                            metrics["deaths_collapse"][m, i]
+                        ),
                         "lr": float(metrics["lr"][m, i]),
                         "ent_coef": float(metrics["ent_coef"][m, i]),
                         "total_loss": float(metrics["total_loss"][m, i]),
