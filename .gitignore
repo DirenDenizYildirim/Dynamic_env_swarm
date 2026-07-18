@@ -147,15 +147,15 @@ activemq-data/
 # SageMath parsed files
 *.sage.py
 
-# Environments
+# Environments (anchored to repo root: che/env/ is source code, not a venv)
 .env
 .envrc
 .venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+/env/
+/venv/
+/ENV/
+/env.bak/
+/venv.bak/
 
 # Spyder project settings
 .spyderproject
