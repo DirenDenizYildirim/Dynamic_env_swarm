@@ -94,14 +94,27 @@ supercritical). Fit windows are saved in `estimates.npz`
 
 ![front speed](front_speed.png)
 
-## M2.4 preview (bands look non-empty at L = 64)
+## M2.4 — severity bands (HUMAN-LOCKED 2026-07-19)
 
-Not locked here — M2.4 proposes, human locks. Quick reads from the L = 64
-data: **Low** (P_span < 0.05 ∧ mean burnt_fraction ∈ [1, 5]%) is satisfiable
-at β = 0.42 (P_span 0.012, bf 1.40%) and β = 0.43; notably the Phase-1
-placeholder β = 0.35 *fails* the Low band (bf 0.34% < 1%). **Medium**
-(P_span ∈ [0.3, 0.7]) spans β ≈ 0.47–0.51. **High** (v̂ ∈ [0.5, 1.0]) spans
-β ≈ 0.53–0.95.
+Locked by the owner+RA decision record `severity_lock.md`, which fixes
+β̂_c = 0.500 ± 0.005 from the R_L crossing family (logistic centers
+0.4985/0.5006/0.4999 across L; self-duality R(0.500) = 0.488/0.502/0.494,
+all within 1σ of the exact ½ — the CA port is quantitatively validated
+against Kesten's β_c = ½). Configs emitted with full provenance:
+
+| Severity | β | Measured (L = 64, 512 seeds) | Spec band |
+|---|---|---|---|
+| Low (`severity_low.yaml`) | 0.43 | P_span 0.021, bf 1.9% | P_span<0.05 ∧ bf∈[1,5]% ✓ |
+| Medium (`severity_medium.yaml`) | 0.49 | P_span 0.547, bf 19.8% | P_span∈[0.3,0.7] ✓ |
+| High (`severity_high.yaml`) | 0.70 | v̂ 0.83 c/step, bf 98.3%, P_span 0.998 | v̂∈[0.5,1.0] ✓ |
+
+All observables re-verified against `calibration.npz` (sha256 `c131ba72…`)
+/ `estimates.npz` before emission and quoted in each config header.
+Medium sits between the finite-size pseudo-critical point β_c(64) ≈ 0.486
+and β̂_c (maximal-fluctuation regime for the arena); High leaves the front
+at 83% of agent speed (outrunnable, barely) with ~98% of the arena
+eventually burning. The Phase-1 placeholder β = 0.35 fails the Low band
+(bf 0.34% < 1%) — the calibration materially moved the operating points.
 
 ## Files
 

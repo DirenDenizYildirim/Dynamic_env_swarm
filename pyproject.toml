@@ -40,3 +40,6 @@ select = ["E", "F", "W", "I", "UP", "B"]
 [tool.pytest.ini_options]
 testpaths = ["che/tests"]
 addopts = "-q"
+markers = [
+    "slow: theory-scale MC tests (M2.3+); run with -m slow, excluded via -m 'not slow'",
+]
