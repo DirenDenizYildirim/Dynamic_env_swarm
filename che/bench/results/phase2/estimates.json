@@ -1,0 +1,18 @@
+{
+  "pairwise_crossings": {
+    "L32_L48": [],
+    "L32_L64": [],
+    "L48_L64": []
+  },
+  "beta_half_per_L": {
+    "L32": 0.4670689671204008,
+    "L48": 0.47762711017818776,
+    "L64": 0.48606557533389233
+  },
+  "beta_c_extrapolated_1_over_L": 0.5037081577073219,
+  "extrapolation_slope_a": -1.1868970410754653,
+  "beta_c_steepest_slope_L64": 0.47999998927116394,
+  "max_slope_L64": 12.890618084933593,
+  "beta_c_logistic_fit_L64": 0.489325,
+  "logistic_scale_L64": 0.021816460857192792
+}
