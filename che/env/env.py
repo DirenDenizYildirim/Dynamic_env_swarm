@@ -131,6 +131,7 @@ def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvStat
         key=key,
         ep_deaths_fire=jnp.zeros((), dtype=jnp.int32),
         ep_deaths_collapse=jnp.zeros((), dtype=jnp.int32),
+        ep_smoke_sum=jnp.zeros((), dtype=jnp.float32),
     )
     return observe(state, cfg), state
 
@@ -205,6 +206,18 @@ def step(
     done = t_new >= cfg.horizon
     ep_deaths_fire = state.ep_deaths_fire + deaths_fire
     ep_deaths_collapse = state.ep_deaths_collapse + deaths_collapse
+    # Smoke exposure (Phase-2 metric, human-approved 2026-07-19): per-step
+    # exposure = mean over *alive survivors* of rho'(x'_i), post-step fields
+    # per Prop. 1; 0 when no one survives. DECISION: agents that die this
+    # step contribute nothing — exposure tracks the operating swarm, and
+    # death is already counted by its own metrics. Deterministic given the
+    # sampled fields (consumes no PRNG, invariant #3) and info-only: the
+    # reward never reads it (Def. 2).
+    smoke_at_agents = smoke_new[pos_new[:, 0], pos_new[:, 1]]
+    step_exposure = jnp.where(alive_new, smoke_at_agents, 0.0).sum() / jnp.maximum(
+        alive_new.sum(dtype=jnp.float32), 1.0
+    )
+    ep_smoke_sum = state.ep_smoke_sum + step_exposure
     state_new = EnvState(
         agent_pos=pos_new,
         agent_alive=alive_new,
@@ -216,6 +229,7 @@ def step(
         key=key,
         ep_deaths_fire=ep_deaths_fire,
         ep_deaths_collapse=ep_deaths_collapse,
+        ep_smoke_sum=ep_smoke_sum,
     )
     obs = observe(state_new, cfg)  # post-step state, per Prop. 1
 
@@ -238,5 +252,7 @@ def step(
         - food_new.sum(dtype=jnp.float32) / jnp.float32(cfg.n_food),
         "ep_deaths_fire": ep_deaths_fire,
         "ep_deaths_collapse": ep_deaths_collapse,
+        # Time-average of per-step exposure; t_new >= 1 so no zero division.
+        "mean_smoke_exposure": ep_smoke_sum / t_new.astype(jnp.float32),
     }
     return obs, state_new, reward, done, info

@@ -60,6 +60,11 @@ class EnvState:
     # info is not otherwise aggregable inside jitted collectors.
     ep_deaths_fire: jax.Array
     ep_deaths_collapse: jax.Array
+    # Running sum over steps of the mean smoke density rho'(x'_i) over alive
+    # agents (float32 scalar; 0 contribution on steps with no survivors).
+    # Surfaced as `mean_smoke_exposure` (divided by t) in `info` — an
+    # H-derived *metric* only; never read by the reward (Def. 2).
+    ep_smoke_sum: jax.Array
 
 
 def zeros_state(grid_size: int, n_agents: int, key: jax.Array) -> EnvState:
@@ -79,4 +84,5 @@ def zeros_state(grid_size: int, n_agents: int, key: jax.Array) -> EnvState:
         key=key,
         ep_deaths_fire=jnp.zeros((), dtype=jnp.int32),
         ep_deaths_collapse=jnp.zeros((), dtype=jnp.int32),
+        ep_smoke_sum=jnp.zeros((), dtype=jnp.float32),
     )

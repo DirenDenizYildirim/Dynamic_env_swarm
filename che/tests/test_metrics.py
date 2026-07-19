@@ -2,6 +2,7 @@
 boundary semantics, and visibility in a debug-scale training log."""
 
 import dataclasses
+import math
 
 import jax
 import jax.numpy as jnp
@@ -55,6 +56,7 @@ def test_autoreset_surfaces_ending_episode_and_zeroes_counters():
         food=food,
         ep_deaths_fire=jnp.array(1, jnp.int32),
         ep_deaths_collapse=jnp.array(1, jnp.int32),
+        ep_smoke_sum=jnp.array(2.0, jnp.float32),
     )
     actions = jnp.zeros((cfg.n_agents,), jnp.int32)  # all stay
     _, s_new, _, done, info = step_autoreset(
@@ -70,7 +72,38 @@ def test_autoreset_surfaces_ending_episode_and_zeroes_counters():
     assert int(s_new.t) == 0
     assert int(s_new.ep_deaths_fire) == 0
     assert int(s_new.ep_deaths_collapse) == 0
+    assert float(s_new.ep_smoke_sum) == 0.0
     assert bool(s_new.agent_alive.all())
+
+
+def test_mean_smoke_exposure_exact_and_alive_only():
+    """Hand-checked exposure: beta=0 (no fire, no emission) with a preset
+    uniform smoke field rho = v. Then rho' = e^{-eta} v everywhere, so
+    per-step exposure over alive agents is exactly e^{-eta} v regardless of
+    positions; dead agents must not contribute."""
+    from che.env.env import step
+
+    theta = ThetaConfig(beta=0.0, iota=0.0, lambda_0=0.0, eta=0.25)
+    cfg = EnvConfig(grid_size=8, n_agents=4, horizon=16, n_food=4, theta=theta)
+    v = 0.8
+    s = zeros_state(cfg.grid_size, cfg.n_agents, jax.random.PRNGKey(0))
+    s = dataclasses.replace(
+        s,
+        smoke=jnp.full((8, 8), v, jnp.float32),
+        agent_alive=jnp.array([True, True, True, False]),
+    )
+    actions = jnp.zeros((cfg.n_agents,), jnp.int32)  # all stay
+    expected = math.exp(-theta.eta) * v
+    _, s1, _, _, info1 = step(jax.random.PRNGKey(1), s, actions, cfg)
+    assert float(info1["mean_smoke_exposure"]) == jnp.float32(expected)
+    # Step 2: field decays again; running mean averages the two exposures.
+    _, _, _, _, info2 = step(jax.random.PRNGKey(2), s1, actions, cfg)
+    expected2 = (expected + math.exp(-2 * theta.eta) * v) / 2.0
+    assert abs(float(info2["mean_smoke_exposure"]) - expected2) < 1e-6
+    # All-dead swarm: exposure contribution is 0, not NaN.
+    s_dead = dataclasses.replace(s, agent_alive=jnp.zeros((4,), jnp.bool_))
+    _, _, _, _, info_d = step(jax.random.PRNGKey(3), s_dead, actions, cfg)
+    assert float(info_d["mean_smoke_exposure"]) == 0.0
 
 
 def test_metrics_visible_in_debug_training_log():
@@ -81,7 +114,13 @@ def test_metrics_visible_in_debug_training_log():
         ),
     )
     _, history = train(cfg, n_updates=6, seed=0)
-    keys = ("survival_rate", "completion", "deaths_fire", "deaths_collapse")
+    keys = (
+        "survival_rate",
+        "completion",
+        "deaths_fire",
+        "deaths_collapse",
+        "mean_smoke_exposure",
+    )
     assert all(k in row for row in history for k in keys)
     finished = [r for r in history if r["n_episodes"] > 0]
     assert finished  # horizon 32 / rollout 16: episodes end every 2nd update

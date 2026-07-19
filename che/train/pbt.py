@@ -230,6 +230,9 @@ def train_population(
                         "deaths_collapse": float(
                             metrics["deaths_collapse"][m, i]
                         ),
+                        "mean_smoke_exposure": float(
+                            metrics["mean_smoke_exposure"][m, i]
+                        ),
                         "lr": float(metrics["lr"][m, i]),
                         "ent_coef": float(metrics["ent_coef"][m, i]),
                         "total_loss": float(metrics["total_loss"][m, i]),

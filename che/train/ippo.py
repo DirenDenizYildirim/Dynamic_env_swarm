@@ -52,6 +52,7 @@ EP_METRICS = {
     "completion": "completion",
     "ep_deaths_fire": "deaths_fire",
     "ep_deaths_collapse": "deaths_collapse",
+    "mean_smoke_exposure": "mean_smoke_exposure",  # Phase-2 (M2.5 report)
 }
 
 
@@ -452,6 +453,7 @@ def random_baseline(cfg: Config, *, n_episodes: int = 64, seed: int = 0) -> dict
         "deaths_collapse": float(
             final["ep_deaths_collapse"].astype(jnp.float32).mean()
         ),
+        "mean_smoke_exposure": float(final["mean_smoke_exposure"].mean()),
         "n_episodes": n_episodes,
     }
 
