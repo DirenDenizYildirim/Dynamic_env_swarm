@@ -139,15 +139,24 @@ def plot_r_crossing(arrays: dict, summary: dict, out: Path) -> None:
                         lw=0)
         ax.plot(betas, r, color=c, lw=2, label=f"L = {size}")
     ax.axhline(0.5, color=MUTED, lw=1, ls=(0, (2, 2)))
-    ax.annotate("self-duality: R = ½ at $\\beta_c$", xy=(0.985, 0.515),
-                xycoords=("axes fraction", "data"), ha="right",
+    ax.annotate("self-duality: R = ½ at $\\beta_c$", xy=(0.02, 0.53),
+                xycoords=("axes fraction", "data"),
                 color=MUTED, fontsize=8)
-    for pair, vals in summary.get("beta_c_R_crossings", {}).items():
-        for v in vals:
-            ax.axvline(v, color=MUTED, lw=1, ls=(0, (4, 3)), alpha=0.7)
-            ax.annotate(f"{pair}: {v:.3f}", xy=(v, 0.06),
-                        xytext=(4, 0), textcoords="offset points",
-                        color=MUTED, fontsize=8, rotation=90, va="bottom")
+    vals = [
+        v
+        for vs in summary.get("beta_c_R_crossings", {}).values()
+        for v in vs
+    ]
+    for v in vals:
+        ax.axvline(v, color=MUTED, lw=1, ls=(0, (4, 3)), alpha=0.7)
+    if vals:
+        mean = summary["beta_c_R_crossings_mean"]
+        ax.annotate(
+            f"crossings {min(vals):.3f}–{max(vals):.3f} "
+            f"(mean {mean:.3f})",
+            xy=(max(vals), 0.04), xytext=(6, 0),
+            textcoords="offset points", color=MUTED, fontsize=8,
+        )
     ax.set_xlabel("spread probability $\\beta$", color=INK)
     ax.set_ylabel("$R_L(\\beta)$", color=INK)
     ax.set_title(
@@ -156,7 +165,7 @@ def plot_r_crossing(arrays: dict, summary: dict, out: Path) -> None:
         "$\\beta_c$)", color=INK, loc="left", fontsize=10,
     )
     ax.set_ylim(-0.02, 1.02)
-    ax.legend(frameon=False, loc="center right", fontsize=9)
+    ax.legend(frameon=False, loc="upper left", fontsize=9)
     _style(ax)
     fig.tight_layout()
     fig.savefig(out)

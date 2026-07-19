@@ -1,0 +1,27 @@
+{
+  "mode": "crossing",
+  "jax_version": "0.11.0",
+  "backend": "gpu",
+  "device": "cuda:0",
+  "git_commit": "206b024cf2ae788ad9b392b827d4ca4e33c7ad2c",
+  "seed": 0,
+  "n_seeds": 512,
+  "sizes": [
+    32,
+    48,
+    64
+  ],
+  "t_max": {
+    "L32": 128,
+    "L48": 192,
+    "L64": 256
+  },
+  "n_betas": 21,
+  "beta_grid": "0.40:0.60:0.01",
+  "wall_seconds": {
+    "L32": 1.6464587941300124,
+    "L48": 1.0044312758836895,
+    "L64": 1.0643455579411238
+  },
+  "timestamp_utc": "2026-07-19T10:27:48Z"
+}
