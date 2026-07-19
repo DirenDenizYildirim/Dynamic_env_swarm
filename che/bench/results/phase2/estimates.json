@@ -1,5 +1,5 @@
 {
-  "pairwise_crossings": {
+  "span_pairwise_crossings_empty_by_design": {
     "L32_L48": [],
     "L32_L64": [],
     "L48_L64": []
@@ -9,10 +9,13 @@
     "L48": 0.47762711017818776,
     "L64": 0.48606557533389233
   },
-  "beta_c_extrapolated_1_over_L": 0.5037081577073219,
-  "extrapolation_slope_a": -1.1868970410754653,
+  "beta_c_half_locus_L_pow_-3/4": 0.5127211007389232,
+  "half_locus_slope_L_pow_-3/4": -0.6195437565201778,
+  "beta_c_half_locus_1_over_L_sensitivity": 0.5037081577073219,
+  "half_locus_slope_1_over_L": -1.1868970410754653,
   "beta_c_steepest_slope_L64": 0.47999998927116394,
   "max_slope_L64": 12.890618084933593,
   "beta_c_logistic_fit_L64": 0.489325,
-  "logistic_scale_L64": 0.021816460857192792
+  "logistic_scale_L64": 0.021816460857192792,
+  "crossing_mode": "calibration_crossing.npz absent - estimator (a) on R_L and the self-duality soft check are pending the amendment sweep"
 }

@@ -40,10 +40,10 @@ def plot_p_span(arrays: dict, summary: dict, out: Path) -> None:
         ax.fill_between(betas, p - 2 * se, p + 2 * se, color=c, alpha=0.15,
                         lw=0)
         ax.plot(betas, p, color=c, lw=2, label=f"L = {size}")
-    bc = summary["beta_c_extrapolated_1_over_L"]
+    bc = summary["beta_c_half_locus_L_pow_-3/4"]
     ax.axvline(bc, color=MUTED, lw=1.5, ls=(0, (4, 3)))
     ax.annotate(
-        f"$\\hat\\beta_c$ = {bc:.3f} (1/L extrapolation)",
+        f"$\\hat\\beta_c$ = {bc:.3f} (½-locus, $L^{{-3/4}}$ extrapolation)",
         xy=(bc, 0.03), xytext=(6, 0), textcoords="offset points",
         color=MUTED, fontsize=9,
     )
@@ -111,7 +111,7 @@ def plot_front_speed(arrays: dict, summary: dict, out: Path) -> None:
         m = np.isfinite(v)
         ax.plot(betas[m], v[m], color=L_COLORS[size], lw=2, marker="o",
                 ms=3, label=f"L = {size}")
-    bc = summary["beta_c_extrapolated_1_over_L"]
+    bc = summary["beta_c_half_locus_L_pow_-3/4"]
     ax.axvline(bc, color=MUTED, lw=1.5, ls=(0, (4, 3)))
     ax.set_xlabel("spread probability $\\beta$", color=INK)
     ax.set_ylabel("$\\hat v(\\beta)$  (cells / step)", color=INK)
@@ -126,7 +126,46 @@ def plot_front_speed(arrays: dict, summary: dict, out: Path) -> None:
     plt.close(fig)
 
 
+def plot_r_crossing(arrays: dict, summary: dict, out: Path) -> None:
+    """R_L(beta) sigmoids on the fine grid — the finite-size curves that DO
+    cross (2026-07-19 amendment); crossing marks + self-duality line."""
+    fig, ax = plt.subplots(figsize=(7, 4.2), dpi=150)
+    betas = arrays["r_betas"]
+    for size in _sizes(arrays):
+        r = arrays[f"r_L{size}"]
+        se = arrays[f"r_se_L{size}"]
+        c = L_COLORS[size]
+        ax.fill_between(betas, r - 2 * se, r + 2 * se, color=c, alpha=0.15,
+                        lw=0)
+        ax.plot(betas, r, color=c, lw=2, label=f"L = {size}")
+    ax.axhline(0.5, color=MUTED, lw=1, ls=(0, (2, 2)))
+    ax.annotate("self-duality: R = ½ at $\\beta_c$", xy=(0.985, 0.515),
+                xycoords=("axes fraction", "data"), ha="right",
+                color=MUTED, fontsize=8)
+    for pair, vals in summary.get("beta_c_R_crossings", {}).items():
+        for v in vals:
+            ax.axvline(v, color=MUTED, lw=1, ls=(0, (4, 3)), alpha=0.7)
+            ax.annotate(f"{pair}: {v:.3f}", xy=(v, 0.06),
+                        xytext=(4, 0), textcoords="offset points",
+                        color=MUTED, fontsize=8, rotation=90, va="bottom")
+    ax.set_xlabel("spread probability $\\beta$", color=INK)
+    ax.set_ylabel("$R_L(\\beta)$", color=INK)
+    ax.set_title(
+        "Left–right crossing probability, full-left-column ignition\n"
+        "(512 seeds, $\\pm 2\\sigma$; curve crossings estimate "
+        "$\\beta_c$)", color=INK, loc="left", fontsize=10,
+    )
+    ax.set_ylim(-0.02, 1.02)
+    ax.legend(frameon=False, loc="center right", fontsize=9)
+    _style(ax)
+    fig.tight_layout()
+    fig.savefig(out)
+    plt.close(fig)
+
+
 def render_all(arrays: dict, summary: dict, out_dir: Path) -> None:
     plot_p_span(arrays, summary, out_dir / "p_span_sigmoids.png")
     plot_chi_hat(arrays, out_dir / "chi_hat.png")
     plot_front_speed(arrays, summary, out_dir / "front_speed.png")
+    if "r_betas" in arrays:
+        plot_r_crossing(arrays, summary, out_dir / "r_crossing.png")

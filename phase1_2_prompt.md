@@ -130,11 +130,26 @@ and PBT metric rows + the plot scripts.
   ≤256 steps is minutes at Phase-0 throughput. Run on GPU; results to
   `che/bench/results/phase2/calibration.npz` + provenance JSON (jax version,
   device, seed).
+- **Amendment 2026-07-19 (spec correction, accepted from M2.2 findings):**
+  the center-seed `spanned` observable has one-sided finite-size bias, so
+  its finite-size curves never cross. Add a second calibration mode:
+  ignite the **full left column** at t=0 and record `crossed` = fire
+  reaches the right column — by the Prop.-2 coupling this equals the
+  canonical left–right crossing probability R_L(β). Refined β grid only,
+  all three L, ≥512 seeds; results to `calibration_crossing.npz` +
+  provenance.
 
 ## Milestone 2.2 — Estimates
 
-- `P_span(β)` per L; β̂_c from (a) the pairwise crossings of the three
-  finite-size curves and (b) steepest slope at L=64 — report both.
+- `P_span(β)` per L; R_L(β) per L (amendment mode). β̂_c estimators
+  (amended 2026-07-19 — report all, with spread): (a) crossings of the
+  R_L pairs (32,48) and (48,64); (b) ½-locus of center-seed P_span
+  extrapolated against L^(−3/4) (ν = 4/3 exact), with the 1/L fit reported
+  too as sensitivity; (c) steepest slope of P_span at L=64.
+- Soft check (report, not a hard test): measured R at β̂_c should be near
+  0.5 (self-duality); note the value in `calibration_report.md`. Keep the
+  one-sided-bias explanation in the report — it is methods text likely to
+  survive into the paper's appendix.
 - `χ̂(β)`: mean burnt cluster size on the subcritical side (burnt_fraction ×
   L² over non-spanning runs) — this curve is reused by Phase 3's Prop.-3
   test, so save it.
@@ -153,6 +168,7 @@ L=32, ≥256 seeds, coarse β grid — keep <60 s):
 - β̂_c ∈ [0.42, 0.58] (idealized von-Neumann kernel: exactly 1/2; the band
   covers finite-size + estimator bias — a kernel outside this band is
   mis-ported, per theory §10; do not widen the band without asking).
+  Band unchanged by the 2026-07-19 M2.2 amendment.
 - v̂ increasing over the three largest tested β.
 **Accept:** slow suite green. STOP.
 

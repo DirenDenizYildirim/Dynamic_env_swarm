@@ -7,16 +7,19 @@ and prints the beta_c summary.
 
 Estimator notes (M2.2 spec vs. this data — preserve):
 
-- **Pairwise crossings (spec estimator (a)) do not exist for this spanning
-  observable.** `spanned` is "center ignition ever touches the boundary", so
-  a smaller grid is *easier* to span at every beta — the finite-size bias is
-  one-sided and P_span^{L32} >= P_span^{L48} >= P_span^{L64} pointwise
-  (verified on the data; common random numbers make the ordering exact).
-  Curve-crossing estimators need an observable whose finite-size bias flips
-  sign across beta_c (e.g. side-to-side spanning), which M2.1 did not record.
-  `pairwise_crossings` therefore reports honestly (empty), and the standard
-  replacement on a one-sided observable is used: the P_span = 1/2 locus
-  beta_half(L), extrapolated linearly in 1/L to the L -> infinity intercept.
+- **Pairwise crossings of center-seed P_span do not exist.** `spanned` is
+  "center ignition ever touches the boundary", so a smaller grid is
+  *easier* to span at every beta — the finite-size bias is one-sided and
+  P_span^{L32} >= P_span^{L48} >= P_span^{L64} pointwise (verified on the
+  data; common random numbers make the ordering exact). Estimator (a)
+  therefore runs on the amendment observable R_L(beta) — left-column
+  ignition, `crossed` = fire reaches the right column — whose finite-size
+  curves do cross; pairs (32,48) and (48,64) per the amended spec.
+- Estimator (b): the P_span = 1/2 locus beta_half(L) extrapolated against
+  L^(-3/4) (nu = 4/3 exact for 2D percolation), with the plain 1/L fit
+  reported as sensitivity.
+- Soft check (reported, never a hard test): R_{L}(beta_c_hat) should be
+  near 1/2 (self-duality).
 - chi-hat (mean burnt cluster size on the subcritical side) = mean over
   *non-spanning* runs of burnt_fraction * L^2; NaN where every run spans.
 - v-hat (supercritical front speed) = least-squares slope of the seed-mean
@@ -50,8 +53,8 @@ def pairwise_crossings(
 ) -> list[float]:
     """Sign-change locations of p_a - p_b on the fine window (linear interp).
 
-    Empty on this data — see module docstring; kept as the honest spec-(a)
-    estimator and for any future observable with two-sided bias.
+    Estimator (a) on R_L pairs; empty on center-seed P_span pairs (their
+    finite-size bias is one-sided — see module docstring).
     """
     m = (betas >= FINE_LO) & (betas <= FINE_HI)
     b, d = betas[m], (p_a - p_b)[m]
@@ -76,11 +79,15 @@ def beta_half(betas: np.ndarray, p: np.ndarray) -> float:
 
 
 def beta_c_extrapolated(
-    sizes: np.ndarray, beta_halves: np.ndarray
+    sizes: np.ndarray, beta_halves: np.ndarray, exponent: float = 0.75
 ) -> tuple[float, float]:
-    """(intercept, slope) of beta_half(L) ~ beta_c + a / L (least squares)."""
-    coeffs = np.polyfit(1.0 / np.asarray(sizes, dtype=np.float64),
-                        np.asarray(beta_halves, dtype=np.float64), 1)
+    """(intercept, slope) of beta_half(L) ~ beta_c + a * L^(-exponent).
+
+    Default exponent 3/4 = 1/nu with nu = 4/3 (exact, 2D percolation);
+    exponent=1.0 gives the plain 1/L sensitivity fit.
+    """
+    x = np.asarray(sizes, dtype=np.float64) ** (-exponent)
+    coeffs = np.polyfit(x, np.asarray(beta_halves, dtype=np.float64), 1)
     return float(coeffs[1]), float(coeffs[0])
 
 
@@ -156,8 +163,15 @@ def front_speed(
     return v, t_lo, t_hi
 
 
-def compute_all(data: np.lib.npyio.NpzFile) -> dict:
-    """All M2.2 estimates from the raw calibration arrays, keyed for npz."""
+def compute_all(
+    data: np.lib.npyio.NpzFile,
+    crossing_data: np.lib.npyio.NpzFile | None = None,
+) -> dict:
+    """All M2.2 estimates from the raw calibration arrays, keyed for npz.
+
+    crossing_data is the amendment sweep (R_L observable); estimator (a)
+    and the self-duality soft check are skipped with a note if absent.
+    """
     betas = np.asarray(data["betas"], dtype=np.float64)
     sizes = [int(s) for s in data["sizes"]]
     out: dict[str, np.ndarray] = {"betas": betas,
@@ -180,30 +194,78 @@ def compute_all(data: np.lib.npyio.NpzFile) -> dict:
             f"v_fit_t_hi_L{size}": t_hi,
         })
     out["beta_half"] = np.asarray(halves)
-    crossings = {
+    # Kept as a record: one-sided bias means these are empty (module
+    # docstring); the live estimator (a) runs on R_L below.
+    span_crossings = {
         f"L{a}_L{b}": pairwise_crossings(
             betas, out[f"p_span_L{a}"], out[f"p_span_L{b}"]
         )
         for a, b in [(32, 48), (32, 64), (48, 64)]
         if a in sizes and b in sizes
     }
-    bc_extrap, extrap_slope = beta_c_extrapolated(
-        np.asarray(sizes), out["beta_half"]
+    bc_nu, slope_nu = beta_c_extrapolated(
+        np.asarray(sizes), out["beta_half"], exponent=0.75
+    )
+    bc_1l, slope_1l = beta_c_extrapolated(
+        np.asarray(sizes), out["beta_half"], exponent=1.0
     )
     b_steep, max_slope = beta_c_steepest_slope(betas, out["p_span_L64"])
     b0_fit, s_fit = logistic_fit(betas, out["p_span_L64"])
     summary = {
-        "pairwise_crossings": crossings,
+        "span_pairwise_crossings_empty_by_design": span_crossings,
         "beta_half_per_L": {
             f"L{s}": h for s, h in zip(sizes, halves, strict=True)
         },
-        "beta_c_extrapolated_1_over_L": bc_extrap,
-        "extrapolation_slope_a": extrap_slope,
+        "beta_c_half_locus_L_pow_-3/4": bc_nu,
+        "half_locus_slope_L_pow_-3/4": slope_nu,
+        "beta_c_half_locus_1_over_L_sensitivity": bc_1l,
+        "half_locus_slope_1_over_L": slope_1l,
         "beta_c_steepest_slope_L64": b_steep,
         "max_slope_L64": max_slope,
         "beta_c_logistic_fit_L64": b0_fit,
         "logistic_scale_L64": s_fit,
     }
+
+    if crossing_data is None:
+        summary["crossing_mode"] = (
+            "calibration_crossing.npz absent - estimator (a) on R_L and "
+            "the self-duality soft check are pending the amendment sweep"
+        )
+        return {"arrays": out, "summary": summary}
+
+    r_betas = np.asarray(crossing_data["betas"], dtype=np.float64)
+    r_sizes = [int(s) for s in crossing_data["sizes"]]
+    out["r_betas"] = r_betas
+    for size in r_sizes:
+        r, r_se = p_span_curve(crossing_data[f"crossed_L{size}"])
+        out[f"r_L{size}"] = r
+        out[f"r_se_L{size}"] = r_se
+    r_crossings = {
+        f"L{a}_L{b}": pairwise_crossings(
+            r_betas, out[f"r_L{a}"], out[f"r_L{b}"]
+        )
+        for a, b in [(32, 48), (48, 64)]
+        if a in r_sizes and b in r_sizes
+    }
+    cross_vals = [v for vs in r_crossings.values() for v in vs]
+    estimates = [bc_nu, b_steep] + (
+        [float(np.mean(cross_vals))] if cross_vals else []
+    )
+    consensus = float(np.mean(estimates))
+    summary.update({
+        "beta_c_R_crossings": r_crossings,
+        "beta_c_R_crossings_mean": (
+            float(np.mean(cross_vals)) if cross_vals else None
+        ),
+        "beta_c_consensus_mean_of_abc": consensus,
+        "beta_c_spread_abc": [float(min(estimates)),
+                              float(max(estimates))],
+        # Self-duality soft check (report, never a hard test).
+        "R_at_beta_c_consensus": {
+            f"L{s}": float(np.interp(consensus, r_betas, out[f"r_L{s}"]))
+            for s in r_sizes
+        },
+    })
     return {"arrays": out, "summary": summary}
 
 
@@ -215,12 +277,18 @@ def main() -> None:
         default=Path("che/bench/results/phase2/calibration.npz"),
     )
     ap.add_argument(
+        "--crossing",
+        type=Path,
+        default=Path("che/bench/results/phase2/calibration_crossing.npz"),
+    )
+    ap.add_argument(
         "--out-dir", type=Path, default=Path("che/bench/results/phase2")
     )
     args = ap.parse_args()
 
     data = np.load(args.calibration)
-    res = compute_all(data)
+    crossing = np.load(args.crossing) if args.crossing.exists() else None
+    res = compute_all(data, crossing)
     np.savez_compressed(args.out_dir / "estimates.npz", **res["arrays"])
     (args.out_dir / "estimates.json").write_text(
         json.dumps(res["summary"], indent=2) + "\n"

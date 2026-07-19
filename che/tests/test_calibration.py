@@ -12,6 +12,8 @@ import numpy as np
 
 from che.calibration.percolation import (
     beta_grid,
+    crossing_run,
+    fine_beta_grid,
     percolation_run,
     run_ensemble,
 )
@@ -102,6 +104,44 @@ def test_burnt_fraction_monotone_smoke():
     )
     mean_bf = np.asarray(out["burnt_fraction"]).mean(axis=1)
     assert mean_bf[1] > 10 * mean_bf[0]
+
+
+def test_fine_beta_grid():
+    betas = np.asarray(fine_beta_grid())
+    assert betas.shape == (21,)
+    assert betas[0] == np.float32(0.40) and betas[-1] == np.float32(0.60)
+    assert (np.diff(betas) > 0).all()
+
+
+def test_crossing_beta_zero_never_crosses():
+    out = crossing_run(
+        jax.random.PRNGKey(1), jnp.float32(0.0), grid_size=L, t_max=T_MAX
+    )
+    assert not bool(out["crossed"])
+
+
+def test_crossing_beta_one_deterministic_cross():
+    # At beta = 1 the front advances one column per step and reaches the
+    # right column at t = L - 1 <= T_max deterministically.
+    out = crossing_run(
+        jax.random.PRNGKey(2), jnp.float32(1.0), grid_size=L, t_max=T_MAX
+    )
+    assert bool(out["crossed"])
+
+
+def test_crossing_ensemble_shapes_and_determinism():
+    betas = jnp.asarray([0.45, 0.55], dtype=jnp.float32)
+    a = run_ensemble(
+        jax.random.PRNGKey(7), betas, grid_size=L, n_seeds=8,
+        t_max=T_MAX, mode="crossing",
+    )
+    b = run_ensemble(
+        jax.random.PRNGKey(7), betas, grid_size=L, n_seeds=8,
+        t_max=T_MAX, mode="crossing",
+    )
+    assert a["crossed"].shape == (2, 8)
+    assert a["crossed"].dtype == jnp.bool_
+    assert (np.asarray(a["crossed"]) == np.asarray(b["crossed"])).all()
 
 
 def test_front_radius_running_max_monotone():
