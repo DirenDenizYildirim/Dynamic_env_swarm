@@ -173,13 +173,19 @@ invent a compromise silently.
 
 ## Milestone 2.5 — Pillar-only training probe
 
-- Train at each locked severity (dynamic mode, single policy, n_envs 256,
-  ~500 updates, both death_penalty values carried from M1.5's better run).
-- Report per severity: completion, survival_rate, deaths_fire, curves; a
-  3-severity comparison table in `phase2_report.md`. Expected qualitative
-  pattern (report, don't force): survival degrades with severity; Medium
-  shows the highest across-seed variance (near-critical fluctuations,
-  theory Def. 4).
+- Full grid: 3 locked severities × death_penalty ∈ {0.0, 0.5} × 3 seeds =
+  18 runs (dynamic mode, single policy, n_envs 256, ~500 updates each;
+  ≈ 20 min/run at measured throughput, ~6 GPU-hours total — report actual).
+  Rationale (Phase-1 finding): at subcritical severity the two dp values
+  are statistically tied because survival is at ceiling; whether an
+  explicit death penalty matters is an open question exactly at
+  Medium/High, and the near-critical variance prediction requires seeds.
+- Report per (severity, dp): completion, survival_rate, deaths_fire —
+  mean ± across-seed range — plus curves; a comparison table in
+  `phase2_report.md`. Expected qualitative pattern (report, don't force):
+  survival degrades with severity; Medium shows the highest across-seed
+  variance (near-critical fluctuations, theory Def. 4). Also report
+  mean_smoke_exposure if the metric exists on main by then.
 **Accept:** report complete. STOP — Phase 2 complete; GO/NO-GO on Phase 3
 (Coupling A + Prop.-3 scaling test, which will reuse χ̂ from M2.2).
 
