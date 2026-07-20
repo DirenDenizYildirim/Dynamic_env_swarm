@@ -227,3 +227,13 @@ che/bench/results/*.tmp
 /m06/
 /m30.tar.gz
 che/bench/results/phase3/m30/ckpt_*/
+
+# M3.0b renders: only the 6 representative GIFs named in render_notes.md are
+# committed; the other 18 are regenerable by seed (renderer is deterministic)
+che/bench/results/phase3/m30b/renders/*.gif
+!che/bench/results/phase3/m30b/renders/high_s2_ep0.gif
+!che/bench/results/phase3/m30b/renders/high_s2_ep1.gif
+!che/bench/results/phase3/m30b/renders/medium_s0_ep1.gif
+!che/bench/results/phase3/m30b/renders/medium_s0_ep3.gif
+!che/bench/results/phase3/m30b/renders/low_s0_ep0.gif
+!che/bench/results/phase3/m30b/renders/low_s0_ep5.gif

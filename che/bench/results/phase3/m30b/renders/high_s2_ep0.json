@@ -1,0 +1,11 @@
+{
+ "config": "che/configs/severity_high.yaml",
+ "ckpt_dir": "/home/diren/A_Research/Dynamic_env_swarm/che/bench/results/phase3/m30/ckpt_high_dp0.5_s2",
+ "seed": 0,
+ "greedy": false,
+ "steps": 256,
+ "final_completion": 0.96875,
+ "final_alive": 11,
+ "n_agents": 12,
+ "episode_return": 30.5
+}
