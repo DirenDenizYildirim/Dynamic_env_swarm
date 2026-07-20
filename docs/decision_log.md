@@ -39,3 +39,29 @@ variable); reward independence (Def. 2) is unaffected — the reward still
 reads no hazard/smoke/structure state.
 
 Confirmed by human 2026-07-19 at Phase 3 start.
+
+## D5 — obs v2: separate indicator planes (2026-07-20)
+
+Observation grid moves from 5 mixed-encoding planes to 7 indicator planes
+(smoke stays continuous): **burning, burnt, smoke, food, weak, collapsed,
+alive-occupancy**, in that order. `EnvConfig` gains `obs_version: 2`;
+v1 remains restorable for archival evaluation only (`--obs-version 1` in
+the eval/render CLIs). M3.2 onward is v2-only; all v1 results stay
+archived and labeled obs-v1 probes; **no cross-version comparisons, ever**.
+
+**Motivating evidence (M3.0b audits 1–2,
+`che/bench/results/phase3/m30b/`):** v1 plane 0 encodes hazard state / 2,
+so Burnt (1.0) reads *higher* than Burning (0.5) — ash looks maximally
+dangerous. Medium-trained policies abandon the burnt region after fire
+death (rendered: 11 agents idle at the ash boundary for 128 steps, 13
+food items stranded); the 3×3 cross matrix shows the same signature in
+zero-death conditioning (Low/Medium-trained on High complete 0.688/0.749
+vs High-trained 0.836 with nobody dying — terrain avoidance, not
+attrition). Indicator planes remove the spurious ordinal structure.
+
+Causal-mechanism check (registered before running): retrain
+{low, medium, high} seed 0 under v2, re-render medium's exact m30b
+episode seeds — does post-fire burnt-region abandonment disappear, and
+does the completion ordering flatten? → `phase3/m31b_obs_v2.md`.
+
+Locked by human 2026-07-20 (M3.0b review).
