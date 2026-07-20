@@ -8,6 +8,12 @@ pooled across seeds — with bootstrap 95% CIs (episode resampling, fixed
 RNG). The Def.-4 prediction on record: Medium (near-critical) highest.
 The outcome is reported verbatim either way.
 
+Amended per human review of M3.0 (2026-07-20): the Verdict leads with the
+mean-within-seed (fixed-policy) statistic; pooled is labelled
+policy+episode variance; an environment-level burnt-fraction-variance
+section (from phase2/calibration.npz, L=64), a variance-decomposition
+paragraph, and a Phase-6 seed-budgeting note were added.
+
 Run locally after the GPU results are back:
     uv run python che/scripts/def4_report.py
 """
@@ -17,6 +23,7 @@ from pathlib import Path
 import numpy as np
 
 M30 = Path("che/bench/results/phase3/m30")
+CALIB = Path("che/bench/results/phase2/calibration.npz")
 OUT = Path("che/bench/results/phase3/def4_variance.md")
 SEVERITIES = ["low", "medium", "high"]
 SEEDS = [0, 1, 2]
@@ -95,12 +102,13 @@ def main():
             )
             seed_means = np.array([v.mean() for v in per_seed_vals])
             lines.append(
-                f"| {sev} | **pooled** | {len(pooled)} | {pooled.mean():.4f} "
-                f"| **{pooled_vars[sev]:.5f}** | [{lo:.5f}, {hi:.5f}] |"
+                f"| {sev} | pooled (policy+episode) | {len(pooled)} "
+                f"| {pooled.mean():.4f} "
+                f"| {pooled_vars[sev]:.5f} | [{lo:.5f}, {hi:.5f}] |"
             )
             lines.append(
-                f"| {sev} | mean within-seed (fixed policy) | 3×512 | — "
-                f"| {within_vars[sev]:.5f} | — |"
+                f"| {sev} | **mean within-seed (fixed policy)** | 3×512 | — "
+                f"| **{within_vars[sev]:.5f}** | — |"
             )
             lines.append(
                 f"| {sev} | between-seed var of means | 3 | — "
@@ -111,43 +119,120 @@ def main():
         verdicts[metric] = (ranking, within_ranking)
         lines += [
             "",
-            f"Pooled-variance ranking: {' > '.join(ranking)}. "
-            + (
-                "**Prediction CONFIRMED (Medium highest).**"
-                if ranking[0] == "medium"
-                else f"**Prediction REFUTED ({ranking[0]} highest, not Medium).**"
-            ),
+            f"Fixed-policy (mean within-seed) ranking: "
+            f"**{' > '.join(within_ranking)}**. "
+            f"Pooled (policy+episode) ranking: {' > '.join(ranking)}.",
             "",
-            f"Mean-within-seed (fixed-policy) ranking: "
-            f"{' > '.join(within_ranking)}.",
-            "",
-            "Note: pooled variance mixes within-seed (episode) variance with "
-            "between-seed policy differences; the between-seed row above "
-            "shows how much of the pooled figure is seed-to-seed. The "
-            "mean-within-seed row is the cleanest fixed-policy statistic.",
+            "Note: pooled variance mixes within-seed (episode) variance "
+            "with between-seed policy differences — it is *not* the "
+            "registered quantity (the registered quantity is per-episode "
+            "variance at fixed policy, i.e. the mean-within-seed row); the "
+            "between-seed row shows how much of the pooled figure is "
+            "seed-to-seed.",
             "",
         ]
 
+    # Environment-level mechanism: per-episode burnt-fraction variance vs
+    # beta from the Phase-2 calibration sweep (hazard-only, L=64, 512 seeds
+    # per beta) — Def. 4's environment-level prediction, measured without
+    # any policy in the loop.
+    calib = np.load(CALIB)
+    betas = calib["betas"].astype(np.float64)
+    bf = calib["burnt_fraction_L64"].astype(np.float64)
+    bf_var = bf.var(axis=1, ddof=1)
+    i_peak = int(np.argmax(bf_var))
+    sev_beta = {"low": 0.43, "medium": 0.49, "high": 0.70}
+    sev_idx = {s: int(np.argmin(np.abs(betas - b))) for s, b in sev_beta.items()}
     lines += [
+        "## Environment-level mechanism: burnt-fraction variance vs beta",
+        "",
+        "Per-episode variance of burnt fraction from the Phase-2 "
+        "calibration sweep (`phase2/calibration.npz`, hazard-only rollouts, "
+        "L=64, 512 seeds per beta — no policy in the loop):",
+        "",
+        "| severity | beta | mean burnt fraction | variance |",
+        "|---|---|---|---|",
+    ]
+    for sev in SEVERITIES:
+        i = sev_idx[sev]
+        lines.append(
+            f"| {sev} | {betas[i]:.2f} | {bf[i].mean():.4f} "
+            f"| {bf_var[i]:.4f} |"
+        )
+    lines += [
+        "",
+        f"The full curve peaks at beta = {betas[i_peak]:.2f} "
+        f"(variance {bf_var[i_peak]:.4f}), i.e. in the near-critical "
+        "window just above the Medium lock and far from both the Low and "
+        "High locks. At the three locked severities the environment-level "
+        "variance ranks **medium >> high > low** (0.0354 vs 0.0019 vs "
+        "0.0008 — a 19-44x gap). **Def. 4's environment-level mechanism is "
+        "CONFIRMED**: hazard-outcome variance is maximal near criticality.",
+        "",
+        "Full curve (variance of burnt fraction, L=64, ddof=1):",
+        "",
+        "| beta | variance | | beta | variance |",
+        "|---|---|---|---|---|",
+    ]
+    half = (len(betas) + 1) // 2
+    for j in range(half):
+        left = f"| {betas[j]:.2f} | {bf_var[j]:.4f} |"
+        k = j + half
+        right = (
+            f" {betas[k]:.2f} | {bf_var[k]:.4f} |" if k < len(betas) else "  | |"
+        )
+        lines.append(left + right)
+    lines += [
+        "",
+        "## Decomposition",
+        "",
+        "As registered, the prediction is refuted / not confirmed: "
+        "task-outcome variance at fixed policy does not peak at Medium "
+        "(survival is monotone in severity; completion is a "
+        "Medium-Low tie). The decomposition explains why without "
+        "rescuing the registered claim: outcome variance ~ "
+        "(environment variance) x (policy sensitivity to the "
+        "environment). The environment factor peaks near criticality "
+        "(Medium, table above), but the policy-sensitivity factor grows "
+        "with severity — at Low the trained policy absorbs hazard "
+        "fluctuations (survival ceiling), while at High every hazard "
+        "realization couples into deaths and lost food. The two factors "
+        "peak in different regimes, so the product need not peak at "
+        "Medium.",
+        "",
         "## Verdict",
         "",
+        # Wording per human review of M3.0 (2026-07-20); leads with the
+        # fixed-policy statistic, the analysis's own cleanest measure.
+        "- **survival_rate: REFUTED** — fixed-policy per-episode variance "
+        "is monotone in severity (high > medium > low); High highest, not "
+        "Medium.",
+        "- **completion: NOT CONFIRMED** — Medium ≈ Low within bootstrap "
+        "CIs (0.01245 vs 0.01235), both above High; no resolvable Medium "
+        "peak.",
+        "- **Environment-level mechanism (Def. 4): CONFIRMED** — "
+        "burnt-fraction variance peaks near criticality (beta ≈ 0.53; "
+        "medium >> high > low at the locked severities).",
+        "",
+        "## Note for Phase 6 (seed budgeting)",
+        "",
+        "High-severity between-seed variance is dominated by one seed "
+        "(seed 2 trained to a distinctly better policy: completion 0.868 / "
+        "survival 0.956 vs ~0.74/0.85 for seeds 0-1). Training-solution "
+        "diversity at High severity is real and large relative to episode "
+        "noise — an input for the Phase-6 seed budget: High-severity cells "
+        "need more seeds (or explicit solution-diversity reporting) for "
+        "trustworthy means.",
+        "",
     ]
-    for metric, (ranking, within_ranking) in verdicts.items():
-        outcome = "CONFIRMED" if ranking[0] == "medium" else "REFUTED"
-        lines.append(
-            f"- {metric}: {outcome} on pooled variance "
-            f"(ranking {' > '.join(ranking)}); "
-            f"fixed-policy (mean within-seed) ranking "
-            f"{' > '.join(within_ranking)}."
-        )
-    lines.append("")
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text("\n".join(lines))
     print(f"wrote {OUT}")
     for metric, (ranking, within_ranking) in verdicts.items():
-        print(f"{metric}: pooled {' > '.join(ranking)} | "
-              f"within-seed {' > '.join(within_ranking)}")
+        print(f"{metric}: fixed-policy {' > '.join(within_ranking)} | "
+              f"pooled {' > '.join(ranking)}")
+    print(f"env burnt-fraction variance peak: beta={betas[i_peak]:.2f}")
 
 
 if __name__ == "__main__":
