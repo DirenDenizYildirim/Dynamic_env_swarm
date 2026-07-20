@@ -55,9 +55,12 @@ class EnvConfig:
     grid_size: int = 16
     n_agents: int = 4
     horizon: int = 256
-    # M1.2: obs v1 locked — k=9 egocentric crop over the 5 planes defined
-    # in observation.py.
+    # M1.2: obs locked — k=9 egocentric crop over the planes defined in
+    # observation.py.
     obs_window: int = 9  # k: egocentric k x k crop, must be odd
+    # D5 (2026-07-20): obs v2 indicator planes are the default; v1 (mixed
+    # ordinal encodings) is restorable for archival evaluation only.
+    obs_version: int = 2  # {1, 2}
     n_food: int = 8  # F food items for the Phase-0 foraging stub
     # M1.3: static-hazard control. Env-level *training-protocol* knob,
     # deliberately not in ThetaConfig — it is not a stressor element.
@@ -71,6 +74,8 @@ class EnvConfig:
             raise ValueError(f"obs_window must be odd, got {self.obs_window}")
         if self.hazard_mode not in ("dynamic", "frozen"):
             raise ValueError(f"unknown hazard_mode: {self.hazard_mode!r}")
+        if self.obs_version not in (1, 2):
+            raise ValueError(f"unknown obs_version: {self.obs_version!r}")
 
     @property
     def t_gen_resolved(self) -> int:

@@ -1,9 +1,10 @@
 """M3.1 tests: weak-cell terrain mask + live structural dynamics.
 
 Covers the phase-prompt acceptance list: only weak cells collapse; the load
-term fires only under occupancy; collapsed is absorbing; the structure obs
-plane encodes {0, .5, 1}; the terrain mask uses a dedicated reset stream;
-and lambda = 0 bitwise-recovers the Phase-2 (structure-off) trajectories.
+term fires only under occupancy; collapsed is absorbing; weak and collapsed
+are observable (obs v2 indicator planes 4/5 per D5); the terrain mask uses a
+dedicated reset stream; and lambda = 0 bitwise-recovers the Phase-2
+(structure-off) trajectories.
 """
 
 import dataclasses
@@ -75,13 +76,18 @@ def test_obs_plane_encoding():
         weak=jnp.zeros((L, L), jnp.bool_).at[c, c - 1].set(True),
         structure=jnp.full((L, L), INTACT, jnp.uint8).at[c, c + 1].set(COLLAPSED),
     )
-    plane = observe(s, cfg)["grid"][0, :, :, 3]
-    assert plane[r, r - 1] == 0.5  # weak-intact
-    assert plane[r, r + 1] == 1.0  # collapsed
-    assert plane[r, r] == 0.0  # sound
-    # A collapsed cell that is also weak still reads 1.0 (collapse wins).
+    grid = observe(s, cfg)["grid"][0]
+    # Obs v2 (D5): weak is indicator plane 4, collapsed indicator plane 5.
+    assert grid[r, r - 1, 4] == 1.0  # weak west
+    assert grid[r, r - 1, 5] == 0.0  # ...but not collapsed
+    assert grid[r, r + 1, 5] == 1.0  # collapsed east
+    assert grid[r, r + 1, 4] == 0.0  # ...not weak in this state
+    assert grid[r, r, 4] == 0.0 and grid[r, r, 5] == 0.0  # sound center
+    # A collapsed cell that is also weak sets BOTH indicators (D5 DECISION:
+    # two bits carry strictly more information than v1's collapse-wins).
     s2 = dataclasses.replace(s, weak=s.weak.at[c, c + 1].set(True))
-    assert observe(s2, cfg)["grid"][0, r, r + 1, 3] == 1.0
+    grid2 = observe(s2, cfg)["grid"][0]
+    assert grid2[r, r + 1, 4] == 1.0 and grid2[r, r + 1, 5] == 1.0
 
 
 def test_weak_mask_fraction_and_clustering():
@@ -115,9 +121,10 @@ def test_terrain_stream_is_dedicated():
     assert s_on.weak.any() and not s_off.weak.any()  # knob is live
     for f in ("food", "agent_pos", "agent_alive", "hazard", "structure", "smoke"):
         assert (getattr(s_on, f) == getattr(s_off, f)).all(), f
-    # The weak mask is visible at reset (M3.1 DECISION: observable).
+    # The weak mask is visible at reset (M3.1 DECISION: observable; obs v2
+    # plane 4 per D5).
     obs_on = observe(s_on, cfg_on)
-    assert (obs_on["grid"][..., 3] != obs_off["grid"][..., 3]).any()
+    assert (obs_on["grid"][..., 4] != obs_off["grid"][..., 4]).any()
 
 
 def test_lambda_zero_bitwise_recovers_structure_off_trajectories():

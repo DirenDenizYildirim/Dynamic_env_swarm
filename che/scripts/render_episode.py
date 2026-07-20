@@ -126,6 +126,13 @@ def main(argv=None):
                    help="render the untrained random baseline instead")
     p.add_argument("--death-penalty", type=float, default=None,
                    help="theta override — must match training (hash guard)")
+    p.add_argument("--obs-version", type=int, default=None, choices=(1, 2),
+                   help="override cfg obs_version — archival renders of "
+                        "obs-v1 checkpoints only (D5)")
+    p.add_argument("--allow-hash", action="append", default=[],
+                   metavar="HASH",
+                   help="accept this named legacy checkpoint hash (see "
+                        "che.eval.harness); recorded in the summary JSON")
     p.add_argument("--seed", type=int, default=0, help="episode key seed")
     p.add_argument("--greedy", action="store_true")
     p.add_argument("--every", type=int, default=1, help="render every Nth step")
@@ -147,11 +154,17 @@ def main(argv=None):
                 ),
             ),
         )
+    if args.obs_version is not None:
+        cfg = dataclasses.replace(
+            cfg, env=dataclasses.replace(cfg.env, obs_version=args.obs_version)
+        )
     ecfg = cfg.env
     if args.random_policy:
         policy = make_random_policy(ecfg.n_agents)
     else:
-        params, ckpt_step = load_params(args.ckpt_dir, cfg)
+        params, ckpt_step = load_params(
+            args.ckpt_dir, cfg, allow_hashes=tuple(args.allow_hash)
+        )
         policy = make_policy_fn(cfg, params, greedy=args.greedy)
         print(f"restored {args.ckpt_dir} @ step {ckpt_step}")
 
@@ -178,6 +191,8 @@ def main(argv=None):
         "ckpt_dir": args.ckpt_dir,
         "seed": args.seed,
         "greedy": args.greedy,
+        "obs_version": cfg.env.obs_version,
+        "allow_hash": args.allow_hash or None,
         "steps": last["t"],
         "final_completion": last["completion"],
         "final_alive": int(last["alive"].sum()),

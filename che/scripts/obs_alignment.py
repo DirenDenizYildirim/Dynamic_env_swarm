@@ -30,14 +30,18 @@ from matplotlib import colors, patches
 
 from che.env.config import load_config
 from che.env.env import reset, step
-from che.env.observation import N_PLANES
+from che.env.observation import n_planes
 from che.env.types import BURNING
 from che.eval.harness import load_params, make_policy_fn
 from che.train.rollout import make_random_policy
 
 HAZARD_CMAP = colors.ListedColormap(["#2d5016", "#ff4500", "#4a4a4a"])
 HAZARD_NORM = colors.BoundaryNorm([0, 1, 2, 3], HAZARD_CMAP.N)
-PLANE_NAMES = ["hazard (h/2)", "smoke (rho)", "food", "collapsed", "alive occ"]
+PLANE_NAMES = {  # per obs_version (D5)
+    1: ["hazard (h/2)", "smoke (rho)", "food", "structure", "alive occ"],
+    2: ["burning", "burnt", "smoke (rho)", "food", "weak", "collapsed",
+        "alive occ"],
+}
 
 
 def rollout_records(key, ecfg, policy):
@@ -115,9 +119,11 @@ def main(argv=None):
     k = ecfg.obs_window
     r = k // 2
 
+    n_ch = n_planes(ecfg)
+    plane_names = PLANE_NAMES[ecfg.obs_version]
     fig, axes = plt.subplots(
-        len(timesteps), 1 + N_PLANES,
-        figsize=(2.3 * (1 + N_PLANES), 2.6 * len(timesteps)), dpi=130,
+        len(timesteps), 1 + n_ch,
+        figsize=(2.3 * (1 + n_ch), 2.6 * len(timesteps)), dpi=130,
     )
     for row, t in enumerate(timesteps):
         state, obs = records[t]
@@ -151,9 +157,10 @@ def main(argv=None):
         if row == 0:
             ax.set_ylabel("row (down) ->", fontsize=7)
 
-        for pl in range(N_PLANES):
+        for pl in range(n_ch):
             ax = axes[row, 1 + pl]
-            if pl == 0:  # hazard plane is h/2 in {0, .5, 1} — same colormap
+            if ecfg.obs_version == 1 and pl == 0:
+                # v1 hazard plane is h/2 in {0, .5, 1} — same colormap
                 ax.imshow(crop[:, :, 0] * 2.0, cmap=HAZARD_CMAP,
                           norm=HAZARD_NORM, origin="upper",
                           interpolation="nearest")
@@ -167,10 +174,11 @@ def main(argv=None):
             ax.set_yticks(range(0, k, 2))
             ax.tick_params(labelsize=5, length=2)
             if row == 0:
-                ax.set_title(f"plane {pl}: {PLANE_NAMES[pl]}", fontsize=7)
+                ax.set_title(f"plane {pl}: {plane_names[pl]}", fontsize=7)
 
     fig.suptitle(
-        "obs v1 alignment — red rect on the global grid vs the agent's actual "
+        f"obs v{ecfg.obs_version} alignment — red rect on the global grid "
+        "vs the agent's actual "
         f"{k}x{k} crop (rows down, cols right; center cell ringed)",
         fontsize=9,
     )

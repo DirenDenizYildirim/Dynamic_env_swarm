@@ -157,6 +157,9 @@ def main(argv: list[str] | None = None):
                    help="argmax policy instead of as-trained sampling")
     p.add_argument("--death-penalty", type=float, default=None,
                    help="theta override — must match the training run (hash guard)")
+    p.add_argument("--obs-version", type=int, default=None, choices=(1, 2),
+                   help="override cfg obs_version — archival eval of obs-v1 "
+                        "checkpoints only (D5); never compare across versions")
     p.add_argument("--allow-hash", action="append", default=[],
                    metavar="HASH",
                    help="accept this named legacy checkpoint hash despite a "
@@ -176,6 +179,10 @@ def main(argv: list[str] | None = None):
                     cfg.env.theta, death_penalty=args.death_penalty
                 ),
             ),
+        )
+    if args.obs_version is not None:
+        cfg = dataclasses.replace(
+            cfg, env=dataclasses.replace(cfg.env, obs_version=args.obs_version)
         )
     params, step = load_params(
         args.ckpt_dir, cfg, step=args.step, allow_hashes=tuple(args.allow_hash)
@@ -209,6 +216,7 @@ def main(argv: list[str] | None = None):
         "n_episodes": args.n_episodes,
         "seed": args.seed,
         "greedy": args.greedy,
+        "obs_version": cfg.env.obs_version,
         "metrics": summarize(per_episode),
     }
     if hash_compat is not None:
