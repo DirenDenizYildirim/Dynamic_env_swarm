@@ -30,14 +30,29 @@ the milestone ends at a human STOP.
    only files added to it are `che/scripts/render_episode.py` and
    `che/scripts/obs_alignment.py` (identical copies committed here).
 
-## Audit status
+## Audit status (CLOSED — local completion 2026-07-20, main workstation)
+
+The cloud session's blockers were environmental only; everything below was
+completed locally, where the m30 checkpoints live. This table supersedes
+the cloud statuses (kept in the git history of this file).
 
 | Audit | Status | Artifact |
 |---|---|---|
-| 1 — episode renders | **BLOCKED on checkpoint archive.** `render_episode.py` written and smoke-tested end-to-end through the real harness restore path (2-update debug checkpoint, scratch only, discarded). | `render_notes.md` (blocker note + run instructions) |
-| 2 — cross-severity 3×3 | **BLOCKED on checkpoint archive.** Driver `che/scripts/m30b_cross_matrix.py` written; report generator smoke-tested on synthetic npz. One command once checkpoints exist. | `cross/` (empty until run) |
-| 3 — mutation audit | **DONE** (on the session branch; see deviation 1) | `mutation_audit.md` |
-| 4 — obs alignment | **DONE** — visual + numeric crosscheck | `obs_alignment.png`, notes in `mutation_audit.md`'s sibling section below |
+| 1 — episode renders | **DONE** — 24 trained-policy episodes rendered and watched; no degenerate behavior; Medium burnt-region-abandonment finding flagged | `render_notes.md`, `renders/` (6 GIFs committed, 24 JSONs) |
+| 2 — cross-severity 3×3 | **DONE** — 27 cells × 512 eps at pinned `8de4976`; diagonal reproduces the M3.0 GPU means to 3 decimals | `cross/cross_matrix.md` (+ per-cell npz/json) |
+| 3 — mutation audit | **DONE, 7/7 caught** — re-run in full on `m31-structure` (the code going forward); mutation-g gap closed by a structural invariant-#3 test committed there (`fe95f43`) | `mutation_audit.md` (closing section) |
+| 4 — obs alignment | **DONE** — visual + numeric crosscheck (cloud) | `obs_alignment.png`, notes in `mutation_audit.md`'s sibling section below |
+
+Sequencing notes (local closure): M3.1 was moved off local main onto
+`m31-structure` (`0081854`, not merged); main was reset to `72d0609` —
+env/eval code identical to `8de4976`, so audits 1/2 ran on exactly the
+checkpoint-training code (renders from a pinned `8de4976` worktree, matrix
+via the driver's pinned-worktree import). The nine checkpoint
+`config_hash.txt` files were restored to their true old-schema hashes
+(verified by recomputation); post-merge access to these checkpoints goes
+through the harness `--allow-hash` flag (cherry-picked onto
+`m31-structure` as `156d780`), which records the old→current mapping in
+the eval summary JSON — explicit and recorded, never silent.
 
 ## Audit 4 result (obs alignment)
 
