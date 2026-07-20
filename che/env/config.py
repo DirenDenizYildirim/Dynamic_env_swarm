@@ -37,6 +37,12 @@ class ThetaConfig:
     lambda_0: float = 0.0  # spontaneous collapse prob. per cell per step
     lambda_load: float = 0.0  # extra collapse prob. under agent load
     r_seed: int = 1  # Coupling A seeding neighborhood N_A radius
+    # M3.1 weak-cell terrain (Def. 5 substrate): only weak cells can
+    # collapse; lambda(g) = lambda_0 * weak(g) + lambda_load * weak(g) *
+    # occupied(g). Mask generated at reset (dedicated stream), spatially
+    # clustered via box-smoothing passes on uniform noise.
+    f_weak: float = 0.0  # fraction of cells that are weak
+    weak_smooth: int = 2  # 3x3 box-smoothing passes on the terrain noise
     # Comms sub-parameters (Def. 7; inert until Phase 5, plumbed now).
     p_link_max: float = 1.0  # p_link at zero distance
     r_comm: float = 8.0  # p_link range scale (cells)

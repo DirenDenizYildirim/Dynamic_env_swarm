@@ -14,6 +14,7 @@ stays defined in exactly one place.
 
 import argparse
 import dataclasses
+import datetime
 import json
 from pathlib import Path
 
@@ -43,13 +44,22 @@ EVAL_METRICS = {
 
 
 def load_params(
-    ckpt_dir: str | Path, cfg: Config, step: int | None = None
+    ckpt_dir: str | Path,
+    cfg: Config,
+    step: int | None = None,
+    allow_hashes: tuple[str, ...] = (),
 ) -> tuple[dict, int]:
     """Restore policy params from an ippo.train checkpoint dir.
 
     Config-hash guarded: `ckpt_dir/config_hash.txt` must exist and match
     config_hash(cfg) — refuse to evaluate a policy under a config it was not
     trained with. Returns (params, restored_update_step).
+
+    M3.0b forward-compat: `allow_hashes` names legacy hashes that are
+    accepted despite a mismatch (config-schema changes move the hash of an
+    unchanged physical config; e.g. M3.1 fields vs the M3.0 checkpoints).
+    Explicit and per-hash only — the caller is responsible for recording
+    the mapping in the eval provenance (see main()); never silent.
     """
     ckpt_dir = Path(ckpt_dir)
     hash_file = ckpt_dir / "config_hash.txt"
@@ -57,7 +67,8 @@ def load_params(
         raise ValueError(
             f"no config_hash.txt in {ckpt_dir} — not an ippo checkpoint dir"
         )
-    if hash_file.read_text() != config_hash(cfg):
+    stored = hash_file.read_text()
+    if stored != config_hash(cfg) and stored not in allow_hashes:
         raise ValueError("checkpoint config hash mismatch — refusing to evaluate")
     mngr = _ckpt_manager(ckpt_dir)
     if step is None:
@@ -146,6 +157,11 @@ def main(argv: list[str] | None = None):
                    help="argmax policy instead of as-trained sampling")
     p.add_argument("--death-penalty", type=float, default=None,
                    help="theta override — must match the training run (hash guard)")
+    p.add_argument("--allow-hash", action="append", default=[],
+                   metavar="HASH",
+                   help="accept this named legacy checkpoint hash despite a "
+                        "config-hash mismatch (repeatable); the old->current "
+                        "mapping is recorded in the summary JSON")
     p.add_argument("--out-npz", required=True, help="per-episode arrays output")
     p.add_argument("--out-json", help="summary JSON output (default: npz stem + .json)")
     args = p.parse_args(argv)
@@ -161,7 +177,24 @@ def main(argv: list[str] | None = None):
                 ),
             ),
         )
-    params, step = load_params(args.ckpt_dir, cfg, step=args.step)
+    params, step = load_params(
+        args.ckpt_dir, cfg, step=args.step, allow_hashes=tuple(args.allow_hash)
+    )
+    stored_hash = (Path(args.ckpt_dir) / "config_hash.txt").read_text()
+    current_hash = config_hash(cfg)
+    hash_compat = None
+    if stored_hash != current_hash:  # only reachable via --allow-hash
+        hash_compat = {
+            "ckpt_hash": stored_hash,
+            "current_hash": current_hash,
+            "allow_hash_flag": list(args.allow_hash),
+            "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
+        }
+        print(
+            f"WARNING: legacy checkpoint hash {stored_hash} accepted via "
+            f"--allow-hash (current config hash {current_hash}); "
+            "mapping recorded in summary JSON"
+        )
     per_episode = evaluate(
         cfg, params, n_episodes=args.n_episodes, seed=args.seed, greedy=args.greedy
     )
@@ -178,6 +211,8 @@ def main(argv: list[str] | None = None):
         "greedy": args.greedy,
         "metrics": summarize(per_episode),
     }
+    if hash_compat is not None:
+        summary["hash_compat"] = hash_compat
     out_json = Path(args.out_json) if args.out_json else out_npz.with_suffix(".json")
     out_json.write_text(json.dumps(summary, indent=1) + "\n")
     print(json.dumps(summary["metrics"], indent=1))

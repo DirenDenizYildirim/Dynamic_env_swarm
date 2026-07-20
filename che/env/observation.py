@@ -4,7 +4,9 @@ Planes, in order (all float32, k x k crops centered on the agent):
     0. hazard / 2      — {0, .5, 1} for {Fuel, Burning, Burnt}
     1. smoke           — raw rho (bounded by sigma_s / (1 - e^-eta))
     2. food            — {0, 1}
-    3. structure       — collapsed = 1
+    3. structure       — {0, .5, 1} for {sound, weak-intact, collapsed}
+       (M3.1 DECISION: the weak mask is observable — risk-aware locomotion
+       is the interesting behavior; a blind variant is a later ablation)
     4. alive occupancy — 1 where an alive agent stands (DECISION,
        human-locked: includes the observer itself; the own-state vector
        disambiguates self). Dead agents disappear from this plane —
@@ -46,7 +48,11 @@ def observe(state: EnvState, cfg: EnvConfig) -> dict[str, jax.Array]:
             state.hazard.astype(jnp.float32) / 2.0,
             state.smoke,
             state.food.astype(jnp.float32),
-            (state.structure == COLLAPSED).astype(jnp.float32),
+            jnp.where(
+                state.structure == COLLAPSED,
+                1.0,
+                jnp.where(state.weak, 0.5, 0.0),
+            ),
             occ.astype(jnp.float32),
         ],
         axis=-1,

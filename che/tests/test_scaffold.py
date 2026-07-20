@@ -48,12 +48,14 @@ def test_zeros_state_shapes_and_dtypes():
     chex.assert_shape(state.hazard, (ll, ll))
     chex.assert_shape(state.smoke, (ll, ll))
     chex.assert_shape(state.structure, (ll, ll))
+    chex.assert_shape(state.weak, (ll, ll))
     chex.assert_type(state.agent_pos, jnp.int32)
     chex.assert_type(state.agent_alive, jnp.bool_)
     chex.assert_type(state.food, jnp.uint8)
     chex.assert_type(state.hazard, jnp.uint8)
     chex.assert_type(state.smoke, jnp.float32)
     chex.assert_type(state.structure, jnp.uint8)
+    chex.assert_type(state.weak, jnp.bool_)
     chex.assert_type(state.t, jnp.int32)
     assert (state.hazard == FUEL).all()
     assert (state.structure == INTACT).all()
@@ -63,8 +65,9 @@ def test_zeros_state_shapes_and_dtypes():
 def test_envstate_is_pytree():
     state = zeros_state(8, 2, jax.random.PRNGKey(0))
     leaves = jax.tree_util.tree_leaves(state)
-    # M1.4 added the two episode death counters; Phase 2 added ep_smoke_sum.
-    assert len(leaves) == 11
+    # M1.4 added the two episode death counters; Phase 2 added ep_smoke_sum;
+    # M3.1 added the weak terrain mask.
+    assert len(leaves) == 12
     # A mapped identity must preserve structure (chex.dataclass registers
     # EnvState as a pytree; vmap/scan rely on this).
     state2 = jax.tree_util.tree_map(lambda x: x, state)
