@@ -1,0 +1,75 @@
+{
+ "train_severity": "high",
+ "train_seed": 0,
+ "eval_severity": "low",
+ "ckpt_dir": "che/bench/results/phase3/m30/ckpt_high_dp0.5_s0",
+ "ckpt_step": 500,
+ "n_episodes": 512,
+ "eval_seed": 0,
+ "death_penalty": 0.5,
+ "metrics": {
+  "episode_return": {
+   "mean": 22.318359375,
+   "std": 3.673463821411133,
+   "q25": 20.0,
+   "median": 23.0,
+   "q75": 25.0,
+   "min": 9.0,
+   "max": 32.0
+  },
+  "completion": {
+   "mean": 0.698486328125,
+   "std": 0.11453835666179657,
+   "q25": 0.625,
+   "median": 0.71875,
+   "q75": 0.78125,
+   "min": 0.28125,
+   "max": 1.0
+  },
+  "survival_rate": {
+   "mean": 0.9944661855697632,
+   "std": 0.022039350122213364,
+   "q25": 1.0,
+   "median": 1.0,
+   "q75": 1.0,
+   "min": 0.8333333730697632,
+   "max": 1.0
+  },
+  "deaths_fire": {
+   "mean": 0.06640625,
+   "std": 0.26447224617004395,
+   "q25": 0.0,
+   "median": 0.0,
+   "q75": 0.0,
+   "min": 0.0,
+   "max": 2.0
+  },
+  "deaths_collapse": {
+   "mean": 0.0,
+   "std": 0.0,
+   "q25": 0.0,
+   "median": 0.0,
+   "q75": 0.0,
+   "min": 0.0,
+   "max": 0.0
+  },
+  "mean_smoke_exposure": {
+   "mean": 9.820264676818624e-05,
+   "std": 0.00027661010972224176,
+   "q25": 0.0,
+   "median": 2.3695779219125464e-27,
+   "q75": 2.302031759882084e-06,
+   "min": 0.0,
+   "max": 0.0021407429594546556
+  },
+  "coupling_co_active": {
+   "mean": 0.0,
+   "std": 0.0,
+   "q25": 0.0,
+   "median": 0.0,
+   "q75": 0.0,
+   "min": 0.0,
+   "max": 0.0
+  }
+ }
+}
