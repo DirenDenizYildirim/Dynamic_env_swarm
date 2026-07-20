@@ -1,5 +1,8 @@
 # M3.0b Audit 3 — mutation audit of test power
 
+**Status: CLOSED 7/7 — see "Re-run on m31-structure" at the bottom, which
+supersedes the partial cloud table below (kept as the historical record).**
+
 Procedure: one mutation at a time — apply, run the full CPU suite
 (`uv run pytest che/tests`, 81 tests at baseline), record failures,
 `git checkout --` the mutated file, next. Baseline suite green before
@@ -68,3 +71,40 @@ Notes:
   `coupling_a_seed_mask` at `kappa_A = 0.0` still contains the PRNG
   primitives (`random_bits`; a Python-level gate removes them). To be
   added when the audit resumes.
+
+## Re-run on m31-structure (2026-07-20, local) — closes this audit
+
+Per the sequencing resolution, the audit that matters is against the code
+going forward: branch `m31-structure` @ `fe95f43` (M3.1 structural
+dynamics + the `--allow-hash` cherry-pick + the new structural
+invariant-#3 test). Baseline before mutations: **89 passed, 3 deselected**
+(`-m "not slow"`), including the M3.1 nesting test
+`test_lambda_zero_bitwise_recovers_structure_off_trajectories` — the
+prompt's companion check, confirmed present and green. All 7 mutations
+run to full-suite completion this time (the cloud run's e/f/g gaps
+closed):
+
+| # | Mutation | Caught? | Failing test(s) |
+|---|---|---|---|
+| a | Lethality vs pre-step `h` | **YES** (2) | `test_lethality.py::test_step_ignition_under_stationary_agent_kills_and_penalizes`, `test_lethality.py::test_newly_dead_agent_does_not_collect` |
+| b | Burnt cells impassable | **YES** (2) | `test_lethality.py::test_burnt_is_passable_and_harmless`, `test_nesting.py::test_dynamic_frozen_diverge_only_through_freeze` |
+| c | Obs planes swapped (hazard↔smoke) | **YES** (1) | `test_env.py::test_obs_crop_border_correctness` |
+| d | Obs crop transposed | **YES** (2) | `test_env.py::test_obs_crop_border_correctness`, `test_structure_weak.py::test_obs_plane_encoding` |
+| e | GAE bootstraps through done | **YES** (1) | `test_ippo.py::test_gae_closed_form` |
+| f | Reward reads smoke (+1e-6·mean ρ) | **YES** (5) | both `test_reward_independence.py` tests + `test_lethality.py` ×2 + `test_nesting.py::test_dynamic_frozen_diverge_only_through_freeze` |
+| g | `kappa_A` PRNG draw gated on `kappa_A > 0` | **YES** (1) | `test_nesting.py::test_zeroed_branches_still_consume_prng_structurally` — **only** this test; committed on `m31-structure` as `fe95f43` exactly because the behavioral suite is provably blind to this bug (the cloud run's prediction, confirmed) |
+
+Kill rate **7/7**. Coverage notes vs the cloud run's flags:
+
+- The c/d single-point concern is now half-resolved: mutation d has a
+  second independent catcher (M3.1's `test_obs_plane_encoding`);
+  mutation c (plane swap) remains single-point on
+  `test_obs_crop_border_correctness` — awareness, not action, as before
+  (Audit 4's numeric crosscheck independently pins plane semantics).
+- The structural test also guards `structure_step` at
+  `lambda_0 = lambda_load = 0` (same gate-shaped vulnerability, same
+  file), not just `coupling_a_seed_mask`.
+- Full failure inventories recorded for e and f this time (the cloud
+  run's partial rows): e is caught by exactly the GAE closed-form test;
+  f additionally trips lethality/nesting tests through reward-value
+  drift, but the two Def.-2 reward-independence tests fail as designed.
