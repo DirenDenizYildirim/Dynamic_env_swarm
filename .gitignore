@@ -225,3 +225,5 @@ che/bench/results/*.tmp
 
 # GPU-run scratch artifacts (checkpoints rsynced back from the bench box)
 /m06/
+/m30.tar.gz
+che/bench/results/phase3/m30/ckpt_*/

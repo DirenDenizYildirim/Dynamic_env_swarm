@@ -50,6 +50,16 @@ def main():
         "policy** (final checkpoints of the re-run M2.5 dp=0.5 grid; 512 "
         "stochastic eval episodes per checkpoint, eval seed 0).",
         "",
+        "**Checkpoint provenance:** M2.5 saved no checkpoints, so the 9 "
+        "dp=0.5 runs were re-run with identical configs/seeds "
+        "(run_m30_def4.sh, 2026-07-20). The re-runs diverge from the M2.5 "
+        "originals from update ~1-7 onward (GPU float nondeterminism "
+        "compounding over training — same PRNG streams, nondeterministic "
+        "reduction order), but final-20-update means match within "
+        "across-seed noise (survival within ±0.02, completion within "
+        "±0.06 per seed). The evaluated policies are M2.5-equivalent, not "
+        "bitwise-identical.",
+        "",
         "**Prediction on record (Def. 4 / phase2_report.md):** Medium "
         "(near-critical) has the highest per-episode variance. The M2.5 "
         "training-log probe could not cleanly measure this; this is the "
@@ -68,6 +78,7 @@ def main():
             "|---|---|---|---|---|---|",
         ]
         pooled_vars = {}
+        within_vars = {}
         for sev in SEVERITIES:
             per_seed_vals = [data[(sev, s)][metric].astype(np.float64) for s in SEEDS]
             for s, vals in zip(SEEDS, per_seed_vals, strict=True):
@@ -79,17 +90,25 @@ def main():
             pooled = np.concatenate(per_seed_vals)
             lo, hi = boot_var_ci(pooled)
             pooled_vars[sev] = pooled.var(ddof=1)
+            within_vars[sev] = float(
+                np.mean([v.var(ddof=1) for v in per_seed_vals])
+            )
             seed_means = np.array([v.mean() for v in per_seed_vals])
             lines.append(
                 f"| {sev} | **pooled** | {len(pooled)} | {pooled.mean():.4f} "
                 f"| **{pooled_vars[sev]:.5f}** | [{lo:.5f}, {hi:.5f}] |"
             )
             lines.append(
+                f"| {sev} | mean within-seed (fixed policy) | 3×512 | — "
+                f"| {within_vars[sev]:.5f} | — |"
+            )
+            lines.append(
                 f"| {sev} | between-seed var of means | 3 | — "
                 f"| {seed_means.var(ddof=1):.5f} | — |"
             )
         ranking = sorted(pooled_vars, key=pooled_vars.get, reverse=True)
-        verdicts[metric] = ranking
+        within_ranking = sorted(within_vars, key=within_vars.get, reverse=True)
+        verdicts[metric] = (ranking, within_ranking)
         lines += [
             "",
             f"Pooled-variance ranking: {' > '.join(ranking)}. "
@@ -99,9 +118,13 @@ def main():
                 else f"**Prediction REFUTED ({ranking[0]} highest, not Medium).**"
             ),
             "",
+            f"Mean-within-seed (fixed-policy) ranking: "
+            f"{' > '.join(within_ranking)}.",
+            "",
             "Note: pooled variance mixes within-seed (episode) variance with "
             "between-seed policy differences; the between-seed row above "
-            "shows how much of the pooled figure is seed-to-seed.",
+            "shows how much of the pooled figure is seed-to-seed. The "
+            "mean-within-seed row is the cleanest fixed-policy statistic.",
             "",
         ]
 
@@ -109,16 +132,22 @@ def main():
         "## Verdict",
         "",
     ]
-    for metric, ranking in verdicts.items():
+    for metric, (ranking, within_ranking) in verdicts.items():
         outcome = "CONFIRMED" if ranking[0] == "medium" else "REFUTED"
-        lines.append(f"- {metric}: {outcome} — ranking {' > '.join(ranking)}.")
+        lines.append(
+            f"- {metric}: {outcome} on pooled variance "
+            f"(ranking {' > '.join(ranking)}); "
+            f"fixed-policy (mean within-seed) ranking "
+            f"{' > '.join(within_ranking)}."
+        )
     lines.append("")
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text("\n".join(lines))
     print(f"wrote {OUT}")
-    for metric, ranking in verdicts.items():
-        print(f"{metric}: {' > '.join(ranking)}")
+    for metric, (ranking, within_ranking) in verdicts.items():
+        print(f"{metric}: pooled {' > '.join(ranking)} | "
+              f"within-seed {' > '.join(within_ranking)}")
 
 
 if __name__ == "__main__":
