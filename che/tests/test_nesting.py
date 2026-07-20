@@ -217,3 +217,34 @@ def test_dynamic_frozen_diverge_only_through_freeze():
     assert (a["food"][:t_star] == b["food"][:t_star]).all()
     assert (a["pos"][: t_star + 1] == b["pos"][: t_star + 1]).all()
     assert (a["reward"][:t_star] == b["reward"][:t_star]).all()
+
+
+def test_zeroed_branches_still_consume_prng_structurally():
+    """Invariant #3, structural form (M3.0b audit 3, mutation g).
+
+    A Python-level gate like `if kappa_A > 0:` around the uniform draw is
+    bitwise invisible to the behavioral tests above (the gated key is a
+    dedicated stream), so we assert on the traced computation itself: the
+    jaxpr at parameter value 0 must still contain the PRNG primitives.
+    """
+    prng_prims = ("random_bits", "threefry2x32", "prng_random_bits")
+
+    def has_prng(jaxpr) -> bool:
+        return any(p in str(jaxpr) for p in prng_prims)
+
+    key = jax.random.PRNGKey(0)
+    inc = jnp.zeros((8, 8), dtype=jnp.bool_)
+    jaxpr_seed = jax.make_jaxpr(
+        lambda k, m: coupling_a_seed_mask(k, m, kappa_A=0.0, r_seed=2)
+    )(key, inc)
+    assert has_prng(jaxpr_seed), "coupling_a_seed_mask at kappa_A=0 lost its draw"
+
+    struct = jnp.full((8, 8), INTACT, dtype=jnp.uint8)
+    weak = jnp.zeros((8, 8), dtype=jnp.bool_)
+    load = jnp.zeros((8, 8), dtype=jnp.float32)
+    jaxpr_struct = jax.make_jaxpr(
+        lambda k, s, w, ld: structure_step(
+            k, s, w, ld, lambda_0=0.0, lambda_load=0.0
+        )
+    )(key, struct, weak, load)
+    assert has_prng(jaxpr_struct), "structure_step at lambda=0 lost its draw"
