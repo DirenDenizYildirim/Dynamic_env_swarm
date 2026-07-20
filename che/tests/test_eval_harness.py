@@ -49,6 +49,64 @@ def test_hash_guard(ckpt_dir):
         load_params(ckpt_dir.parent / "nonexistent", CFG)
 
 
+def test_allow_hash_named_legacy_only(ckpt_dir):
+    """M3.0b forward-compat: allow_hashes admits exactly the named hash."""
+    other = dataclasses.replace(
+        CFG, env=dataclasses.replace(CFG.env, n_food=7)
+    )
+    # An allow-list that does not name the stored hash still rejects.
+    with pytest.raises(ValueError, match="hash mismatch"):
+        load_params(ckpt_dir, other, allow_hashes=("not-the-stored-hash",))
+    # Naming the stored hash accepts the legacy checkpoint.
+    stored = (ckpt_dir / "config_hash.txt").read_text()
+    params, step = load_params(ckpt_dir, other, allow_hashes=(stored,))
+    assert step == 2
+    assert params is not None
+
+
+def test_cli_allow_hash_provenance(ckpt_dir, tmp_path):
+    """--allow-hash: guard still rejects without it; with it, the old->new
+    mapping lands in the summary JSON (explicit and recorded, never silent);
+    a matching hash records nothing."""
+    cfg_tmpl = (
+        "env:\n  grid_size: 12\n  n_agents: 3\n  horizon: 32\n  n_food: {n}\n"
+        "train:\n  n_envs: 2\n  rollout_len: 16\n  n_minibatches: 2\n"
+        "  n_epochs: 2\n  ckpt_interval: 2\n"
+    )
+    mismatch_cfg = tmp_path / "mismatch.yaml"
+    mismatch_cfg.write_text(cfg_tmpl.format(n=7))
+    out_npz = tmp_path / "legacy_eval.npz"
+    base_args = [
+        "--config", str(mismatch_cfg),
+        "--ckpt-dir", str(ckpt_dir),
+        "--n-episodes", "2",
+        "--out-npz", str(out_npz),
+    ]
+    with pytest.raises(ValueError, match="hash mismatch"):
+        main(base_args)
+    stored = (ckpt_dir / "config_hash.txt").read_text()
+    main(base_args + ["--allow-hash", stored])
+    summary = json.loads(out_npz.with_suffix(".json").read_text())
+    compat = summary["hash_compat"]
+    assert compat["ckpt_hash"] == stored
+    assert compat["current_hash"] != stored
+    assert compat["allow_hash_flag"] == [stored]
+    assert compat["timestamp"]  # ISO-8601 UTC stamp of the acceptance
+    # Hash-matching eval records no compat row even with the flag set.
+    match_cfg = tmp_path / "match.yaml"
+    match_cfg.write_text(cfg_tmpl.format(n=6))
+    out2 = tmp_path / "match_eval.npz"
+    main([
+        "--config", str(match_cfg),
+        "--ckpt-dir", str(ckpt_dir),
+        "--n-episodes", "2",
+        "--out-npz", str(out2),
+        "--allow-hash", "some-other-legacy-hash",
+    ])
+    summary2 = json.loads(out2.with_suffix(".json").read_text())
+    assert "hash_compat" not in summary2
+
+
 def test_row_count_and_reproducibility(ckpt_dir):
     params, _ = load_params(ckpt_dir, CFG)
     a = evaluate(CFG, params, n_episodes=8, seed=0)
