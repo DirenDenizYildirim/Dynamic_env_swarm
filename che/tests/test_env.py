@@ -162,7 +162,10 @@ def test_coupling_co_active_counter_plumbing():
 
     hot = dataclasses.replace(
         CFG,
-        theta=ThetaConfig(beta=0.3, kappa_A=1.0, lambda_0=0.05, r_seed=2),
+        # M3.1: collapse requires weak cells — f_weak > 0 keeps the knob hot.
+        theta=ThetaConfig(
+            beta=0.3, kappa_A=1.0, lambda_0=0.05, r_seed=2, f_weak=0.5
+        ),
     )
     _, _, infos_hot = jax.jit(
         lambda k: rollout_episode(k, hot, policy, 64)

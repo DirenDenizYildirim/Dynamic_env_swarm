@@ -51,6 +51,10 @@ class EnvState:
     smoke: jax.Array  # float32 [L, L], rho >= 0
     # --- C: structural state ---
     structure: jax.Array  # uint8 [L, L], values in {INTACT, COLLAPSED}
+    # M3.1 weak-cell terrain mask (Def. 5 substrate): bool [L, L], fixed per
+    # episode at reset; only weak cells can collapse. Observable through the
+    # structure obs plane (weak-intact = 0.5) per the M3.1 DECISION.
+    weak: jax.Array
     # --- bookkeeping ---
     t: jax.Array  # int32 scalar
     key: jax.Array  # PRNG key
@@ -80,6 +84,7 @@ def zeros_state(grid_size: int, n_agents: int, key: jax.Array) -> EnvState:
         hazard=jnp.full((ll, ll), FUEL, dtype=jnp.uint8),
         smoke=jnp.zeros((ll, ll), dtype=jnp.float32),
         structure=jnp.full((ll, ll), INTACT, dtype=jnp.uint8),
+        weak=jnp.zeros((ll, ll), dtype=jnp.bool_),
         t=jnp.zeros((), dtype=jnp.int32),
         key=key,
         ep_deaths_fire=jnp.zeros((), dtype=jnp.int32),

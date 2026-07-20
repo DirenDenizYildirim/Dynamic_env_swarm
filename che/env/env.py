@@ -27,12 +27,20 @@ import jax.numpy as jnp
 from che.env.config import EnvConfig
 from che.env.hazard import hazard_step, seed_ignitions, smoke_step
 from che.env.observation import observe
-from che.env.structure import coupling_a_seed_mask, dilate, structure_step
+from che.env.structure import (
+    coupling_a_seed_mask,
+    dilate,
+    generate_weak_mask,
+    structure_step,
+)
 from che.env.tasks import occupancy_grid, spawn_food, task_step
 from che.env.types import BURNING, COLLAPSED, FUEL, INTACT, EnvState
 
 # Action set: 5 discrete actions (stay + 4 von-Neumann moves).
 N_ACTIONS = 5
+
+# M3.1: fold_in tag for the weak-terrain reset stream (any fixed constant).
+_WEAK_STREAM = 31
 _ACTION_OFFSETS = jnp.array(
     [[0, 0], [-1, 0], [1, 0], [0, -1], [0, 1]], dtype=jnp.int32
 )
@@ -105,6 +113,16 @@ def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvStat
     # k_burnin, so dynamic<->frozen resets with the same key place identical
     # food/agents/ignition and differ only through the freeze.
     k_food, k_agents, k_fire, k_burnin = jax.random.split(key, 4)
+    # M3.1: weak-cell terrain from a dedicated stream. DECISION: derived via
+    # fold_in rather than widening the 4-way split above, so the four
+    # Phase-2 reset streams are provably untouched (invariant #3 — bitwise
+    # recovery of Phase-2 trajectories when the structural element is off).
+    weak = generate_weak_mask(
+        jax.random.fold_in(key, _WEAK_STREAM),
+        ll,
+        f_weak=th.f_weak,
+        n_smooth=th.weak_smooth,
+    )
     food = spawn_food(k_food, ll, cfg.n_food)
     agent_pos = jax.random.randint(
         k_agents, (cfg.n_agents, 2), minval=0, maxval=ll, dtype=jnp.int32
@@ -127,6 +145,7 @@ def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvStat
         hazard=hazard,
         smoke=jnp.zeros((ll, ll), dtype=jnp.float32),
         structure=jnp.full((ll, ll), INTACT, dtype=jnp.uint8),
+        weak=weak,
         t=jnp.zeros((), dtype=jnp.int32),
         key=key,
         ep_deaths_fire=jnp.zeros((), dtype=jnp.int32),
@@ -153,6 +172,7 @@ def step(
     structure_new = structure_step(
         k_struct,
         state.structure,
+        state.weak,
         occ_pre.astype(jnp.float32),
         lambda_0=th.lambda_0,
         lambda_load=th.lambda_load,
@@ -225,6 +245,7 @@ def step(
         hazard=hazard_new,
         smoke=smoke_new,
         structure=structure_new,
+        weak=state.weak,  # fixed per episode (M3.1 terrain)
         t=t_new,
         key=key,
         ep_deaths_fire=ep_deaths_fire,

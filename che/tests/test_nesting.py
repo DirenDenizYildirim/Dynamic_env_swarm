@@ -76,7 +76,9 @@ def _assert_bitwise_equal(a, b, fields):
 
 
 def test_structure_activity_cannot_perturb_hazard_stream():
-    base = ThetaConfig(beta=0.5, kappa_A=0.0, lambda_0=0.0)
+    # M3.1: collapse requires weak cells — f_weak identical across arms so
+    # only the lambdas differ.
+    base = ThetaConfig(beta=0.5, kappa_A=0.0, lambda_0=0.0, f_weak=0.5)
     active = dataclasses.replace(base, lambda_0=0.05, lambda_load=0.1)
     a, b = _traj(base), _traj(active)
     # Structure itself differs (sanity that the knob is live)...
@@ -98,10 +100,11 @@ def test_kappa_a_immaterial_without_collapses():
 def test_beta_cannot_perturb_structure_without_load_channel():
     # lambda_load = 0 closes the legitimate fire -> deaths -> load -> c
     # path; what remains must be bitwise invariant to beta.
-    lo = ThetaConfig(beta=0.1, lambda_0=0.05, lambda_load=0.0)
+    lo = ThetaConfig(beta=0.1, lambda_0=0.05, lambda_load=0.0, f_weak=0.5)
     hi = dataclasses.replace(lo, beta=0.9)
     a, b = _traj(lo), _traj(hi)
     assert (a["hazard"] != b["hazard"]).any()  # knob is live
+    assert (a["structure"] == COLLAPSED).any()  # collapses actually occur
     _assert_bitwise_equal(a, b, ("structure",))
 
 
@@ -125,7 +128,8 @@ def test_death_logic_consumes_no_prng():
     keeps T_C independent of occupancy, so the replay needs no agents.
     """
     theta = ThetaConfig(
-        beta=0.7, iota=0.02, kappa_A=0.5, lambda_0=0.03, lambda_load=0.0
+        beta=0.7, iota=0.02, kappa_A=0.5, lambda_0=0.03, lambda_load=0.0,
+        f_weak=0.5,
     )
     cfg = EnvConfig(grid_size=16, n_agents=4, horizon=64, theta=theta)
     seed = 3
@@ -143,6 +147,7 @@ def test_death_logic_consumes_no_prng():
         structure_new = structure_step(
             k_struct,
             structure,
+            state0.weak,
             zero_load,
             lambda_0=theta.lambda_0,
             lambda_load=theta.lambda_load,
@@ -184,19 +189,19 @@ def test_dynamic_frozen_diverge_only_through_freeze():
     identical until the first step where a hazard-dependent death differs,
     and positions still match on that step (fire-kill happens at x').
     """
-    theta = ThetaConfig(beta=0.5, lambda_0=0.03, lambda_load=0.0)
+    theta = ThetaConfig(beta=0.5, lambda_0=0.03, lambda_load=0.0, f_weak=0.5)
     dyn_cfg = EnvConfig(grid_size=16, n_agents=4, horizon=64, theta=theta)
     # t_gen = 8 keeps live Burning cells in the frozen map on this small
     # arena (see test_frozen.py) so hazard-dependent deaths can diverge.
     fro_cfg = dataclasses.replace(dyn_cfg, hazard_mode="frozen", t_gen=8)
-    seed = 0  # verified: a diverging death occurs at t* = 15 of 40
+    seed = 1  # verified: a diverging death at t* = 18 of 40 (M3.1 retune)
 
     key = jax.random.PRNGKey(seed)
     _, k_reset = jax.random.split(key)
     _, s_dyn = reset(k_reset, dyn_cfg)
     _, s_fro = reset(k_reset, fro_cfg)
     assert (s_dyn.hazard != s_fro.hazard).any()  # burn-in is live
-    for f in ("food", "agent_pos", "agent_alive", "structure", "smoke"):
+    for f in ("food", "agent_pos", "agent_alive", "structure", "weak", "smoke"):
         assert (getattr(s_dyn, f) == getattr(s_fro, f)).all(), f
 
     a = _traj(theta, seed=seed, cfg=dyn_cfg, n_steps=40)
