@@ -228,7 +228,15 @@ che/bench/results/*.tmp
 /m30.tar.gz
 che/bench/results/phase3/m30/ckpt_*/
 /m31b.tar.gz
+/m31b.zip
+/m31b_console.log
 che/bench/results/phase3/m31b/ckpt_*/
+
+# M3.1b re-renders: only the two showcase episodes (matched to the committed
+# m30b pair) are committed; the rest are regenerable by seed
+che/bench/results/phase3/m31b/renders/*.gif
+!che/bench/results/phase3/m31b/renders/medium_v2_s0_ep1.gif
+!che/bench/results/phase3/m31b/renders/medium_v2_s0_ep3.gif
 
 # M3.0b renders: only the 6 representative GIFs named in render_notes.md are
 # committed; the other 18 are regenerable by seed (renderer is deterministic)

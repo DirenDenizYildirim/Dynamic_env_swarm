@@ -62,3 +62,23 @@ Final go/no-go uses *training* throughput measured at M0.6; this env-only figure
   the uint8-obs-storage contingency stays untriggered.
 - **Verdict: PASS — obs v1 locked with no operating-point change.**
 
+## Phase 3 obs v2 — reference cell re-measurement (M3.1b / D5)
+
+| grid | n_envs | n_agents | compile (s) | median steps/s | IQR | peak mem (GiB) | obs |
+|---|---|---|---|---|---|---|---|
+| 64² ★ | 1024 | 12 | 1.92 | 9,580,456 | 10,985 | 0.15 | v2: k=9, 7 planes |
+
+- Same protocol/device as M1.2 (RTX 5090, jax 0.11.0); raw JSON:
+  `phase3/m31b/obs_v2_ref_cell.json` (commit 1706cb6 code state).
+- Env-only cost of the 5→7-plane indicator crop vs the M1.2 row:
+  **−24.3 %** (12,652,933 → 9,580,456) — **not** the ~neutral D5 expected;
+  deviation flagged, no scope change made (see `phase3/m31b_obs_v2.md`).
+- End-to-end training cost is much smaller: −7 % (70.9k → 66.0k
+  env-steps/s on the M3.0-vs-M3.1b severity probes, 266 s → 285 s per
+  500-update run) — the env is a small share of a train step.
+- Training projection at the measured Phase-0 env:train ratio (÷81):
+  **~118.3k train steps/s — above the 100k contingency line**, margin
+  reduced from ~56k to ~18k. Contingency stays untriggered.
+- **Verdict: PASS with flag — obs v2 locked (D5); throughput margin
+  thinner than expected, human review at the M3.1b STOP.**
+

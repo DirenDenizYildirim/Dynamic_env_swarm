@@ -1,0 +1,13 @@
+{
+ "config": "che/configs/severity_medium.yaml",
+ "ckpt_dir": "che/bench/results/phase3/m31b/ckpt_medium_v2_dp0.5_s0",
+ "seed": 6,
+ "greedy": false,
+ "obs_version": 2,
+ "allow_hash": null,
+ "steps": 256,
+ "final_completion": 0.84375,
+ "final_alive": 12,
+ "n_agents": 12,
+ "episode_return": 27.0
+}

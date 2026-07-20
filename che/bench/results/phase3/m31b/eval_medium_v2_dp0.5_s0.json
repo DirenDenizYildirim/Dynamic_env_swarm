@@ -1,0 +1,75 @@
+{
+ "config": "che/configs/severity_medium.yaml",
+ "config_hash": "25767760c9754d76",
+ "ckpt_dir": "che/bench/results/phase3/m31b/ckpt_medium_v2_dp0.5_s0",
+ "ckpt_step": 500,
+ "n_episodes": 512,
+ "seed": 0,
+ "greedy": false,
+ "obs_version": 2,
+ "metrics": {
+  "episode_return": {
+   "mean": 24.2490234375,
+   "std": 3.494054079055786,
+   "q25": 22.0,
+   "median": 24.5,
+   "q75": 27.0,
+   "min": 12.5,
+   "max": 32.0
+  },
+  "completion": {
+   "mean": 0.76641845703125,
+   "std": 0.10798510909080505,
+   "q25": 0.6875,
+   "median": 0.78125,
+   "q75": 0.84375,
+   "min": 0.40625,
+   "max": 1.0
+  },
+  "survival_rate": {
+   "mean": 0.9539388418197632,
+   "std": 0.08214879781007767,
+   "q25": 0.9166666865348816,
+   "median": 1.0,
+   "q75": 1.0,
+   "min": 0.5833333730697632,
+   "max": 1.0
+  },
+  "deaths_fire": {
+   "mean": 0.552734375,
+   "std": 0.9857856631278992,
+   "q25": 0.0,
+   "median": 0.0,
+   "q75": 1.0,
+   "min": 0.0,
+   "max": 5.0
+  },
+  "deaths_collapse": {
+   "mean": 0.0,
+   "std": 0.0,
+   "q25": 0.0,
+   "median": 0.0,
+   "q75": 0.0,
+   "min": 0.0,
+   "max": 0.0
+  },
+  "mean_smoke_exposure": {
+   "mean": 0.0002333493612241,
+   "std": 0.0003836721880361438,
+   "q25": 3.937900577928378e-26,
+   "median": 2.4513766447853413e-06,
+   "q75": 0.0003624235177994706,
+   "min": 0.0,
+   "max": 0.0019495468586683273
+  },
+  "coupling_co_active": {
+   "mean": 0.0,
+   "std": 0.0,
+   "q25": 0.0,
+   "median": 0.0,
+   "q75": 0.0,
+   "min": 0.0,
+   "max": 0.0
+  }
+ }
+}

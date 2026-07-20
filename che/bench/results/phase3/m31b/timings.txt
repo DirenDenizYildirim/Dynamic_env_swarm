@@ -1,0 +1,7 @@
+train_low_v2_dp0.5_s0 287s
+eval_low_v2_dp0.5_s0 17s
+train_medium_v2_dp0.5_s0 285s
+eval_medium_v2_dp0.5_s0 17s
+train_high_v2_dp0.5_s0 284s
+eval_high_v2_dp0.5_s0 18s
+bench_ref_cell 156s
