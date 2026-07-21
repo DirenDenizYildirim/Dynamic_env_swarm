@@ -233,6 +233,9 @@ che/bench/results/phase3/m30/ckpt_*/
 che/bench/results/phase3/m31b/ckpt_*/
 /m33.zip
 /m33_console.log
+/m35.zip
+/m35_console.log
+che/bench/results/phase3/m35/ckpt_*/
 
 # M3.1b re-renders: only the two showcase episodes (matched to the committed
 # m30b pair) are committed; the rest are regenerable by seed

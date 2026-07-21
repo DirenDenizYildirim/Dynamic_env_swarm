@@ -41,9 +41,7 @@ N_ACTIONS = 5
 
 # M3.1: fold_in tag for the weak-terrain reset stream (any fixed constant).
 _WEAK_STREAM = 31
-_ACTION_OFFSETS = jnp.array(
-    [[0, 0], [-1, 0], [1, 0], [0, -1], [0, 1]], dtype=jnp.int32
-)
+_ACTION_OFFSETS = jnp.array([[0, 0], [-1, 0], [1, 0], [0, -1], [0, 1]], dtype=jnp.int32)
 
 
 def agent_step(
@@ -70,7 +68,10 @@ def agent_step(
        enterable (and lethal): avoidance must be learned, not enforced.
 
     Deterministic given its inputs — consumes no PRNG (invariant #3).
-    Returns (pos', alive', deaths_fire, deaths_collapse) with int32 counts.
+    Returns (pos', alive', deaths_fire, deaths_collapse, blocked_moves)
+    with int32 counts; blocked_moves counts alive agents whose proposed
+    move was cancelled by a Collapsed cell (M3.4-lock addendum: the
+    non-ignition structural channel, reported at M3.5).
     """
     chex.assert_shape(agent_pos, (None, 2))
     chex.assert_type(hazard_new, jnp.uint8)
@@ -89,6 +90,7 @@ def agent_step(
         alive_new,
         burned.sum().astype(jnp.int32),
         fell.sum().astype(jnp.int32),
+        (alive_mid & blocked).sum().astype(jnp.int32),
     )
 
 
@@ -203,7 +205,7 @@ def step(
     # DECISION: an agent disabled this step does not collect food this step
     # (it died before/on arrival) — occupancy filters on the post-death
     # alive vector, keeping "dead agents never collect" exact.
-    pos_new, alive_new, deaths_fire, deaths_collapse = agent_step(
+    pos_new, alive_new, deaths_fire, deaths_collapse, blocked_moves = agent_step(
         state.agent_pos,
         state.agent_alive,
         actions,
@@ -216,9 +218,9 @@ def step(
     food_new, task_reward = task_step(state.food, occ_post)
     # Def.-2-compliant death penalty: reads only the alpha transition (an X
     # variable) — never hazard/smoke/structure directly.
-    reward = task_reward - th.death_penalty * (
-        deaths_fire + deaths_collapse
-    ).astype(jnp.float32)
+    reward = task_reward - th.death_penalty * (deaths_fire + deaths_collapse).astype(
+        jnp.float32
+    )
 
     # 5. k' ~ T_K(x'): comms channel — Phase 5.
 
@@ -260,11 +262,23 @@ def step(
     # of an alive agent, evaluated at post-step positions x'.
     near_agents = dilate(occ_post, cfg.obs_window // 2)
     co_active = (seeded_ignitions & near_agents).sum().astype(jnp.int32)
+    # M3.4-lock addendum channels (info-only, deterministic, no PRNG):
+    # collapse events this step, blocked-move encounters (non-ignition
+    # structural channel), and the share of alive survivors standing on
+    # weak cells (load-avoidance observable for the M3.5 report).
+    weak_occupancy = jnp.where(
+        alive_new,
+        state.weak[pos_new[:, 0], pos_new[:, 1]],
+        False,
+    ).sum(dtype=jnp.float32) / jnp.maximum(alive_new.sum(dtype=jnp.float32), 1.0)
     info = {
         "coupling_co_active": co_active,
         # M3.2: Coupling A output channel — count of Fuel cells ignited by
         # this step's collapse increment (0 whenever kappa_A = 0 or frozen).
         "seeded_ignitions": seeded_ignitions.sum().astype(jnp.int32),
+        "collapse_events": collapse_increment.sum(dtype=jnp.int32),
+        "blocked_moves": blocked_moves,
+        "weak_occupancy": weak_occupancy.astype(jnp.float32),
         "food_remaining": food_new.sum().astype(jnp.int32),
         "deaths_fire": deaths_fire,
         "deaths_collapse": deaths_collapse,
@@ -272,8 +286,7 @@ def step(
         # autoreset they describe the ending episode; consumers mask by
         # done and aggregate NaN-safely).
         "survival_rate": alive_new.mean(dtype=jnp.float32),
-        "completion": 1.0
-        - food_new.sum(dtype=jnp.float32) / jnp.float32(cfg.n_food),
+        "completion": 1.0 - food_new.sum(dtype=jnp.float32) / jnp.float32(cfg.n_food),
         "ep_deaths_fire": ep_deaths_fire,
         "ep_deaths_collapse": ep_deaths_collapse,
         # Time-average of per-step exposure; t_new >= 1 so no zero division.

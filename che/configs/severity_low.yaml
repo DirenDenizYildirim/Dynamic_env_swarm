@@ -18,7 +18,16 @@ env:
 
 theta:
   beta: 0.43
-  kappa_A: 0.0
+  # Coupling A + structure — M3.4 HUMAN-LOCKED 2026-07-21
+  # (coupling_a_lock.md, joint w/ RA; calibration m34/
+  # coupling_a_calibration.json, candidate 2). Random-policy targets met
+  # at Low+Medium: collapses/ep 8.5, seeded/ep 4.47, deaths_collapse
+  # 0.180, Low seeded-burnt share 0.763. r_seed=1 / weak_smooth=2 are the
+  # config defaults, locked as-is.
+  kappa_A: 0.06
+  lambda_0: 5.0e-5
+  lambda_load: 4.0e-4
+  f_weak: 0.15
   kappa_B: 0.0
   delta: 0.0
   death_penalty: 0.0

@@ -27,6 +27,12 @@ EXPECTED_KEYS = {
     "deaths_collapse",
     "mean_smoke_exposure",
     "coupling_co_active",
+    # M3.4-lock addendum channels (trained-policy drift + non-ignition
+    # structural evidence for the M3.5 report).
+    "collapse_events",
+    "seeded_ignitions",
+    "blocked_moves",
+    "weak_occupancy",
 }
 
 

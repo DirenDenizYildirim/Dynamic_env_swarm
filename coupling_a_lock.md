@@ -72,6 +72,36 @@ that reading.
   centers every Low band (4.7 / 2.45 / 0.172 / 0.615) at the cost of a
   weaker Low share and near-floor High deaths_collapse (0.055).
 
-**STOP — human locks.** On lock: write the values into the three
-severity configs (provenance comments citing this file), add the M3.5
-acceptance-grid run script, and proceed per the phase prompt.
+## LOCK — human decision 2026-07-21 (joint w/ RA)
+
+**LOCKED: (f_weak, λ₀, λ_load, κ_A, r_A) = (0.15, 5e-5, 4e-4, 0.06, 1)**
+(candidate 2). Rationale: ablation power within bands; deaths_collapse
+centered; seeded-burnt share 0.763 = the Prop.-3 regime. Candidate 1
+(λ₀ = 3e-5) recorded as the rejected gentler alternative.
+
+**Seeded band CONFIRMED as binding at Low/Medium only.** The High
+behavior is recorded as **fuel-exhaustion self-limitation of the
+ignition channel** — the empirical mirror of Prop. 3's χ-divergence:
+collapse matters most where fire is rare. Candidate sentence for the
+paper: *"At high severity the ignition channel of structural coupling
+is self-limiting — the primary fire exhausts the fuel that collapse
+events would ignite — so structural fire-seeding matters most precisely
+where fire is otherwise rare, the empirical mirror of the
+χ(β)-divergence in Prop. 3."* Per-severity κ_A was considered and
+**rejected** (it would break Phase-7 factorial semantics).
+
+Sanity acknowledged: collapse-count β-independence (< 2%) confirms the
+T_C factorization.
+
+**M3.5 addendum (drift + channel evidence), human-ordered:** the M3.5
+report must compare realized collapses/ep, seeded/ep, and
+deaths_collapse under *trained* policies per severity against the
+random-policy calibration values above; Low drift outside [3, 10] /
+[1, 5] is flagged for human review, never auto-adjusted. At High,
+deaths_collapse and blocked-move encounters are reported to document
+the non-ignition structural channels. (Supported by the
+collapse_events / blocked_moves / weak_occupancy info channels and
+eval-harness metrics added at this lock.)
+
+Locked values written into `che/configs/severity_{low,medium,high}.yaml`
+with provenance comments. GO M3.5 as scripted (+ addendum).

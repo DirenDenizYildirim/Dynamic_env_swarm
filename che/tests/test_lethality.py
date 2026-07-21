@@ -57,38 +57,37 @@ def _one(action, hazard=None, structure=None, increment=None, alive=True):
 
 def test_burning_kills_stationary_agent():
     # A cell igniting under a stationary agent kills it (h' evaluated).
-    pos, alive, d_fire, d_coll = _one(STAY, hazard=[((2, 2), BURNING)])
+    pos, alive, d_fire, d_coll, _ = _one(STAY, hazard=[((2, 2), BURNING)])
     assert not bool(alive[0])
     assert (int(d_fire), int(d_coll)) == (1, 0)
     assert (pos[0] == jnp.array([2, 2])).all()
 
 
 def test_moving_into_burning_cell_kills():
-    pos, alive, d_fire, _ = _one(RIGHT, hazard=[((2, 3), BURNING)])
+    pos, alive, d_fire, _, _ = _one(RIGHT, hazard=[((2, 3), BURNING)])
     assert not bool(alive[0])
     assert int(d_fire) == 1
     assert (pos[0] == jnp.array([2, 3])).all()  # died on arrival at x'
 
 
 def test_burnt_is_passable_and_harmless():
-    pos, alive, d_fire, d_coll = _one(RIGHT, hazard=[((2, 3), BURNT)])
+    pos, alive, d_fire, d_coll, _ = _one(RIGHT, hazard=[((2, 3), BURNT)])
     assert bool(alive[0])
     assert (pos[0] == jnp.array([2, 3])).all()
     assert int(d_fire) + int(d_coll) == 0
 
 
 def test_collapsed_blocks_movement():
-    pos, alive, _, _ = _one(RIGHT, structure=[(2, 3)])
+    pos, alive, _, _, n_blocked = _one(RIGHT, structure=[(2, 3)])
     assert bool(alive[0])
     assert (pos[0] == jnp.array([2, 2])).all()  # move cancelled, stays
+    assert int(n_blocked) == 1  # counted as a blocking encounter (M3.4)
 
 
 def test_collapse_under_agent_kills_no_escape():
     # DECISION (human-locked): the floor gives way before the agent acts —
     # moving away the same step does not save it.
-    pos, alive, d_fire, d_coll = _one(
-        RIGHT, structure=[(2, 2)], increment=[(2, 2)]
-    )
+    pos, alive, d_fire, d_coll, _ = _one(RIGHT, structure=[(2, 2)], increment=[(2, 2)])
     assert not bool(alive[0])
     assert (int(d_fire), int(d_coll)) == (0, 1)
     assert (pos[0] == jnp.array([2, 2])).all()  # fell: never moved
@@ -97,7 +96,7 @@ def test_collapse_under_agent_kills_no_escape():
 def test_dead_agents_are_inert_and_not_recounted():
     # Fire and collapse both under an already-dead agent: no motion, no
     # double-counted death.
-    pos, alive, d_fire, d_coll = _one(
+    pos, alive, d_fire, d_coll, _ = _one(
         RIGHT,
         hazard=[((2, 2), BURNING)],
         increment=[(2, 2)],

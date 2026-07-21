@@ -33,6 +33,7 @@ from che.train.rollout import PolicyFn, batch_rollout
 # npz key -> (info key, per-episode reduction over the time axis)
 _FINAL = "final"  # value at the last step (episode-cumulative in info)
 _SUM = "sum"  # summed over steps (per-step counter in info)
+_MEAN = "mean"  # averaged over steps (per-step rate in info)
 EVAL_METRICS = {
     "completion": ("completion", _FINAL),
     "survival_rate": ("survival_rate", _FINAL),
@@ -40,6 +41,13 @@ EVAL_METRICS = {
     "deaths_collapse": ("ep_deaths_collapse", _FINAL),
     "mean_smoke_exposure": ("mean_smoke_exposure", _FINAL),
     "coupling_co_active": ("coupling_co_active", _SUM),
+    # M3.4-lock addendum: realized structural channels under trained
+    # policies (drift check vs the random-policy calibration values, and
+    # the non-ignition channels at High).
+    "collapse_events": ("collapse_events", _SUM),
+    "seeded_ignitions": ("seeded_ignitions", _SUM),
+    "blocked_moves": ("blocked_moves", _SUM),
+    "weak_occupancy": ("weak_occupancy", _MEAN),
 }
 
 
@@ -96,9 +104,7 @@ def make_policy_fn(cfg: Config, params: dict, *, greedy: bool = False) -> Policy
         logits, _ = net.apply(params, obs["grid"], obs["vec"])
         if greedy:  # static Python flag — two distinct jitted policies
             return jnp.argmax(logits, axis=-1).astype(jnp.int32)
-        return (
-            distrax.Categorical(logits=logits).sample(seed=key).astype(jnp.int32)
-        )
+        return distrax.Categorical(logits=logits).sample(seed=key).astype(jnp.int32)
 
     return policy
 
@@ -124,7 +130,12 @@ def evaluate(
     out = {"episode_return": np.asarray(rewards.sum(axis=1), np.float32)}
     for name, (info_key, red) in EVAL_METRICS.items():
         vals = infos[info_key]
-        per_ep = vals[:, -1] if red == _FINAL else vals.sum(axis=1)
+        if red == _FINAL:
+            per_ep = vals[:, -1]
+        elif red == _MEAN:
+            per_ep = vals.mean(axis=1)
+        else:
+            per_ep = vals.sum(axis=1)
         out[name] = np.asarray(per_ep.astype(jnp.float32))
     return out
 
@@ -153,18 +164,42 @@ def main(argv: list[str] | None = None):
     p.add_argument("--step", type=int, help="checkpoint step (default: latest)")
     p.add_argument("--n-episodes", type=int, default=512)
     p.add_argument("--seed", type=int, default=0)
-    p.add_argument("--greedy", action="store_true",
-                   help="argmax policy instead of as-trained sampling")
-    p.add_argument("--death-penalty", type=float, default=None,
-                   help="theta override — must match the training run (hash guard)")
-    p.add_argument("--obs-version", type=int, default=None, choices=(1, 2),
-                   help="override cfg obs_version — archival eval of obs-v1 "
-                        "checkpoints only (D5); never compare across versions")
-    p.add_argument("--allow-hash", action="append", default=[],
-                   metavar="HASH",
-                   help="accept this named legacy checkpoint hash despite a "
-                        "config-hash mismatch (repeatable); the old->current "
-                        "mapping is recorded in the summary JSON")
+    p.add_argument(
+        "--greedy",
+        action="store_true",
+        help="argmax policy instead of as-trained sampling",
+    )
+    p.add_argument(
+        "--death-penalty",
+        type=float,
+        default=None,
+        help="theta override — must match the training run (hash guard)",
+    )
+    p.add_argument(
+        "--kappa-A",
+        type=float,
+        default=None,
+        dest="kappa_A",
+        help="theta override — must match the training run "
+        "(M3.5 kappa_A ablation arm; hash guard)",
+    )
+    p.add_argument(
+        "--obs-version",
+        type=int,
+        default=None,
+        choices=(1, 2),
+        help="override cfg obs_version — archival eval of obs-v1 "
+        "checkpoints only (D5); never compare across versions",
+    )
+    p.add_argument(
+        "--allow-hash",
+        action="append",
+        default=[],
+        metavar="HASH",
+        help="accept this named legacy checkpoint hash despite a "
+        "config-hash mismatch (repeatable); the old->current "
+        "mapping is recorded in the summary JSON",
+    )
     p.add_argument("--out-npz", required=True, help="per-episode arrays output")
     p.add_argument("--out-json", help="summary JSON output (default: npz stem + .json)")
     args = p.parse_args(argv)
@@ -178,6 +213,14 @@ def main(argv: list[str] | None = None):
                 theta=dataclasses.replace(
                     cfg.env.theta, death_penalty=args.death_penalty
                 ),
+            ),
+        )
+    if args.kappa_A is not None:
+        cfg = dataclasses.replace(
+            cfg,
+            env=dataclasses.replace(
+                cfg.env,
+                theta=dataclasses.replace(cfg.env.theta, kappa_A=args.kappa_A),
             ),
         )
     if args.obs_version is not None:

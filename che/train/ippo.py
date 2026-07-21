@@ -182,12 +182,13 @@ def make_train_fns(cfg: Config) -> TrainFns:
             ratio * adv,
             jnp.clip(ratio, 1.0 - clip_eps, 1.0 + clip_eps) * adv,
         ).mean()
-        v_clipped = mb["value"] + jnp.clip(
-            value - mb["value"], -clip_eps, clip_eps
+        v_clipped = mb["value"] + jnp.clip(value - mb["value"], -clip_eps, clip_eps)
+        v_loss = (
+            0.5
+            * jnp.maximum(
+                (value - mb["target"]) ** 2, (v_clipped - mb["target"]) ** 2
+            ).mean()
         )
-        v_loss = 0.5 * jnp.maximum(
-            (value - mb["target"]) ** 2, (v_clipped - mb["target"]) ** 2
-        ).mean()
         entropy = pi.entropy().mean()
         total = pg_loss + tcfg.vf_coef * v_loss - ent_coef * entropy
         return total, (pg_loss, v_loss, entropy)
@@ -347,9 +348,7 @@ def train(
         hash_file = Path(ckpt_dir) / "config_hash.txt"
         if resume and mngr.latest_step() is not None:
             if hash_file.exists() and hash_file.read_text() != config_hash(cfg):
-                raise ValueError(
-                    "checkpoint config hash mismatch — refusing to resume"
-                )
+                raise ValueError("checkpoint config hash mismatch — refusing to resume")
             start = mngr.latest_step()
             template = {
                 "params": runner.train_state.params,
@@ -381,18 +380,14 @@ def train(
         # Only honor the flag when this call installed the handler —
         # otherwise a SIGTERM caught by an earlier train() in the same
         # process would permanently poison later calls.
-        while update < n_updates and not (
-            handle_sigterm and _SIGTERM["received"]
-        ):
+        while update < n_updates and not (handle_sigterm and _SIGTERM["received"]):
             k = min(cfg.train.ckpt_interval, n_updates - update)
             t0 = time.perf_counter()
             runner, metrics = fns.chunk(runner, k)
             jax.block_until_ready(metrics["total_loss"])
             dt = time.perf_counter() - t0
             for i in range(k):
-                row = {
-                    name: float(vals[i]) for name, vals in metrics.items()
-                }
+                row = {name: float(vals[i]) for name, vals in metrics.items()}
                 row["update"] = update + i + 1
                 history.append(row)
                 if metrics_file:
@@ -447,9 +442,7 @@ def random_baseline(cfg: Config, *, n_episodes: int = 64, seed: int = 0) -> dict
         "mean_return": float(rewards.sum(axis=1).mean()),
         "survival_rate": float(final["survival_rate"].mean()),
         "completion": float(final["completion"].mean()),
-        "deaths_fire": float(
-            final["ep_deaths_fire"].astype(jnp.float32).mean()
-        ),
+        "deaths_fire": float(final["ep_deaths_fire"].astype(jnp.float32).mean()),
         "deaths_collapse": float(
             final["ep_deaths_collapse"].astype(jnp.float32).mean()
         ),
@@ -470,10 +463,24 @@ def main():
     p.add_argument("--grid-size", type=int)
     p.add_argument("--n-envs", type=int)
     p.add_argument("--rollout-len", type=int)
-    p.add_argument("--death-penalty", type=float, default=None,
-                   help="override theta.death_penalty (M1.5 acceptance)")
-    p.add_argument("--baseline", action="store_true",
-                   help="print the random-policy baseline metrics and exit")
+    p.add_argument(
+        "--death-penalty",
+        type=float,
+        default=None,
+        help="override theta.death_penalty (M1.5 acceptance)",
+    )
+    p.add_argument(
+        "--kappa-A",
+        type=float,
+        default=None,
+        dest="kappa_A",
+        help="override theta.kappa_A (M3.5 ablation arm)",
+    )
+    p.add_argument(
+        "--baseline",
+        action="store_true",
+        help="print the random-policy baseline metrics and exit",
+    )
     args = p.parse_args()
     cfg = load_config(args.config)
     if args.grid_size:
@@ -488,6 +495,14 @@ def main():
                 theta=dataclasses.replace(
                     cfg.env.theta, death_penalty=args.death_penalty
                 ),
+            ),
+        )
+    if args.kappa_A is not None:
+        cfg = dataclasses.replace(
+            cfg,
+            env=dataclasses.replace(
+                cfg.env,
+                theta=dataclasses.replace(cfg.env.theta, kappa_A=args.kappa_A),
             ),
         )
     train_overrides = {

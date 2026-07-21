@@ -39,9 +39,10 @@ def test_rollout_deterministic_and_key_sensitive():
     r_b, _, _ = run(jax.random.PRNGKey(1))
     r_c, _, _ = run(jax.random.PRNGKey(2))
     assert (r_a == r_b).all()
-    assert not jnp.array_equal(
-        r_a.cumsum()[-1:], r_c.cumsum()[-1:]
-    ) or not (r_a == r_c).all()
+    assert (
+        not jnp.array_equal(r_a.cumsum()[-1:], r_c.cumsum()[-1:])
+        or not (r_a == r_c).all()
+    )
 
 
 def test_movement_and_border_clipping():
@@ -55,15 +56,16 @@ def test_movement_and_border_clipping():
     alive = jnp.array([True, True, True, False])
     # stay, up (clipped), down (clipped), right (dead: holds still)
     actions = jnp.array([0, 1, 2, 4], dtype=jnp.int32)
-    new, alive_new, d_fire, d_coll = agent_step(
+    new, alive_new, d_fire, d_coll, n_blocked = agent_step(
         pos, alive, actions, fuel, intact, no_inc, ll
     )
     expect = jnp.array([[5, 5], [0, 0], [15, 15], [0, 15]], dtype=jnp.int32)
     assert (new == expect).all()
     assert (alive_new == alive).all()
     assert int(d_fire) + int(d_coll) == 0
+    assert int(n_blocked) == 0  # nothing collapsed anywhere
     actions2 = jnp.array([1, 2, 3, 4], dtype=jnp.int32)  # up, down, left, right
-    new2, _, _, _ = agent_step(
+    new2, _, _, _, _ = agent_step(
         pos, jnp.ones(4, bool), actions2, fuel, intact, no_inc, ll
     )
     expect2 = jnp.array([[4, 5], [1, 0], [15, 14], [0, 15]], dtype=jnp.int32)
@@ -72,9 +74,9 @@ def test_movement_and_border_clipping():
 
 def test_food_conservation_over_episode():
     policy = make_random_policy(CFG.n_agents)
-    rewards, _, infos = jax.jit(
-        lambda k: rollout_episode(k, CFG, policy, CFG.horizon)
-    )(jax.random.PRNGKey(3))
+    rewards, _, infos = jax.jit(lambda k: rollout_episode(k, CFG, policy, CFG.horizon))(
+        jax.random.PRNGKey(3)
+    )
     collected_cum = rewards.cumsum()
     # Conservation at every step: remaining + collected == initial F.
     assert (infos["food_remaining"] + collected_cum == CFG.n_food).all()
@@ -90,8 +92,10 @@ def _obs_probe_state(s):
     ll = CFG.grid_size
     hazard = (
         jnp.full((ll, ll), FUEL, dtype=jnp.uint8)
-        .at[1, 0].set(BURNING)
-        .at[0, 2].set(BURNT)
+        .at[1, 0]
+        .set(BURNING)
+        .at[0, 2]
+        .set(BURNT)
     )
     return dataclasses.replace(
         s,
@@ -101,9 +105,7 @@ def _obs_probe_state(s):
         hazard=hazard,
         smoke=jnp.zeros((ll, ll), dtype=jnp.float32).at[2, 1].set(0.75),
         weak=jnp.zeros((ll, ll), dtype=jnp.bool_).at[1, 2].set(True),
-        structure=(
-            jnp.full((ll, ll), INTACT, dtype=jnp.uint8).at[1, 1].set(COLLAPSED)
-        ),
+        structure=(jnp.full((ll, ll), INTACT, dtype=jnp.uint8).at[1, 1].set(COLLAPSED)),
     )
 
 
@@ -189,9 +191,9 @@ def test_batch_rollout_shapes_and_finite():
 
 def test_done_exactly_at_horizon():
     policy = make_random_policy(CFG.n_agents)
-    _, dones, _ = jax.jit(
-        lambda k: rollout_episode(k, CFG, policy, CFG.horizon)
-    )(jax.random.PRNGKey(0))
+    _, dones, _ = jax.jit(lambda k: rollout_episode(k, CFG, policy, CFG.horizon))(
+        jax.random.PRNGKey(0)
+    )
     assert not dones[:-1].any()
     assert dones[-1]
 
@@ -199,24 +201,34 @@ def test_done_exactly_at_horizon():
 def test_coupling_co_active_counter_plumbing():
     """kappa_A = 0 -> counter is identically 0; hot theta -> it fires."""
     policy = make_random_policy(CFG.n_agents)
-    _, _, infos = jax.jit(
-        lambda k: rollout_episode(k, CFG, policy, 64)
-    )(jax.random.PRNGKey(0))
+    _, _, infos = jax.jit(lambda k: rollout_episode(k, CFG, policy, 64))(
+        jax.random.PRNGKey(0)
+    )
     assert (infos["coupling_co_active"] == 0).all()  # debug config: kappa_A=0
     assert (infos["seeded_ignitions"] == 0).all()  # M3.2: same gate
+    # M3.4-lock addendum channels: no weak cells in the debug config, so
+    # nothing collapses, nothing blocks; occupancy share is a valid rate.
+    assert (infos["collapse_events"] == 0).all()
+    assert (infos["blocked_moves"] == 0).all()
+    assert (infos["weak_occupancy"] == 0).all()
 
     hot = dataclasses.replace(
         CFG,
         # M3.1: collapse requires weak cells — f_weak > 0 keeps the knob hot.
-        theta=ThetaConfig(
-            beta=0.3, kappa_A=1.0, lambda_0=0.05, r_seed=2, f_weak=0.5
-        ),
+        theta=ThetaConfig(beta=0.3, kappa_A=1.0, lambda_0=0.05, r_seed=2, f_weak=0.5),
     )
-    _, _, infos_hot = jax.jit(
-        lambda k: rollout_episode(k, hot, policy, 64)
-    )(jax.random.PRNGKey(0))
+    _, _, infos_hot = jax.jit(lambda k: rollout_episode(k, hot, policy, 64))(
+        jax.random.PRNGKey(0)
+    )
     assert int(infos_hot["coupling_co_active"].sum()) > 0
     # M3.2: co-active counts the perception-range subset of seeded cells,
     # so per step seeded >= co-active, and seeding is live here too.
     assert (infos_hot["seeded_ignitions"] >= infos_hot["coupling_co_active"]).all()
     assert int(infos_hot["seeded_ignitions"].sum()) > 0
+    # M3.4-lock addendum channels fire under the hot theta, and every
+    # seeded ignition descends from a collapse ball (r_seed = 2 -> 25x).
+    assert int(infos_hot["collapse_events"].sum()) > 0
+    assert (infos_hot["seeded_ignitions"] <= 25 * infos_hot["collapse_events"]).all()
+    assert (
+        (infos_hot["weak_occupancy"] >= 0) & (infos_hot["weak_occupancy"] <= 1)
+    ).all()
