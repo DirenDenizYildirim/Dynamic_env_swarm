@@ -18,18 +18,27 @@ horizon 256 (phase prompt), κ_A = 0.02 (~one seed per seeding collapse),
 iid weak mask (uniform seed locations), λ₀ sweep sparse → moderate;
 through-origin fit of E[B_T] vs realized E[N_seeds].
 
-### CPU-scale slow test (L = 32) — GREEN
+### CPU-scale slow test — v1 result and v2 rewrite (ruling)
 
-`che/tests/test_prop3.py`, χ̂ recomputed at L = 32 inside the test
-(never compared across grid sizes): slope 35.23 vs χ̂ 34.36 →
-**ratio 1.025 ∈ [0.75, 1.05]**, **R² 0.9925 ≥ 0.99**. MC counts raised
-above the 512 floor (sweep 1024, χ̂ 8192) after measuring that 512-run χ̂
-estimates move ±10% between key seeds; the acceptance band was untouched.
+Test v1 (commit d208645; χ̂ recomputed at L = 32 inside the test):
+slope 35.23 vs χ̂ 34.36 → ratio 1.025 ∈ [0.75, 1.05], R² 0.9925. The
+M3.3 human ruling (2026-07-21, decision_log.md) logged v1 as an **RA
+spec error** — it compared protocol-mismatched quantities and passed
+only through the bias cancellation quantified below — and replaced it
+with **test v2**: the reference is computed *matched to the sweep's
+protocol* inside the test (uniform seed locations, uniform birth times
+via age-averaging, unconditional mass; `matched_reference` in
+`che/calibration/prop3.py`), the sweep runs purified (κ_A = 0.003 →
+P(≥2 seeds | ≥1) = 1.3% ≤ 2%; overlap proxy ≤ 3% asserted), and the
+acceptance band is **[0.90, 1.02] × matched_ref, R² ≥ 0.99
+(human-locked)**. v2 result: see below.
 
 ### GPU-scale sweep (L = 64, 4096 runs/point) — figure for review
 
 `run_m33_prop3.sh` on the RTX 5090, commit d208645, jax 0.11.0, 2.2 s
-wall. Figure: `m33/prop3_L64.png`; raw data `m33/prop3_L64.npz`;
+wall. Figure: `m33/prop3_L64.png` (re-rendered per the ruling with the
+protocol-matched reference line beside the naive χ̂ line —
+`che/scripts/plot_m33_figures.py`); raw data `m33/prop3_L64.npz`;
 summary `m33/prop3_L64.json`.
 
 ![Prop. 3 L=64](m33/prop3_L64.png)
@@ -55,7 +64,9 @@ physics under four deliberate protocol differences. Each factor is
 measured directly (`che/scripts/prop3_deficit.py` →
 `m33/deficit_decomposition.json`: single-ignition runs recording the
 cluster-mass trajectory m(u), center vs uniform location, 4096–8192
-runs):
+runs; waterfall panel below):
+
+![Deficit waterfall L=64](m33/deficit_waterfall.png)
 
 | step (L = 64) | factor | running value |
 |---|---|---|
@@ -101,21 +112,33 @@ at L = 32, 0.982 at L = 64), so the horizon-256 age-averaging costs only
   unconditioned center-seed mean (70.4 at L = 64) and every protocol-
   corrected comparison line up; there is no unexplained physics in the
   gap, and the gap's sign is the one Prop. 3 proves as an inequality.
-- The [0.75, 1.05] band was calibrated (and passes) at L = 32 with a
-  size-matched reference, per the phase prompt; the prompt sets no
-  numeric band at L = 64 — the figure is the review object.
+### Ruling outcome (human, 2026-07-21 — see decision_log.md)
 
-**Options at this STOP** (no constants changed pending your call):
+Accepted with modifications: the dense sweep stays the headline artifact
+(purified re-run declined as cosmetic — the dense regime *exercises and
+measures* the corrections); the matched-reference line was added to the
+figure and the waterfall panel above to this report; the theory doc
+gained a human-authored remark on the finite-protocol corrections
+(after Prop. 3); the acceptance test was rewritten as v2 with an
+internal matched reference and the human-locked band [0.90, 1.02].
+The cancellation analysis above is retained verbatim (paper-appendix
+candidate).
 
-1. **Accept as-is** (recommended): figure + this decomposition are the
-   handshake; the decomposition is itself stronger evidence than a bare
-   in-band ratio, since every bias term is measured and directional.
-2. **Matched-reference re-render**: add the like-for-like reference line
-   (uniform-location, unconditioned, age-averaged = 54.48) to the figure
-   alongside χ̂; sweep/matched-reference = 0.836 with the residual
-   attributed to (i)+(ii) above. Zero new GPU time.
-3. **Purified re-run**: κ_A → 0.005 (multi-seed 2%) and sparser λ on the
-   GPU (~seconds) to push the measured slope toward the matched
-   reference — cosmetic; changes a sweep constant, so human-gated.
+### Acceptance test v2 result (purified regime, L = 32)
 
-STOP — human reviews the figure (M3.3 acceptance).
+`che/tests/test_prop3.py` v2: κ_A = 0.003, λ ∈ LAMBDAS_L32_PURE
+(realized E[N_seeds] 0.11–0.56), SWEEP_MC = 8192, matched reference
+from 16384 uniform-location trajectory runs. A pilot (N = 2048) found
+the purified ratio centers near 1.00 — the sibling (−1.2%) and overlap
+(−1%) deflations are offset by a +~2% seed-location edge effect (the
+3×3 seeding dilation underweights boundary cells, whose clusters are
+clipped, relative to the exactly-uniform reference); margin analysis is
+in the decision log.
+
+**v2 result — GREEN:** slope 41.18 vs matched_ref 41.49 (SE 0.43) →
+**ratio 0.992 ∈ [0.90, 1.02]**, **R² 0.9995 ≥ 0.99**; overlap proxy
+0.016–0.023 ≤ 0.03 (regime check passed); wall ~18 min CPU (niced).
+The ratio sits 0.8% below the matched reference — consistent with the
+pilot's bias accounting (sibling −1.2%, overlap −1%, edge effect +~2%)
+within its ~2.4% MC error.
+

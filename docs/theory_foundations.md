@@ -262,6 +262,19 @@ quantitative reason Coupling A changes the problem character rather than adding
 noise: the policy's incentive to model and avoid *structural* risk is
 proportional to $\chi(\beta)$, i.e. it is severity-dependent by a power law.
 
+**Remark (finite-protocol corrections; added post-M3.3).** The equality
+branch of Prop. 3 is approached only under: (i) an unconditional
+cluster-mass reference (spanning-conditioned $\hat\chi$ underestimates it);
+(ii) matched seed-location distribution (boundary clipping reduces
+uniform-seed masses below a center-seeded reference); (iii) matched seed
+ages (uniformly-born seeds are age-averaged; mass saturates by
+$t_{\mathrm{sat}} \approx 64$ at $\beta = 0.43$); and (iv) sparsity in both
+same-event sibling seeds and cross-cluster overlap, which deflate the
+measured slope and vanish as $\kappa_A, \lambda \to 0$. Empirically (M3.3,
+$L \in \{32, 64\}$) the four measured factors compose to the observed slope
+within MC error with an $L$-independent residual; the theorem's linear
+structure is exact ($R^2 = 0.998$), and all corrections carry known signs.
+
 ---
 ## 5. Coupling B — the hazard degrades perception, and a theorem on why that matters
 

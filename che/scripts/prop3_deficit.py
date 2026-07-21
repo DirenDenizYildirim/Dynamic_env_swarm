@@ -39,46 +39,11 @@ import time
 from pathlib import Path
 
 import jax
-import jax.numpy as jnp
 import numpy as np
 
-from che.calibration.prop3 import BETA_LOW, HORIZON
-from che.env.hazard import hazard_step
-from che.env.types import BURNING, FUEL
+from che.calibration.prop3 import BETA_LOW, HORIZON, mass_trajectory_run
 
 MC = {32: 8192, 64: 4096}  # runs per (L, location mode)
-
-
-def mass_trajectory_run(
-    key: jax.Array, *, grid_size: int, t_max: int, uniform_loc: bool
-) -> dict[str, jax.Array]:
-    """One single-ignition run recording m(u) for u = 1..t_max plus the
-    final spanning flag (percolation_run protocol, trajectory added)."""
-    k_loc, k_run = jax.random.split(key)
-    if uniform_loc:
-        flat = jax.random.randint(k_loc, (), 0, grid_size * grid_size)
-        row, col = flat // grid_size, flat % grid_size
-    else:
-        row = col = grid_size // 2
-    hazard0 = (
-        jnp.full((grid_size, grid_size), FUEL, dtype=jnp.uint8)
-        .at[row, col]
-        .set(BURNING)
-    )
-
-    def body(hazard, key_t):
-        hazard = hazard_step(key_t, hazard, beta=BETA_LOW, iota=0.0)
-        return hazard, (hazard != FUEL).sum(dtype=jnp.int32)
-
-    hazard_f, mass = jax.lax.scan(body, hazard0, jax.random.split(k_run, t_max))
-    non_fuel = hazard_f != FUEL
-    spanned = (
-        non_fuel[0].any()
-        | non_fuel[-1].any()
-        | non_fuel[:, 0].any()
-        | non_fuel[:, -1].any()
-    )
-    return {"mass": mass, "spanned": spanned}
 
 
 def ensemble(
