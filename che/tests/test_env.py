@@ -182,6 +182,7 @@ def test_batch_rollout_shapes_and_finite():
     assert rewards.shape == (2, 64)
     assert dones.shape == (2, 64)
     assert infos["coupling_co_active"].shape == (2, 64)
+    assert infos["seeded_ignitions"].shape == (2, 64)  # M3.2 info channel
     assert jnp.isfinite(rewards).all()
     assert not dones[:, :-1].any() or CFG.horizon <= 64
 
@@ -202,6 +203,7 @@ def test_coupling_co_active_counter_plumbing():
         lambda k: rollout_episode(k, CFG, policy, 64)
     )(jax.random.PRNGKey(0))
     assert (infos["coupling_co_active"] == 0).all()  # debug config: kappa_A=0
+    assert (infos["seeded_ignitions"] == 0).all()  # M3.2: same gate
 
     hot = dataclasses.replace(
         CFG,
@@ -214,3 +216,7 @@ def test_coupling_co_active_counter_plumbing():
         lambda k: rollout_episode(k, hot, policy, 64)
     )(jax.random.PRNGKey(0))
     assert int(infos_hot["coupling_co_active"].sum()) > 0
+    # M3.2: co-active counts the perception-range subset of seeded cells,
+    # so per step seeded >= co-active, and seeding is live here too.
+    assert (infos_hot["seeded_ignitions"] >= infos_hot["coupling_co_active"]).all()
+    assert int(infos_hot["seeded_ignitions"].sum()) > 0

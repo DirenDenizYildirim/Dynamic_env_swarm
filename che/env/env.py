@@ -262,6 +262,9 @@ def step(
     co_active = (seeded_ignitions & near_agents).sum().astype(jnp.int32)
     info = {
         "coupling_co_active": co_active,
+        # M3.2: Coupling A output channel — count of Fuel cells ignited by
+        # this step's collapse increment (0 whenever kappa_A = 0 or frozen).
+        "seeded_ignitions": seeded_ignitions.sum().astype(jnp.int32),
         "food_remaining": food_new.sum().astype(jnp.int32),
         "deaths_fire": deaths_fire,
         "deaths_collapse": deaths_collapse,
