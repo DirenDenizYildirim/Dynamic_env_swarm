@@ -1,0 +1,49 @@
+{
+  "beta": 0.43,
+  "blocks": [
+    {
+      "grid_size": 32,
+      "n_runs": 8192,
+      "horizon": 256,
+      "chi_protocol_t": 128,
+      "n_nonspanning_center": 6793,
+      "chi_cond_center_4L": 35.652730752244956,
+      "m_center_uncond_4L": 61.5599365234375,
+      "m_unif_uncond_4L": 44.2908935546875,
+      "m_unif_uncond_final": 44.2908935546875,
+      "predicted_sweep_slope": 41.78212785720825,
+      "m_unif_trajectory_sample": {
+        "16": 29.2393798828125,
+        "32": 40.4755859375,
+        "64": 44.1605224609375,
+        "128": 44.2908935546875,
+        "192": 44.2908935546875,
+        "256": 44.2908935546875
+      }
+    },
+    {
+      "grid_size": 64,
+      "n_runs": 4096,
+      "horizon": 256,
+      "chi_protocol_t": 256,
+      "n_nonspanning_center": 4010,
+      "chi_cond_center_4L": 62.84937655860349,
+      "m_center_uncond_4L": 70.44091796875,
+      "m_unif_uncond_4L": 58.7255859375,
+      "m_unif_uncond_final": 58.7255859375,
+      "predicted_sweep_slope": 54.48420715332031,
+      "m_unif_trajectory_sample": {
+        "16": 32.961181640625,
+        "32": 49.364013671875,
+        "64": 57.683349609375,
+        "128": 58.724365234375,
+        "192": 58.7255859375,
+        "256": 58.7255859375
+      }
+    }
+  ],
+  "jax_version": "0.11.0",
+  "backend": "cpu",
+  "wall_seconds": 914.6897395070002,
+  "timestamp_utc": "2026-07-21T14:27:02Z"
+}
