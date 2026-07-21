@@ -65,3 +65,15 @@ episode seeds — does post-fire burnt-region abandonment disappear, and
 does the completion ordering flatten? → `phase3/m31b_obs_v2.md`.
 
 Locked by human 2026-07-20 (M3.0b review).
+
+## Standing rule (logged after D5, human-issued 2026-07-21) — 100k line auto-triggers the uint8 contingency
+
+If any future phase's bench row projects training throughput below
+**100k steps/s** (at the Phase-0 env:train projection method), the
+**uint8 obs-storage contingency activates and is re-benched before that
+phase's acceptance runs** — not discussed, activated. The 100k line
+itself does not move without a budget recalculation recorded in this
+decision log.
+
+Context: the M3.1b obs-v2 bench row projected ~118.3k (margin over the
+line shrank from ~56k to ~18k; `gate_report.md`, "M3.1b / D5" section).
