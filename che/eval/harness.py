@@ -48,6 +48,10 @@ EVAL_METRICS = {
     "seeded_ignitions": ("seeded_ignitions", _SUM),
     "blocked_moves": ("blocked_moves", _SUM),
     "weak_occupancy": ("weak_occupancy", _MEAN),
+    # M4.0 harness addendum (Phase-4 carry-overs): final burnt share and
+    # the episode-mean masked crop share (0 until M4.1's obs v3 mask).
+    "burnt_fraction": ("burnt_fraction", _FINAL),
+    "masked_frac": ("masked_frac", _MEAN),
 }
 
 

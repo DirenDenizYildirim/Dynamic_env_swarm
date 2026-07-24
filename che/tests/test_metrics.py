@@ -43,6 +43,47 @@ def test_episode_metric_identities_over_rollout():
     assert int(infos["ep_deaths_fire"][-1]) > 0
 
 
+def test_burnt_fraction_and_masked_frac_channels():
+    """M4.0 harness addendum: burnt_fraction is the non-Fuel share of the
+    arena (nondecreasing — Fuel is only ever left, never re-entered) and
+    masked_frac is identically 0 while no obs mask exists (obs v1/v2)."""
+    theta = ThetaConfig(beta=0.7, iota=0.03)
+    cfg = EnvConfig(grid_size=16, n_agents=4, horizon=64, n_food=8, theta=theta)
+    policy = make_random_policy(cfg.n_agents)
+    _, _, infos = jax.jit(
+        lambda k: rollout_episode(k, cfg, policy, cfg.horizon)
+    )(jax.random.PRNGKey(0))
+    bf = infos["burnt_fraction"]
+    assert ((bf >= 0.0) & (bf <= 1.0)).all()
+    assert (jnp.diff(bf) >= 0.0).all()  # non-Fuel is absorbing as a set
+    assert float(bf[-1]) > float(bf[0])  # this theta actually burns
+    assert (infos["masked_frac"] == 0.0).all()
+    # Exact value: 3 Burning cells, beta = iota = 0 -> they burn out with
+    # no spread, so burnt_fraction is 3/256 on every step.
+    from che.env.env import step
+    from che.env.types import BURNING
+
+    cfg0 = EnvConfig(grid_size=16, n_agents=4, horizon=8, theta=ThetaConfig(beta=0.0))
+    s = zeros_state(cfg0.grid_size, cfg0.n_agents, jax.random.PRNGKey(0))
+    hazard = (  # zeros_state hazard is all-Fuel; light 3 cells
+        s.hazard.at[3, 3].set(BURNING).at[5, 9].set(BURNING).at[12, 2].set(BURNING)
+    )
+    s = dataclasses.replace(s, hazard=hazard)
+    actions = jnp.zeros((cfg0.n_agents,), jnp.int32)
+    _, s1, _, _, info1 = step(jax.random.PRNGKey(1), s, actions, cfg0)
+    assert float(info1["burnt_fraction"]) == 3.0 / 256.0
+    _, _, _, _, info2 = step(jax.random.PRNGKey(2), s1, actions, cfg0)
+    assert float(info2["burnt_fraction"]) == 3.0 / 256.0
+    cfg_v1 = dataclasses.replace(cfg, obs_version=1)
+    _, _, infos_v1 = jax.jit(
+        lambda k: rollout_episode(k, cfg_v1, policy, cfg.horizon)
+    )(jax.random.PRNGKey(0))
+    assert (infos_v1["masked_frac"] == 0.0).all()
+    # v1/v2 emit identical hazard trajectories (obs never feeds back into
+    # the kernels), so the channel itself must agree bitwise too.
+    assert (infos_v1["burnt_fraction"] == bf).all()
+
+
 def test_autoreset_surfaces_ending_episode_and_zeroes_counters():
     cfg = EnvConfig(
         grid_size=8, n_agents=4, horizon=4, n_food=4, theta=ThetaConfig(beta=0.0)

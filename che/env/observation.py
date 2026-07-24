@@ -57,6 +57,22 @@ def n_planes(cfg: EnvConfig) -> int:
     return N_PLANES if cfg.obs_version == 2 else N_PLANES_V1
 
 
+def masked_fraction(grid: jax.Array, alive: jax.Array, cfg: EnvConfig) -> jax.Array:
+    """M4.0 harness addendum: per-step masked-crop share for the info dict.
+
+    Mean over *alive* agents of the fraction of crop cells whose content
+    planes were masked by Coupling B this step; 0 when no one is alive.
+    The mask itself is defined at M4.1 (obs v3 visibility plane); obs
+    v1/v2 have no masking, so the channel is identically 0 — plumbed
+    before the milestone that needs it (Phase-3 lesson: retrofit metrics
+    before, not after).
+    """
+    del grid, alive  # M4.1 (obs v3) reads the visibility plane from `grid`
+    if cfg.obs_version in (1, 2):  # static branch — config is not traced
+        return jnp.float32(0.0)
+    raise NotImplementedError("obs v3 masking lands at M4.1")
+
+
 def observe(state: EnvState, cfg: EnvConfig) -> dict[str, jax.Array]:
     """O(. | x', h', rho', c', k'): observations from the post-step state
     (Prop. 1 / CLAUDE.md invariant #2 — call this on the *new* state).

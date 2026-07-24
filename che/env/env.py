@@ -26,7 +26,7 @@ import jax.numpy as jnp
 
 from che.env.config import EnvConfig
 from che.env.hazard import hazard_step, seed_ignitions, smoke_step
-from che.env.observation import observe
+from che.env.observation import masked_fraction, observe
 from che.env.structure import (
     coupling_a_seed_mask,
     dilate,
@@ -291,5 +291,13 @@ def step(
         "ep_deaths_collapse": ep_deaths_collapse,
         # Time-average of per-step exposure; t_new >= 1 so no zero division.
         "mean_smoke_exposure": ep_smoke_sum / t_new.astype(jnp.float32),
+        # M4.0 harness addendum (Phase-4 carry-overs; info-only, no PRNG):
+        # burnt_fraction = non-Fuel share of the arena — matches the
+        # Phase-2/3 burnt-cells observable (calibration counts non-Fuel at
+        # the horizon); nondecreasing, final value at done is the episode
+        # metric. masked_frac = mean over alive agents of the masked
+        # crop-cell share (identically 0 until M4.1's obs v3 mask).
+        "burnt_fraction": (hazard_new != FUEL).mean(dtype=jnp.float32),
+        "masked_frac": masked_fraction(obs["grid"], alive_new, cfg),
     }
     return obs, state_new, reward, done, info

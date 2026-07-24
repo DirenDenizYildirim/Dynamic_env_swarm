@@ -33,6 +33,9 @@ EXPECTED_KEYS = {
     "seeded_ignitions",
     "blocked_moves",
     "weak_occupancy",
+    # M4.0 harness addendum (Phase-4 carry-overs).
+    "burnt_fraction",
+    "masked_frac",
 }
 
 
