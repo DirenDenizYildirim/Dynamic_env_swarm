@@ -41,6 +41,12 @@ N_ACTIONS = 5
 
 # M3.1: fold_in tag for the weak-terrain reset stream (any fixed constant).
 _WEAK_STREAM = 31
+# M4.1: fold_in tag for the obs v3 reveal draw (Coupling B). DECISION:
+# derived via fold_in from the reset/step key — like _WEAK_STREAM — so the
+# pre-existing kernel streams (split(key, 3/4)) are provably untouched and
+# obs v3 with kappa_B = 0 bitwise-recovers the obs v2 trajectories
+# (invariant #3). fold_in is pure: computing it never advances `key`.
+_OBS_STREAM = 47
 _ACTION_OFFSETS = jnp.array([[0, 0], [-1, 0], [1, 0], [0, -1], [0, 1]], dtype=jnp.int32)
 
 
@@ -154,7 +160,7 @@ def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvStat
         ep_deaths_collapse=jnp.zeros((), dtype=jnp.int32),
         ep_smoke_sum=jnp.zeros((), dtype=jnp.float32),
     )
-    return observe(state, cfg), state
+    return observe(state, cfg, jax.random.fold_in(key, _OBS_STREAM)), state
 
 
 def step(
@@ -254,7 +260,9 @@ def step(
         ep_deaths_collapse=ep_deaths_collapse,
         ep_smoke_sum=ep_smoke_sum,
     )
-    obs = observe(state_new, cfg)  # post-step state, per Prop. 1
+    # Post-step state, per Prop. 1; the reveal draw (obs v3, Coupling B)
+    # uses its own fold_in stream so the kernel streams above are untouched.
+    obs = observe(state_new, cfg, jax.random.fold_in(key, _OBS_STREAM))
 
     # Invariant #5: coupling-co-active counter — collapse-seeded ignitions
     # within perception range (DECISION: Chebyshev radius obs_window // 2,

@@ -5,11 +5,11 @@ swarms (identical embodiment/action set), maximizes sample efficiency, and
 matches the theory doc's exchangeable-agent setup. Per-agent identity can be
 appended to the own-state vector later if specialization is ever needed.
 
-Architecture: small CNN over the egocentric [k, k, n_planes] crop (obs v2:
-7 indicator planes per D5; archival v1: 5 planes — observation.py),
-concatenated with the own-state vector, then separate actor/critic MLP
-heads. Orthogonal init per PureJaxRL conventions. Channel count is
-inferred from the input, so the module tracks the obs version
+Architecture: small CNN over the egocentric [k, k, n_planes] crop (obs v3:
+7 content planes + visibility mask per M4.1; archival v2: 7, v1: 5 —
+observation.py), concatenated with the own-state vector, then separate
+actor/critic MLP heads. Orthogonal init per PureJaxRL conventions. Channel
+count is inferred from the input, so the module tracks the obs version
 automatically.
 """
 

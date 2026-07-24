@@ -110,18 +110,22 @@ def _obs_probe_state(s):
 
 
 def test_obs_crop_border_correctness():
-    """Obs v2 (D5): 7 planes in order, out-of-bounds pads 0, every probe
-    lands in exactly its own plane, alive-occupancy includes self and drops
-    the dead."""
+    """Obs v3 (M4.1): 8 planes in order, out-of-bounds pads 0 on the 7
+    content planes, every probe lands in exactly its own plane, alive-
+    occupancy includes self and drops the dead. Debug theta has
+    kappa_B = 0, so the visibility plane (7) is identically 1 and the
+    content planes are unmasked (the masking semantics themselves are
+    pinned in test_coupling_b)."""
     _, s = reset(jax.random.PRNGKey(0), CFG)
     s = _obs_probe_state(s)
-    obs = observe(s, CFG)
+    obs = observe(s, CFG, jax.random.PRNGKey(9))
     grid = obs["grid"]
     assert grid.shape == (CFG.n_agents, CFG.obs_window, CFG.obs_window, N_PLANES)
+    assert (grid[..., 7] == 1.0).all()  # kappa_B = 0: everything revealed
     r = CFG.obs_window // 2
     corner = grid[0]  # agent at (0, 0): rows/cols < r are out of bounds
-    assert (corner[:r, :, :] == 0).all()
-    assert (corner[:, :r, :] == 0).all()
+    assert (corner[:r, :, :7] == 0).all()
+    assert (corner[:, :r, :7] == 0).all()
     # One probe per plane, each at its own (row, col) offset from the agent:
     # (plane, crop row, crop col, value).
     probes = [
@@ -135,8 +139,9 @@ def test_obs_crop_border_correctness():
     ]
     for pl, row, col, val in probes:
         assert corner[row, col, pl] == val, f"plane {pl}"
-        # Cross-plane isolation: the probe cell is 0 in every OTHER plane.
-        for other in range(N_PLANES):
+        # Cross-plane isolation: the probe cell is 0 in every other
+        # *content* plane (visibility is 1 everywhere at kappa_B = 0).
+        for other in range(N_PLANES - 1):
             if other != pl:
                 assert corner[row, col, other] == 0.0, f"{pl} leaked to {other}"
     # Indicator purity: everything but smoke (plane 2) is in {0, 1}.
@@ -149,8 +154,8 @@ def test_obs_crop_border_correctness():
     assert mid[r, r + 1, 6] == 0.0  # dead neighbor invisible
     # Bottom-right corner agent: high rows/cols are out of bounds.
     br = grid[2]
-    assert (br[-r:, :, :] == 0).all()
-    assert (br[:, -r:, :] == 0).all()
+    assert (br[-r:, :, :7] == 0).all()
+    assert (br[:, -r:, :7] == 0).all()
     # Own-state vec: normalized position, alive, t/horizon.
     assert obs["vec"].shape == (CFG.n_agents, 4)
     assert obs["vec"][0, 2] == 1.0

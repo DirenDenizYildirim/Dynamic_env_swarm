@@ -126,9 +126,9 @@ def main(argv=None):
                    help="render the untrained random baseline instead")
     p.add_argument("--death-penalty", type=float, default=None,
                    help="theta override — must match training (hash guard)")
-    p.add_argument("--obs-version", type=int, default=None, choices=(1, 2),
+    p.add_argument("--obs-version", type=int, default=None, choices=(1, 2, 3),
                    help="override cfg obs_version — archival renders of "
-                        "obs-v1 checkpoints only (D5)")
+                        "obs-v1/v2 checkpoints only (D5/M4.1)")
     p.add_argument("--allow-hash", action="append", default=[],
                    metavar="HASH",
                    help="accept this named legacy checkpoint hash (see "

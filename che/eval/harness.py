@@ -191,9 +191,9 @@ def main(argv: list[str] | None = None):
         "--obs-version",
         type=int,
         default=None,
-        choices=(1, 2),
-        help="override cfg obs_version — archival eval of obs-v1 "
-        "checkpoints only (D5); never compare across versions",
+        choices=(1, 2, 3),
+        help="override cfg obs_version — archival eval of obs-v1/v2 "
+        "checkpoints only (D5/M4.1); never compare across versions",
     )
     p.add_argument(
         "--allow-hash",

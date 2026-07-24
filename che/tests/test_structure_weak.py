@@ -76,7 +76,7 @@ def test_obs_plane_encoding():
         weak=jnp.zeros((L, L), jnp.bool_).at[c, c - 1].set(True),
         structure=jnp.full((L, L), INTACT, jnp.uint8).at[c, c + 1].set(COLLAPSED),
     )
-    grid = observe(s, cfg)["grid"][0]
+    grid = observe(s, cfg, jax.random.PRNGKey(0))["grid"][0]
     # Obs v2 (D5): weak is indicator plane 4, collapsed indicator plane 5.
     assert grid[r, r - 1, 4] == 1.0  # weak west
     assert grid[r, r - 1, 5] == 0.0  # ...but not collapsed
@@ -86,7 +86,7 @@ def test_obs_plane_encoding():
     # A collapsed cell that is also weak sets BOTH indicators (D5 DECISION:
     # two bits carry strictly more information than v1's collapse-wins).
     s2 = dataclasses.replace(s, weak=s.weak.at[c, c + 1].set(True))
-    grid2 = observe(s2, cfg)["grid"][0]
+    grid2 = observe(s2, cfg, jax.random.PRNGKey(0))["grid"][0]
     assert grid2[r, r + 1, 4] == 1.0 and grid2[r, r + 1, 5] == 1.0
 
 
@@ -123,7 +123,7 @@ def test_terrain_stream_is_dedicated():
         assert (getattr(s_on, f) == getattr(s_off, f)).all(), f
     # The weak mask is visible at reset (M3.1 DECISION: observable; obs v2
     # plane 4 per D5).
-    obs_on = observe(s_on, cfg_on)
+    obs_on = observe(s_on, cfg_on, jax.random.PRNGKey(0))
     assert (obs_on["grid"][..., 4] != obs_off["grid"][..., 4]).any()
 
 

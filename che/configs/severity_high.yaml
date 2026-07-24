@@ -16,6 +16,9 @@ env:
   n_agents: 12
   horizon: 256
   obs_window: 9
+  # M4.1 (2026-07-24): obs v3 — Coupling B masking + visibility plane.
+  # Prior (v2) checkpoints are archival-only per the D5 protocol.
+  obs_version: 3
   n_food: 32
 
 theta:

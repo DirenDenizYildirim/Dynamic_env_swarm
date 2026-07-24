@@ -46,7 +46,8 @@ def test_episode_metric_identities_over_rollout():
 def test_burnt_fraction_and_masked_frac_channels():
     """M4.0 harness addendum: burnt_fraction is the non-Fuel share of the
     arena (nondecreasing — Fuel is only ever left, never re-entered) and
-    masked_frac is identically 0 while no obs mask exists (obs v1/v2)."""
+    masked_frac is identically 0 whenever no masking exists (obs v3 at
+    kappa_B = 0 here, and archival v1 below, which has no mask at all)."""
     theta = ThetaConfig(beta=0.7, iota=0.03)
     cfg = EnvConfig(grid_size=16, n_agents=4, horizon=64, n_food=8, theta=theta)
     policy = make_random_policy(cfg.n_agents)

@@ -1,7 +1,26 @@
-"""Egocentric observations — obs v2 (D5), v1 kept for archival eval.
+"""Egocentric observations — obs v3 (M4.1, Coupling B live); v2/v1 archival.
 
-obs v2 planes, in order (float32, k x k crops centered on the agent;
-all indicators {0, 1} except smoke, which stays continuous):
+obs v3 = the v2 content planes (below) gated per cell by Beer-Lambert
+transmittance through the smoke field (Def. 6), plus an appended
+visibility plane:
+
+    7. visibility — the *realized* per-cell reveal mask (1 = seen).
+       Agents must be able to distinguish "unseen" from "absent"; zero-
+       fill without a mask would conflate them and confound ISO/JOINT
+       with an artificial memory burden (M4.1 locked design).
+
+Per-cell stochastic masking: for each cell y in agent i's crop, optical
+depth D(i, y) = kappa_B * dist(x_i, y) * mean_rho(ray), with mean_rho an
+S=4-point quadrature along the ray through the *current* (post-step)
+smoke field; tau = exp(-D); the cell's 7 content planes are revealed
+with probability tau, else zeroed. Own cell: dist 0 => tau = 1, always
+visible. Own-state vec unaffected. The reveal uniforms are drawn
+unconditionally, so kappa_B = 0 => tau == 1 => bitwise-identical
+trajectories to the pre-masking env under the same keys (invariant #3).
+Schema frozen after M4.1 (Phase 5 adds message inputs, not grid planes).
+
+obs v2 content planes, in order (float32, k x k crops centered on the
+agent; all indicators {0, 1} except smoke, which stays continuous):
     0. burning         — 1[hazard == Burning]  (the lethal set)
     1. burnt           — 1[hazard == Burnt]    (cold ash: safe, passable)
     2. smoke           — raw rho (bounded by sigma_s / (1 - e^-eta))
@@ -29,12 +48,12 @@ obs v1 (M1.2, archival only — no cross-version comparisons, ever):
     3. structure       — {0, .5, 1} for {sound, weak-intact, collapsed}
     4. alive occupancy — as v2 plane 6
 
-Out-of-bounds cells pad 0 on all planes. Own-state vector unchanged:
-(row/L, col/L, alive, t/horizon).
+Out-of-bounds cells pad 0 on the content planes. The visibility plane is
+computed for every crop cell (rays sample out-of-grid smoke as 0), so an
+out-of-bounds cell can read "seen and empty" — same conflation v2 already
+had, and the own-position vec disambiguates the arena edge.
 
-Beer-Lambert attenuation (Coupling B, Def. 6) enters here in Phase 4 as a
-transmittance gate on these planes; kappa_B is already in ThetaConfig so
-the signature will not change.
+Own-state vector unchanged: (row/L, col/L, alive, t/horizon).
 """
 
 import chex
@@ -45,37 +64,97 @@ from che.env.config import EnvConfig
 from che.env.tasks import occupancy_grid
 from che.env.types import BURNING, BURNT, COLLAPSED, EnvState
 
-# Channel counts. N_PLANES is the *current* (v2) count — networks and
-# tests import it instead of hard-coding; the archival v1 path goes
+# Channel counts. N_PLANES is the *current* (v3) count — networks and
+# tests import it instead of hard-coding; archival v1/v2 paths go
 # through n_planes(cfg).
-N_PLANES = 7
+N_PLANES = 8
+N_PLANES_V2 = 7
 N_PLANES_V1 = 5
+
+# S-point quadrature order for the ray integral (M4.1 locked design).
+N_QUAD = 4
 
 
 def n_planes(cfg: EnvConfig) -> int:
     """Channel count for the config's obs_version."""
-    return N_PLANES if cfg.obs_version == 2 else N_PLANES_V1
+    return {1: N_PLANES_V1, 2: N_PLANES_V2, 3: N_PLANES}[cfg.obs_version]
+
+
+def transmittance(
+    smoke: jax.Array,
+    agent_pos: jax.Array,
+    *,
+    kappa_B: float,
+    k: int,
+    n_quad: int = N_QUAD,
+) -> jax.Array:
+    """Beer-Lambert transmittance tau over each agent's k x k crop (Def. 6).
+
+    tau[a, i, j] = exp(-D) with optical depth D = kappa_B * dist * mean_rho:
+    dist the Euclidean cell distance from agent a to crop cell (i, j), and
+    mean_rho an n_quad-point midpoint-rule quadrature of the smoke field
+    along the ray, t_s = (s + 1/2) / n_quad. DECISION: sample points read
+    the nearest cell (rays through the piecewise-constant field; rounding
+    is jnp.round, shared by every caller), out-of-grid smoke reads 0.
+    Own cell: dist 0 => tau = 1.
+
+    This is THE ONE transmittance code path (M4.1 locked design): the env
+    observation kernel, the E2C Thm.-1 validation, and any diagnostic must
+    all call it — the theory<->implementation handshake is only meaningful
+    if they share the literal code. Do not fork or inline variants.
+    """
+    chex.assert_rank(smoke, 2)
+    chex.assert_type(smoke, jnp.float32)
+    chex.assert_shape(agent_pos, (None, 2))
+    r = k // 2
+    span = jnp.arange(-r, r + 1)
+    offs = jnp.stack(jnp.meshgrid(span, span, indexing="ij"), axis=-1)  # [k, k, 2]
+    dist = jnp.sqrt((offs.astype(jnp.float32) ** 2).sum(-1))  # [k, k]
+    t = (jnp.arange(n_quad, dtype=jnp.float32) + 0.5) / n_quad  # [S]
+    samp = jnp.round(t[:, None, None, None] * offs.astype(jnp.float32)).astype(
+        jnp.int32
+    )  # [S, k, k, 2]; |entries| <= r, so an r-pad covers every gather
+    padded = jnp.pad(smoke, r)
+
+    def tau_one(pos: jax.Array) -> jax.Array:
+        idx = pos[None, None, None, :] + samp + r
+        mean_rho = padded[idx[..., 0], idx[..., 1]].mean(axis=0)  # [k, k]
+        return jnp.exp(-kappa_B * dist * mean_rho)
+
+    tau = jax.vmap(tau_one)(agent_pos)
+    chex.assert_shape(tau, (agent_pos.shape[0], k, k))
+    return tau
 
 
 def masked_fraction(grid: jax.Array, alive: jax.Array, cfg: EnvConfig) -> jax.Array:
     """M4.0 harness addendum: per-step masked-crop share for the info dict.
 
     Mean over *alive* agents of the fraction of crop cells whose content
-    planes were masked by Coupling B this step; 0 when no one is alive.
-    The mask itself is defined at M4.1 (obs v3 visibility plane); obs
-    v1/v2 have no masking, so the channel is identically 0 — plumbed
-    before the milestone that needs it (Phase-3 lesson: retrofit metrics
-    before, not after).
+    planes were masked by Coupling B this step (1 - mean of the obs v3
+    visibility plane); 0 when no one is alive. Obs v1/v2 have no masking,
+    so the channel is identically 0 there.
     """
-    del grid, alive  # M4.1 (obs v3) reads the visibility plane from `grid`
     if cfg.obs_version in (1, 2):  # static branch — config is not traced
+        del grid, alive
         return jnp.float32(0.0)
-    raise NotImplementedError("obs v3 masking lands at M4.1")
+    # Subtract before averaging: an all-ones visibility plane then yields
+    # an exact 0.0 (mean-of-ones is 1 - 2^-27 in float32, not 1).
+    masked = (1.0 - grid[..., -1]).mean(axis=(-2, -1))  # [n_agents]
+    return jnp.where(alive, masked, 0.0).sum() / jnp.maximum(
+        alive.sum(dtype=jnp.float32), 1.0
+    )
 
 
-def observe(state: EnvState, cfg: EnvConfig) -> dict[str, jax.Array]:
-    """O(. | x', h', rho', c', k'): observations from the post-step state
-    (Prop. 1 / CLAUDE.md invariant #2 — call this on the *new* state).
+def observe(
+    state: EnvState, cfg: EnvConfig, key: jax.Array | None = None
+) -> dict[str, jax.Array]:
+    """O_{kappa_B}(. | x', h', rho', c', k'): observations from the
+    post-step state (Prop. 1 / CLAUDE.md invariant #2 — call this on the
+    *new* state).
+
+    `key` drives the obs v3 per-cell reveal draw (required for v3; the
+    caller derives it from a dedicated stream — see env._OBS_STREAM).
+    v1/v2 are deterministic and ignore it.
 
     Returns {"grid": float32 [n_agents, k, k, n_planes(cfg)],
              "vec": float32 [n_agents, 4]}.
@@ -84,7 +163,7 @@ def observe(state: EnvState, cfg: EnvConfig) -> dict[str, jax.Array]:
     r = k // 2
     n_ch = n_planes(cfg)
     occ = occupancy_grid(state.agent_pos, state.agent_alive, cfg.grid_size)
-    if cfg.obs_version == 2:  # static Python branch — config is not traced
+    if cfg.obs_version in (2, 3):  # static Python branch — config is not traced
         plane_list = [
             (state.hazard == BURNING).astype(jnp.float32),
             (state.hazard == BURNT).astype(jnp.float32),
@@ -107,13 +186,33 @@ def observe(state: EnvState, cfg: EnvConfig) -> dict[str, jax.Array]:
             occ.astype(jnp.float32),
         ]
     planes = jnp.stack(plane_list, axis=-1)
+    n_content = len(plane_list)
     padded = jnp.pad(planes, ((r, r), (r, r), (0, 0)))
 
     def crop_one(pos: jax.Array) -> jax.Array:
         # Padded by r, so the slice starting at `pos` is centered on the agent.
-        return jax.lax.dynamic_slice(padded, (pos[0], pos[1], 0), (k, k, n_ch))
+        return jax.lax.dynamic_slice(padded, (pos[0], pos[1], 0), (k, k, n_content))
 
     grid = jax.vmap(crop_one)(state.agent_pos)
+    if cfg.obs_version == 3:
+        # Coupling B (Def. 6, M4.1): per-cell stochastic masking of the
+        # content planes + the realized reveal mask as the final plane.
+        # The uniforms are drawn unconditionally (invariant #3): at
+        # kappa_B = 0, tau == 1 and u < 1 always, so the mask is all-ones
+        # and the content planes are bitwise those of the pre-masking env.
+        if key is None:
+            raise ValueError("obs v3 requires a PRNG key for the reveal draw")
+        tau = transmittance(
+            state.smoke, state.agent_pos, kappa_B=cfg.theta.kappa_B, k=k
+        )
+        reveal = jax.random.uniform(key, tau.shape) < tau  # P(seen) = tau
+        grid = jnp.concatenate(
+            [
+                grid * reveal[..., None].astype(jnp.float32),
+                reveal[..., None].astype(jnp.float32),
+            ],
+            axis=-1,
+        )
     vec = jnp.concatenate(
         [
             state.agent_pos.astype(jnp.float32) / cfg.grid_size,

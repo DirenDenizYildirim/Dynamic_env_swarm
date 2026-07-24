@@ -24,7 +24,12 @@ class ThetaConfig:
     # Primary axes.
     beta: float = 0.35  # hazard transmissibility (Def. 3)
     kappa_A: float = 0.0  # collapse->ignition seeding prob. (Def. 5)
-    kappa_B: float = 0.0  # Beer-Lambert attenuation strength (Def. 6)
+    # kappa_B (Def. 6): Beer-Lambert attenuation strength — optical depth
+    # is the product kappa_B * rho, so sweeping kappa_B alone spans the
+    # whole attenuation family; (sigma_s, eta) therefore stay at their
+    # long-standing values (Phase-4 prompt note: changing smoke constants
+    # would change the env family for no expressive gain).
+    kappa_B: float = 0.0
     delta: float = 0.0  # comms denial level (Def. 7)
     # Hazard/smoke sub-parameters (Def. 3, Def. 6, D3).
     # M1.1: optional death penalty, Def.-2 compliant — reads only the alpha
@@ -58,9 +63,12 @@ class EnvConfig:
     # M1.2: obs locked — k=9 egocentric crop over the planes defined in
     # observation.py.
     obs_window: int = 9  # k: egocentric k x k crop, must be odd
-    # D5 (2026-07-20): obs v2 indicator planes are the default; v1 (mixed
-    # ordinal encodings) is restorable for archival evaluation only.
-    obs_version: int = 2  # {1, 2}
+    # M4.1 (2026-07-24): obs v3 — v2 indicator planes gated by Coupling B
+    # masking + visibility plane — is the default; v2 (D5, unmasked) and
+    # v1 (mixed ordinal encodings) are restorable for archival evaluation
+    # only. Schema frozen after M4.1 (Phase 5 adds message inputs, not
+    # grid planes).
+    obs_version: int = 3  # {1, 2, 3}
     n_food: int = 8  # F food items for the Phase-0 foraging stub
     # M1.3: static-hazard control. Env-level *training-protocol* knob,
     # deliberately not in ThetaConfig — it is not a stressor element.
@@ -74,7 +82,7 @@ class EnvConfig:
             raise ValueError(f"obs_window must be odd, got {self.obs_window}")
         if self.hazard_mode not in ("dynamic", "frozen"):
             raise ValueError(f"unknown hazard_mode: {self.hazard_mode!r}")
-        if self.obs_version not in (1, 2):
+        if self.obs_version not in (1, 2, 3):
             raise ValueError(f"unknown obs_version: {self.obs_version!r}")
 
     @property
