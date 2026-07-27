@@ -82,3 +82,30 @@ Final go/no-go uses *training* throughput measured at M0.6; this env-only figure
 - **Verdict: PASS with flag — obs v2 locked (D5); throughput margin
   thinner than expected, human review at the M3.1b STOP.**
 
+## Phase 4 obs v3 — reference cell re-measurement (M4.1 / Coupling B)
+
+| grid | n_envs | n_agents | compile (s) | median steps/s | IQR | peak mem (GiB) | obs |
+|---|---|---|---|---|---|---|---|
+| 64² ★ | 1024 | 12 | 3.04 | 8,375,048 | 34,200 | 0.15 | v3: k=9, 7 content + visibility |
+
+- Same protocol/device as M3.1b (RTX 5090, jax 0.11.0); raw JSON:
+  `phase4/m41/obs_v3_ref_cell.json` (commit bfab1d2 code state).
+- Env-only cost of Coupling B (transmittance quadrature + reveal draw +
+  visibility plane, all unconditional per invariant #3; config kappa_B = 0
+  so this is the pure mechanism cost) vs the M3.1b row: **−12.6 %**
+  (9,580,456 → 8,375,048) — close to the −9 % CPU leading indicator.
+- End-to-end training is neutral: the medium 500-update probe ran 276 s /
+  68.6k env-steps/s under v3 vs 285 s / 66.0k under v2 (m31b) — within
+  run-to-run variation; the env remains a small share of a train step.
+- Training projection at the measured Phase-0 env:train ratio (÷81):
+  **~103.4k train steps/s — above the 100k contingency line**, margin
+  reduced from ~18k to ~3.4k. Per the standing rule (decision log,
+  2026-07-21) the uint8 obs-storage contingency activates only below
+  100k: **contingency stays untriggered.**
+- **Verdict: PASS with flag — obs v3 locked, schema frozen (M4.1); the
+  projection margin is now ~3 %, and the measured end-to-end evidence
+  (66→68.6k env-steps/s) says the ÷81 projection is conservative for
+  real training. Any further env-side cost (Phase 5 comms) will cross
+  the line and auto-trigger the contingency — human review at the M4.1
+  STOP.**
+
