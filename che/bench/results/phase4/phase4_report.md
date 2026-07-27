@@ -82,9 +82,10 @@ prediction path never touches.
 
 Acceptance, criterion by criterion:
 
-1. **Empirical within 2·SE of prediction at every grid point** — 7 of 8
-   points pass, κ_B = 5 lands at 2.11·SE. **Not a bias — see the ruling
-   request below.**
+1. **Empirical matches the numeric prediction** — PASS under the final
+   three-condition gate (human ruling 2026-07-27, below): (a) max |z| =
+   2.11 ≤ 2.69, (b) Σz² = 6.55 on 8 dof → p = 0.586 ≥ 0.05, (c) mean
+   z = −0.44, within 0.71.
 2. **Memorizing policy flat at ½** — PASS: every point within 2·SE of ½
    (max deviation 0.0084 at κ_B = 5, against 2·SE = 0.0110), no trend
    in κ_B.
@@ -92,13 +93,29 @@ Acceptance, criterion by criterion:
    in every episode).
 4. **J\*(large) − ½ ≤ 0.02** — PASS: 0.0000 at κ_B = 8 (q = 0.0056).
 
-### Ruling request — acceptance-gate power (criterion 1)
+### Acceptance gate for criterion 1 — final ruling (human, 2026-07-27)
 
-Applied per-point across the 7 informative κ_B values, a 2·SE gate
-rejects a *correct* implementation with probability 1 − 0.9545⁷ = **28%**.
-The replicate diagnostic (8 independent seeds × 8 points,
-`e2c_replicates.json`, reproducible with
-`plot_e2c.py --replicates 8`) settles which side of that we are on:
+Supersedes both the phase prompt's per-point 2·SE spec and the interim
+joint-χ²-only amendment. Three conditions on the per-point
+z = Δ / SE(Δ), **all required**, each catching what the others cannot:
+
+| | condition | catches | measured |
+|---|---|---|---|
+| (a) | max \|z\| ≤ 2.69 (Šidák FWER 5%) | localized gross error at one κ_B | **2.11** ✓ |
+| (b) | Σz² vs χ²(n), p ≥ 0.05 | diffuse magnitude misfit no single point flags (every point at −2σ passes (a), fails (b)) | **6.55 on 8 dof, p = 0.586** ✓ |
+| (c) | \|mean z\| ≤ 2/√n = 0.71 | signed systematic drift passing both (every point at −1σ passes (a) and (b), fails (c)) | **−0.44** ✓ |
+
+**GREEN under the final gate.** n counts every grid point; κ_B = 0 is
+deterministic (τ ≡ 1 ⇒ q ≡ 1) and contributes z = 0 to all three
+statistics. Constants live at the top of `che/tests/test_e2c.py` with
+the rationale as one comment block.
+
+Why the prompt's per-point 2·SE was replaced: applied across the 7
+informative κ_B values it rejects a *correct* implementation with
+probability 1 − 0.9545⁷ = **28%**, and on the pinned seed 0 the κ_B = 5
+point lands at 2.11·SE. The replicate diagnostic (8 independent seeds ×
+8 points, `e2c_replicates.json`, reproducible with
+`plot_e2c.py --replicates 8`) settles which side of that we were on:
 
 | κ_B | 0.5 | 1.0 | 1.5 | 2.0 | 3.0 | 5.0 | 8.0 |
 |---|---|---|---|---|---|---|---|
@@ -110,17 +127,13 @@ Pooled over the 56 informative (seed, κ_B) cells: **mean z = +0.025,
 sd = 0.990, 5.4 % beyond 2σ against 4.6 % expected** — the z-scores are
 N(0, 1) to measurement resolution, and a systematic offset larger than
 ~0.13·SE (≈ 0.0007 in J) would have shown. κ_B = 5's mean z over seeds
-is −0.36; seed 0's −2.11 is a fluctuation, not a defect.
+is −0.36; seed 0's −2.11 is a fluctuation, not a defect. So the gate was
+under-powered, not the implementation biased.
 
-No tolerance was adjusted (CLAUDE.md invariant 4). The `@slow` test
-encodes the criterion as written and **currently fails on the pinned
-seed 0 at κ_B = 5**, which under the M3.3 protocol (pinned keys,
-deterministic committed outcome) is a report-and-ask event. Recommended
-restatement, a one-constant change at `ACCEPT_Z` in
-`che/tests/test_e2c.py`: **Šidák family-wise 2.69·SE per point**, which
-holds the false-rejection rate at the 5 % the "2·SE" phrasing intends
-rather than at 28 %. Under it the current measurement passes with the
-largest \|z\| at 2.11. Re-keying to a seed that happens to pass was
+No tolerance was ever adjusted by the RA (CLAUDE.md invariant 4): the
+gate was carried to the M4.2 STOP as a report-and-ask under the M3.3
+protocol (pinned keys, deterministic committed outcome) and replaced by
+the human ruling above. Re-keying to a seed that happens to pass was
 considered and rejected as seed-shopping.
 
 ### Finding 1 — a documented kernel property (not a bug)

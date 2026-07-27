@@ -26,6 +26,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 import pytest
+from jax.scipy.stats import chi2
 
 from che.env import e2c, observation
 from che.env.e2c import (
@@ -44,20 +45,32 @@ from che.env.e2c import (
 N_EPISODES = 8192  # >= the 4096 phase-prompt floor; SE(J) <= 0.0055
 N_MC = 8192
 
-# Acceptance 1's per-point threshold, in units of SE(delta). The phase
-# prompt says 2·SE. **OPEN RULING REQUEST (M4.2 report, "acceptance-gate
-# power"):** applied per-point across the 7 informative kappa_B values
-# this gate rejects a *correct* implementation ~28% of the time
-# (1 - 0.9545^7). The replicate diagnostic (8 seeds x 7 points,
-# `e2c_replicates.json`) measures z ~ N(0, 1): pooled mean +0.025,
-# sd 0.990, 5.4% beyond 2 sigma vs 4.6% expected — no bias at a
-# resolution of ~0.13 SE. On the pinned seed 0 the kappa_B = 5 point
-# lands at 2.1 SE and this assertion fails. Per the M3.3 protocol
-# (pinned keys, deterministic committed outcome) that is a
-# report-and-ask event, not a tolerance the RA may adjust: raising this
-# to the Sidak family-wise 2.69 (5% overall) is the recommended
-# restatement and is a one-constant change here.
-ACCEPT_Z = 2.0
+# --- Acceptance-1 statistical gate (human ruling 2026-07-27, final;
+# supersedes both the phase prompt's per-point 2·SE spec and the
+# joint-chi2-only amendment). Three conditions on the per-point
+# z = delta / SE(delta), all required, each catching what the others
+# cannot:
+#
+#   (a) max |z| <= 2.69       Sidak FWER 5% across the grid — catches a
+#                             localized gross error at a single kappa_B;
+#   (b) sum z^2 vs chi2(n),   catches diffuse magnitude misfit that no
+#       p >= 0.05             single point flags (every point at -2 sigma
+#                             passes (a), fails (b));
+#   (c) |mean z| <= 2/sqrt(n) catches signed systematic drift that passes
+#                             both (every point at -1 sigma passes (a)
+#                             and (b), fails (c)).
+#
+# Why not the prompt's per-point 2·SE: applied across the 7 informative
+# points it rejects a *correct* implementation ~28% of the time
+# (1 - 0.9545^7). The 8-seed replicate diagnostic
+# (`phase4/m42/e2c_replicates.json`) measures z ~ N(0, 1) — pooled mean
+# +0.025, sd 0.990, 5.4% beyond 2 sigma against 4.6% expected — so the
+# gate was the problem, not the implementation. n counts every grid
+# point; kappa_B = 0 is deterministic (tau == 1 => q == 1) and
+# contributes z = 0 to all three statistics.
+ACCEPT_MAX_ABS_Z = 2.69
+ACCEPT_CHI2_P = 0.05
+ACCEPT_MEAN_ABS_Z = 2.0 / np.sqrt(len(KAPPA_GRID))
 
 
 @pytest.fixture(scope="module")
@@ -67,22 +80,39 @@ def sweep() -> list[dict]:
 
 @pytest.mark.slow
 def test_empirical_matches_numeric_prediction(sweep):
-    """Acceptance 1 — the Theorem-1 handshake."""
+    """Acceptance 1 — the Theorem-1 handshake, under the final gate."""
     print("\nkappa_B   J*_emp    J*_pred    delta       z      q_mc")
+    z = []
     for p in sweep:
-        z = p["delta"] / p["se_delta"] if p["se_delta"] > 0 else 0.0
+        z_p = p["delta"] / p["se_delta"] if p["se_delta"] > 0 else 0.0
+        z.append(z_p)
         print(
             f"{p['kappa_B']:6.2f}  {p['j_optimal']:.4f}    "
-            f"{p['j_predicted']:.4f}    {p['delta']:+.4f}  {z:+6.2f}   "
+            f"{p['j_predicted']:.4f}    {p['delta']:+.4f}  {z_p:+6.2f}   "
             f"{p['q_mc']:.4f}"
         )
-    for p in sweep:
-        assert abs(p["delta"]) <= ACCEPT_Z * p["se_delta"], (
-            f"kappa_B={p['kappa_B']}: J*_emp {p['j_optimal']:.4f} vs "
-            f"predicted {p['j_predicted']:.4f} (delta {p['delta']:+.4f}, "
-            f"{abs(p['delta']) / max(p['se_delta'], 1e-12):.2f}·SE, "
-            f"gate {ACCEPT_Z}·SE) — see the ACCEPT_Z ruling note above"
-        )
+    z = np.asarray(z)
+    max_abs_z = float(np.abs(z).max())
+    chi2_stat = float((z**2).sum())
+    p_value = float(chi2.sf(chi2_stat, z.size))
+    mean_z = float(z.mean())
+    print(
+        f"(a) max|z| = {max_abs_z:.2f} (gate {ACCEPT_MAX_ABS_Z})\n"
+        f"(b) sum z^2 = {chi2_stat:.2f} on {z.size} dof -> p = {p_value:.3f} "
+        f"(gate >= {ACCEPT_CHI2_P})\n"
+        f"(c) mean z = {mean_z:+.2f} (gate |.| <= {ACCEPT_MEAN_ABS_Z:.2f})"
+    )
+    assert max_abs_z <= ACCEPT_MAX_ABS_Z, (
+        f"(a) localized misfit: max|z| = {max_abs_z:.2f} at "
+        f"kappa_B = {sweep[int(np.abs(z).argmax())]['kappa_B']}"
+    )
+    assert p_value >= ACCEPT_CHI2_P, (
+        f"(b) diffuse magnitude misfit: sum z^2 = {chi2_stat:.2f} on "
+        f"{z.size} dof, p = {p_value:.4f}"
+    )
+    assert abs(mean_z) <= ACCEPT_MEAN_ABS_Z, (
+        f"(c) signed systematic drift: mean z = {mean_z:+.3f}"
+    )
 
 
 @pytest.mark.slow

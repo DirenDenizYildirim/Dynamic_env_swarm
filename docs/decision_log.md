@@ -194,3 +194,38 @@ under-powered. On the pinned seed 0 the kappa_B = 5 point lands at
 2.69 SE per point (5% overall), a one-constant change at `ACCEPT_Z` in
 `che/tests/test_e2c.py`. Re-keying to a passing seed was considered and
 rejected as seed-shopping.
+
+## M4.2 statistical gate — final ruling (human, 2026-07-27)
+
+Reconciled and final; **supersedes both** the phase-4 prompt's per-point
+2·SE acceptance spec **and** the interim joint-chi2-only amendment, and
+closes the open item logged at the end of the M4.2 ruling above.
+
+Acceptance criterion 1 (empirical J* vs the numeric prediction) is
+gated on the per-point z = delta / SE(delta) by **three conditions, all
+required**, each catching a failure mode the others cannot:
+
+- **(a) per-point |z| <= 2.69** (Sidak FWER 5%) — catches a localized
+  gross error at a single kappa_B.
+- **(b) joint sum z^2 against chi2(n), p >= 0.05** — catches diffuse
+  magnitude misfit that no single point flags (every point sitting at
+  -2 sigma passes (a) and fails (b)).
+- **(c) |mean z| <= 2/sqrt(n) = 0.71** — catches signed systematic
+  drift that passes both (every point at -1 sigma passes (a) and (b)
+  and fails (c)).
+
+n counts every grid point (kappa_B = 0 is deterministic, tau == 1 =>
+q == 1, and contributes z = 0). Constants live at the top of
+`che/tests/test_e2c.py` with the rationale as a single comment block.
+
+**Measured at the M4.2 close: max|z| = 2.11, sum z^2 = 6.55 on 8 dof
+(p = 0.586), mean z = -0.44 — GREEN on all three.**
+
+Basis for replacing the per-point 2·SE spec: applied across the 7
+informative kappa_B values it rejects a *correct* implementation ~28% of
+the time (1 - 0.9545^7), and the 8-seed replicate diagnostic
+(`phase4/m42/e2c_replicates.json`) measured the z-scores as N(0, 1)
+(pooled mean +0.025, sd 0.990, 5.4% beyond 2 sigma vs 4.6% expected;
+no per-point bias resolvable above ~0.13 SE). The gate was
+under-powered; the implementation is unbiased. Not an RA tolerance
+change — the RA carried it to the STOP as a report-and-ask.
