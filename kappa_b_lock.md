@@ -115,6 +115,69 @@ it already conditions on a Burning cell being 3 away, so it measures the
 local smoke structure at a fire front, which is similar in all three
 regimes. Neither of the other two observables has this property.
 
+## Probe policies (run 2026-07-27) — the finding sharpens
+
+Two arms, one per end of the options trade below: a 200-update probe per
+severity at κ_B = 0.5 and at κ_B = 1.5, dp = 0.5, Coupling A locked,
+obs v3 (`che/scripts/run_m43_probes.sh`; 3 × 160 s + 30 s per arm on the
+RTX 5090; raw `m43/coupling_b_calibration_probe_kB{0.5,1.5}.json`,
+figures `kappa_b_bands_probe_kB*.png`).
+
+**1. Trained policies move `masked_frac` further from the band, not
+closer.** Medium ceiling (κ_B → ∞):
+
+| policy | masked_frac ceiling | exposed-agent share | burnt_fraction | survival |
+|---|---|---|---|---|
+| random | 0.130 | 0.266 | 0.348 | 0.784 |
+| probe (trained at κ_B = 0.5) | **0.043** | 0.224 | 0.350 | 0.893 |
+| probe (trained at κ_B = 1.5) | **0.040** | 0.214 | 0.347 | 0.859 |
+
+The band floor is 0.150, so under the policies the lock will actually
+use, the observable's supremum is **3.5× below the floor** (it was 1.15×
+below under the random policy). `burnt_fraction` is identical across all
+three rows — the *fire* is unchanged; only where the swarm stands
+differs — and survival rises 0.784 → 0.893, which is the mechanism:
+trained policies avoid fire, so their crops contain less smoke.
+
+Note the exposure and the ceiling move differently: exposure falls only
+0.266 → 0.224 while the ceiling falls 3×. Trained agents are not merely
+near smoke less often — when they are near it they keep it at the
+*periphery* of the crop rather than standing inside it.
+
+**2. The circularity worry is empirically negligible.** The two arms
+bracket the whole options trade (κ_B = 0.5 is option A's pick, 1.5 is
+option C's) and disagree by almost nothing: Medium masked_frac at
+κ_B = 0.5 is 0.0035 vs 0.0043, detection 0.657 vs 0.647, ceilings 0.043
+vs 0.040, admissible detection intervals [0.42, 1.11] vs [0.40, 1.08].
+Holding the probe's state distribution fixed across the sweep therefore
+costs essentially nothing, and **the lock does not depend on which κ_B
+the probe was trained at.**
+
+**3. Detection shifts slightly *up* in κ_B under the probes** —
+[0.42, 1.11] vs [0.36, 0.95] random — for the same reason as (1): fire
+sits at the crop edge, where the smoke column along the ray is thinner,
+so a given detection level needs a little more κ_B.
+
+**4. Still no intersection, but the gap is now narrow.** Under the
+probe arms:
+
+| band | admissible κ_B |
+|---|---|
+| masked_frac ∈ [0.15, 0.45] | none — unreachable |
+| detection ∈ [0.4, 0.7] | [0.42, **1.11**] |
+| E2C q ∈ [0.3, 0.7] | [**1.28**, 2.62] |
+
+The two reachable bands miss each other by a factor of **1.15×**, over
+the open interval κ_B ∈ (1.11, 1.28). Closing it takes one of two
+minimal relaxations:
+
+- lower the detection floor 0.40 → **0.352** (its value at κ_B = 1.28), or
+- raise the E2C q ceiling 0.70 → **0.762** (its value at κ_B = 1.11).
+
+Either yields a single admissible point. The nearest-miss candidate,
+κ_B = 1.19, gives detection 0.376 and q 0.731 — outside each band by
+~6%.
+
 ## Options for the lock discussion
 
 **A. Lock from the detection band; demote the other two to reported
@@ -142,39 +205,45 @@ Medium's smoke coverage is higher. **Explicitly out of scope** — the
 phase-4 non-goals forbid smoke-parameter changes, and this would
 invalidate the Phase-2 severity calibration.
 
-### RA recommendation: A + C, propose **κ_B = 0.5**
+### RA recommendation (updated after the probe arms): **κ_B = 1.1**
 
-Detection 0.609 (mid-band), masked_frac 0.006 (Medium) / 0.025 (High),
-E2C q 0.958. Rationale: the detection band's intent clause ("meaningfully
-degraded, not blind") is the one the measurement can honour — at
-κ_B = 0.5 a Burning cell three cells away is seen ~61 % of the time,
-degraded but far from blind, and the value transfers across all three
-severities. Taking the E2C band instead (κ_B ∈ [1.28, 2.62]) would put
-detection at 0.25–0.16 — a Burning cell three cells away seen one time
-in five, which reads as *blind*, contradicting the stated intent of the
-first band.
+Option A + C, taken at the *top* of the detection interval rather than
+its middle. Under the probe policies κ_B = 1.1 gives **detection 0.404**
+(just inside the band) and **E2C q 0.765** (just outside the [0.3, 0.7]
+ceiling, by 0.065). masked_frac is 0.006 at Medium either way and cannot
+bind at any value.
 
-If instead you weight the Thm.-1 cross-reference highest, κ_B = 1.5 is
-the natural pick (q = 0.626, detection 0.247) — but then the M4.4 grid
-should expect a large completion/survival cost at Medium and High, and
-the report should say the coupling was set to the theory's
-partial-information point rather than the env's detection band.
+Why the top of the interval rather than κ_B = 0.5 as originally
+proposed: the probe arms show the two reachable bands are only 1.15×
+apart, so a single value can sit inside detection *and* within ~6 % of
+the E2C band — which is as close to honouring both as the geometry
+permits. κ_B = 0.5 satisfies detection comfortably (0.657) but leaves
+q = 0.958, i.e. an E2C agent that is essentially always informed, and
+the Thm.-1 cross-reference then carries no information about the locked
+value at all.
 
-## Probe policies — not run
+The honest framing for the report either way: **the E2C band was not
+satisfiable jointly**, and the lock is made on the two env-measured
+observables with the micro-env quoted as a cross-reference that missed
+by ~6 %.
 
-The prompt calls for one fresh 200-update probe policy per severity
-alongside the random policy. **Not run:** the STOP triggered on the
-random-policy sweep, and the probes cost GPU time that the lock
-discussion may redirect. `che/scripts/run_m43_probes.sh` is ready — it
-trains the three probes (~6 GPU-minutes total at 200 updates) and
-re-runs this calibration under them, writing
-`m43/coupling_b_calibration_probe.json`.
+If you would rather have a value that satisfies the E2C band exactly,
+κ_B = 1.3 gives q = 0.694 (inside) and detection 0.347 (outside by
+0.053) — the mirror-image trade. Anything in [1.11, 1.28] misses both
+narrowly; my preference for 1.1 is that the detection band is measured
+in the environment the paper actually trains in, while q is a property
+of a toy geometry that the M4.2 ruling already recorded as
+geometry-specific.
 
-Worth knowing before deciding: the ceiling is **policy-dependent**. A
-fire-avoiding trained policy would lower exposure and push Medium's
-ceiling further below the band; a food-chasing one could raise it.
-`--probe-kappa-B` defaults to 0.5 (the recommendation above); the
-resulting mild circularity — the probe's state distribution is induced
-at one candidate — is why the sweep holds that distribution fixed and
-evaluates all candidates on it (CRN), rather than re-rolling per
-candidate.
+## Provenance
+
+Random-policy sweep: commit 110da6a, CPU, 64 episodes/severity, wall
+21.6 s. Probe arms: commit 37615fc, RTX 5090, 200 updates/severity/arm
+(160 s each) + 30 s calibration, 64 episodes/severity, console logs
+`m43_kB0.5_console.log` / `m43_kB1.5_console.log`. Probe checkpoints
+remain on the GPU box (m31b/m41 precedent). Two defects were fixed
+before the job ran: the calibration did not reproduce the training
+`death_penalty` when rebuilding the config, so the hash guard would have
+rejected all three probes *after* training (verified: pre-fix
+d3c0fb07f9aef2f0 vs trained d94d07d9a05eb6bd), and probe artifacts were
+untagged so a second arm would have clobbered the first.

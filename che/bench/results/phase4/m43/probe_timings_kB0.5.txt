@@ -1,0 +1,4 @@
+train_probe_low_kB0.5 161s
+train_probe_medium_kB0.5 160s
+train_probe_high_kB0.5 160s
+calibration 30s
