@@ -236,6 +236,12 @@ che/bench/results/phase3/m31b/ckpt_*/
 /m35.zip
 /m35_console.log
 che/bench/results/phase3/m35/ckpt_*/
+# Phase-4 orbax checkpoint dirs — stay on disk / on the GPU box
+# (m31b/m41/m43 precedent; a broad `git add -A` once swept the
+# m41 dir into a commit, hence the explicit globs).
+che/bench/results/phase4/m41/ckpt_*/
+che/bench/results/phase4/m43/ckpt_*/
+che/bench/results/phase4/m44/ckpt_*/
 
 # M3.1b re-renders: only the two showcase episodes (matched to the committed
 # m30b pair) are committed; the rest are regenerable by seed
