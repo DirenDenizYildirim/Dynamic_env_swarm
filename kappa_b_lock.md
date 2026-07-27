@@ -1,4 +1,61 @@
-# Coupling-B Lock — M4.3 (**STOP: the three bands do not intersect**)
+# Coupling-B Lock — M4.3: **κ_B = 1.1 (HUMAN-LOCKED 2026-07-27)**
+
+**Locked value: κ_B = 1.1.** Ruling below; the sweep, the two findings
+and the band analysis that produced it follow.
+
+## The lock (human + RA, 2026-07-27)
+
+1. **κ_B = 1.1**, on a **dominance ordering that predates the decision**:
+   environment-native bands outrank toy-geometry cross-references. The
+   E2C band is geometry-contingent per the M4.2 Option-A ruling — its
+   constants were already re-chosen once, for quadrature reasons — so
+   E2C is **demoted from hard constraint to consistency check**,
+   satisfied within 10 % (q = 0.765 against a 0.70 ceiling).
+   **Rejected mirror choice: κ_B = 1.3** (q = 0.694, inside the E2C
+   band; detection 0.347, outside the detection band by 0.053).
+2. **The masked_frac band is RETIRED as a lock criterion** — not
+   widened, not replaced post-hoc. Reason: it measures a
+   policy-suppressible quantity, and the suppression is a *finding*, not
+   a calibration failure. Post-hoc replacement bands would be
+   band-shopping; declined.
+3. **Finding recorded (paper candidate):** behavioural
+   perception-exposure regulation, mechanism = positioning (the crop-
+   periphery discriminator measured below). Third member of the
+   endogeneity family.
+4. **M4.4 addenda:** (a) report masked_frac conditioned on
+   burning-within-crop — danger-moment masking, as a diagnostic, not a
+   band; (b) logged **pre-data**: positional suppression may mute the
+   swarm-level κ_B ablation delta; if the delta is small, the co-active
+   analysis and danger-moment masking carry the interpretive weight — a
+   small delta is **not** evidence the coupling is inert; (c) render
+   audit: look for smoke-periphery positioning visually.
+5. Circularity check acknowledged and closed — the 0.5/1.5 two-arm
+   bracket was the right design and cost one extra probe.
+
+### Recorded margin at the locked value (RA, measured after the ruling)
+
+Detection at κ_B = 1.1 sits **at the band floor**, and the sign of the
+margin depends on which policy the measurement uses:
+
+| measurement | detection @ κ_B = 1.1 | vs floor 0.40 |
+|---|---|---|
+| probe trained at κ_B = 0.5 | 0.4045 | +0.0045 |
+| probe trained at κ_B = 1.5 | 0.3933 | −0.0067 |
+| random policy | 0.3515 | −0.0485 |
+
+A probe trained at the locked value itself would interpolate to ≈ 0.40.
+The honest statement for the paper is therefore "**at** the detection
+floor", not "inside the band". Context at other severities (probe
+κ_B = 0.5 arm): Low 0.382, High 0.253 — the band is a Medium
+specification and neither flank satisfies it. Recorded here rather than
+smoothed over; see the M4.4 drift check.
+
+---
+
+## Appendix — the calibration that produced the lock
+
+(Originally written as the STOP report when the three bands were found
+not to intersect.)
 
 Date: 2026-07-27. RA calibration of the full environment
 (`che/calibration/coupling_b.py`; 64 episodes/severity, L = 64, 12 agents,
@@ -8,12 +65,12 @@ the training configs). Raw data
 `che/bench/results/phase4/m43/coupling_b_calibration.json` (commit
 110da6a, wall 21.6 s, CPU); figure `m43/kappa_b_bands.png`.
 
-**This is not a lock proposal.** Per the M4.2 ruling item 5 — "if the
-three lock bands fail to intersect, STOP with the three curves side by
-side; a non-empty intersection was an assumption, and its failure is a
-finding to bring to the lock discussion, not something to route around"
-— the milestone stops here. No candidate satisfies even two of the three
-bands, and one band is unreachable at **any** κ_B.
+This section was written as the M4.2-ruling STOP: "if the three lock
+bands fail to intersect, STOP with the three curves side by side; a
+non-empty intersection was an assumption, and its failure is a finding
+to bring to the lock discussion, not something to route around." No
+candidate satisfied even two of the three bands, and one band is
+unreachable at **any** κ_B. The ruling above resolves it.
 
 ## Targets (phase4_prompt.md M4.3)
 

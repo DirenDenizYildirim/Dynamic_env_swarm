@@ -229,3 +229,42 @@ the time (1 - 0.9545^7), and the 8-seed replicate diagnostic
 no per-point bias resolvable above ~0.13 SE). The gate was
 under-powered; the implementation is unbiased. Not an RA tolerance
 change — the RA carried it to the STOP as a report-and-ask.
+
+## M4.3 lock (human + RA, 2026-07-27) — kappa_B = 1.1
+
+**LOCKED: kappa_B = 1.1.** Full record and the calibration behind it:
+`kappa_b_lock.md`.
+
+1. **Dominance ordering, logged as predating the decision:**
+   environment-native bands outrank toy-geometry cross-references. The
+   E2C band is geometry-contingent per the M4.2 Option-A ruling (its
+   constants were already re-chosen once, for quadrature reasons), so
+   **E2C is demoted from hard constraint to consistency check**,
+   satisfied within 10% (q = 0.765 vs the 0.70 ceiling). Rejected mirror
+   choice kappa_B = 1.3 (q = 0.694 inside E2C; detection 0.347, outside
+   the detection band by 0.053).
+2. **The masked_frac band is RETIRED as a lock criterion** — not
+   widened, not replaced post-hoc. It measures a policy-suppressible
+   quantity; the suppression is a finding, not a calibration failure.
+   Post-hoc replacement bands would be band-shopping; declined.
+3. **Finding recorded (paper candidate):** behavioural
+   perception-exposure regulation, mechanism = positioning (trained
+   policies keep fire at the crop periphery: Medium masked_frac ceiling
+   0.130 random -> 0.043 probe at identical burnt_fraction, survival
+   0.784 -> 0.893). Third member of the endogeneity family.
+4. **M4.4 addenda:** (a) masked_frac conditioned on burning-within-crop
+   (danger-moment masking) reported as a diagnostic, not a band;
+   (b) **logged pre-data:** positional suppression may mute the
+   swarm-level kappa_B ablation delta — if the delta is small, the
+   co-active analysis and danger-moment masking carry the interpretive
+   weight, and a small delta is NOT evidence the coupling is inert;
+   (c) render audit looks for smoke-periphery positioning.
+5. Circularity check closed: the 0.5/1.5 two-arm probe bracket was the
+   right design and cost one extra probe.
+
+**Margin recorded by the RA after the ruling (not a challenge to it):**
+detection at kappa_B = 1.1 sits *at* the 0.40 floor and the sign of the
+margin depends on the measuring policy — 0.4045 (probe trained at 0.5),
+0.3933 (probe at 1.5), 0.3515 (random). A probe trained at the locked
+value interpolates to ~0.40. The paper should say "at the detection
+floor", not "inside the band".
