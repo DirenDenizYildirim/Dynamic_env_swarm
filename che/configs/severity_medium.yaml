@@ -34,7 +34,17 @@ theta:
   lambda_0: 5.0e-5
   lambda_load: 4.0e-4
   f_weak: 0.15
-  kappa_B: 0.0
+  # Coupling B — M4.3 HUMAN-LOCKED 2026-07-27 (kappa_b_lock.md;
+  # calibration m43/coupling_b_calibration*.json). Locked on the
+  # env-native detection band P(Burning cell at crop distance 3
+  # revealed) = 0.438/0.427 under the two probe arms, inside the
+  # [0.4, 0.7] band; the E2C cross-reference (q = 0.812 vs a 0.70
+  # ceiling) is a demoted consistency check, and the masked_frac
+  # band was retired as policy-suppressible. Considered and
+  # recorded: 0.95 (band-robust, q = 0.826) and 1.1 (q = 0.768 but
+  # detection only at the band floor). M4.4 overrides to 0.0 for
+  # the ablation arm.
+  kappa_B: 1.0
   delta: 0.0
   death_penalty: 0.0
   iota: 0.0

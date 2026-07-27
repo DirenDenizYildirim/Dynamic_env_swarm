@@ -206,3 +206,72 @@ def test_masked_frac_info_channel():
     s_dead = dataclasses.replace(s, agent_alive=jnp.zeros((4,), jnp.bool_))
     _, _, _, _, info_d = step(jax.random.PRNGKey(2), s_dead, actions, cfg)
     assert float(info_d["masked_frac"]) == 0.0
+
+
+def test_danger_moment_masking_channels():
+    """M4.4 addendum (a), human-locked 2026-07-27: danger-moment masking
+    is emitted as poolable numerator/denominator counts, restricted to
+    alive agents with a Burning cell inside their crop (Chebyshev radius
+    obs_window // 2, matching the co-active test).
+
+    Frozen hazard so the burning set is exactly the one placed here — a
+    dynamic CA would burn (7, 7) out in one step and ignite neighbours,
+    making the expected danger set nondeterministic.
+    """
+    cfg = EnvConfig(
+        grid_size=L,
+        n_agents=4,
+        horizon=32,
+        hazard_mode="frozen",
+        theta=ThetaConfig(kappa_B=1.0),
+    )
+    s = _uniform_smoke_state(1.5)
+    # Two agents inside the crop radius of the fire, two well outside.
+    s = dataclasses.replace(
+        s,
+        agent_pos=jnp.array([[8, 8], [7, 6], [1, 1], [14, 14]], jnp.int32),
+        hazard=s.hazard.at[7, 7].set(BURNING),
+    )
+    actions = jnp.zeros((4,), jnp.int32)  # stay: post-step pos == pre-step
+    obs, state_new, _, _, info = step(jax.random.PRNGKey(2), s, actions, cfg)
+    assert (state_new.hazard == s.hazard).all()  # frozen, as assumed
+
+    r = cfg.obs_window // 2
+    pos = state_new.agent_pos
+    expected = (jnp.abs(pos[:, 0] - 7) <= r) & (jnp.abs(pos[:, 1] - 7) <= r)
+    assert int(expected.sum()) == 2  # discriminating, not trivially all/none
+    assert float(info["danger_agents"]) == 2.0
+    assert float(info["alive_agents"]) == 4.0
+
+    # The numerator is the masked share summed over exactly those agents.
+    masked = 1.0 - obs["grid"][..., 7].mean(axis=(-2, -1))
+    manual = float(jnp.where(expected, masked, 0.0).sum())
+    assert abs(float(info["masked_danger_sum"]) - manual) < 1e-6
+    # Pooled conditional mean is a share in (0, 1), and it differs from
+    # the unconditional channel — that is the point of the diagnostic.
+    ratio = float(info["masked_danger_sum"]) / float(info["danger_agents"])
+    assert 0.0 < ratio < 1.0
+    assert abs(ratio - float(info["masked_frac"])) > 1e-6
+
+
+def test_danger_channels_are_zero_without_fire_and_at_kappa_b_zero():
+    """No Burning cell => no danger moments; kappa_B = 0 => nothing is
+    masked even when the danger condition fires."""
+    cfg = EnvConfig(
+        grid_size=L,
+        n_agents=4,
+        horizon=32,
+        hazard_mode="frozen",
+        theta=ThetaConfig(kappa_B=1.0),
+    )
+    s = _uniform_smoke_state(1.5)  # smoke but no fire
+    actions = jnp.zeros((4,), jnp.int32)
+    _, _, _, _, info = step(jax.random.PRNGKey(2), s, actions, cfg)
+    assert float(info["danger_agents"]) == 0.0
+    assert float(info["masked_danger_sum"]) == 0.0
+
+    cfg0 = dataclasses.replace(cfg, theta=ThetaConfig(kappa_B=0.0))
+    s_fire = dataclasses.replace(s, hazard=s.hazard.at[7, 7].set(BURNING))
+    _, _, _, _, info0 = step(jax.random.PRNGKey(2), s_fire, actions, cfg0)
+    assert float(info0["danger_agents"]) > 0.0  # condition fires
+    assert float(info0["masked_danger_sum"]) == 0.0  # but tau == 1

@@ -1,11 +1,13 @@
-# Coupling-B Lock — M4.3: **κ_B = 1.1 (HUMAN-LOCKED 2026-07-27)**
+# Coupling-B Lock — M4.3: **κ_B = 1.0 (HUMAN-LOCKED 2026-07-27)**
 
-**Locked value: κ_B = 1.1.** Ruling below; the sweep, the two findings
-and the band analysis that produced it follow.
+**Locked value: κ_B = 1.0**, revised from an initial 1.1 before any M4.4
+run (see "Revision" below). Ruling, revision and the band analysis that
+produced them follow.
 
 ## The lock (human + RA, 2026-07-27)
 
-1. **κ_B = 1.1**, on a **dominance ordering that predates the decision**:
+1. **κ_B = 1.0** (initially 1.1; revised below), on a **dominance
+   ordering that predates the decision**:
    environment-native bands outrank toy-geometry cross-references. The
    E2C band is geometry-contingent per the M4.2 Option-A ruling — its
    constants were already re-chosen once, for quadrature reasons — so
@@ -18,37 +20,71 @@ and the band analysis that produced it follow.
    policy-suppressible quantity, and the suppression is a *finding*, not
    a calibration failure. Post-hoc replacement bands would be
    band-shopping; declined.
-3. **Finding recorded (paper candidate):** behavioural
+3. **Finding recorded — PROVISIONAL (paper candidate):** behavioural
    perception-exposure regulation, mechanism = positioning (the crop-
    periphery discriminator measured below). Third member of the
-   endogeneity family.
+   endogeneity family. **Demoted to provisional 2026-07-27:** both probe
+   arms were trained with Coupling B live, so exposure suppression is
+   not yet separable from a fire-avoidance *byproduct* — smoke
+   co-locates with fire, so any policy that avoids lethal cells also
+   reduces the smoke in its crop. **The M4.4 κ_B = 0 arm is the free
+   control**: identical lethality incentives, masking bitwise-inert, so
+   it carries the byproduct term and nothing else. Cross-arm
+   exposure / ceiling / periphery comparison decides — *different* →
+   perception-driven regulation confirmed; *indistinguishable* →
+   restated as a fire-avoidance byproduct. Either outcome is a clean
+   paper sentence.
 4. **M4.4 addenda:** (a) report masked_frac conditioned on
    burning-within-crop — danger-moment masking, as a diagnostic, not a
    band; (b) logged **pre-data**: positional suppression may mute the
    swarm-level κ_B ablation delta; if the delta is small, the co-active
    analysis and danger-moment masking carry the interpretive weight — a
-   small delta is **not** evidence the coupling is inert; (c) render
+   small delta is **not** evidence the coupling is inert. **Inertness
+   falsifier, logged pre-data (symmetry restored):** the coupling is
+   inert at swarm scale **iff** (i) Δcompletion and Δsurvival are within
+   seed noise **and** (ii) there is no cross-arm exposure/positioning
+   difference **and** (iii) danger-moment masking is negligible **and**
+   (iv) there is no co-active visitation difference. All four → a
+   reportable negative result, not a measurement failure; (c) render
    audit: look for smoke-periphery positioning visually.
 5. Circularity check acknowledged and closed — the 0.5/1.5 two-arm
    bracket was the right design and cost one extra probe.
 
-### Recorded margin at the locked value (RA, measured after the ruling)
+### Revision 1.1 → 1.0 (human, 2026-07-27, before any M4.4 run)
 
-Detection at κ_B = 1.1 sits **at the band floor**, and the sign of the
-margin depends on which policy the measurement uses:
+The RA measured the detection margin *after* the initial ruling and
+found that κ_B = 1.1 satisfies the **dominant** (environment-native)
+band under only one of the three measurement conditions available —
+and that one is the probe furthest from the lock:
 
-| measurement | detection @ κ_B = 1.1 | vs floor 0.40 |
-|---|---|---|
-| probe trained at κ_B = 0.5 | 0.4045 | +0.0045 |
-| probe trained at κ_B = 1.5 | 0.3933 | −0.0067 |
-| random policy | 0.3515 | −0.0485 |
+| κ_B | det (random) | det (probe 0.5) | det (probe 1.5) | E2C q | inside the detection band under |
+|---|---|---|---|---|---|
+| 0.95 | 0.4011 | 0.4557 | 0.4441 | 0.826 | 3/3 measurements |
+| **1.00 — LOCKED** | 0.3836 | **0.4383** | **0.4266** | 0.812 | 2/3 |
+| 1.10 (initial) | 0.3515 | 0.4045 | 0.3933 | 0.768 | 1/3 |
+| 1.30 (rejected mirror) | 0.2952 | 0.3454 | 0.3349 | 0.692 | 0/3 |
 
-A probe trained at the locked value itself would interpolate to ≈ 0.40.
-The honest statement for the paper is therefore "**at** the detection
-floor", not "inside the band". Context at other severities (probe
-κ_B = 0.5 arm): Low 0.382, High 0.253 — the band is a Medium
-specification and neither flank satisfies it. Recorded here rather than
-smoothed over; see the M4.4 drift check.
+Applied consistently, the dominance ordering points below 1.1: the step
+from 1.0 to 1.1 buys ~4 points of closeness on the *demoted* E2C
+constraint and spends the margin on the band that dominates. κ_B = 1.3
+was rejected for being outside the detection band under 0/3
+measurements; 1.1 is the same failure mode, milder.
+
+**Locked at 1.0** — inside the band under both probe measurements, which
+are the policies the lock actually governs (the random policy is a
+calibration instrument, not a deployment condition). **0.95 recorded as
+considered**: inside under every measurement, at the cost of the E2C
+consistency check moving to 18 %. **1.1 recorded as considered and
+superseded.** E2C at the locked value: q = 0.812 against a 0.70 ceiling
+— a 16 % miss on the demoted consistency check.
+
+Context at other severities (probe κ_B = 0.5 arm, at κ_B = 1.0):
+**Low 0.415** — also inside the [0.4, 0.7] band — and **High 0.281**,
+below it. The band is a Medium specification, so this is context, not a
+criterion: at High the fire is supercritical and a Burning cell three
+away is seen ~28 % of the time. The M4.4 detection-drift check
+re-measures all of it under the 500-update policies
+(`m44_calibration_kbL.json`).
 
 ---
 

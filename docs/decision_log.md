@@ -268,3 +268,43 @@ margin depends on the measuring policy — 0.4045 (probe trained at 0.5),
 0.3933 (probe at 1.5), 0.3515 (random). A probe trained at the locked
 value interpolates to ~0.40. The paper should say "at the detection
 floor", not "inside the band".
+
+## M4.4 amendments (human, 2026-07-27) — lock revised to kappa_B = 1.0
+
+Issued before any M4.4 run; supersedes the kappa_B = 1.1 entry above.
+
+1. **LOCK REVISED: kappa_B = 1.0.** The RA measured the detection margin
+   after the initial ruling: kappa_B = 1.1 satisfies the *dominant*
+   environment-native band under only 1 of 3 measurement conditions
+   (det 0.4045 / 0.3933 / 0.3515 under the kB=0.5 probe / kB=1.5 probe /
+   random), where 1.0 satisfies it under both probe arms (0.4383 /
+   0.4266). Applied consistently the dominance ordering points below
+   1.1 — the step from 1.0 to 1.1 buys ~4 points on the *demoted* E2C
+   constraint and spends the margin on the band that dominates.
+   **0.95 recorded as considered** (inside under 3/3, E2C 18% off);
+   **1.1 recorded as considered and superseded** (E2C 10% off but
+   detection only at the floor). At the locked 1.0 the E2C consistency
+   check is q = 0.812 vs a 0.70 ceiling — a 16% miss. The locked value
+   is written into the three severity YAMLs (M3.4 -> M3.5 precedent);
+   M4.4 overrides to 0.0 for the ablation arm. A **detection-drift
+   check** under the M4.4 500-update checkpoints is folded into the grid
+   job (`coupling_b.py --probe-ckpt`; M3.5 drift precedent).
+2. **Finding (behavioural perception-exposure regulation) DEMOTED to
+   provisional.** Both M4.3 probe arms trained with Coupling B live, so
+   exposure suppression is not separable from a fire-avoidance byproduct
+   (smoke co-locates with fire). The M4.4 kappa_B = 0 arm is the free
+   control — identical lethality incentives, masking bitwise-inert.
+   Cross-arm exposure/ceiling/periphery comparison decides: different ->
+   perception-driven regulation confirmed; indistinguishable -> restated
+   as a fire-avoidance byproduct.
+3. **Inertness falsifier logged pre-data** (restores symmetry to the
+   "a small delta is not evidence of inertness" pre-registration): the
+   coupling is inert at swarm scale **iff** (i) Delta-completion and
+   Delta-survival within seed noise AND (ii) no cross-arm
+   exposure/positioning difference AND (iii) danger-moment masking
+   negligible AND (iv) no co-active visitation difference. All four -> a
+   reportable negative result.
+4. **Third seed at Medium approved** (+4 runs, ~20 GPU-min): Def.-4
+   variance concentrates near criticality, and "small but real" is now a
+   pre-registered possibility that two seeds cannot separate from noise.
+   Low/High stay at two seeds. Grid is therefore 14 train + 14 eval runs.

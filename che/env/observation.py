@@ -139,20 +139,25 @@ def transmittance(
     return tau
 
 
+def per_agent_masked(grid: jax.Array, cfg: EnvConfig) -> jax.Array:
+    """[n_agents] masked share of each agent's crop this step.
+
+    Subtract before averaging: an all-ones visibility plane then yields
+    an exact 0.0 (mean-of-ones is 1 - 2^-27 in float32, not 1). Obs
+    v1/v2 have no masking, so the share is identically 0 there.
+    """
+    if cfg.obs_version in (1, 2):  # static branch — config is not traced
+        return jnp.zeros((grid.shape[0],), jnp.float32)
+    return (1.0 - grid[..., -1]).mean(axis=(-2, -1))
+
+
 def masked_fraction(grid: jax.Array, alive: jax.Array, cfg: EnvConfig) -> jax.Array:
     """M4.0 harness addendum: per-step masked-crop share for the info dict.
 
     Mean over *alive* agents of the fraction of crop cells whose content
-    planes were masked by Coupling B this step (1 - mean of the obs v3
-    visibility plane); 0 when no one is alive. Obs v1/v2 have no masking,
-    so the channel is identically 0 there.
+    planes were masked by Coupling B this step; 0 when no one is alive.
     """
-    if cfg.obs_version in (1, 2):  # static branch — config is not traced
-        del grid, alive
-        return jnp.float32(0.0)
-    # Subtract before averaging: an all-ones visibility plane then yields
-    # an exact 0.0 (mean-of-ones is 1 - 2^-27 in float32, not 1).
-    masked = (1.0 - grid[..., -1]).mean(axis=(-2, -1))  # [n_agents]
+    masked = per_agent_masked(grid, cfg)
     return jnp.where(alive, masked, 0.0).sum() / jnp.maximum(
         alive.sum(dtype=jnp.float32), 1.0
     )

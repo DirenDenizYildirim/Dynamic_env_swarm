@@ -52,6 +52,14 @@ EVAL_METRICS = {
     # the episode-mean masked crop share (0 until M4.1's obs v3 mask).
     "burnt_fraction": ("burnt_fraction", _FINAL),
     "masked_frac": ("masked_frac", _MEAN),
+    # M4.4 addendum (a): danger-moment masking, carried as poolable
+    # numerator/denominator sums rather than a ratio — the per-episode
+    # conditional mean is masked_danger_sum / danger_agents, and pooling
+    # across episodes weights each danger agent-step equally instead of
+    # letting episodes with almost no fire dominate.
+    "masked_danger_sum": ("masked_danger_sum", _SUM),
+    "danger_agents": ("danger_agents", _SUM),
+    "alive_agents": ("alive_agents", _SUM),
 }
 
 

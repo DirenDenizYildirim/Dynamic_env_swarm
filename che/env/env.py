@@ -26,7 +26,7 @@ import jax.numpy as jnp
 
 from che.env.config import EnvConfig
 from che.env.hazard import hazard_step, seed_ignitions, smoke_step
-from che.env.observation import masked_fraction, observe
+from che.env.observation import masked_fraction, observe, per_agent_masked
 from che.env.structure import (
     coupling_a_seed_mask,
     dilate,
@@ -270,6 +270,11 @@ def step(
     # of an alive agent, evaluated at post-step positions x'.
     near_agents = dilate(occ_post, cfg.obs_window // 2)
     co_active = (seeded_ignitions & near_agents).sum().astype(jnp.int32)
+    # M4.4 addendum (a): agents in a "danger moment" — a Burning cell
+    # inside the crop (same Chebyshev radius as the co-active test).
+    burning_near = dilate(hazard_new == BURNING, cfg.obs_window // 2)
+    danger = alive_new & burning_near[pos_new[:, 0], pos_new[:, 1]]
+    agent_masked = per_agent_masked(obs["grid"], cfg)
     # M3.4-lock addendum channels (info-only, deterministic, no PRNG):
     # collapse events this step, blocked-move encounters (non-ignition
     # structural channel), and the share of alive survivors standing on
@@ -307,5 +312,19 @@ def step(
         # crop-cell share (identically 0 until M4.1's obs v3 mask).
         "burnt_fraction": (hazard_new != FUEL).mean(dtype=jnp.float32),
         "masked_frac": masked_fraction(obs["grid"], alive_new, cfg),
+        # M4.4 addendum (a), human-locked 2026-07-27: *danger-moment*
+        # masking — the masked share restricted to alive agents with a
+        # Burning cell inside their crop. Reported as a diagnostic, never
+        # as a calibration band (the M4.3 lock retired the unconditional
+        # masked_frac band because it is policy-suppressible). Emitted as
+        # numerator/denominator counts, not as a per-step ratio, so the
+        # eval harness can pool them exactly over steps and episodes
+        # instead of averaging conditional means over steps where the
+        # condition never fired. "In crop" is the Chebyshev radius
+        # obs_window // 2 — the crop's own metric, matching invariant
+        # #5's co-active test. Deterministic, no PRNG (invariant #3).
+        "masked_danger_sum": jnp.where(danger, agent_masked, 0.0).sum(),
+        "danger_agents": danger.sum(dtype=jnp.float32),
+        "alive_agents": alive_new.sum(dtype=jnp.float32),
     }
     return obs, state_new, reward, done, info

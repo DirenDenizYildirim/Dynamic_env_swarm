@@ -36,6 +36,12 @@ EXPECTED_KEYS = {
     # M4.0 harness addendum (Phase-4 carry-overs).
     "burnt_fraction",
     "masked_frac",
+    # M4.4 addendum (a): danger-moment masking, carried as poolable
+    # numerator/denominator sums (conditional mean =
+    # masked_danger_sum / danger_agents, pooled across episodes).
+    "masked_danger_sum",
+    "danger_agents",
+    "alive_agents",
 }
 
 
