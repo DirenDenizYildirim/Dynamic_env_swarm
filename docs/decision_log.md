@@ -118,7 +118,7 @@ rejected — its sibling birth-adjacency floor alone puts the proxy at
 0.11–0.56, top burnt density ~2.2% → proxy ≈ 2.4%. SWEEP_MC = 8192,
 MATCHED_MC = 16384 → combined MC error ≈ 2.4% on the ratio.
 
-**Margin analysis on record:** the pilot found a previously-buried +~2%
+**Margin analysis on record (M3.3):** the pilot found a previously-buried +~2%
 seed-location edge effect (the 3×3 seeding dilation underweights border
 cells, whose clusters are boundary-clipped, relative to the exactly-
 uniform reference), so the purified ratio centers near 1.00, not ~0.97:
@@ -128,3 +128,69 @@ test's pinned PRNG keys make the committed outcome deterministic, and
 the measured ratio ± SE is printed by the test and recorded in the
 report. If a future re-keying lands outside the band, that is a
 report-and-ask event, not a tolerance adjustment.
+
+## M4.2 ruling (human + RA, 2026-07-27) — E2C geometry; two kernel findings
+
+**Measured blocker (RA, before implementation):** the phase-4 prompt's
+*illustrative* E2C geometry (d = 6, l_f = 2, k = 17) cannot satisfy its
+own acceptance criteria. With a single-cell smoke source the locked
+M4.1 quadrature (n_quad = 4 midpoint samples) never lands on the ray's
+endpoint beyond axis distance ~4, so tau = 1.0000 exactly at the first
+two pre-commitment steps for every kappa_B up to 8 — hence q == 1, a
+flat J* = 1 curve, and `J*(large) - 1/2 <= 0.02` unreachable.
+
+**Ruling:**
+
+1. **Option A approved** — shrink the geometry so every pre-commitment
+   distance sits in the quadrature-sampled regime: **d = 2, l_f = 2,
+   ell = 4, k = 9** (the prompt's rule k >= 2(d + l_f) + 1 holds; its
+   d = 6 / k = 17 was illustrative, never locked). Measured q spans
+   1.0000 -> 0.0056 over kappa_B in [0, 8].
+   - **Option B rejected** (keep d = 6, add an approach-side smoke bank
+     so the line of sight has a real medium): an unauthorized second
+     smoke source and more bespoke micro-env machinery than the theorem
+     needs.
+   - **Option C rejected** (endpoint-inclusive quadrature): would
+     re-open locked M4.1, invalidate its fresh bench row, and change
+     obs-v3 semantics to serve a regime production rarely enters.
+2. **Finding 1 is a documented kernel property, not a bug.** Recorded in
+   the `transmittance` docstring, pinned by a test in
+   `test_coupling_b.py`, and written up in `phase4_report.md` with a
+   candidate limitations sentence for the paper: single-cell smoke
+   sources contribute no occlusion beyond axis distance ~4; spatially
+   extended sources (what the CA produces) are unaffected. **M4.3 must
+   state explicitly in `kappa_b_lock.md` that its detection-band
+   measurement (crop distance 3) sits in the well-sampled regime.**
+3. **Finding 2 — the visibility plane is a side channel.** Smoke is
+   co-located with the fire, so the mirror corridor cell's ray carries
+   no smoke and is always revealed; "exactly one candidate masked"
+   identifies Z without ever seeing fire content. Handling: q and the
+   scored policies are **content-only** (test-enforced end to end:
+   destroying plane 7 must not change the optimal/memorizing outcomes),
+   the prediction MC and the empirical rollouts use **independent PRNG
+   streams** (shared keys would reduce the acceptance test to the
+   arithmetic identity J = q + (1-q)/2), and the side channel is
+   **quantified per kappa_B**: a plane-7-only oracle identifies Z with
+   accuracy 0.508 (kappa_B = 0), 0.989 (1.5), >= 0.9999 (>= 3).
+4. **Scripted hazard + one smoke step before the first observation
+   approved**; the prediction MC mirrors that protocol identically and
+   the protocol is stated in the report (M3.3 lesson applied forward).
+5. **Downstream, acknowledged:** under Option A the E2C cross-reference
+   band (q in [0.3, 0.7]) maps to **kappa_B ~ 1.3-2.6**. If M4.3's three
+   lock bands fail to intersect, **STOP** and bring the three curves to
+   the lock discussion — a non-empty intersection was an assumption, and
+   its failure is a finding, not something to route around.
+
+**Open item carried to the M4.2 STOP (RA, not an RA decision):** the
+prompt's acceptance criterion "empirical within 2·SE at every grid
+point", applied per-point across 7 informative kappa_B values, rejects a
+correct implementation ~28% of the time (1 - 0.9545^7). An 8-seed
+replicate diagnostic measures the z-scores as N(0, 1) (pooled mean
++0.025, sd 0.990, 5.4% beyond 2 sigma vs 4.6% expected; no per-point
+bias above ~0.13 SE), so the implementation is unbiased and the gate is
+under-powered. On the pinned seed 0 the kappa_B = 5 point lands at
+2.11 SE and the `@slow` test fails as written. No tolerance was adjusted
+(invariant 4); recommended restatement is the Sidak family-wise
+2.69 SE per point (5% overall), a one-constant change at `ACCEPT_Z` in
+`che/tests/test_e2c.py`. Re-keying to a passing seed was considered and
+rejected as seed-shopping.

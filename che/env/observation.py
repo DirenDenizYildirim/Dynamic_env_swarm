@@ -102,6 +102,19 @@ def transmittance(
     observation kernel, the E2C Thm.-1 validation, and any diagnostic must
     all call it — the theory<->implementation handshake is only meaningful
     if they share the literal code. Do not fork or inline variants.
+
+    **Documented kernel property (M4.2, human-ruled — not a bug).** The
+    n_quad midpoint samples never land on the ray's endpoint beyond axis
+    distance ~4, so a *single-cell* smoke source contributes no occlusion
+    to its own line of sight at longer range: tau == 1 exactly, at any
+    kappa_B. Spatially extended smoke — what the CA actually produces —
+    is unaffected, and short rays (e.g. the M4.3 detection band at crop
+    distance 3) sit inside the well-sampled regime; E2C's geometry is
+    sized to stay there (`che/env/e2c.py`). An endpoint-inclusive
+    quadrature was considered and rejected at the M4.2 ruling: it would
+    re-open locked M4.1, invalidate its bench row, and change obs-v3
+    semantics to serve a regime production rarely enters. Pinned by
+    tests/test_coupling_b.py.
     """
     chex.assert_rank(smoke, 2)
     chex.assert_type(smoke, jnp.float32)

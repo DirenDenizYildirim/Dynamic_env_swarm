@@ -74,6 +74,29 @@ def test_transmittance_monotone_in_distance_smoke_and_kappa():
     assert (tau0 == 1.0).all()
 
 
+def test_isolated_smoke_cell_is_unoccluded_beyond_quadrature_range():
+    """M4.2 Finding 1, pinned as a *documented kernel property* (human
+    ruling 2026-07-27): the S=4 midpoint samples never land on the ray's
+    endpoint beyond axis distance ~4, so a single-cell smoke source
+    contributes no occlusion to its own line of sight at longer range —
+    tau == 1 exactly, at any kappa_B. Spatially extended smoke (what the
+    swarm env produces) is unaffected, and the M4.3 detection band at
+    crop distance 3 sits inside the well-sampled regime. E2C's geometry
+    is sized to stay there; see che/env/e2c.py."""
+    k_wide, r_wide = 17, 8  # wide enough to hold the far probes
+    smoke = jnp.zeros((L, L), jnp.float32).at[8, 8].set(2.5)  # one cell
+    for d, expect_occluded in ((1, True), (3, True), (4, True), (5, False)):
+        pos = jnp.array([[8 - d, 8]], jnp.int32)  # d cells away, same column
+        tau = transmittance(smoke, pos, kappa_B=5.0, k=k_wide)
+        at_source = float(tau[0, r_wide + d, r_wide])
+        assert (at_source < 1.0) == expect_occluded, (d, at_source)
+    # An extended source along the same ray does occlude at that range.
+    lane = smoke.at[4:9, 8].set(1.0)
+    far = jnp.array([[3, 8]], jnp.int32)
+    tau_lane = transmittance(lane, far, kappa_B=5.0, k=k_wide)
+    assert float(tau_lane[0, r_wide + 5, r_wide]) < 0.05
+
+
 def test_masking_respects_visibility_plane_exactly():
     """Obs v3 content == obs v2 content * reveal mask, cell by cell, and
     the own cell is always revealed even under heavy smoke."""
