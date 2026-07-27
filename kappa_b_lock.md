@@ -20,7 +20,9 @@ produced them follow.
    policy-suppressible quantity, and the suppression is a *finding*, not
    a calibration failure. Post-hoc replacement bands would be
    band-shopping; declined.
-3. **Finding recorded — PROVISIONAL (paper candidate):** behavioural
+3. **Finding recorded — PROVISIONAL → ✗ NOT CONFIRMED (M4.4,
+   2026-07-28; see the resolution section at the end of this document):**
+   behavioural
    perception-exposure regulation, mechanism = positioning (the crop-
    periphery discriminator measured below). Third member of the
    endogeneity family. **Demoted to provisional 2026-07-27:** both probe
@@ -340,3 +342,77 @@ before the job ran: the calibration did not reproduce the training
 rejected all three probes *after* training (verified: pre-fix
 d3c0fb07f9aef2f0 vs trained d94d07d9a05eb6bd), and probe artifacts were
 untagged so a second arm would have clobbered the first.
+
+---
+
+# Resolution under M4.4 (2026-07-28)
+
+The grid ran at the locked value with a matched κ_B = 0 arm. Full
+tables: `che/bench/results/phase4/phase4_report.md`, M4.4 section;
+machine-readable `che/bench/results/phase4/m44/m44_analysis.json`.
+
+## 1. The lock survives its own drift check (amendment 1)
+
+Detection at κ_B = 1.0 under the M4.4 500-update checkpoints, against
+the 200-update M4.3 probes (M3.5 drift precedent):
+
+| severity | random | 200u κ_B=0.5 | 200u κ_B=1.5 | 500u κ_B=0 | 500u κ_B=1.0 | band [0.4, 0.7] |
+|---|---|---|---|---|---|---|
+| low | 0.3932 | 0.4151 | 0.4073 | 0.3969 | 0.4004 | in, by 0.0004 — marginal |
+| medium | 0.3836 | 0.4383 | 0.4266 | 0.4452 | **0.4465** | **in** |
+| high | 0.3615 | 0.2809 | 0.3515 | 0.2972 | 0.3336 | below (never binding) |
+
+Medium — the severity the band was defined on and the one that bound the
+lock — reads 0.4465 under the longer-trained policies, inside the band
+and slightly further from its floor than at 200 updates. **No drift
+action required.** Two flags kept visible rather than dropped: Low
+clears the floor by 0.0004 and must not be quoted as independent
+support, and High sits below the band as it did at M4.3.
+
+## 2. Finding 3 is NOT CONFIRMED — restated as a fire-avoidance byproduct
+
+Amendment 2 pre-committed the decision rule. Both available controls
+fail it, in the same direction.
+
+**(a) Training length.** The `masked_frac` ceiling (κ_B → ∞, evaluated
+on the states each policy actually visited — a κ_B-free measure of where
+the swarm stood). The random-policy column is bitwise identical across
+the M4.3 and M4.4 calibration runs, so these columns are comparable:
+
+| severity | random | 200u κ_B=0.5 | 200u κ_B=1.5 | 500u κ_B=0 | 500u κ_B=1.0 |
+|---|---|---|---|---|---|
+| low | 0.0279 | 0.0092 | 0.0152 | 0.0258 | 0.0306 |
+| medium | 0.1278 | 0.0433 | 0.0404 | 0.1016 | 0.1341 |
+| high | 0.4153 | 0.5172 | 0.4498 | 0.5357 | 0.5014 |
+
+The 3× suppression at Medium that motivated the finding is a
+**200-update transient**. By 500 updates the trained policies sit at or
+above the random-policy ceiling at every severity.
+
+**(b) The κ_B = 0 control.** At Low and Medium the *uncoupled* arm is
+the less exposed one (ceiling +0.005 / +0.033 and exposed-agent share
++0.002 / +0.028 in the coupled arm) — the opposite sign to what
+perception-driven regulation predicts. At High the coupled arm is less
+exposed, but it also loses 8.8 points of survival, and exposure averages
+over **alive** agents; conditioning on zero-death episodes is a collider
+(44 % vs 14 % retention) and cannot repair the confound.
+
+**Ruling applied: restated as a fire-avoidance byproduct**, and further
+as an artifact of early training. Recorded, not deleted: the M4.3
+measurement stands as correct at 200 updates; what fails is the
+inference from it. The replacement sentence is stronger for the paper —
+*perception attenuation is not behaviourally suppressible; the swarm
+cannot position its way out of it and pays in survival.*
+
+This also retires the concern behind item 2 above from the other side:
+`masked_frac` was rejected as a lock band because it looked
+policy-suppressible; it is now clear that at convergence it is **not**
+suppressed — it is simply occupancy-limited, which was always the
+stated reason the Medium band was unreachable.
+
+## 3. Consequence for the lock itself
+
+None. The lock rested on the detection band (item 1 of the ruling), and
+that band re-validates at 500 updates. The retired `masked_frac` band
+and the demoted E2C consistency check are unaffected by this resolution.
+**κ_B = 1.0 stands.**

@@ -1,0 +1,1003 @@
+{
+ "kappa_B_locked": 1.0,
+ "seeds": {
+  "low": [
+   0,
+   1
+  ],
+  "medium": [
+   0,
+   1,
+   2
+  ],
+  "high": [
+   0,
+   1
+  ]
+ },
+ "arm_comparison": {
+  "low/episode_return": {
+   "kb0_seed_means": [
+    22.9091796875,
+    21.46875
+   ],
+   "kbL_seed_means": [
+    22.2451171875,
+    23.0859375
+   ],
+   "delta": 0.4765625,
+   "sigma_seed": 0.833938919007853,
+   "ranges_overlap": true,
+   "paired_se": 0.17101666144925476,
+   "verdict": "within-noise"
+  },
+  "low/completion": {
+   "kb0_seed_means": [
+    0.72454833984375,
+    0.68048095703125
+   ],
+   "kbL_seed_means": [
+    0.7032470703125,
+    0.7293701171875
+   ],
+   "delta": 0.0137939453125,
+   "sigma_seed": 0.025614194336231168,
+   "ranges_overlap": true,
+   "paired_se": 0.005300574350908574,
+   "verdict": "within-noise"
+  },
+  "low/survival_rate": {
+   "kb0_seed_means": [
+    0.9539388418197632,
+    0.9488932490348816
+   ],
+   "kbL_seed_means": [
+    0.9568685293197632,
+    0.9576823115348816
+   ],
+   "delta": 0.005859375,
+   "sigma_seed": 0.002555398601221158,
+   "ranges_overlap": false,
+   "paired_se": 0.0027284040876813993,
+   "verdict": "SEPARATED(strong)"
+  },
+  "low/deaths_fire": {
+   "kb0_seed_means": [
+    0.341796875,
+    0.341796875
+   ],
+   "kbL_seed_means": [
+    0.302734375,
+    0.3203125
+   ],
+   "delta": -0.0302734375,
+   "sigma_seed": 0.0087890625,
+   "ranges_overlap": false,
+   "paired_se": 0.02513977458840376,
+   "verdict": "SEPARATED(strong)"
+  },
+  "low/deaths_collapse": {
+   "kb0_seed_means": [
+    0.2109375,
+    0.271484375
+   ],
+   "kbL_seed_means": [
+    0.21484375,
+    0.1875
+   ],
+   "delta": -0.0400390625,
+   "sigma_seed": 0.0332174831087792,
+   "ranges_overlap": true,
+   "paired_se": 0.020849175270418224,
+   "verdict": "within-noise"
+  },
+  "low/burnt_fraction": {
+   "kb0_seed_means": [
+    0.05466651916503906,
+    0.05442094802856445
+   ],
+   "kbL_seed_means": [
+    0.05474567413330078,
+    0.0544276237487793
+   ],
+   "delta": 4.291534423828125e-05,
+   "sigma_seed": 0.0002009111931698277,
+   "ranges_overlap": true,
+   "paired_se": 0.000193812997729423,
+   "verdict": "within-noise"
+  },
+  "low/mean_smoke_exposure": {
+   "kb0_seed_means": [
+    0.00013680770643986762,
+    0.00016125482216011733
+   ],
+   "kbL_seed_means": [
+    0.00015980702301021665,
+    0.00013981288066133857
+   ],
+   "delta": 7.786875357851386e-07,
+   "sigma_seed": 1.5791035394381845e-05,
+   "ranges_overlap": true,
+   "paired_se": 1.2282156946255082e-05,
+   "verdict": "within-noise"
+  },
+  "low/coupling_co_active": {
+   "kb0_seed_means": [
+    0.791015625,
+    0.59765625
+   ],
+   "kbL_seed_means": [
+    0.6328125,
+    0.693359375
+   ],
+   "delta": -0.03125,
+   "sigma_seed": 0.10130865211404237,
+   "ranges_overlap": true,
+   "paired_se": 0.03924003522074263,
+   "verdict": "within-noise"
+  },
+  "low/collapse_events": {
+   "kb0_seed_means": [
+    7.892578125,
+    7.94921875
+   ],
+   "kbL_seed_means": [
+    7.8984375,
+    7.859375
+   ],
+   "delta": -0.0419921875,
+   "sigma_seed": 0.034402177644157296,
+   "ranges_overlap": true,
+   "paired_se": 0.01952110467046359,
+   "verdict": "within-noise"
+  },
+  "low/seeded_ignitions": {
+   "kb0_seed_means": [
+    4.0859375,
+    4.07421875
+   ],
+   "kbL_seed_means": [
+    4.064453125,
+    4.041015625
+   ],
+   "delta": -0.02734375,
+   "sigma_seed": 0.013101960805662831,
+   "ranges_overlap": false,
+   "paired_se": 0.016384998513318937,
+   "verdict": "SEPARATED(strong)"
+  },
+  "medium/episode_return": {
+   "kb0_seed_means": [
+    23.3798828125,
+    23.193359375,
+    22.875
+   ],
+   "kbL_seed_means": [
+    23.9560546875,
+    23.31640625,
+    23.9736328125
+   ],
+   "delta": 0.5992838541666679,
+   "sigma_seed": 0.32047571505437955,
+   "ranges_overlap": true,
+   "paired_se": 0.11813230329366722,
+   "verdict": "within-noise"
+  },
+  "medium/completion": {
+   "kb0_seed_means": [
+    0.7442626953125,
+    0.7364501953125,
+    0.725341796875
+   ],
+   "kbL_seed_means": [
+    0.75958251953125,
+    0.7406005859375,
+    0.76220703125
+   ],
+   "delta": 0.01877848307291663,
+   "sigma_seed": 0.010710090310620972,
+   "ranges_overlap": true,
+   "paired_se": 0.0036266187055127162,
+   "verdict": "within-noise"
+  },
+  "medium/survival_rate": {
+   "kb0_seed_means": [
+    0.92724609375,
+    0.9378255605697632,
+    0.9440104365348816
+   ],
+   "kbL_seed_means": [
+    0.9415690898895264,
+    0.9361979365348816,
+    0.9305013418197632
+   ],
+   "delta": -0.0002712408701578406,
+   "sigma_seed": 0.007159006710353018,
+   "ranges_overlap": true,
+   "paired_se": 0.002649289658809582,
+   "verdict": "within-noise"
+  },
+  "medium/deaths_fire": {
+   "kb0_seed_means": [
+    0.671875,
+    0.5625,
+    0.458984375
+   ],
+   "kbL_seed_means": [
+    0.49609375,
+    0.599609375,
+    0.623046875
+   ],
+   "delta": 0.00846354166666663,
+   "sigma_seed": 0.08915468319615798,
+   "ranges_overlap": true,
+   "paired_se": 0.027498719663759056,
+   "verdict": "within-noise"
+  },
+  "medium/deaths_collapse": {
+   "kb0_seed_means": [
+    0.201171875,
+    0.18359375,
+    0.212890625
+   ],
+   "kbL_seed_means": [
+    0.205078125,
+    0.166015625,
+    0.2109375
+   ],
+   "delta": -0.005208333333333343,
+   "sigma_seed": 0.020171788261496962,
+   "ranges_overlap": true,
+   "paired_se": 0.015898573197146677,
+   "verdict": "within-noise"
+  },
+  "medium/burnt_fraction": {
+   "kb0_seed_means": [
+    0.3202667236328125,
+    0.3234987258911133,
+    0.3211808204650879
+   ],
+   "kbL_seed_means": [
+    0.32163476943969727,
+    0.3215322494506836,
+    0.32242918014526367
+   ],
+   "delta": 0.00021664301554358278,
+   "sigma_seed": 0.001228148354521994,
+   "ranges_overlap": true,
+   "paired_se": 0.0009644037432485725,
+   "verdict": "within-noise"
+  },
+  "medium/mean_smoke_exposure": {
+   "kb0_seed_means": [
+    0.00013814457633998245,
+    0.0001472916774218902,
+    0.0002583254245109856
+   ],
+   "kbL_seed_means": [
+    0.00010742692393250763,
+    0.00018886566977016628,
+    0.00014692923286929727
+   ],
+   "delta": -3.3513283900295677e-05,
+   "sigma_seed": 5.538273286325988e-05,
+   "ranges_overlap": true,
+   "paired_se": 9.495336594937232e-06,
+   "verdict": "within-noise"
+  },
+  "medium/coupling_co_active": {
+   "kb0_seed_means": [
+    0.583984375,
+    0.595703125,
+    0.513671875
+   ],
+   "kbL_seed_means": [
+    0.638671875,
+    0.578125,
+    0.7109375
+   ],
+   "delta": 0.078125,
+   "sigma_seed": 0.056522641126905394,
+   "ranges_overlap": true,
+   "paired_se": 0.02807670180371637,
+   "verdict": "within-noise"
+  },
+  "medium/collapse_events": {
+   "kb0_seed_means": [
+    7.89453125,
+    7.8671875,
+    7.88671875
+   ],
+   "kbL_seed_means": [
+    7.888671875,
+    7.845703125,
+    7.888671875
+   ],
+   "delta": -0.008463541666666963,
+   "sigma_seed": 0.020171788261496962,
+   "ranges_overlap": true,
+   "paired_se": 0.015257832792997165,
+   "verdict": "within-noise"
+  },
+  "medium/seeded_ignitions": {
+   "kb0_seed_means": [
+    3.423828125,
+    3.40234375,
+    3.42578125
+   ],
+   "kbL_seed_means": [
+    3.423828125,
+    3.404296875,
+    3.412109375
+   ],
+   "delta": -0.00390625,
+   "sigma_seed": 0.011527298964600112,
+   "ranges_overlap": true,
+   "paired_se": 0.011204148677424992,
+   "verdict": "within-noise"
+  },
+  "high/episode_return": {
+   "kb0_seed_means": [
+    24.939453125,
+    25.380859375
+   ],
+   "kbL_seed_means": [
+    24.88671875,
+    25.8916015625
+   ],
+   "delta": 0.22900390625,
+   "sigma_seed": 0.548777947898094,
+   "ranges_overlap": true,
+   "paired_se": 0.13277156405808935,
+   "verdict": "within-noise"
+  },
+  "high/completion": {
+   "kb0_seed_means": [
+    0.79046630859375,
+    0.80767822265625
+   ],
+   "kbL_seed_means": [
+    0.80169677734375,
+    0.8436279296875
+   ],
+   "delta": 0.023590087890625,
+   "sigma_seed": 0.022663139249504118,
+   "ranges_overlap": true,
+   "paired_se": 0.004004703102555708,
+   "verdict": "within-noise"
+  },
+  "high/survival_rate": {
+   "kb0_seed_means": [
+    0.9407552480697632,
+    0.9225261211395264
+   ],
+   "kbL_seed_means": [
+    0.8720703125,
+    0.81591796875
+   ],
+   "delta": -0.08764654397964478,
+   "sigma_seed": 0.029518582186721168,
+   "ranges_overlap": false,
+   "paired_se": 0.003982307923352711,
+   "verdict": "SEPARATED(strong)"
+  },
+  "high/deaths_fire": {
+   "kb0_seed_means": [
+    0.54296875,
+    0.71875
+   ],
+   "kbL_seed_means": [
+    1.314453125,
+    2.00390625
+   ],
+   "delta": 1.0283203125,
+   "sigma_seed": 0.3557543602768026,
+   "ranges_overlap": false,
+   "paired_se": 0.0438055905433799,
+   "verdict": "SEPARATED(strong)"
+  },
+  "high/deaths_collapse": {
+   "kb0_seed_means": [
+    0.16796875,
+    0.2109375
+   ],
+   "kbL_seed_means": [
+    0.220703125,
+    0.205078125
+   ],
+   "delta": 0.0234375,
+   "sigma_seed": 0.02286074201312427,
+   "ranges_overlap": true,
+   "paired_se": 0.019330514767251054,
+   "verdict": "within-noise"
+  },
+  "high/burnt_fraction": {
+   "kb0_seed_means": [
+    0.9847755432128906,
+    0.9847888946533203
+   ],
+   "kbL_seed_means": [
+    0.9847917556762695,
+    0.9847831726074219
+   ],
+   "delta": 5.245208740234375e-06,
+   "sigma_seed": 7.936151970430965e-06,
+   "ranges_overlap": true,
+   "paired_se": 8.572432211627198e-06,
+   "verdict": "within-noise"
+  },
+  "high/mean_smoke_exposure": {
+   "kb0_seed_means": [
+    0.007540270686149597,
+    0.012025900185108185
+   ],
+   "kbL_seed_means": [
+    0.005979946348816156,
+    0.007462338078767061
+   ],
+   "delta": -0.003061943221837282,
+   "sigma_seed": 0.0023621154312900494,
+   "ranges_overlap": false,
+   "paired_se": 0.00010181406033220237,
+   "verdict": "SEPARATED(weak)"
+  },
+  "high/coupling_co_active": {
+   "kb0_seed_means": [
+    0.16796875,
+    0.15625
+   ],
+   "kbL_seed_means": [
+    0.140625,
+    0.1640625
+   ],
+   "delta": -0.009765625,
+   "sigma_seed": 0.013101960805662831,
+   "ranges_overlap": true,
+   "paired_se": 0.016110858392132263,
+   "verdict": "within-noise"
+  },
+  "high/collapse_events": {
+   "kb0_seed_means": [
+    7.85546875,
+    7.88671875
+   ],
+   "kbL_seed_means": [
+    7.890625,
+    7.904296875
+   ],
+   "delta": 0.0263671875,
+   "sigma_seed": 0.0170549308560283,
+   "ranges_overlap": false,
+   "paired_se": 0.01839037050191732,
+   "verdict": "SEPARATED(weak)"
+  },
+  "high/seeded_ignitions": {
+   "kb0_seed_means": [
+    0.826171875,
+    0.837890625
+   ],
+   "kbL_seed_means": [
+    0.84375,
+    0.8359375
+   ],
+   "delta": 0.0078125,
+   "sigma_seed": 0.007042092334890604,
+   "ranges_overlap": true,
+   "paired_se": 0.0078125,
+   "verdict": "within-noise"
+  }
+ },
+ "co_active": {
+  "low/kb0": {
+   "mean": 0.6943359375,
+   "share_zero": 0.5869140625,
+   "q90": 2.0,
+   "max": 9.0,
+   "hist_0_1_2_3_4plus": [
+    0.5869140625,
+    0.2392578125,
+    0.1064453125,
+    0.0458984375,
+    0.021484375
+   ],
+   "n_episodes": 1024
+  },
+  "low/kbL": {
+   "mean": 0.6630859375,
+   "share_zero": 0.5634765625,
+   "q90": 2.0,
+   "max": 5.0,
+   "hist_0_1_2_3_4plus": [
+    0.5634765625,
+    0.2841796875,
+    0.0966796875,
+    0.041015625,
+    0.0146484375
+   ],
+   "n_episodes": 1024
+  },
+  "medium/kb0": {
+   "mean": 0.564453125,
+   "share_zero": 0.62109375,
+   "q90": 2.0,
+   "max": 6.0,
+   "hist_0_1_2_3_4plus": [
+    0.62109375,
+    0.2532552083333333,
+    0.08203125,
+    0.030598958333333332,
+    0.013020833333333334
+   ],
+   "n_episodes": 1536
+  },
+  "medium/kbL": {
+   "mean": 0.642578125,
+   "share_zero": 0.578125,
+   "q90": 2.0,
+   "max": 7.0,
+   "hist_0_1_2_3_4plus": [
+    0.578125,
+    0.2682291666666667,
+    0.10807291666666667,
+    0.029947916666666668,
+    0.015625
+   ],
+   "n_episodes": 1536
+  },
+  "high/kb0": {
+   "mean": 0.162109375,
+   "share_zero": 0.8720703125,
+   "q90": 1.0,
+   "max": 3.0,
+   "hist_0_1_2_3_4plus": [
+    0.8720703125,
+    0.099609375,
+    0.0224609375,
+    0.005859375,
+    0.0
+   ],
+   "n_episodes": 1024
+  },
+  "high/kbL": {
+   "mean": 0.15234375,
+   "share_zero": 0.8828125,
+   "q90": 1.0,
+   "max": 3.0,
+   "hist_0_1_2_3_4plus": [
+    0.8828125,
+    0.0888671875,
+    0.021484375,
+    0.0068359375,
+    0.0
+   ],
+   "n_episodes": 1024
+  }
+ },
+ "danger_moment_masking": {
+  "low/kb0": {
+   "danger_rate": 0.006112926639616489,
+   "masked_frac_uncond": 0.0,
+   "masked_frac_danger": 0.0,
+   "amplification": null
+  },
+  "low/kbL": {
+   "danger_rate": 0.006783627904951572,
+   "masked_frac_uncond": 0.0006837061955593526,
+   "masked_frac_danger": 0.08088644593954086,
+   "amplification": 118.30585479736328
+  },
+  "medium/kb0": {
+   "danger_rate": 0.035896897315979004,
+   "masked_frac_uncond": 0.0,
+   "masked_frac_danger": 0.0,
+   "amplification": null
+  },
+  "medium/kbL": {
+   "danger_rate": 0.039583928883075714,
+   "masked_frac_uncond": 0.0024901952128857374,
+   "masked_frac_danger": 0.05595036596059799,
+   "amplification": 22.468265533447266
+  },
+  "high/kb0": {
+   "danger_rate": 0.07410656660795212,
+   "masked_frac_uncond": 0.0,
+   "masked_frac_danger": 0.0,
+   "amplification": null
+  },
+  "high/kbL": {
+   "danger_rate": 0.06211614981293678,
+   "masked_frac_uncond": 0.015589593909680843,
+   "masked_frac_danger": 0.24235568940639496,
+   "amplification": 15.545990943908691
+  }
+ },
+ "exposure_control": {
+  "low/mean_smoke_exposure": {
+   "kb0": 0.00014903126429999247,
+   "kbL": 0.0001498099518357776,
+   "kb0_seed_means": [
+    0.00013680770643986762,
+    0.00016125482216011733
+   ],
+   "kbL_seed_means": [
+    0.00015980702301021665,
+    0.00013981288066133857
+   ],
+   "delta": 7.786875357851386e-07,
+   "sigma_seed": 1.5791035394381845e-05,
+   "verdict": "within-noise"
+  },
+  "low/danger_rate": {
+   "kb0": 0.006112345494329929,
+   "kbL": 0.006783743388950825,
+   "kb0_seed_means": [
+    0.006601034663617611,
+    0.0056236558593809605
+   ],
+   "kbL_seed_means": [
+    0.0066159931011497974,
+    0.006951493211090565
+   ],
+   "delta": 0.0006713978946208954,
+   "sigma_seed": 0.0005166791961528361,
+   "verdict": "SEPARATED(weak)"
+  },
+  "medium/mean_smoke_exposure": {
+   "kb0": 0.0001812538927576194,
+   "kbL": 0.00014774060885732374,
+   "kb0_seed_means": [
+    0.00013814457633998245,
+    0.0001472916774218902,
+    0.0002583254245109856
+   ],
+   "kbL_seed_means": [
+    0.00010742692393250763,
+    0.00018886566977016628,
+    0.00014692923286929727
+   ],
+   "delta": -3.3513283900295677e-05,
+   "sigma_seed": 5.538273286325988e-05,
+   "verdict": "within-noise"
+  },
+  "medium/danger_rate": {
+   "kb0": 0.03591114282608032,
+   "kbL": 0.039582930505275726,
+   "kb0_seed_means": [
+    0.03987671434879303,
+    0.0364072360098362,
+    0.03144948557019234
+   ],
+   "kbL_seed_means": [
+    0.04022888094186783,
+    0.0392654687166214,
+    0.03925444185733795
+   ],
+   "delta": 0.003671787679195404,
+   "sigma_seed": 0.0030209349934011698,
+   "verdict": "within-noise"
+  },
+  "high/mean_smoke_exposure": {
+   "kb0": 0.009783085435628891,
+   "kbL": 0.006721142213791609,
+   "kb0_seed_means": [
+    0.007540270686149597,
+    0.012025900185108185
+   ],
+   "kbL_seed_means": [
+    0.005979946348816156,
+    0.007462338078767061
+   ],
+   "delta": -0.003061943221837282,
+   "sigma_seed": 0.0023621154312900494,
+   "verdict": "SEPARATED(weak)"
+  },
+  "high/danger_rate": {
+   "kb0": 0.07419295608997345,
+   "kbL": 0.062223486602306366,
+   "kb0_seed_means": [
+    0.06286980211734772,
+    0.08551611751317978
+   ],
+   "kbL_seed_means": [
+    0.05766346678137779,
+    0.06678351014852524
+   ],
+   "delta": -0.011969469487667084,
+   "sigma_seed": 0.012206871062517166,
+   "verdict": "within-noise"
+  },
+  "low/masked_frac_ceiling": {
+   "kb0": 0.025757968425750732,
+   "kbL": 0.03056582435965538,
+   "delta": 0.004807855933904648
+  },
+  "low/exposed_agent_share": {
+   "kb0": 0.08995078504085541,
+   "kbL": 0.0922730565071106,
+   "delta": 0.002322271466255188
+  },
+  "medium/masked_frac_ceiling": {
+   "kb0": 0.10158353298902512,
+   "kbL": 0.13409093022346497,
+   "delta": 0.03250739723443985
+  },
+  "medium/exposed_agent_share": {
+   "kb0": 0.271822988986969,
+   "kbL": 0.2995370626449585,
+   "delta": 0.027714073657989502
+  },
+  "high/masked_frac_ceiling": {
+   "kb0": 0.5356711745262146,
+   "kbL": 0.5013946890830994,
+   "delta": -0.034276485443115234
+  },
+  "high/exposed_agent_share": {
+   "kb0": 0.607465386390686,
+   "kbL": 0.5887274146080017,
+   "delta": -0.018737971782684326
+  },
+  "low/ceiling_by_policy": {
+   "random": 0.02786445803940296,
+   "M4.3 200u kB=0.5": 0.009204213507473469,
+   "M4.3 200u kB=1.5": 0.015231923200190067,
+   "M4.4 500u kB=0": 0.025757968425750732,
+   "M4.4 500u kB=1.0": 0.03056582435965538
+  },
+  "medium/ceiling_by_policy": {
+   "random": 0.12783598899841309,
+   "M4.3 200u kB=0.5": 0.04329891502857208,
+   "M4.3 200u kB=1.5": 0.04041402414441109,
+   "M4.4 500u kB=0": 0.10158353298902512,
+   "M4.4 500u kB=1.0": 0.13409093022346497
+  },
+  "high/ceiling_by_policy": {
+   "random": 0.41534098982810974,
+   "M4.3 200u kB=0.5": 0.5171958804130554,
+   "M4.3 200u kB=1.5": 0.44979074597358704,
+   "M4.4 500u kB=0": 0.5356711745262146,
+   "M4.4 500u kB=1.0": 0.5013946890830994
+  },
+  "low/kb0/zero_death": {
+   "share": 0.5908203125,
+   "exposure_all": 0.00014903125702403486,
+   "exposure_zero_death": 9.94516522041522e-05
+  },
+  "low/kbL/zero_death": {
+   "share": 0.6298828125,
+   "exposure_all": 0.00014980995911173522,
+   "exposure_zero_death": 9.787706221686676e-05
+  },
+  "medium/kb0/zero_death": {
+   "share": 0.5006510416666666,
+   "exposure_all": 0.0001812538830563426,
+   "exposure_zero_death": 0.00013900753401685506
+  },
+  "medium/kbL/zero_death": {
+   "share": 0.4954427083333333,
+   "exposure_all": 0.00014774061855860054,
+   "exposure_zero_death": 0.00010461748752277344
+  },
+  "high/kb0/zero_death": {
+   "share": 0.4375,
+   "exposure_all": 0.009783085435628891,
+   "exposure_zero_death": 0.009923198260366917
+  },
+  "high/kbL/zero_death": {
+   "share": 0.1357421875,
+   "exposure_all": 0.006721142213791609,
+   "exposure_zero_death": 0.006563818547874689
+  }
+ },
+ "detection_drift": {
+  "low": {
+   "values": [
+    0.3931815028190613,
+    0.41508662700653076,
+    0.40727055072784424,
+    0.3968571126461029,
+    0.4004438817501068
+   ],
+   "columns": [
+    "random",
+    "M4.3 probe kB=0.5",
+    "M4.3 probe kB=1.5",
+    "M4.4 kb0 (500u)",
+    "M4.4 kbL (500u)"
+   ],
+   "m44_kbL_in_band": true
+  },
+  "medium": {
+   "values": [
+    0.3835597634315491,
+    0.43827399611473083,
+    0.4266343414783478,
+    0.44516363739967346,
+    0.44646820425987244
+   ],
+   "columns": [
+    "random",
+    "M4.3 probe kB=0.5",
+    "M4.3 probe kB=1.5",
+    "M4.4 kb0 (500u)",
+    "M4.4 kbL (500u)"
+   ],
+   "m44_kbL_in_band": true
+  },
+  "high": {
+   "values": [
+    0.3615346848964691,
+    0.2809161841869354,
+    0.35146868228912354,
+    0.2971624433994293,
+    0.33364638686180115
+   ],
+   "columns": [
+    "random",
+    "M4.3 probe kB=0.5",
+    "M4.3 probe kB=1.5",
+    "M4.4 kb0 (500u)",
+    "M4.4 kbL (500u)"
+   ],
+   "m44_kbL_in_band": false
+  }
+ },
+ "m31b_burnt_fraction_buckets": {
+  "low/kb0": {
+   "<0.05 (fire-free)": {
+    "completion": 0.7033802270889282,
+    "n": 551
+   },
+   "0.05-0.20": {
+    "completion": 0.7020833492279053,
+    "n": 465
+   },
+   "0.20-0.40": {
+    "completion": 0.66796875,
+    "n": 8
+   },
+   "0.40-0.60": {
+    "completion": null,
+    "n": 0
+   },
+   ">0.60": {
+    "completion": null,
+    "n": 0
+   }
+  },
+  "low/kbL": {
+   "<0.05 (fire-free)": {
+    "completion": 0.7138901352882385,
+    "n": 553
+   },
+   "0.05-0.20": {
+    "completion": 0.7198973894119263,
+    "n": 463
+   },
+   "0.20-0.40": {
+    "completion": 0.67578125,
+    "n": 8
+   },
+   "0.40-0.60": {
+    "completion": null,
+    "n": 0
+   },
+   ">0.60": {
+    "completion": null,
+    "n": 0
+   }
+  },
+  "medium/kb0": {
+   "<0.05 (fire-free)": {
+    "completion": 0.72137850522995,
+    "n": 107
+   },
+   "0.05-0.20": {
+    "completion": 0.719531238079071,
+    "n": 320
+   },
+   "0.20-0.40": {
+    "completion": 0.7299517393112183,
+    "n": 544
+   },
+   "0.40-0.60": {
+    "completion": 0.7491939663887024,
+    "n": 504
+   },
+   ">0.60": {
+    "completion": 0.7766393423080444,
+    "n": 61
+   }
+  },
+  "medium/kbL": {
+   "<0.05 (fire-free)": {
+    "completion": 0.7522522807121277,
+    "n": 111
+   },
+   "0.05-0.20": {
+    "completion": 0.7433106899261475,
+    "n": 313
+   },
+   "0.20-0.40": {
+    "completion": 0.7460082173347473,
+    "n": 548
+   },
+   "0.40-0.60": {
+    "completion": 0.7659955620765686,
+    "n": 506
+   },
+   ">0.60": {
+    "completion": 0.7893319129943848,
+    "n": 58
+   }
+  },
+  "high/kb0": {
+   "<0.05 (fire-free)": {
+    "completion": null,
+    "n": 0
+   },
+   "0.05-0.20": {
+    "completion": null,
+    "n": 0
+   },
+   "0.20-0.40": {
+    "completion": null,
+    "n": 0
+   },
+   "0.40-0.60": {
+    "completion": null,
+    "n": 0
+   },
+   ">0.60": {
+    "completion": 0.799072265625,
+    "n": 1024
+   }
+  },
+  "high/kbL": {
+   "<0.05 (fire-free)": {
+    "completion": null,
+    "n": 0
+   },
+   "0.05-0.20": {
+    "completion": null,
+    "n": 0
+   },
+   "0.20-0.40": {
+    "completion": null,
+    "n": 0
+   },
+   "0.40-0.60": {
+    "completion": null,
+    "n": 0
+   },
+   ">0.60": {
+    "completion": 0.822662353515625,
+    "n": 1024
+   }
+  }
+ },
+ "inertness_falsifier": {
+  "conditions": {
+   "i_completion_survival": false,
+   "ii_exposure_positioning": false,
+   "iii_danger_masking": false,
+   "iv_co_active": true
+  },
+  "counterexamples": {
+   "i": [
+    "low/survival_rate (+0.0059, strong)",
+    "high/survival_rate (-0.0876, strong)"
+   ],
+   "ii": [
+    "low/danger_rate (+0.00067, weak)",
+    "high/mean_smoke_exposure (-0.00306, weak)"
+   ],
+   "iii": [
+    "low (118x)",
+    "medium (22x)",
+    "high (16x)"
+   ],
+   "iv": []
+  },
+  "inert": false
+ }
+}

@@ -308,3 +308,51 @@ Issued before any M4.4 run; supersedes the kappa_B = 1.1 entry above.
    variance concentrates near criticality, and "small but real" is now a
    pre-registered possibility that two seeds cannot separate from noise.
    Low/High stay at two seeds. Grid is therefore 14 train + 14 eval runs.
+
+
+   PHASE 6 ENTRY GATE (do not start Phase 6 without executing this line):
+Re-read D6-proposal with the RA. Decisions owed before any Phase-6 run:
+(1) dose-response design formalized into the phase prompt;
+(2) pilot scoped (2 mixture points);
+(3) one-paper vs two-paper fork scheduled for after the pilot.
+
+
+## M4.4 outcome (RA, 2026-07-28) — pre-committed rules applied, no new rulings
+
+Recorded because two decisions were *executed* here rather than made:
+both branches were fixed in advance by the M4.4 amendments, and the data
+selected the branch.
+
+1. **Amendment 2 (provisional finding) — branch taken: "indistinguishable
+   -> restated as a fire-avoidance byproduct."** Two independent
+   controls agreed. (a) Training length: the masked_frac ceiling
+   suppression that motivated the finding (Medium 0.128 random -> 0.043
+   at 200 updates) is gone by 500 updates (0.102 / 0.134). (b) The
+   kappa_B = 0 control is the *less* exposed arm at Low and Medium,
+   which is the opposite sign to perception-driven regulation; at High
+   the coupled arm is less exposed but also loses 8.8 points of
+   survival, and exposure averages over alive agents, so the confound
+   cannot be removed (conditioning on zero-death episodes is a collider,
+   44 % vs 14 % retention). Finding 3 in kappa_b_lock.md is marked NOT
+   CONFIRMED with its resolution appended. The M4.3 measurement stands;
+   what fails is the inference from it.
+2. **Amendment 3 (inertness falsifier) — verdict NOT INERT.** Conditions
+   (i), (ii) and (iii) fail; (iv) holds. The reportable-negative-result
+   branch is not taken. (i) fails on the strong grade at High
+   (survival -0.0876, ranges disjoint, |delta| = 3.0 sigma_seed); the
+   verdict does not rest on (ii), which fails only weakly and in
+   inconsistent directions.
+3. **Amendment 1 (drift check) — lock re-validated, no action.** Medium
+   detection at the locked kappa_B reads 0.4465 under the 500-update
+   policies, inside the [0.4, 0.7] band and slightly further from its
+   floor than the 200-update probes. kappa_B = 1.0 stands.
+4. **m31b watch item (carried from Phase 3): recommend CLOSE.** No
+   fire-free coverage deficit at Medium under obs v3; completion rises
+   with burnt_fraction rather than falling. Human call, flagged not
+   taken.
+
+**Open items for the human, neither actioned:** (a) matched kappa_B = 0
+renders exist only at Medium per amendment 4c, but the headline result
+is at High — a matched High pair is ~2 GPU-min; (b) the Low survival
+reversal (+0.0059, opposite sign to High) is at 1.16x its own threshold
+on two seeds and is recorded as a hypothesis, not a result.
