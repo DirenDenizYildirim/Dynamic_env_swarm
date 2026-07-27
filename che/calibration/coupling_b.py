@@ -364,9 +364,14 @@ def _git_commit() -> str:
         return "unknown"
 
 
-def _load_probe(spec: str, kappa_B: float):
-    """`severity=ckpt_dir` -> (severity, policy_fn, cfg) at the probe's
-    own training kappa_B (config-hash guarded by the eval harness)."""
+def _load_probe(spec: str, kappa_B: float, death_penalty: float):
+    """`severity=ckpt_dir` -> (severity, policy_fn, cfg, step).
+
+    `config_hash` is `repr(cfg)`, so **every** theta override used at
+    training time must be reproduced here or the hash guard rejects the
+    checkpoint — death_penalty included (D4 trains at 0.5 while the
+    severity YAMLs still carry 0.0).
+    """
     from che.eval.harness import load_params, make_policy_fn
 
     severity, ckpt_dir = spec.split("=", 1)
@@ -375,7 +380,9 @@ def _load_probe(spec: str, kappa_B: float):
         cfg,
         env=dataclasses.replace(
             cfg.env,
-            theta=dataclasses.replace(cfg.env.theta, kappa_B=kappa_B),
+            theta=dataclasses.replace(
+                cfg.env.theta, kappa_B=kappa_B, death_penalty=death_penalty
+            ),
         ),
     )
     params, step_n = load_params(ckpt_dir, cfg)
@@ -399,6 +406,14 @@ def main() -> None:
         default=0.0,
         dest="probe_kappa_B",
         help="kappa_B the probe policies were trained at (hash guard)",
+    )
+    p.add_argument(
+        "--probe-death-penalty",
+        type=float,
+        default=0.5,
+        dest="probe_death_penalty",
+        help="death_penalty the probes were trained at (D4 default 0.5; "
+        "must match training or the config-hash guard rejects the ckpt)",
     )
     p.add_argument(
         "--kappas",
@@ -436,7 +451,9 @@ def main() -> None:
         )
 
     for spec in args.probe_ckpt:
-        name, policy, pcfg, step_n = _load_probe(spec, k_probe)
+        name, policy, pcfg, step_n = _load_probe(
+            spec, k_probe, args.probe_death_penalty
+        )
         si = list(SEVERITY_CONFIGS).index(name)
         row = run_severity(
             jax.random.fold_in(key, si), pcfg.env, kappas, args.n_eps, policy=policy
@@ -473,6 +490,7 @@ def main() -> None:
         "random_policy": random_rows,
         "probe_policy": probe_rows,
         "probe_kappa_B": k_probe,
+        "probe_death_penalty": args.probe_death_penalty,
         "e2c_q": q,
         "e2c_geometry": "Option A (d=2, l_f=2, ell=4, k=9)",
         "band_check": band_intersection(bands_source, kappas),

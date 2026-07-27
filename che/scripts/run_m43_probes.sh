@@ -25,24 +25,27 @@ set -euo pipefail
 
 OUT=che/bench/results/phase4/m43
 KAPPA_PROBE=${KAPPA_PROBE:-0.5}
+DP=${DP:-0.5}  # D4; must match what the calibration reproduces (hash guard)
 N_EPS=${N_EPS:-64}
+TAG="kB${KAPPA_PROBE}"  # every artifact is tagged, so runs at two
+                        # candidate kappa_B values do not clobber
 mkdir -p "$OUT"
-: > "$OUT/probe_timings.txt"
+: > "$OUT/probe_timings_${TAG}.txt"
 
 probe_args=()
 for sev in low medium high; do
-  tag="probe_${sev}_kB${KAPPA_PROBE}"
+  tag="probe_${sev}_${TAG}"
   echo "=== train ${tag} ($(date -u +%H:%M:%S)) ==="
   t0=$SECONDS
   uv run python -m che.train.ippo \
     --config "che/configs/severity_${sev}.yaml" \
     --updates 200 \
     --seed 0 \
-    --death-penalty 0.5 \
+    --death-penalty "$DP" \
     --kappa-B "$KAPPA_PROBE" \
     --ckpt-dir "$OUT/ckpt_${tag}" \
     --metrics "$OUT/${tag}.jsonl"
-  echo "train_${tag} $((SECONDS - t0))s" | tee -a "$OUT/probe_timings.txt"
+  echo "train_${tag} $((SECONDS - t0))s" | tee -a "$OUT/probe_timings_${TAG}.txt"
   probe_args+=(--probe-ckpt "${sev}=$OUT/ckpt_${tag}")
 done
 
@@ -51,12 +54,13 @@ t0=$SECONDS
 uv run python -m che.calibration.coupling_b \
   --n-eps "$N_EPS" \
   --probe-kappa-B "$KAPPA_PROBE" \
+  --probe-death-penalty "$DP" \
   "${probe_args[@]}" \
-  --out-name coupling_b_calibration_probe.json
-echo "calibration $((SECONDS - t0))s" | tee -a "$OUT/probe_timings.txt"
+  --out-name "coupling_b_calibration_probe_${TAG}.json"
+echo "calibration $((SECONDS - t0))s" | tee -a "$OUT/probe_timings_${TAG}.txt"
 
 uv run python -m che.scripts.plot_m43_bands \
-  --json "$OUT/coupling_b_calibration_probe.json" \
-  --out "$OUT/kappa_b_bands_probe.png"
+  --json "$OUT/coupling_b_calibration_probe_${TAG}.json" \
+  --out "$OUT/kappa_b_bands_probe_${TAG}.png"
 
-echo "M4.3 probe job complete — bring back $OUT/ and m43_console.log"
+echo "M4.3 probe job complete (${TAG}) — bring back $OUT/ and the console log"
