@@ -188,6 +188,14 @@ def main(argv: list[str] | None = None):
         "(M3.5 kappa_A ablation arm; hash guard)",
     )
     p.add_argument(
+        "--kappa-B",
+        type=float,
+        default=None,
+        dest="kappa_B",
+        help="theta override — must match the training run "
+        "(M4.3 probe policies / M4.4 kappa_B arm; hash guard)",
+    )
+    p.add_argument(
         "--obs-version",
         type=int,
         default=None,
@@ -225,6 +233,14 @@ def main(argv: list[str] | None = None):
             env=dataclasses.replace(
                 cfg.env,
                 theta=dataclasses.replace(cfg.env.theta, kappa_A=args.kappa_A),
+            ),
+        )
+    if args.kappa_B is not None:
+        cfg = dataclasses.replace(
+            cfg,
+            env=dataclasses.replace(
+                cfg.env,
+                theta=dataclasses.replace(cfg.env.theta, kappa_B=args.kappa_B),
             ),
         )
     if args.obs_version is not None:

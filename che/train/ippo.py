@@ -477,6 +477,13 @@ def main():
         help="override theta.kappa_A (M3.5 ablation arm)",
     )
     p.add_argument(
+        "--kappa-B",
+        type=float,
+        default=None,
+        dest="kappa_B",
+        help="override theta.kappa_B (M4.3 probe policies / M4.4 arm)",
+    )
+    p.add_argument(
         "--baseline",
         action="store_true",
         help="print the random-policy baseline metrics and exit",
@@ -503,6 +510,14 @@ def main():
             env=dataclasses.replace(
                 cfg.env,
                 theta=dataclasses.replace(cfg.env.theta, kappa_A=args.kappa_A),
+            ),
+        )
+    if args.kappa_B is not None:
+        cfg = dataclasses.replace(
+            cfg,
+            env=dataclasses.replace(
+                cfg.env,
+                theta=dataclasses.replace(cfg.env.theta, kappa_B=args.kappa_B),
             ),
         )
     train_overrides = {

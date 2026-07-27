@@ -1,0 +1,157 @@
+{
+  "kappa_candidates": [
+    3.0,
+    10.0,
+    100.0,
+    1000.0
+  ],
+  "bands": {
+    "masked_frac_medium": [
+      0.15,
+      0.45
+    ],
+    "detection_medium": [
+      0.4,
+      0.7
+    ],
+    "e2c_q": [
+      0.3,
+      0.7
+    ]
+  },
+  "detection_ring": {
+    "distance": 3.0,
+    "halfwidth": 0.5,
+    "endpoint_sampled_fraction": 1.0
+  },
+  "random_policy": {
+    "low": {
+      "n_eps": 64,
+      "fire_active_steps_per_ep": 56.328125,
+      "detection_samples": 576.0,
+      "masked_frac": [
+        0.00653957249596715,
+        0.009250053204596043,
+        0.013046673499047756,
+        0.015813292935490608
+      ],
+      "detection": [
+        0.07499437779188156,
+        0.00035293548717163503,
+        3.193408197529306e-32,
+        0.0
+      ],
+      "masked_frac_ceiling": 0.028127094730734825,
+      "exposed_agent_share": 0.092694491147995,
+      "masked_frac_exposed": [
+        0.07988785207271576,
+        0.11202184855937958,
+        0.15492072701454163,
+        0.18335966765880585
+      ],
+      "burnt_fraction": 0.055179595947265625,
+      "survival_rate": 0.94140625,
+      "mean_smoke_exposure": 0.00023115205112844706
+    },
+    "medium": {
+      "n_eps": 64,
+      "fire_active_steps_per_ep": 131.140625,
+      "detection_samples": 3026.0,
+      "masked_frac": [
+        0.01704557240009308,
+        0.024505330249667168,
+        0.03678029775619507,
+        0.047873448580503464
+      ],
+      "detection": [
+        0.07154016941785812,
+        0.0003340555995237082,
+        2.6975370728312567e-32,
+        0.0
+      ],
+      "masked_frac_ceiling": 0.1303737759590149,
+      "exposed_agent_share": 0.26634877920150757,
+      "masked_frac_exposed": [
+        0.07563597708940506,
+        0.10726722329854965,
+        0.15595899522304535,
+        0.19669373333454132
+      ],
+      "burnt_fraction": 0.34767913818359375,
+      "survival_rate": 0.7838541269302368,
+      "mean_smoke_exposure": 0.0012689942959696054
+    },
+    "high": {
+      "n_eps": 64,
+      "fire_active_steps_per_ep": 89.453125,
+      "detection_samples": 6593.0,
+      "masked_frac": [
+        0.06386000663042068,
+        0.08562776446342468,
+        0.122799351811409,
+        0.16022738814353943
+      ],
+      "detection": [
+        0.06561742722988129,
+        0.0003026119666174054,
+        2.1371274879164238e-32,
+        0.0
+      ],
+      "masked_frac_ceiling": 0.419265478849411,
+      "exposed_agent_share": 0.5292181372642517,
+      "masked_frac_exposed": [
+        0.15852050483226776,
+        0.2054184377193451,
+        0.27531635761260986,
+        0.3391602635383606
+      ],
+      "burnt_fraction": 0.9843597412109375,
+      "survival_rate": 0.41796875,
+      "mean_smoke_exposure": 0.0044309888035058975
+    }
+  },
+  "probe_policy": {},
+  "probe_kappa_B": 0.0,
+  "e2c_q": [
+    0.22182053327560425,
+    0.0010265707969665527,
+    0.0,
+    0.0
+  ],
+  "e2c_geometry": "Option A (d=2, l_f=2, ell=4, k=9)",
+  "band_check": {
+    "masked_frac_medium_ok": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "detection_medium_ok": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "e2c_q_ok": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "all_three_ok": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "intersection": []
+  },
+  "band_check_source": "random",
+  "n_eps": 64,
+  "jax_version": "0.11.0",
+  "backend": "cpu",
+  "git_commit": "110da6a7a91f448390201ab5b9d028bb5ff6f05f",
+  "seed": 0,
+  "wall_seconds": 19.22665288099961,
+  "timestamp_utc": "2026-07-27T17:57:11Z"
+}
