@@ -71,6 +71,22 @@ which 8 need a mandatory hedge or correction.**
 
 Full severity-ordered action registers are at the end of each document.
 
+## The good news, recorded
+
+Both test suites were re-run against the pinned commit: **123 fast + 12 slow
+theory tests PASS**, and the two headline theory results **reproduce their
+committed report numbers exactly** — M4.2's eight-row E2C table digit for digit
+(max\|z\| 2.11, Σz² 6.55/8 dof, p 0.586, mean z −0.44) and M3.3 v2's
+slope 41.18 / matched_ref 41.49 / ratio 0.992 / R² 0.9995. Months later, on a
+different machine, without a GPU. That is the M3.3 pinned-key discipline
+working as designed, and it means every **(a)** in the ledger is a *verified*
+(a) rather than a cited one.
+
+Also clean: all 17 commit hashes, all 35 `invariant #N` references, the
+bibliography in both directions, all four "precedent" citations, and the
+three-part Q4 fix from the same-day ruling (artifact-persistence rule,
+`run_m44_grid.sh` retro-flag, transcription meta-rule) — **3/3 executed**.
+
 ## Coverage limits
 
 Chat-transcript claims cannot be checked from here — C-3, C-4 and C-5 may each

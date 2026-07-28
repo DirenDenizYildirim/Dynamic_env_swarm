@@ -448,6 +448,9 @@ Recorded so the human can see the audit was not one-sided.
 | M3.3 waterfall: 62.85 ×1.121 ×0.834 ×0.928 ×0.836 = 45.56 | `m33/deficit_decomposition.json`, arithmetic | closes |
 | Prop.-3 residual is L-independent (0.843 @ L32 vs 0.836 @ L64) | `phase3_report.md:99` | consistent with the claim |
 | M4.2 gate constants (2.69 Šidák, χ²(n) p ≥ 0.05, 2/√n) | `che/tests/test_e2c.py:48–70` comment block | present verbatim, with rationale |
+| **Both test suites re-run by this audit** | `pytest -m "not slow"` and `pytest -m slow` | **123 + 12 PASS, exit 0** |
+| **M4.2 result table** (8 rows of J\*_emp, Δ, z) quoted in `phase4_report.md` | re-running `test_e2c::test_empirical_matches_numeric_prediction` | **reproduced digit for digit** — max\|z\| 2.11, Σz² 6.55/8 dof p 0.586, mean z −0.44 |
+| **M3.3 v2 result** quoted in `phase3_report.md` | re-running `test_prop3::test_prop3_slope_matches_matched_reference` | **reproduced exactly** — slope 41.18, matched_ref 41.49 (SE 0.43), ratio 0.992, R² 0.9995 |
 | Artifact-persistence rule + transcription meta-rule "all executed this session" | `CLAUDE.md:138–156`, `run_m44_grid.sh:130–137`, `run_p5_pretask_high_kb0.sh` | **3/3 executed** |
 | "no `*.tar.zst` or `*.sha256` exists in the repo tree" (Q4 finding) | `git ls-tree -r HEAD` | **still true** — correct as written |
 | Theory bibliography (Bernstein 2002, Grassberger 1983, Kesten 1980, Jaderberg 2017, Haksar & Schwager 2018) | in-text ↔ reference list | **5/5 both ways** |

@@ -18,9 +18,25 @@ already exists in the repo.
 | **(c)** | **Cited literature.** A standard result we invoke. The reference is named — or flagged as *missing from the bibliography*. |
 | **(d)** | **Motivational / untested.** True-by-construction, argued in prose, or simply not yet touched. **Every (d) the paper would state needs a hook or an explicit hedge** — the "action" column says which. |
 
-**Test-suite state at the pinned commit:** 123 fast tests **PASS** (`pytest -m
-"not slow"`, exit 0, ~2.5 min CPU). 12 `@slow` theory tests — outcomes in the
-(a) rows below.
+**Test-suite state at the pinned commit — both suites re-run by this audit:**
+
+- **123 fast tests PASS** (`pytest -m "not slow"`, exit 0, ~2.5 min CPU).
+- **12 `@slow` theory tests PASS** (`pytest -m slow`, exit 0), and — the part
+  that matters for a ledger — **they reproduce the committed report numbers
+  exactly**, not merely within tolerance:
+  - `test_e2c::test_empirical_matches_numeric_prediction` printed
+    max\|z\| = **2.11**, Σz² = **6.55** on 8 dof → p = **0.586**,
+    mean z = **−0.44**, and every one of the 8 grid rows matches
+    `phase4_report.md`'s table digit for digit (J*_emp 1.0000 / 0.9790 /
+    0.9080 / 0.8091 / 0.7266 / 0.6055 / 0.5123 / 0.5000).
+  - `test_prop3::test_prop3_slope_matches_matched_reference` printed
+    slope **41.18**, matched_ref **41.49** (SE 0.43), ratio **0.992**,
+    R² **0.9995**, overlap 0.016–0.023 — identical to `phase3_report.md`.
+
+  This is the M3.3 ruling's pinned-key discipline paying off: the committed
+  theory results are deterministic and independently regenerable months later,
+  on a different machine, without a GPU. Every **(a)** below is therefore a
+  verified (a), not a cited one.
 
 **Why every theory-doc correction here is a diff and not an edit:**
 `docs/theory_foundations.md` is **human-owned** — `phase1_2_prompt.md:212`
