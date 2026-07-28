@@ -45,10 +45,39 @@ ENV_VERDICTS = (  # (min aggregate env-steps/sec, verdict)
 )
 
 
-def keepalive_probe(rew, done, obs: dict, info: dict):
-    """Reduce **every** step output to one scalar, so XLA cannot dead-code-
-    eliminate any part of the env and leave the bench measuring less work
-    than it reports.
+# Probe modes. "There is one env cost" turned out to be false: XLA deletes
+# whatever the *consumer* does not read, so the honest env-only rate depends
+# on which consumer you are benching for (M5.1b finding, 2026-07-28).
+#
+#   legacy   — the M0.4/M3.1b/M4.1 probe, preserved verbatim for continuity
+#              with those published rows. Silently drops the M4.0/M4.4 info
+#              diagnostics and the M5.0 comms kernel.
+#   comms    — legacy + obs["links"]. Differs from `legacy` by exactly the
+#              comms axis, so the pair attributes the M5.0 cost and nothing
+#              else.
+#   training — what the IPPO collector actually consumes (EP_METRICS + the
+#              comms counters + grid/vec/links). This is the referent of the
+#              standing rule's 100k *training* projection.
+#   all      — every obs and info leaf. The eval harness reads nearly all of
+#              EVAL_METRICS, so this is the eval-faithful worst case.
+#
+# Chosen by --probe; nothing here decides which row is canonical for the
+# gate. That is a human ruling, and the decomposition exists to inform it.
+_LEGACY_INFO = ("coupling_co_active", "food_remaining")
+PROBE_MODES = ("legacy", "comms", "training", "all")
+
+
+def _training_info_keys() -> tuple[str, ...]:
+    """Info keys the IPPO collector reads, sourced from the collector itself
+    so the bench cannot drift away from what training does."""
+    from che.train.ippo import EP_METRICS
+
+    return tuple(EP_METRICS) + ("links_alive", "links_in_range", "alive_agents")
+
+
+def keepalive_probe(rew, done, obs: dict, info: dict, mode: str = "all"):
+    """Reduce step outputs to one scalar so XLA cannot dead-code-eliminate
+    the work the bench claims to be measuring.
 
     M5.1 FIX (2026-07-28). This used to be a hand-written list of fields.
     M5.0 added `obs["links"]` and two comms info counters, nobody extended
@@ -56,20 +85,35 @@ def keepalive_probe(rew, done, obs: dict, info: dict):
     row measured an env with no comms in it (HLO evidence — tensors of
     shape [n_agents, n_agents] went 1 -> 189 once the reduction was
     restored). Enumerating the trees makes that structural instead of
-    remembered: whatever a future milestone adds to obs or info is kept
-    alive automatically. Bool/int leaves are cast, never skipped.
+    remembered: whatever a future milestone adds is kept alive
+    automatically. Bool/int leaves are cast, never skipped.
 
-    `grid`/`vec` keep their historical `.mean()` reduction so the probe's
-    own cost stays comparable with the M0.4/M3.1b/M4.1 rows.
+    `grid`/`vec` keep their historical `.mean()` reduction in every mode so
+    the probe's own cost stays comparable across rows.
     """
     import jax.numpy as jnp  # deferred, like the rest of this module
 
+    if mode not in PROBE_MODES:
+        raise ValueError(f"unknown probe mode {mode!r}; expected {PROBE_MODES}")
     f32 = lambda a: a.sum().astype(jnp.float32)  # noqa: E731
-    return (
+    total = (
         rew.sum()
         + obs["grid"].mean()
         + obs["vec"].mean()
         + done.sum().astype(jnp.float32)
+    )
+    if mode == "legacy":
+        return total + sum(f32(info[k]) for k in _LEGACY_INFO)
+    if mode == "comms":
+        return total + sum(f32(info[k]) for k in _LEGACY_INFO) + f32(obs["links"])
+    if mode == "training":
+        return (
+            total
+            + f32(obs["links"])
+            + sum(f32(info[k]) for k in sorted(_training_info_keys()))
+        )
+    return (
+        total
         + sum(f32(v) for k, v in sorted(obs.items()) if k not in ("grid", "vec"))
         + sum(f32(v) for _, v in sorted(info.items()))
     )
@@ -84,8 +128,14 @@ def bench_cell(
     window_secs: float,
     chunk: int,
     seed: int = 0,
+    probe: str = "all",
 ) -> dict:
-    """Benchmark one (grid, n_envs, n_agents) cell; returns a result dict."""
+    """Benchmark one (grid, n_envs, n_agents) cell; returns a result dict.
+
+    `probe` selects which consumer's keep-alive set is measured — see
+    PROBE_MODES. It is recorded in the result dict, because an env-only rate
+    without its probe mode is not a comparable number (M5.1b).
+    """
     import jax
     import jax.numpy as jnp
 
@@ -111,7 +161,7 @@ def bench_cell(
             obs, states, rew, done, info = step_v(
                 jax.random.split(k_step, n_envs), states, actions, cfg
             )
-            return (key, states), keepalive_probe(rew, done, obs, info)
+            return (key, states), keepalive_probe(rew, done, obs, info, probe)
         (key, states), probes = jax.lax.scan(
             body, (key, states), None, length=chunk
         )
@@ -124,17 +174,19 @@ def bench_cell(
     compiled = jitted.lower(key, states).compile()
     compile_s = time.perf_counter() - t0
 
-    # Warm-up chunk (excluded from measurement).
-    key, states, probe = compiled(key, states)
-    jax.block_until_ready(probe)
+    # Warm-up chunk (excluded from measurement). NB: the result is bound to
+    # `probe_out`, not `probe` — `probe` is the mode string the traced body
+    # closes over, and shadowing it would break any later retrace.
+    key, states, probe_out = compiled(key, states)
+    jax.block_until_ready(probe_out)
 
     rates = []
     for _ in range(windows):
         steps = 0
         t_win = time.perf_counter()
         while time.perf_counter() - t_win < window_secs:
-            key, states, probe = compiled(key, states)
-            jax.block_until_ready(probe)
+            key, states, probe_out = compiled(key, states)
+            jax.block_until_ready(probe_out)
             steps += chunk
         elapsed = time.perf_counter() - t_win
         rates.append(n_envs * steps / elapsed)
@@ -158,6 +210,7 @@ def bench_cell(
         "platform": dev.platform,
         "device": dev.device_kind,
         "jax_version": jax.__version__,
+        "probe": probe,
     }
 
 
@@ -309,6 +362,10 @@ def main():
                    help="env steps per compiled call")
     p.add_argument("--quick", action="store_true",
                    help="smoke-run: 2 windows x 3 s, chunk 64")
+    p.add_argument("--probe", default="all", choices=PROBE_MODES,
+                   help="keep-alive set to measure (M5.1b): legacy = the "
+                        "M0.4/M4.1 probe, comms = legacy + links, training = "
+                        "what the IPPO collector reads, all = every leaf")
     p.add_argument("--out", default="che/bench/results/gate_report.md")
     p.add_argument("--dollars-per-hour", type=float, default=0.45)
     args = p.parse_args()
@@ -319,7 +376,7 @@ def main():
         result = bench_cell(
             grid, n_envs, n_agents,
             windows=args.windows, window_secs=args.window_secs,
-            chunk=args.chunk,
+            chunk=args.chunk, probe=args.probe,
         )
         print(json.dumps(result))
     else:

@@ -51,7 +51,12 @@ print(f"projection (/81)  : {proj:,.0f} train steps/s")
 print(f"vs M4.1 obs v3    : 8,375,048 -> {env_rate:,.0f} "
       f"({100*(env_rate/8375048-1):+.1f} %)")
 print(f"vs the DCE'd row  : 8,630,698 -> {env_rate:,.0f} "
-      f"({100*(env_rate/8630698-1):+.1f} %)  <- the comms cost, finally measured")
+      f"({100*(env_rate/8630698-1):+.1f} %)")
+print("  NB (corrected 2026-07-28): this delta is NOT the comms cost. The new")
+print("  probe also revives the M4.0 masked_frac and M4.4 danger-moment")
+print("  channels, which the old probe had been deleting. Attribution is")
+print("  run_m51c_probe_decomposition.sh; do not quote this row as a")
+print("  comms measurement.")
 print()
 if proj >= 100_000:
     print("VERDICT: PASS — projection above the 100k line, contingency UNTRIGGERED.")
