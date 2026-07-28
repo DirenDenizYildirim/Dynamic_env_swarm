@@ -135,3 +135,21 @@ che/
   report and ask.
 - When something is ambiguous, prefer the smallest implementation that
   satisfies the theory doc, and leave a `# DECISION:` comment.
+
+## Rulings bind only once transcribed (meta-rule, human-issued 2026-07-28)
+
+**A chat ruling binds only once it is transcribed into `decision_log.md` or
+`CLAUDE.md` in the same session.** Untranscribed directives are proposals;
+citing one as if it were repo law is an error, not a shortcut. Transcribe
+first, then act. (Origin: "tooling rule 3c/3d" was cited for months as
+binding and existed only in a chat transcript — its archive half was never
+implemented, and M4.4 shipped without a checkpoint archive as a result.)
+
+## Artifact persistence for GPU runs (human-issued 2026-07-28)
+
+**Every GPU run persists metrics + provenance + a checkpoint archive
+(`tar.zst` + `sha256`, recorded in the phase report) off-instance before the
+instance is released. Grid scripts assert it.** Rented boxes are ephemeral;
+an un-archived checkpoint is a result that cannot be re-rendered, re-probed,
+or audited after release. The assertion belongs in the job script (fail the
+run if the archive or its hash is missing), not in a README.

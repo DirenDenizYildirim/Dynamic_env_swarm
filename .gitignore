@@ -258,3 +258,10 @@ che/bench/results/phase3/m30b/renders/*.gif
 !che/bench/results/phase3/m30b/renders/medium_s0_ep3.gif
 !che/bench/results/phase3/m30b/renders/low_s0_ep0.gif
 !che/bench/results/phase3/m30b/renders/low_s0_ep5.gif
+
+# Phase-5 orbax checkpoint dirs + the archives required by the CLAUDE.md
+# artifact-persistence rule. The *blob* stays off-instance on disk; the
+# `.sha256` and `provenance.txt` next to it ARE committed, so the phase
+# report can cite a hash that identifies the exact archive.
+che/bench/results/phase5/**/ckpt_*/
+che/bench/results/phase5/**/*.tar.zst

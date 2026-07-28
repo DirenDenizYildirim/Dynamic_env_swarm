@@ -355,7 +355,13 @@ channel that makes adaptivity valuable. This is the formal argument that the
 couplings compose into something qualitatively new, which is the paper's
 load-bearing claim (Claim 4 of the validation pass) expressed in miniature.
 
-### Remark 2 (All three axes interact: comms is load-bearing exactly when perception fails) [PROVEN, remark-level]
+### Remark 2 (All three axes interact: comms is load-bearing exactly when perception fails) [PROVEN, remark-level — DENIED BASELINE SUPERSEDED by Remark 2′]
+
+> **Superseded in part (2026-07-28).** The denied-arm claim below —
+> $\tfrac12 + \tfrac{q}2$ under $\delta = 1$ — overstates the denied
+> baseline: with two interchangeable agents and a team-any reward, role
+> splitting achieves $1$ without any message. Read Remark 2′ for the
+> corrected statement; the free-comms protocol and the VoC *shape* survive.
 
 Extend $E_{2C}$ with a second agent and slack $T = d + \ell + 1$, reward 1 if
 *any* agent reaches the goal. With free comms: agent 2 enters corridor $L$ at
@@ -375,6 +381,49 @@ justifies, in advance, why comms denial must be trained *jointly* with the
 couplings rather than staged — the stressors are value-coupled even though
 comms is mechanistically independent. (Also a ready-made intuition figure:
 plot $J^*$ vs. $\kappa_B$ with and without comms.)
+
+### Remark 2′ (corrected 2026-07-28; the original overstated the denied baseline) [PROVEN, remark-level]
+
+> **Amended the same day — Remark 2″ (2026-07-28).** Clauses (i) and (ii)
+> below are the *amended* forms. The superseded first forms of 2′ claimed
+> (i) zero marginal value under team-any reward without qualifiers, and
+> (ii) that $\tfrac12 + \tfrac q2$ is the *true* denied optimum in the
+> courier variant. Both were overclaims by the same author, caught in
+> Phase-5 pre-flight before any code was written; (ii)'s residual — that
+> slack lets denied play buy information by idling — is measured, not
+> reasoned around (M5.2 "denied + dawdle" curve).
+
+Extend $E_{2C}$ with a second agent.
+
+**(i, amended) Under team-any reward, communication has zero marginal
+value** when agents are interchangeable, expendable (no death cost), and at
+least as numerous as the hypotheses: coverage then achieves $J = 1$ under
+total denial. When any qualifier fails, value returns — generally, VoC under
+team-any reward scales with the hypothesis-count-minus-agent-count deficit,
+and death costs (as our swarm's $d_p = 0.5$) price the redundancy that
+substitution spends.
+
+**(ii, amended) In the courier variant** — only agent 1 can complete the
+task, and agent 1 observes other agents only through messages — the denied
+optimum *within the no-idle policy class* (M4.2's commit schedule) is
+$\tfrac12 + \tfrac{q(\kappa_B)}2$; with slack $\ell_f$, optimal denied play
+buys information by idling at the branch, achieving
+$\tfrac12 + \tfrac{\tilde q(\kappa_B)}2$ with $\tilde q \ge q$ (equality iff
+$\ell_f = 0$), so
+
+$$\mathrm{VoC}_{\mathrm{true}}(\kappa_B) \;=\; \tfrac12\big(1 - \tilde q(\kappa_B)\big) \;\le\; \tfrac12\big(1 - q(\kappa_B)\big).$$
+
+Both $q$ and $\tilde q$ are decreasing in $\kappa_B$, so **VoC increasing in
+perception decay survives unweakened**; only the constant tightens.
+Numerically at Option-A geometry, $\tilde q / q \to 5/3$ as
+$\kappa_B \to \infty$.
+
+The corrected lesson is sharper than the original: **communication is
+load-bearing exactly when perception fails *and redundancy is unavailable***
+— heterogeneous or irreplaceable roles are what make comms valuable, not
+blindness alone. Slack generalizes to $T = d + \ell + \ell_f$ under
+fire-anchored scouting (the original $T = d + \ell + 1$ is the $\ell_f = 1$
+case).
 
 ---
 

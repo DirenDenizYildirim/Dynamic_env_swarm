@@ -125,4 +125,11 @@ for sev in low medium high; do
 done
 
 echo "M4.4 grid complete — bring back $OUT/ and m44_console.log"
-echo "NOTE: ckpt_* dirs stay on the box (m31b/m41/m43 precedent)."
+# RETRO-FLAG (human, 2026-07-28): the line below was a VIOLATION of the
+# artifact-persistence rule now transcribed in CLAUDE.md. "Stay on the box"
+# meant that when the instance was released the M4.4 checkpoints were lost,
+# so the matched High kappa_B = 0 render set could not be produced from the
+# trained policy and had to be retrained (Phase-5 pre-task). Kept, struck
+# through, as the evidence: every GPU run archives (tar.zst + sha256)
+# off-instance before release, and the job script asserts it.
+echo "NOTE (SUPERSEDED — see CLAUDE.md artifact persistence): ckpt_* dirs stay on the box (m31b/m41/m43 precedent)."

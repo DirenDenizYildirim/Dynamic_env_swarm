@@ -363,3 +363,126 @@ Re-read D6-proposal with the RA. Decisions owed before any Phase-6 run:
 (2) pilot scoped (2 mixture points);
 (3) one-paper vs two-paper fork scheduled for after the pilot.
 
+
+## Phase-5 pre-flight rulings (human + RA, 2026-07-28) — Q1–Q6 raised before M5.0
+
+Issued in response to six questions raised on reading `phase5_prompt.md`,
+before any Phase-5 code was written.
+
+1. **Q1 — courier variant adopted** as the gated M5.2 validation. Reward
+   keyed to *agent 1* reaching the goal (agent 2 scouts, cannot score);
+   agent 1 blinded to the agent-occupancy plane (required for exactness —
+   stigmergic leakage would reopen a side channel). Under this variant the
+   denied optimum is 1/2 + q/2 and VoC = 1/2 (1 - q) is exact against it.
+   The **any-agent coverage policy is also measured** as a reported third
+   curve — flat at ~1 under total denial — labeled "redundancy substitutes
+   for communication": a real swarm result, not a disclosure burden.
+   Cause: the original Remark 2 denied baseline was an **RA theory error**
+   (role splitting achieves 1 with no message). Theory doc amended by the
+   author as **Remark 2′**; original Remark 2 marked superseded in part.
+2. **Q2 — T = d + ell + ell_f approved** under fire-anchored scout
+   semantics (Remark 2's T = d + ell + 1 is the ell_f = 1 case). Binding
+   requirement: the horizon is **derived in code from the lethality
+   semantics and asserted**, never hard-coded, so a change to the lethal
+   region fires the assert. The delta = 1 scripted agent 1 is pinned to
+   M4.2's exact commit schedule so q is the M4.2 curve literally; the
+   unused slack is caveated in the report.
+3. **Q3 — stop-gradient message path approved** (option (a): delivered
+   aggregate stored in the PPO batch). Documentation requirement, code and
+   report: under (a) the message head is a **frozen-at-init random
+   projection of trained trunk features** — receivers can learn to decode
+   it (random projections preserve information), but nothing optimizes the
+   encoding. **DIAL-style differentiable comms (b) is pre-registered as
+   item #1 of the M5.3 null-branch discussion.** Cheap first; escalation
+   only through the human branch.
+4. **Q4 — checkpoint provenance.** Owner to confirm whether the vast box
+   or a local checkpoint archive survives (tar.zst + sha256 per the M3.0
+   tooling rule 3c). **Retrain-then-render is pre-authorized either way**
+   so the pre-task does not block. Finding at ruling time: no `*.tar.zst`
+   or `*.sha256` exists in the repo tree, and `run_m44_grid.sh:128` states
+   "ckpt_* dirs stay on the box" — so M4.4 did **not** produce a local
+   archive. Flagged as a discipline lapse; rule 3c's text is not present
+   anywhere in the repo, so its exact requirement could not be verified.
+5. **Q5 — R_comm sweep extension pre-authorized**: {6, 8, 10, 12, 16} ->
+   add {20, 24, 28}. *Measuring more of a curve is covering the range;
+   moving bands is band-shopping — only the first is authorized.* M5.4's
+   R_comm step is **converted to curves-first**: both measured curves
+   (mean alive out-degree, P(swarm connected)) come to the lock STOP
+   across the full sweep regardless of band intersection; the bands are
+   priors to be ranked there. M4.3 precedent institutionalized.
+   Accountability: the [2, 5] / [0.3, 0.7] bands were written without the
+   geometry arithmetic (uniform 12 agents on 64^2 gives mean degree ~0.41
+   at R = 6 rising to only ~2.22 at R = 16) — a violation of the author's
+   own post-M4.4 pre-flight commitment, logged.
+6. **Q6 — three defaults approved**: `p_link_max` retired with a DECISION
+   note under the hard-range kernel; directed links with out-degree
+   reporting (documenting that 0 < delta < 1 permits **asymmetric
+   delivery** — physically legitimate, fading is directional); agent-plane
+   blinding for E2C-2 agent 1.
+
+**Open, raised at ruling time, not actioned** (Remark 2′ wording; see the
+M5.2 objections in-session): (a) with slack ell_f the courier-variant
+denied agent can *buy information by waiting at the branch*, so the true
+denied optimum is 1/2 + q~/2 with q~ >= q measured over a d + ell_f step
+pre-commitment window — "true denied optimum" in Remark 2′ (ii) holds for
+the commit-at-branch policy class, and a "denied + dawdle" fourth curve is
+proposed to measure the gap; (b) Remark 2′ (i)'s zero-VoC claim needs the
+qualifier "at least as many interchangeable expendable agents as
+hypotheses, with no death cost" — 3 corridors and 2 agents restore
+positive VoC, and dp = 0.5 in the swarm env prices redundancy.
+
+## Phase-5 pre-flight rulings, round 2 (human + RA, 2026-07-28)
+
+Issued on the objections raised against the round-1 rulings, still before
+any Phase-5 code.
+
+1. **Dawdle residual — CONFIRMED as a second overclaim in the same remark,
+   same author.** At large kappa_B, q ~ 3p vs q~ ~ 5p, i.e. ~1.67x exactly
+   where the VoC figure lives (M4.2 Option-A pre-commitment distances 2.83
+   / 2.24 / 2.00, plus two idle draws at the branch distance 2.00). **Fix
+   = measure**, approved as proposed: a fourth scripted M5.2 curve,
+   "denied + dawdle" (idle ell_f steps at the branch, commit on best
+   evidence), with its own MC prediction from the shared machinery over
+   the d + ell_f window. The **acceptance gate stays on the pinned-
+   schedule curve** (protocol-matched, exactly predictable). VoC is
+   reported two ways: VoC_gated = 1/2 (1 - q) labeled protocol-matched,
+   and VoC_true = 1/2 (1 - q~) as measured. ~1 CPU-hour authorized. The
+   one-clause reword-around was **rejected**: "we don't paper over a soft
+   spot the original remark was just corrected for."
+2. **Remark 2″ — second author's amendment**, transcribed into
+   `docs/theory_foundations.md` with a dated banner on 2′(ii). Wording
+   objection (i) accepted **including the deficit formulation** (VoC under
+   team-any reward scales with the hypothesis-count-minus-agent-count
+   deficit; death costs price redundancy) as a better theorem-shaped claim
+   than "zero".
+3. **Q2 assert — placement changed**: the probe-scout death check
+   (scout dies at step d + ell_f) goes in `che/tests/test_e2c.py` as an
+   executable **fast** test, not a runtime assert — env code is jitted and
+   asserts there are stripped or awkward. Same teeth, better home. The
+   derived horizon (T = d + ell + ell_f, computed from the lethality
+   constants, never hard-coded) stands.
+4. **Q4 — "tooling rule 3c/3d" was a phantom.** Owner's finding: it was a
+   chat directive from the checkpoint incident; items (a)/(b) and the
+   gitignore landed, (c)'s archive half and (d)'s CLAUDE.md transcription
+   never did, and it was cited afterwards as repo law without verification.
+   Three-part fix, all executed this session:
+   (1) the artifact-persistence rule is now in `CLAUDE.md` — every GPU run
+   persists metrics + provenance + a checkpoint archive (tar.zst + sha256
+   recorded in the phase report) off-instance before release, and grid
+   scripts assert it;
+   (2) `run_m44_grid.sh`'s "ckpt_* dirs stay on the box" line is
+   **retro-flagged in place** as the violation it was — it is why the
+   matched High control needs a retrain;
+   (3) **new meta-rule in `CLAUDE.md`: a chat ruling binds only once
+   transcribed into `decision_log.md` or `CLAUDE.md` in the same session.**
+   Untranscribed directives are proposals; citing one is an error. *That
+   last rule is the actual lesson.*
+5. **Pre-task — GREENLIT** on the retrain-then-render path.
+   `che/scripts/run_p5_pretask_high_kb0.sh` is the first script written
+   under the persistence rule: it retrains High / kappa_B = 0 / seed 0,
+   **verifies reproduction** against the committed M4.4 eval JSON before
+   the renders are trusted as a matched control, renders episode seeds
+   0-5, then archives (tar.zst + sha256 + provenance) and **fails the run**
+   if the archive is missing. Phase-5 checkpoint dirs and archives are
+   gitignored; the `.sha256` and `provenance.txt` are committed.
+   M5.0 follows.
