@@ -45,6 +45,36 @@ ENV_VERDICTS = (  # (min aggregate env-steps/sec, verdict)
 )
 
 
+def keepalive_probe(rew, done, obs: dict, info: dict):
+    """Reduce **every** step output to one scalar, so XLA cannot dead-code-
+    eliminate any part of the env and leave the bench measuring less work
+    than it reports.
+
+    M5.1 FIX (2026-07-28). This used to be a hand-written list of fields.
+    M5.0 added `obs["links"]` and two comms info counters, nobody extended
+    the list, and XLA duly deleted the entire link kernel: the first M5.1
+    row measured an env with no comms in it (HLO evidence — tensors of
+    shape [n_agents, n_agents] went 1 -> 189 once the reduction was
+    restored). Enumerating the trees makes that structural instead of
+    remembered: whatever a future milestone adds to obs or info is kept
+    alive automatically. Bool/int leaves are cast, never skipped.
+
+    `grid`/`vec` keep their historical `.mean()` reduction so the probe's
+    own cost stays comparable with the M0.4/M3.1b/M4.1 rows.
+    """
+    import jax.numpy as jnp  # deferred, like the rest of this module
+
+    f32 = lambda a: a.sum().astype(jnp.float32)  # noqa: E731
+    return (
+        rew.sum()
+        + obs["grid"].mean()
+        + obs["vec"].mean()
+        + done.sum().astype(jnp.float32)
+        + sum(f32(v) for k, v in sorted(obs.items()) if k not in ("grid", "vec"))
+        + sum(f32(v) for _, v in sorted(info.items()))
+    )
+
+
 def bench_cell(
     grid: int,
     n_envs: int,
@@ -81,16 +111,7 @@ def bench_cell(
             obs, states, rew, done, info = step_v(
                 jax.random.split(k_step, n_envs), states, actions, cfg
             )
-            # Reduce every output so nothing is dead-code-eliminated.
-            probe = (
-                rew.sum()
-                + obs["grid"].mean()
-                + obs["vec"].mean()
-                + done.sum().astype(jnp.float32)
-                + info["coupling_co_active"].sum().astype(jnp.float32)
-                + info["food_remaining"].sum().astype(jnp.float32)
-            )
-            return (key, states), probe
+            return (key, states), keepalive_probe(rew, done, obs, info)
         (key, states), probes = jax.lax.scan(
             body, (key, states), None, length=chunk
         )
