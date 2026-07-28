@@ -1,0 +1,7 @@
+run: phase-5 pre-task (matched High kappa_B=0 renders)
+date_utc: 2026-07-28T17:14:27Z
+git_commit: 0c612b6e8e19c1372592375f097af9a01197cf62
+git_dirty: 1 file(s)
+config: che/configs/severity_high.yaml  dp=0.5  kappa_B=0.0  seed=0  updates=500
+archive_sha256: 98ab9f8376ecdeb67db783073591eb33c4892c5b16006696e7ac76b90e4303c0
+gpu: NVIDIA GeForce RTX 5090

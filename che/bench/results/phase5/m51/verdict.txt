@@ -1,0 +1,8 @@
+env-only median      : 8,630,698 steps/s
+projection (/81)     : 106,552 train steps/s
+end-to-end training  : 57,690 env-steps/s over 284 s
+M4.1 comparison      : env-only 8,375,048 -> 8,630,698 (+3.1 %); training 276 s -> 284 s
+delivery rate (last 50 updates): 1.0000   (expect ~1.0 at delta=0)
+mean alive out-degree           : 0.972   (r_comm = 8.0 plumbing default, 12 agents on 64^2; M5.4 band [2, 5])
+
+VERDICT: PASS — projection above the 100k line, contingency UNTRIGGERED.

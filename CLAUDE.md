@@ -157,6 +157,20 @@ the inequality and defer the constant to the milestone that measures it.
 This binds both roles: the builder who offers a heuristic must label it one,
 and the transcriber must harden it or drop it before it enters a document.
 
+## Throughput gates bind to measured training throughput (human-issued 2026-07-28)
+
+**Throughput gates bind only to measured training throughput of the
+spending consumer; any env-only figure states its keep-alive set;
+projections are estimates, never triggers.** Under XLA dead-code
+elimination "env-only throughput" is not a single quantity — the compiler
+deletes whatever the consumer does not read, so the same env measures
+8.6 M steps/s for a probe that ignores the info channels and 3.4 M for one
+that reads them all. The ÷81 projection that gated Phases 0–4 was therefore
+attached to a number whose meaning drifted every time a diagnostic channel
+was added unbenched. Measure what actually spends the budget: population-
+aggregate training throughput at the phase's real configuration
+(`pbt.py --bench`, `configs/gate_pop12.yaml`).
+
 ## Artifact persistence for GPU runs (human-issued 2026-07-28)
 
 **Every GPU run persists metrics + provenance + a checkpoint archive

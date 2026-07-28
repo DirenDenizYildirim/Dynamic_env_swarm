@@ -554,3 +554,39 @@ intact, and its masking is 16–118× concentrated on exactly the moments
 when a threat is in view.
 
 **STOP — Phase 4 complete; GO/NO-GO on Phase 5 (comms) is a human call.**
+
+---
+
+## Correction (2026-07-28, replication study) — human-issued, transcribed
+
+Coupling B's survival cost at High is robust — cross-arm direction
+replicates 3/3, range −0.047 to −0.107. The completion effect (+0.024 as
+published) is smaller than the measured run-to-run reproducibility floor
+and is **NOT RESOLVED** at this replication level; "completion intact" is
+withdrawn as a claim and restated as "no completion effect resolvable
+above the reproducibility floor." All "|Δ| = k·σ_seed" phrasings are
+retracted — the σ was a two-point spread now known to be dominated by run
+nondeterminism; intervals and measured floors replace sigmas project-wide
+from here.
+
+**Evidence.** A same-seed, same-commit, same-config retrain of the High
+cells (Phase-5 pre-task, `results/phase5/pretask/`, commit 0c612b6) did not
+reproduce M4.4: κ_B = 0 moved +0.0507 completion / −0.0247 survival, and
+κ_B = 1.0 moved −0.0244 / −0.0031. GPU training is not run-to-run
+reproducible (XLA autotunes kernels by timing; some reductions use
+atomics), so an un-archived checkpoint is not re-derivable. Recomputing the
+cross-arm effect on the replicate pair gives survival −0.0470 (published
+seed-0 value: −0.0687; seed-1: −0.1066) and completion −0.0638 (published
+seed-0 value: +0.0112 — a sign flip).
+
+**What survives, in honest form:** survival clearly moves; completion does
+not clearly move. The asymmetry is still the result.
+
+**Headline, restated:** Coupling B is not inert and is not behaviourally
+suppressible. Under severe hazard it converts a perception cost into a
+survival cost of roughly 5–11 points, with no completion effect resolvable
+above the reproducibility floor, and its masking is 16–118× concentrated on
+exactly the moments when a threat is in view.
+
+The measured floor itself is being upgraded from this n = 1 pair to a
+4-replicate distribution (M5.1e) before it grades anything further.

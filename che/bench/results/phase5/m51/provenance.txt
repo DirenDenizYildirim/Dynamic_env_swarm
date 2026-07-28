@@ -1,0 +1,7 @@
+run: M5.1 comms bench row
+date_utc: 2026-07-28T17:22:23Z
+git_commit: bb838c80f95d4794ac0eaff174e9141ffb5c7a8a
+git_dirty: 1 file(s)
+config: che/configs/severity_medium.yaml  dp=0.5  delta=0 (message path live)  updates=500  seed=0
+archive_sha256: 84e1f1f9e6536b8977c19f99bb0abcad2ae0bc415f0a076da24f1653c37800bf
+gpu: NVIDIA GeForce RTX 5090

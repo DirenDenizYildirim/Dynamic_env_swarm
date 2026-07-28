@@ -1,0 +1,6 @@
+M4.4 reproduction check (High, kappa_B=0, dp=0.5, seed 0):
+  episode_return   fresh=26.414062  m44=24.939453  |delta|=1.47e+00
+  completion       fresh=0.841187  m44=0.790466  |delta|=5.07e-02
+  survival_rate    fresh=0.916016  m44=0.940755  |delta|=2.47e-02
+worst relative delta: 6.416e-02
+VERDICT: DRIFT — renders are NOT a matched control; report before use

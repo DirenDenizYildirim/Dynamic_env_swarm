@@ -1,0 +1,19 @@
+Same-seed replicate vs M4.4 original (High, dp 0.5, seed 0):
+  kb0  completion      replicate=  0.8412  m44=  0.7905  delta=+0.0507
+  kb0  survival_rate   replicate=  0.9160  m44=  0.9408  delta=-0.0247
+  kb0  episode_return  replicate= 26.4141  m44= 24.9395  delta=+1.4746
+  kbL  completion      replicate=  0.7773  m44=  0.8017  delta=-0.0244
+  kbL  survival_rate   replicate=  0.8690  m44=  0.8721  delta=-0.0031
+  kbL  episode_return  replicate= 24.0889  m44= 24.8867  delta=-0.7979
+
+Cross-arm effect (kbL - kb0), computed two ways:
+  replicate pair   completion      -0.0638
+  replicate pair   survival_rate   -0.0470
+  replicate pair   episode_return  -2.3252
+  M4.4 originals   completion      +0.0112
+  M4.4 originals   survival_rate   -0.0687
+  M4.4 originals   episode_return  -0.0527
+
+Same sign and rough size across the two rows => the Phase-4 finding
+is robust to run-to-run nondeterminism. A sign flip or a collapse in
+magnitude is a STOP and goes to the human with these numbers.

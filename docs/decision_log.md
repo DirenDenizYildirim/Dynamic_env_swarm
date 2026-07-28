@@ -543,10 +543,95 @@ difference changed what was done:
   byte-identical to the `integrity-audit` copy; sha256 recomputed after the
   copy rather than transliterated from the ruling text.
 
+## M5.1 STOP rulings (human + RA, 2026-07-28) — gate re-anchored, Phase-4 claim restated
+
+Issued on the M5.1 bench findings. Transcribed before any of the runs they
+authorize.
+
+1. **The gate — non-activation UPHELD, on narrow ground.** The standing
+   rule's "activate, don't ask" exists to prevent *renormalization*: moving
+   the line when a valid trigger fires. Challenging the INSTRUMENT is
+   different in kind, and was backed by direct evidence (training
+   throughput unchanged, 68,598 -> 68,475 env-steps/s, across the exact
+   interval the M4.0/M4.4 channels landed). A line defended against
+   renormalization must still be attached to a measurement that means what
+   the rule assumed, and "env-only throughput" has been shown not to exist
+   as a single quantity under XLA dead-code elimination.
+   a. **M5.1c decomposition APPROVED** (~8 GPU-min, four keep-alive sets,
+      no verdict computed — correct design).
+   b. **The gate is RE-ANCHORED.** The env-only ÷81 projection is retired
+      entirely. The guarded quantity is DIRECTLY MEASURED population-
+      aggregate training throughput at the Phase-6/7 reference
+      configuration (`configs/gate_pop12.yaml`, measured by
+      `pbt.py --bench` — the instrument that produced Phase-0's 159.0 k, so
+      the number is comparable to it and to the 100 k line with no
+      projection in between). Training is what spends the budget, so
+      training is what the line guards. Env-only rows are demoted to
+      diagnostics and must declare their keep-alive set forever after.
+   c. **PRE-COMMITTED, no further appeals:** if the direct measurement
+      lands under 100 k, uint8 activates in that session, mechanically. The
+      instrument challenge has been heard exactly once; the next trigger on
+      the re-anchored number is final.
+   d. **Determinism priced** while the box is up: one short run under XLA
+      deterministic flags (deterministic ops + autotune off), plus — added
+      in implementation — a verification that the flags actually
+      determinize, since pricing a knob without checking it works is how
+      the ÷81 projection survived three phases.
+2. **The Phase-4 claim — RESTATE, not retract wholesale.** The survival
+   half is *strengthened* by replication (direction 3/3, magnitude −0.05 to
+   −0.11, several times the measured noise floor); the completion half is
+   UNRESOLVED, not reversed. Dated correction note appended to
+   `phase4_report.md` (never a silent edit), withdrawing "completion
+   intact", restating it as "no completion effect resolvable above the
+   reproducibility floor", and retracting all "|Δ| = k·σ_seed" phrasings
+   project-wide in favour of intervals and measured floors. The asymmetry
+   headline survives in honest form: survival clearly moves; completion
+   does not clearly move.
+3. **M5.5 falsifier — REVISED NOW,** as a dated pre-registration amendment
+   *before* the grid it governs.
+   a. **Mini replication study approved** (M5.1e): 4 identical re-runs of
+      one cell, same seed, same config, ~20 GPU-min, so the floor is a
+      measured distribution rather than an n = 1 anecdote — the two pre-task
+      arms disagreed about their own noise, which is the reason.
+   b. Falsifier condition (i) becomes **"within the measured
+      reproducibility floor (replication study, cited)"**. Completion-based
+      sub-claims are graded against their own floor and may return
+      UNINFORMATIVE at 2-3 seeds; if so, the falsifier verdict rests on
+      survival, delivery-rate and danger-moment channels, stated as such.
+   c. **Propagates to D6** (appended to that entry): the dose-response power
+      analysis uses the measured floor; the registered 4 seeds per mixture
+      point are checked against it; if deterministic flags price at < 10 %,
+      headline runs go deterministic.
+4. **Accountability (human):** the ÷81 projection convention, and the rule
+   wording that bound "activate" to it, were the author's constructs; the
+   consumer-dependence of DCE'd throughput should have been flagged when the
+   M4.0/M4.4 channels landed unbenched. New CLAUDE.md rule: *throughput
+   gates bind only to measured training throughput of the spending consumer;
+   any env-only figure states its keep-alive set; projections are estimates,
+   never triggers.*
+5. **Housekeeping:** the full suite goes green on this commit (box CPU or
+   overnight local) before M5.2 opens. Machine constraint accepted, gap not
+   carried forward.
+
+**Transcription deviations, flagged not silent:** (a) the correction note
+was dated **2026-07-28**, today, not the 2026-07-30 in the ruling text — a
+report line post-dating its own commit would be self-refuting provenance in
+a document whose subject is provenance; one line reverts it if the later
+date was deliberate. (b) Ruling 1c's "activates in that session" is only
+executable if the uint8 code exists *before* the session — it does not yet.
+Raised with the scripts.
+
 ## PHASE 6 ENTRY GATE (human, 2026-07-28) — owed before any Phase-6 work
 
 PHASE 6 ENTRY GATE (do not start Phase 6 without executing this line):
 Re-read D6-proposal with the RA. Decisions owed before any Phase-6 run:
 (1) dose-response design formalized into the phase prompt;
 (2) pilot scoped (2 mixture points);
-(3) one-paper vs two-paper fork scheduled for after the pilot.
+(3) one-paper vs two-paper fork scheduled for after the pilot;
+(4) [appended 2026-07-28, ruling 3c] the dose-response power analysis uses
+    the MEASURED reproducibility floor (M5.1e), not an assumed sigma. The
+    registered 4 seeds per mixture point are checked against that floor
+    before the pilot runs. If deterministic XLA flags price at < 10 %
+    throughput (M5.1d row C), headline runs go deterministic: eliminating
+    run noise outright is worth a modest slowdown in a project whose
+    contribution is methodological credibility.

@@ -1,0 +1,5 @@
+run: M5.1b env-only re-measurement (comms kernel live)
+date_utc: 2026-07-28T17:58:07Z
+git_commit: 67bf3320dde38d514f152166f1d906237f91c3dd
+git_dirty: 1 file(s)
+gpu: NVIDIA GeForce RTX 5090

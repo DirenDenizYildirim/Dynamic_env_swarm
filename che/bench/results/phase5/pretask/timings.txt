@@ -1,0 +1,4 @@
+train_high_kb0_dp0.5_s0 285s
+eval_high_kb0_dp0.5_s0 21s
+train_high_kbL_dp0.5_s0 280s
+eval_high_kbL_dp0.5_s0 22s
