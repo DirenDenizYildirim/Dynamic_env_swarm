@@ -36,9 +36,15 @@ class EnvState:
     """Full environment state s = (x, h, rho, c, t) plus PRNG key.
 
     The comms-channel state k (Def. 7) is sampled fresh each step from x'
-    (Prop. 1 order) and consumed within the step, so it is not carried here;
-    it becomes a state component only if delayed/buffered messaging is added
-    (Phase 5 decision).
+    (Prop. 1 order) and consumed within the step, so it is not carried here.
+
+    M5.0 resolution of the deferred "Phase 5 decision": still not carried.
+    The message path does have one-step latency, but the latency lives in
+    the *message tensors* (training/rollout carry, see comms.py), not in the
+    graph: links sampled during step t ride out in obs_{t+1} and are
+    consumed by the policy that acts at t+1, before step t+1 samples the
+    next graph. Nothing in any kernel ever reads k back, which is also why
+    delta cannot perturb a kernel stream (tests/test_comms.py).
     """
 
     # --- X: joint agent state ---

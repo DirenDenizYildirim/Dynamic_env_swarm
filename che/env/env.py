@@ -24,6 +24,7 @@ import chex
 import jax
 import jax.numpy as jnp
 
+from che.env.comms import in_range_mask, sample_links
 from che.env.config import EnvConfig
 from che.env.hazard import hazard_step, seed_ignitions, smoke_step
 from che.env.observation import masked_fraction, observe, per_agent_masked
@@ -47,7 +48,27 @@ _WEAK_STREAM = 31
 # obs v3 with kappa_B = 0 bitwise-recovers the obs v2 trajectories
 # (invariant #3). fold_in is pure: computing it never advances `key`.
 _OBS_STREAM = 47
+# M5.0: fold_in tag for the comms link draw (T_K, Def. 7). Same DECISION as
+# _WEAK_STREAM/_OBS_STREAM: a dedicated derived stream, so the split(key, 3)
+# kernel streams are provably untouched and delta = 0 bitwise-recovers the
+# pre-comms trajectories (invariant #3).
+_COMMS_STREAM = 53
 _ACTION_OFFSETS = jnp.array([[0, 0], [-1, 0], [1, 0], [0, -1], [0, 1]], dtype=jnp.int32)
+
+
+def _comms_obs(
+    key: jax.Array, agent_pos: jax.Array, agent_alive: jax.Array, cfg: EnvConfig
+) -> tuple[jax.Array, jax.Array]:
+    """T_K (Def. 7) at Prop.-1 position 5: (links, in_range) from x' only.
+
+    Returns the realized directed link graph and the eligibility mask it was
+    thinned from — the mask is the delivery-rate denominator, kept so the
+    eval harness can pool exact ratios instead of averaging per-step ones
+    (the M4.4 numerator/denominator lesson).
+    """
+    th = cfg.theta
+    in_range = in_range_mask(agent_pos, agent_alive, th.r_comm)
+    return sample_links(key, in_range, th.delta), in_range
 
 
 def agent_step(
@@ -160,7 +181,15 @@ def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvStat
         ep_deaths_collapse=jnp.zeros((), dtype=jnp.int32),
         ep_smoke_sum=jnp.zeros((), dtype=jnp.float32),
     )
-    return observe(state, cfg, jax.random.fold_in(key, _OBS_STREAM)), state
+    obs = observe(state, cfg, jax.random.fold_in(key, _OBS_STREAM))
+    # M5.0: the reset obs carries a link graph too, so the obs schema is the
+    # same object at t = 0 and after every step (autoreset tree_maps over
+    # both branches). No message has been emitted yet, so the aggregate the
+    # policy builds from it is the zero vector either way.
+    links, _ = _comms_obs(
+        jax.random.fold_in(key, _COMMS_STREAM), agent_pos, state.agent_alive, cfg
+    )
+    return {**obs, "links": links}, state
 
 
 def step(
@@ -228,7 +257,12 @@ def step(
         jnp.float32
     )
 
-    # 5. k' ~ T_K(x'): comms channel — Phase 5.
+    # 5. k' ~ T_K(x'): comms channel (Def. 7, M5.0). Reads post-step
+    # positions/aliveness only — never h', rho' or c' — and draws from its
+    # own fold_in stream, so delta cannot perturb any kernel above.
+    links, links_in_range = _comms_obs(
+        jax.random.fold_in(key, _COMMS_STREAM), pos_new, alive_new, cfg
+    )
 
     t_new = state.t + 1
     done = t_new >= cfg.horizon
@@ -263,6 +297,7 @@ def step(
     # Post-step state, per Prop. 1; the reveal draw (obs v3, Coupling B)
     # uses its own fold_in stream so the kernel streams above are untouched.
     obs = observe(state_new, cfg, jax.random.fold_in(key, _OBS_STREAM))
+    obs = {**obs, "links": links}
 
     # Invariant #5: coupling-co-active counter — collapse-seeded ignitions
     # within perception range (DECISION: Chebyshev radius obs_window // 2,
@@ -326,5 +361,15 @@ def step(
         "masked_danger_sum": jnp.where(danger, agent_masked, 0.0).sum(),
         "danger_agents": danger.sum(dtype=jnp.float32),
         "alive_agents": alive_new.sum(dtype=jnp.float32),
+        # M5.0 comms channels (Def. 7), emitted as poolable numerator /
+        # denominator counts rather than per-step ratios — same reason as
+        # the M4.4 danger-moment pair: pooling over steps and episodes must
+        # weight each ordered pair equally, not each step. Delivery rate =
+        # links_alive / links_in_range (isolates delta from geometry);
+        # mean alive out-degree = links_alive / alive_agents (geometry x
+        # knob, the M5.4 band observable). Deterministic given the sampled
+        # graph; the reward never reads them (Def. 2).
+        "links_alive": links.sum(dtype=jnp.float32),
+        "links_in_range": links_in_range.sum(dtype=jnp.float32),
     }
     return obs, state_new, reward, done, info

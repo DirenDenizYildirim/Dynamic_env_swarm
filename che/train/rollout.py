@@ -1,8 +1,21 @@
 """Batched episode rollouts: lax.scan over time, vmap over envs.
 
 Phase-0 scope: fixed-length rollouts (no auto-reset; that arrives with the
-IPPO collector in M0.5). `policy_fn(key, obs) -> actions` is closed over, so
-jit callers should treat `cfg` and `policy_fn` as static.
+IPPO collector in M0.5). `policy_fn(key, obs, msg) -> (actions, messages)`
+is closed over, so jit callers should treat `cfg` and `policy_fn` as static.
+
+M5.0 — the message carry. The policy is no longer a pure function of the
+current observation: agent i's input includes the aggregate delivered to it
+this step, built from the messages its neighbours emitted *last* step and
+the link graph realized *this* step (obs["links"], sampled by T_K inside
+env.step). So the rollout carry holds
+
+    messages float32 [n_agents, MSG_DIM]   emitted at t-1, delivered at t
+
+and each step does: aggregate(carry messages, obs links) -> policy -> new
+messages into the carry. Messages are zeroed on `done` so nothing crosses an
+episode boundary. At t = 0 the carry is zeros, i.e. everyone starts isolated
+— which is also exactly what delta = 1 produces forever (test_comms.py).
 """
 
 from collections.abc import Callable
@@ -10,18 +23,34 @@ from collections.abc import Callable
 import jax
 import jax.numpy as jnp
 
+from che.env.comms import MSG_DIM, aggregate
 from che.env.config import EnvConfig
 from che.env.env import N_ACTIONS, reset, step
 
-PolicyFn = Callable[[jax.Array, dict[str, jax.Array]], jax.Array]
+# (key, obs, delivered_msg) -> (actions, emitted_messages)
+PolicyFn = Callable[
+    [jax.Array, dict[str, jax.Array], jax.Array], tuple[jax.Array, jax.Array]
+]
+
+
+def zero_messages(n_agents: int) -> jax.Array:
+    """The empty carry: no message in flight (also the isolated aggregate)."""
+    return jnp.zeros((n_agents, MSG_DIM), dtype=jnp.float32)
 
 
 def make_random_policy(n_agents: int) -> PolicyFn:
-    """Uniform-random discrete policy (the Phase-0 baseline)."""
+    """Uniform-random discrete policy (the Phase-0 baseline).
 
-    def policy(key: jax.Array, obs: dict[str, jax.Array]) -> jax.Array:
-        del obs
-        return jax.random.randint(key, (n_agents,), 0, N_ACTIONS, dtype=jnp.int32)
+    Emits the zero message: the random baseline is deliberately mute, so any
+    comms effect measured against it is an effect of the trained path.
+    """
+
+    def policy(
+        key: jax.Array, obs: dict[str, jax.Array], msg: jax.Array
+    ) -> tuple[jax.Array, jax.Array]:
+        del obs, msg
+        actions = jax.random.randint(key, (n_agents,), 0, N_ACTIONS, dtype=jnp.int32)
+        return actions, zero_messages(n_agents)
 
     return policy
 
@@ -56,14 +85,20 @@ def rollout_episode(
     obs0, state0 = reset(k_reset, cfg)
 
     def body(carry, _):
-        key, obs, state = carry
+        key, obs, state, messages = carry
         key, k_act, k_step = jax.random.split(key, 3)
-        actions = policy_fn(k_act, obs)
+        delivered = aggregate(messages, obs["links"])
+        actions, messages_new = policy_fn(k_act, obs, delivered)
         obs_new, state_new, reward, done, info = step(k_step, state, actions, cfg)
-        return (key, obs_new, state_new), (reward, done, info)
+        # Nothing in flight survives an episode boundary.
+        messages_new = jnp.where(done, 0.0, messages_new)
+        return (key, obs_new, state_new, messages_new), (reward, done, info)
 
     _, (rewards, dones, infos) = jax.lax.scan(
-        body, (key, obs0, state0), None, length=n_steps
+        body,
+        (key, obs0, state0, zero_messages(cfg.n_agents)),
+        None,
+        length=n_steps,
     )
     return rewards, dones, infos
 

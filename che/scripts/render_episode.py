@@ -34,11 +34,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import animation, colors
 
+from che.env.comms import aggregate
 from che.env.config import load_config
 from che.env.env import reset, step
 from che.env.types import BURNING
 from che.eval.harness import load_params, make_policy_fn
-from che.train.rollout import make_random_policy
+from che.train.rollout import make_random_policy, zero_messages
 
 HAZARD_CMAP = colors.ListedColormap(["#2d5016", "#ff4500", "#4a4a4a"])
 HAZARD_NORM = colors.BoundaryNorm([0, 1, 2, 3], HAZARD_CMAP.N)
@@ -66,9 +67,12 @@ def rollout_frames(key: jax.Array, ecfg, policy):
 
     frames = [snap(state, 0.0, 0.0)]
     ep_return = 0.0
+    # M5.0 message carry — mirrors rollout_episode exactly (aggregate last
+    # step's messages over this step's links, act, carry the new ones).
+    messages = zero_messages(ecfg.n_agents)
     for _ in range(ecfg.horizon):
         key, k_act, k_step = jax.random.split(key, 3)
-        actions = policy(k_act, obs)
+        actions, messages = policy(k_act, obs, aggregate(messages, obs["links"]))
         obs, state, reward, done, _info = jstep(k_step, state, actions)
         ep_return += float(reward)
         frames.append(snap(state, float(reward), ep_return))

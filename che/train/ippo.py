@@ -27,6 +27,7 @@ import optax
 import orbax.checkpoint as ocp
 from flax.training.train_state import TrainState
 
+from che.env.comms import MSG_DIM, aggregate
 from che.env.config import Config, load_config
 from che.env.env import N_ACTIONS, reset
 from che.env.observation import n_planes
@@ -42,8 +43,21 @@ class Transition(NamedTuple):
     log_prob: jax.Array  # [n_envs, n_agents]
     obs_grid: jax.Array  # [n_envs, n_agents, k, k, n_planes(cfg.env)]
     obs_vec: jax.Array  # [n_envs, n_agents, 4]
+    # M5.0: the delivered message aggregate is part of the policy *input*,
+    # so it must be stored and replayed by the loss exactly like obs — else
+    # the surrogate would recompute log-probs against different inputs than
+    # the ones the action was sampled from. Storing it (rather than
+    # recomputing messages inside the loss) is also what makes the channel
+    # non-differentiable, per the Q3 ruling; see networks.py.
+    obs_msg: jax.Array  # [n_envs, n_agents, MSG_DIM]
     finished_return: jax.Array  # [n_envs] episodic return where done, else 0
     ep_metrics: dict  # M1.4 {name: [n_envs]} episode metrics, done-masked
+    # M5.0 comms diagnostics, pooled as numerator/denominator over the whole
+    # update (never done-masked: these are per-step channel properties, not
+    # episode outcomes).
+    links_alive: jax.Array  # [n_envs]
+    links_in_range: jax.Array  # [n_envs]
+    alive_agents: jax.Array  # [n_envs] out-degree denominator
 
 
 # Episode metrics surfaced at done (M1.4): info key -> logged metric name.
@@ -92,7 +106,13 @@ def compute_gae(
 class Runner(NamedTuple):
     """Carry of the training loop. `hyper` holds the PBT-mutable
     hyperparameters (lr, ent_coef) as traced float32 scalars so a population
-    vmap can give every member its own values without recompiling."""
+    vmap can give every member its own values without recompiling.
+
+    M5.0 adds `messages` [n_envs, n_agents, MSG_DIM]: the messages emitted
+    last step and delivered this step (comms.py). It is carry state, not
+    checkpoint state — resume starts it at zeros along with the env states,
+    which costs one step of in-flight traffic and keeps the checkpoint tree
+    unchanged."""
 
     train_state: TrainState
     hyper: dict
@@ -100,6 +120,7 @@ class Runner(NamedTuple):
     obs: dict
     ep_ret: jax.Array
     key: jax.Array
+    messages: jax.Array
 
 
 class TrainFns(NamedTuple):
@@ -122,6 +143,7 @@ def make_train_fns(cfg: Config) -> TrainFns:
             k_net,
             jnp.zeros((1, k, k, n_planes(ecfg)), jnp.float32),
             jnp.zeros((1, 4), jnp.float32),
+            jnp.zeros((1, MSG_DIM), jnp.float32),
         )
         # lr is applied manually in _update_minibatch (from Runner.hyper) so
         # PBT can mutate it per member at runtime; tx yields the Adam
@@ -139,13 +161,20 @@ def make_train_fns(cfg: Config) -> TrainFns:
             "ent_coef": jnp.asarray(tcfg.ent_coef, jnp.float32),
         }
         ep_ret = jnp.zeros((tcfg.n_envs,), jnp.float32)
-        return Runner(train_state, hyper, env_states, obs, ep_ret, key)
+        messages = jnp.zeros((tcfg.n_envs, ecfg.n_agents, MSG_DIM), jnp.float32)
+        return Runner(train_state, hyper, env_states, obs, ep_ret, key, messages)
+
+    def _delivered(messages, obs):
+        """Masked-mean aggregate of last step's messages over this step's
+        realized links (M5.0). vmap'd over envs; see comms.aggregate."""
+        return jax.vmap(aggregate)(messages, obs["links"])
 
     def _env_step(runner, _):
-        train_state, hyper, env_states, last_obs, ep_ret, key = runner
+        train_state, hyper, env_states, last_obs, ep_ret, key, messages = runner
         key, k_sample, k_step = jax.random.split(key, 3)
-        logits, value = network.apply(
-            train_state.params, last_obs["grid"], last_obs["vec"]
+        delivered = _delivered(messages, last_obs)
+        logits, value, emitted = network.apply(
+            train_state.params, last_obs["grid"], last_obs["vec"], delivered
         )
         pi = distrax.Categorical(logits=logits)
         action = pi.sample(seed=k_sample)
@@ -162,17 +191,36 @@ def make_train_fns(cfg: Config) -> TrainFns:
             log_prob=log_prob,
             obs_grid=last_obs["grid"],
             obs_vec=last_obs["vec"],
+            obs_msg=delivered,
             finished_return=jnp.where(done, ep_ret, 0.0),
             ep_metrics={
                 name: jnp.where(done, info[k].astype(jnp.float32), 0.0)
                 for k, name in EP_METRICS.items()
             },
+            links_alive=info["links_alive"],
+            links_in_range=info["links_in_range"],
+            alive_agents=info["alive_agents"],
         )
         ep_ret = jnp.where(done, 0.0, ep_ret)
-        return Runner(train_state, hyper, env_states, obs, ep_ret, key), trans
+        # Messages emitted this step are delivered next step. Nothing crosses
+        # an episode boundary (autoreset), and stop_gradient states in code
+        # what the batch-storage already implies: the channel is not a
+        # differentiable path (Q3 ruling; networks.py docstring).
+        messages = jax.lax.stop_gradient(
+            jnp.where(done[:, None, None], 0.0, emitted)
+        )
+        return (
+            Runner(train_state, hyper, env_states, obs, ep_ret, key, messages),
+            trans,
+        )
 
     def _loss_fn(params, mb, clip_eps, ent_coef):
-        logits, value = network.apply(params, mb["obs_grid"], mb["obs_vec"])
+        # The emitted message is discarded here: no term of the loss depends
+        # on it, which is exactly why the message head never receives a
+        # gradient (Q3 ruling — networks.py documents the consequence).
+        logits, value, _ = network.apply(
+            params, mb["obs_grid"], mb["obs_vec"], mb["obs_msg"]
+        )
         pi = distrax.Categorical(logits=logits)
         log_prob = pi.log_prob(mb["action"])
         ratio = jnp.exp(log_prob - mb["log_prob"])
@@ -229,9 +277,12 @@ def make_train_fns(cfg: Config) -> TrainFns:
 
     def _update_once(runner, _):
         runner, traj = jax.lax.scan(_env_step, runner, None, tcfg.rollout_len)
-        train_state, hyper, env_states, last_obs, ep_ret, key = runner
-        _, last_value = network.apply(
-            train_state.params, last_obs["grid"], last_obs["vec"]
+        train_state, hyper, env_states, last_obs, ep_ret, key, messages = runner
+        _, last_value, _ = network.apply(
+            train_state.params,
+            last_obs["grid"],
+            last_obs["vec"],
+            _delivered(messages, last_obs),
         )
         adv, targets = compute_gae(
             traj.reward[:, :, None],
@@ -245,6 +296,7 @@ def make_train_fns(cfg: Config) -> TrainFns:
         batch = {
             "obs_grid": flat(traj.obs_grid),
             "obs_vec": flat(traj.obs_vec),
+            "obs_msg": flat(traj.obs_msg),
             "action": flat(traj.action),
             "log_prob": flat(traj.log_prob),
             "value": flat(traj.value),
@@ -273,8 +325,23 @@ def make_train_fns(cfg: Config) -> TrainFns:
             "entropy": losses[3].mean(),
             "lr": hyper["lr"],
             "ent_coef": hyper["ent_coef"],
+            # M5.0: channel diagnostics pooled over every step of the update
+            # (ratio of sums, not mean of ratios). delivery_rate ~ 1 - delta
+            # once geometry is divided out; mean_out_degree is the M5.4 band
+            # observable under the training policy. NaN when nobody was ever
+            # in range, which is a real "no channel", not a zero.
+            "delivery_rate": jnp.where(
+                traj.links_in_range.sum() > 0,
+                traj.links_alive.sum() / traj.links_in_range.sum(),
+                jnp.nan,
+            ),
+            "mean_out_degree": traj.links_alive.sum()
+            / jnp.maximum(traj.alive_agents.sum(), 1.0),
         }
-        return Runner(train_state, hyper, env_states, last_obs, ep_ret, key), metrics
+        return (
+            Runner(train_state, hyper, env_states, last_obs, ep_ret, key, messages),
+            metrics,
+        )
 
     def chunk_raw(runner, n_updates: int):
         return jax.lax.scan(_update_once, runner, None, n_updates)

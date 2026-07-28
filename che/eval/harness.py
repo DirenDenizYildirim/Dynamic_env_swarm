@@ -60,6 +60,13 @@ EVAL_METRICS = {
     "masked_danger_sum": ("masked_danger_sum", _SUM),
     "danger_agents": ("danger_agents", _SUM),
     "alive_agents": ("alive_agents", _SUM),
+    # M5.0 comms channel (Def. 7), same poolable numerator/denominator
+    # discipline: per-episode delivery rate = links_alive / links_in_range,
+    # mean alive out-degree = links_alive / alive_agents. Kept as sums so
+    # pooling across episodes weights each ordered pair (resp. agent-step)
+    # equally rather than each episode.
+    "links_alive": ("links_alive", _SUM),
+    "links_in_range": ("links_in_range", _SUM),
 }
 
 
@@ -107,16 +114,32 @@ def load_params(
     return restored["params"], int(step)
 
 
-def make_policy_fn(cfg: Config, params: dict, *, greedy: bool = False) -> PolicyFn:
-    """Policy for rollout_episode: stochastic as-trained, or argmax."""
+def make_policy_fn(
+    cfg: Config, params: dict, *, greedy: bool = False, mute: bool = False
+) -> PolicyFn:
+    """Policy for rollout_episode: stochastic as-trained, or argmax.
+
+    M5.0: consumes the delivered aggregate and emits this step's message.
+    `mute=True` hard-zeroes the *emitted* message, which makes every
+    delivered aggregate the zero vector one step later — the message-zeroed
+    arm of the M5.3 utility gate, at identical architecture and parameter
+    count (the zeroing is at the aggregation point, not a different net).
+    """
     del cfg  # policy shape is fixed by the shared-parameter network
     net = ActorCritic(N_ACTIONS)
 
-    def policy(key: jax.Array, obs: dict[str, jax.Array]) -> jax.Array:
-        logits, _ = net.apply(params, obs["grid"], obs["vec"])
+    def policy(
+        key: jax.Array, obs: dict[str, jax.Array], msg: jax.Array
+    ) -> tuple[jax.Array, jax.Array]:
+        logits, _, emitted = net.apply(params, obs["grid"], obs["vec"], msg)
+        if mute:  # static Python flag — a separate jitted policy
+            emitted = jnp.zeros_like(emitted)
         if greedy:  # static Python flag — two distinct jitted policies
-            return jnp.argmax(logits, axis=-1).astype(jnp.int32)
-        return distrax.Categorical(logits=logits).sample(seed=key).astype(jnp.int32)
+            return jnp.argmax(logits, axis=-1).astype(jnp.int32), emitted
+        return (
+            distrax.Categorical(logits=logits).sample(seed=key).astype(jnp.int32),
+            emitted,
+        )
 
     return policy
 

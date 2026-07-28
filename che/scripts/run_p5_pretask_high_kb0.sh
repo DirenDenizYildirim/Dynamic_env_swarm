@@ -37,6 +37,18 @@ CKPT="$OUT/ckpt_${TAG}"
 mkdir -p "$OUT/renders"
 : > "$OUT/timings.txt"
 
+# Pre-flight: this script MUST run at a pre-M5.0 commit (0c612b6 or
+# earlier). M5.0 adds a message head to ActorCritic, so after it lands the
+# M4.4 architecture no longer exists in the tree: a "retrain" would train a
+# different network and the renders would not be a matched control for the
+# locked-arm High renders. `che/env/comms.py` is the M5.0 marker.
+[ -e che/env/comms.py ] && {
+  echo "FATAL: che/env/comms.py exists -> M5.0 (message head) has landed." >&2
+  echo "The M4.4 architecture is gone from this tree, so a retrain here is" >&2
+  echo "NOT a matched control. Run this script from commit 0c612b6:" >&2
+  echo "  git stash && git checkout 0c612b6 && bash \$0" >&2
+  exit 1
+}
 # Pre-flight: fail in 1 s, not after 7 GPU-min, if the archiver the
 # persistence rule requires is not on the box.
 tar --zstd -cf /dev/null --files-from /dev/null 2>/dev/null || {

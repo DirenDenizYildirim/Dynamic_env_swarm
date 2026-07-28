@@ -48,9 +48,14 @@ class ThetaConfig:
     # clustered via box-smoothing passes on uniform noise.
     f_weak: float = 0.0  # fraction of cells that are weak
     weak_smooth: int = 2  # 3x3 box-smoothing passes on the terrain noise
-    # Comms sub-parameters (Def. 7; inert until Phase 5, plumbed now).
-    p_link_max: float = 1.0  # p_link at zero distance
-    r_comm: float = 8.0  # p_link range scale (cells)
+    # Comms sub-parameters (Def. 7; live from Phase 5 / M5.0).
+    # DECISION (human-ruled 2026-07-28, Q6): p_link is a HARD range cutoff,
+    # p = 1[d_Cheb <= r_comm] * (1 - delta), so the former `p_link_max`
+    # multiplier is retired rather than left in as an unspecified knob —
+    # it had no meaning under a hard cutoff and no config ever set it.
+    # r_comm is locked at M5.4 against measured degree/connectivity curves;
+    # 8.0 is the plumbing default, not a locked value.
+    r_comm: float = 8.0  # R_comm: hard comms range in cells (Chebyshev)
 
 
 @dataclasses.dataclass(frozen=True)

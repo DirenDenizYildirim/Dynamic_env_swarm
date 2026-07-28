@@ -42,6 +42,10 @@ EXPECTED_KEYS = {
     "masked_danger_sum",
     "danger_agents",
     "alive_agents",
+    # M5.0 comms channel (Def. 7): delivery rate = links_alive /
+    # links_in_range, mean alive out-degree = links_alive / alive_agents.
+    "links_alive",
+    "links_in_range",
 }
 
 

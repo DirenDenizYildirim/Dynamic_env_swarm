@@ -12,6 +12,7 @@ import jax.numpy as jnp
 import numpy as np
 import pytest
 
+from che.env.comms import MSG_DIM
 from che.env.config import Config, EnvConfig, TrainConfig
 from che.env.env import N_ACTIONS, reset
 from che.env.observation import N_PLANES
@@ -40,13 +41,18 @@ def test_network_shapes_arbitrary_batch_dims():
         jax.random.PRNGKey(0),
         jnp.zeros((1, k, k, N_PLANES)),
         jnp.zeros((1, 4)),
+        jnp.zeros((1, MSG_DIM)),  # M5.0: delivered message aggregate
     )
     grid = jnp.zeros((5, 3, k, k, N_PLANES))
     vec = jnp.zeros((5, 3, 4))
-    logits, value = net.apply(params, grid, vec)
+    msg = jnp.zeros((5, 3, MSG_DIM))
+    logits, value, message = net.apply(params, grid, vec, msg)
     assert logits.shape == (5, 3, N_ACTIONS)
     assert value.shape == (5, 3)
+    assert message.shape == (5, 3, MSG_DIM)
     assert jnp.isfinite(logits).all() and jnp.isfinite(value).all()
+    # tanh-bounded emissions (Phase-5 prompt: m in R^8, tanh).
+    assert bool((jnp.abs(message) <= 1.0).all())
 
 
 def test_autoreset_on_horizon():
