@@ -47,6 +47,7 @@ import jax.numpy as jnp
 from flax import linen as nn
 
 from che.env.comms import MSG_DIM
+from che.env.observation import dequantize_grid
 
 _ORTH = nn.initializers.orthogonal
 _ZERO = nn.initializers.constant(0.0)
@@ -54,14 +55,31 @@ _ZERO = nn.initializers.constant(0.0)
 
 class ActorCritic(nn.Module):
     """(grid [..., k, k, P], vec [..., 4], msg [..., MSG_DIM])
-    -> (logits [..., A], value [...], message [..., MSG_DIM])."""
+    -> (logits [..., A], value [...], message [..., MSG_DIM]).
+
+    `grid` may be float32 or uint8. uint8 is the M5.1f storage contingency:
+    the PPO batch holds quantized crops and this module normalizes them back
+    in-network, so the 4x memory saving is paid for by one multiply on the
+    minibatch instead of a 4x larger resident batch. dtype is static, so the
+    branch below is a Python branch on a compile-time property, not a traced
+    one. `obs_scale` is the per-plane upper bound tuple from
+    observation.plane_scales(cfg) and is required whenever uint8 is used.
+    """
 
     n_actions: int
     hidden: int = 128
     msg_dim: int = MSG_DIM
+    obs_scale: tuple[float, ...] | None = None
 
     @nn.compact
     def __call__(self, grid: jax.Array, vec: jax.Array, msg: jax.Array):
+        if grid.dtype == jnp.uint8:
+            if self.obs_scale is None:
+                raise ValueError(
+                    "uint8 observations need obs_scale=plane_scales(cfg); "
+                    "without it the network cannot undo the quantization"
+                )
+            grid = dequantize_grid(grid, self.obs_scale)
         batch_shape = grid.shape[:-3]
         x = grid.reshape((-1, *grid.shape[-3:]))
         v = vec.reshape((-1, vec.shape[-1]))

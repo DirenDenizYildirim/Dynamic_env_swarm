@@ -118,6 +118,13 @@ class TrainConfig:
     pbt_interval: int = 20  # K_pbt: updates between exploit/explore
     # Checkpointing (M0.5).
     ckpt_interval: int = 50  # K: updates between orbax checkpoints
+    # M5.1f: the pre-registered uint8 obs-storage contingency (standing rule
+    # 2026-07-21), ACTIVATED. Trajectory crops are stored quantized and
+    # normalized back in-network, cutting the PPO batch's dominant tensor 4x.
+    # Default off so every pre-M5.1f config keeps its exact behaviour and
+    # config hash; the gate/Phase-6-7 configs switch it on explicitly.
+    # Off and on are different runs, never bitwise-comparable.
+    uint8_obs: bool = False
 
 
 @dataclasses.dataclass(frozen=True)

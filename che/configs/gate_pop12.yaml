@@ -43,6 +43,12 @@ theta:
   eta: 0.5
 
 train:
+  # M5.1f: uint8 obs storage ACTIVATED — the pre-registered contingency
+  # (standing rule 2026-07-21). Not a speed measure here: at float32 this
+  # configuration's population obs trajectory is 11.39 GiB and minibatching
+  # copies it, which does not fit the 32 GiB card (M5.1d row B, OOM).
+  # uint8 makes the same tensor 2.85 GiB.
+  uint8_obs: true
   n_envs: 256
   pop_size: 12
   rollout_len: 128

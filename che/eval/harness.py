@@ -26,6 +26,7 @@ import orbax.checkpoint as ocp
 
 from che.env.config import Config, load_config
 from che.env.env import N_ACTIONS
+from che.env.observation import plane_scales, quantize_grid
 from che.train.ippo import _ckpt_manager, config_hash, make_train_fns
 from che.train.networks import ActorCritic
 from che.train.rollout import PolicyFn, batch_rollout
@@ -124,14 +125,21 @@ def make_policy_fn(
     delivered aggregate the zero vector one step later — the message-zeroed
     arm of the M5.3 utility gate, at identical architecture and parameter
     count (the zeroing is at the aggregation point, not a different net).
+
+    M5.1f: when the checkpoint was trained with uint8 obs storage, eval
+    quantizes too. Evaluating a uint8-trained policy on unquantized crops
+    would be a train/eval input mismatch — small, but exactly the kind of
+    unforced discrepancy that later shows up as an unexplained gap. The
+    config hash keeps the two modes from being mixed by accident.
     """
-    del cfg  # policy shape is fixed by the shared-parameter network
-    net = ActorCritic(N_ACTIONS)
+    ecfg, tcfg = cfg.env, cfg.train
+    net = ActorCritic(N_ACTIONS, obs_scale=plane_scales(ecfg))
 
     def policy(
         key: jax.Array, obs: dict[str, jax.Array], msg: jax.Array
     ) -> tuple[jax.Array, jax.Array]:
-        logits, _, emitted = net.apply(params, obs["grid"], obs["vec"], msg)
+        grid = quantize_grid(obs["grid"], ecfg) if tcfg.uint8_obs else obs["grid"]
+        logits, _, emitted = net.apply(params, grid, obs["vec"], msg)
         if mute:  # static Python flag — a separate jitted policy
             emitted = jnp.zeros_like(emitted)
         if greedy:  # static Python flag — two distinct jitted policies

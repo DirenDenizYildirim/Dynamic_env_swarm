@@ -30,7 +30,7 @@ from flax.training.train_state import TrainState
 from che.env.comms import MSG_DIM, aggregate
 from che.env.config import Config, load_config
 from che.env.env import N_ACTIONS, reset
-from che.env.observation import n_planes
+from che.env.observation import n_planes, plane_scales, quantize_grid
 from che.train.networks import ActorCritic
 from che.train.rollout import batch_rollout, make_random_policy, step_autoreset
 
@@ -134,14 +134,23 @@ class TrainFns(NamedTuple):
 def make_train_fns(cfg: Config) -> TrainFns:
     """Build (and cache per-config) the jitted init and K-update-chunk fns."""
     ecfg, tcfg = cfg.env, cfg.train
-    network = ActorCritic(N_ACTIONS)
+    # M5.1f: quantize once per step, then act AND update on the same stored
+    # values. Acting on float32 while replaying uint8 would make the PPO
+    # ratio differ from 1 in the first epoch — a silent bias, not a rounding
+    # detail — so the collector never sees the float crop again.
+    scales = plane_scales(ecfg)
+    network = ActorCritic(N_ACTIONS, obs_scale=scales)
+    obs_dtype = jnp.uint8 if tcfg.uint8_obs else jnp.float32
+
+    def _store_grid(grid):
+        return quantize_grid(grid, ecfg) if tcfg.uint8_obs else grid
 
     def init_runner(key: jax.Array):
         key, k_net, k_reset = jax.random.split(key, 3)
         k = ecfg.obs_window
         params = network.init(
             k_net,
-            jnp.zeros((1, k, k, n_planes(ecfg)), jnp.float32),
+            jnp.zeros((1, k, k, n_planes(ecfg)), obs_dtype),
             jnp.zeros((1, 4), jnp.float32),
             jnp.zeros((1, MSG_DIM), jnp.float32),
         )
@@ -173,8 +182,9 @@ def make_train_fns(cfg: Config) -> TrainFns:
         train_state, hyper, env_states, last_obs, ep_ret, key, messages = runner
         key, k_sample, k_step = jax.random.split(key, 3)
         delivered = _delivered(messages, last_obs)
+        obs_grid = _store_grid(last_obs["grid"])
         logits, value, emitted = network.apply(
-            train_state.params, last_obs["grid"], last_obs["vec"], delivered
+            train_state.params, obs_grid, last_obs["vec"], delivered
         )
         pi = distrax.Categorical(logits=logits)
         action = pi.sample(seed=k_sample)
@@ -189,7 +199,7 @@ def make_train_fns(cfg: Config) -> TrainFns:
             value=value,
             reward=reward,
             log_prob=log_prob,
-            obs_grid=last_obs["grid"],
+            obs_grid=obs_grid,
             obs_vec=last_obs["vec"],
             obs_msg=delivered,
             finished_return=jnp.where(done, ep_ret, 0.0),
@@ -280,7 +290,7 @@ def make_train_fns(cfg: Config) -> TrainFns:
         train_state, hyper, env_states, last_obs, ep_ret, key, messages = runner
         _, last_value, _ = network.apply(
             train_state.params,
-            last_obs["grid"],
+            _store_grid(last_obs["grid"]),
             last_obs["vec"],
             _delivered(messages, last_obs),
         )

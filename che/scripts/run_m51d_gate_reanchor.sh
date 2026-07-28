@@ -18,6 +18,10 @@
 #      run". It is a drift reference, never the gate.
 #   B  gate_pop12.yaml — the Phase-6/7 spending configuration (M0.6
 #      operating point + every locked stressor + comms live). THE GATE.
+#      As of M5.1f this config carries uint8_obs: true — the contingency,
+#      activated because at float32 the population obs trajectory is
+#      11.39 GiB and minibatching copies it, which did not fit the card.
+#      uint8 makes that tensor 2.85 GiB (5.7 GiB with the copy).
 #   C  row B again under XLA deterministic flags — prices determinism
 #      (ruling 1d).
 #   D  determinism VERIFICATION: two short training runs under the flags,
@@ -62,7 +66,15 @@ bench_row () {  # $1 = label, $2 = config, $3 = extra XLA_FLAGS, $4 = extra env
 }
 
 B_OK=0
-bench_row A che/configs/m06_probe.yaml || true
+# Row A is a drift reference and does not change between runs; SKIP_A=1
+# reuses the measurement from the first session (142,421 steps/s) instead of
+# spending two GPU-minutes re-measuring it.
+if [ "${SKIP_A:-0}" = "1" ]; then
+  echo "row_A SKIPPED (SKIP_A=1; reusing the 2026-07-28 measurement)" \
+    | tee -a "$OUT/timings.txt"
+else
+  bench_row A che/configs/m06_probe.yaml || true
+fi
 bench_row B che/configs/gate_pop12.yaml && B_OK=1
 
 # --- Row B diagnostics, only if B failed --------------------------------

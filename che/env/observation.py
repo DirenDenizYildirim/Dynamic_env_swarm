@@ -56,6 +56,8 @@ had, and the own-position vec disambiguates the arena edge.
 Own-state vector unchanged: (row/L, col/L, alive, t/horizon).
 """
 
+import math
+
 import chex
 import jax
 import jax.numpy as jnp
@@ -161,6 +163,56 @@ def masked_fraction(grid: jax.Array, alive: jax.Array, cfg: EnvConfig) -> jax.Ar
     return jnp.where(alive, masked, 0.0).sum() / jnp.maximum(
         alive.sum(dtype=jnp.float32), 1.0
     )
+
+
+def rho_max(cfg: EnvConfig) -> float:
+    """Supremum of the smoke field (Def. 6): rho' = e^-eta rho + sigma_s on a
+    permanently burning cell converges to sigma_s / (1 - e^-eta)."""
+    return float(cfg.theta.sigma_s / (1.0 - math.exp(-cfg.theta.eta)))
+
+
+def plane_scales(cfg: EnvConfig) -> tuple[float, ...]:
+    """Per-plane upper bound, used as the uint8 quantization scale (M5.1f).
+
+    Every plane is an indicator in {0, 1} — or, on archival v1, an ordinal in
+    {0, 0.5, 1} — except smoke, which is continuous on [0, rho_max]. So only
+    smoke is genuinely lossy under 8-bit storage; the rest round-trip exactly.
+    Smoke sits at index 2 on v2/v3 and index 1 on v1 (see the plane tables
+    above); the visibility plane appended by v3 is an indicator.
+    """
+    n = n_planes(cfg)
+    smoke_idx = 1 if cfg.obs_version == 1 else 2
+    return tuple(rho_max(cfg) if i == smoke_idx else 1.0 for i in range(n))
+
+
+def quantize_grid(grid: jax.Array, cfg: EnvConfig) -> jax.Array:
+    """float32 crop -> uint8, per-plane scaled (M5.1f uint8 obs storage).
+
+    Activated as the pre-registered contingency (standing rule 2026-07-21).
+    The trigger turned out to be capacity rather than speed: at the Phase-6/7
+    configuration the float32 population obs trajectory is 11.39 GiB and the
+    minibatch permutation copies it, which does not fit a 32 GiB card.
+
+    Quantization is deterministic and consumes no PRNG, so it cannot perturb
+    any kernel stream (invariant #3) and the ablation nesting still holds
+    bitwise *within* uint8 mode. It is NOT bitwise-comparable across modes:
+    a uint8 run and a float32 run of the same seed are different runs, and
+    the config hash separates their checkpoints.
+    """
+    scales = jnp.asarray(plane_scales(cfg), dtype=jnp.float32)
+    normed = jnp.clip(grid / scales, 0.0, 1.0)
+    return jnp.round(normed * 255.0).astype(jnp.uint8)
+
+
+def dequantize_grid(grid_u8: jax.Array, scales) -> jax.Array:
+    """uint8 -> float32, the in-network half of the contingency.
+
+    `scales` is a plain tuple so callers can hold it as a static attribute
+    (see networks.ActorCritic.obs_scale) rather than threading cfg into the
+    module.
+    """
+    s = jnp.asarray(scales, dtype=jnp.float32) / 255.0
+    return grid_u8.astype(jnp.float32) * s
 
 
 def observe(
