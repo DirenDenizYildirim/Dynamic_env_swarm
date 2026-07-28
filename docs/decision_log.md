@@ -310,12 +310,6 @@ Issued before any M4.4 run; supersedes the kappa_B = 1.1 entry above.
    Low/High stay at two seeds. Grid is therefore 14 train + 14 eval runs.
 
 
-   PHASE 6 ENTRY GATE (do not start Phase 6 without executing this line):
-Re-read D6-proposal with the RA. Decisions owed before any Phase-6 run:
-(1) dose-response design formalized into the phase prompt;
-(2) pilot scoped (2 mixture points);
-(3) one-paper vs two-paper fork scheduled for after the pilot.
-
 
 ## M4.4 outcome (RA, 2026-07-28) — pre-committed rules applied, no new rulings
 
@@ -357,11 +351,6 @@ is at High — a matched High pair is ~2 GPU-min; (b) the Low survival
 reversal (+0.0059, opposite sign to High) is at 1.16x its own threshold
 on two seeds and is recorded as a hypothesis, not a result.
 
-PHASE 6 ENTRY GATE (do not start Phase 6 without executing this line):
-Re-read D6-proposal with the RA. Decisions owed before any Phase-6 run:
-(1) dose-response design formalized into the phase prompt;
-(2) pilot scoped (2 mixture points);
-(3) one-paper vs two-paper fork scheduled for after the pilot.
 
 
 ## Phase-5 pre-flight rulings (human + RA, 2026-07-28) — Q1–Q6 raised before M5.0
@@ -486,3 +475,78 @@ any Phase-5 code.
    if the archive is missing. Phase-5 checkpoint dirs and archives are
    gitignored; the `.sha256` and `provenance.txt` are committed.
    M5.0 follows.
+
+## Phase-5 pre-flight rulings, round 3 (human + RA, 2026-07-28) — M5.0 accepted
+
+M5.0 (e7dd62e) **accepted at its STOP**. All three objections raised against
+the round-2 rulings are ruled and approved.
+
+1. **Remark 2‴ — the 5/3 clause is struck.** `q~/q -> 5/3 as kappa_B -> inf`
+   was wrong: the five draws do not share an exponent (optical depths 0.71,
+   0.90, 0.99 for the M4.2 pre-commitment draws; 1.10, 1.17 for the two
+   branch-idle draws), so the lowest-depth draw dominates both products and
+   the ratio tends to **1**. The gap peaks at moderate kappa_B and vanishes
+   at both ends. The VoC correction runs the other way — VoC lives in 1 - q,
+   so the relative bite is largest at **low** kappa_B, and the corrected
+   curve is *steeper*, not merely shifted. Theory doc amended in place with
+   a dated banner; **constants deferred to M5.2**, which measures q and q~
+   on one grid through the shared MC machinery.
+   *Accountability, both ways:* the heuristic originated with the builder,
+   who offered `q ~ 3p` vs `q~ ~ 5p` as a small-p, equal-exponent estimate
+   and did not label the assumption; it was then hardened into an asymptotic
+   claim in transcription by the RA and written into the theory doc. Three
+   corrections to one remark in one day — all caught pre-measurement.
+   New **CLAUDE.md sub-rule**: numerical claims enter documents *derived*,
+   never transliterated from chat heuristics; if a constant cannot be
+   derived on the spot, state the inequality and defer it to the milestone
+   that measures it. Binds both roles.
+   *Model provenance for the record* (not doc constants): the per-step
+   optical-depth model that produced the correction reproduces the measured
+   E2C q at three points — 0.810 / 0.770 / 0.699 predicted against 0.812 /
+   0.762 / 0.694 measured at kappa_B = 1.0 / 1.11 / 1.3 (kappa_b_lock.md).
+   It estimates ratio ~1.13 at the locked kappa_B and a peak ~1.25-1.3 near
+   kappa_B 2-3. M5.2's MC is the authority; these are the estimates that
+   justified spending the CPU-hour, nothing more.
+2. **Dawdle — the bound becomes an equality.** M5.2 enumerates the **full
+   open-loop idle-placement family** (all ways of spending the ell_f idle
+   steps before commitment), reports the max, and states the two-line
+   open-loop-optimality argument, so `1/2 + q~/2` is the denied optimum
+   rather than a lower bound on it. The Q2 scout-death check is a **@fast
+   test in `che/tests/test_e2c.py`** (scout dies at step d + ell_f), not a
+   runtime assert; the derived horizon T = d + ell + ell_f stands.
+3. **M5.3 gains a shuffled-message arm.** Sender identities are permuted
+   within the step, preserving the delivery pattern and the marginal content
+   distribution while destroying who-said-what. Pre-registered verdict
+   labels:
+   - live > shuffled  -> **sender-specific content used**;
+   - live ~ shuffled > zeroed -> **connectivity / global content only**;
+   - all three indistinguishable -> **null branch** (architecture goes to
+     the human discussion; DIAL-style differentiable comms is item #1).
+
+### Git reconciliation note (same session)
+
+Executed against the *measured* repository state, which differed from the
+state assumed when the reconciliation was ordered — recorded because the
+difference changed what was done:
+
+- `fe98e02` was already an ancestor of local `main`; the branches had not
+  diverged (`main` was 2 ahead, 0 behind). The merge was a no-op and the
+  anticipated `decision_log.md` conflict could not occur.
+- `integrity-audit` (e636af4) already existed and already matched
+  `origin/integrity-audit` exactly; nothing to push there.
+- The PHASE 6 ENTRY GATE text existed **twice** (a stray indented copy
+  inside the M4.4 amendments entry, and fe98e02's copy). Both removed and
+  re-added once, as a top-level final section of this log so later appends
+  cannot bury it. Content verbatim; position and heading are the only
+  changes, and one line reverts it.
+- `docs/architecture_decisions_v1.md` registered on `main` (88fa8e3),
+  byte-identical to the `integrity-audit` copy; sha256 recomputed after the
+  copy rather than transliterated from the ruling text.
+
+## PHASE 6 ENTRY GATE (human, 2026-07-28) — owed before any Phase-6 work
+
+PHASE 6 ENTRY GATE (do not start Phase 6 without executing this line):
+Re-read D6-proposal with the RA. Decisions owed before any Phase-6 run:
+(1) dose-response design formalized into the phase prompt;
+(2) pilot scoped (2 mixture points);
+(3) one-paper vs two-paper fork scheduled for after the pilot.

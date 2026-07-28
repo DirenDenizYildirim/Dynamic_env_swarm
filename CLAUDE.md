@@ -145,6 +145,18 @@ first, then act. (Origin: "tooling rule 3c/3d" was cited for months as
 binding and existed only in a chat transcript — its archive half was never
 implemented, and M4.4 shipped without a checkpoint archive as a result.)
 
+### Sub-rule: numerical claims enter documents *derived* (human-issued 2026-07-28)
+
+**A number reaches `docs/` only through a derivation or a measurement made
+in the same session — never transliterated from a chat heuristic, however
+plausible it sounded in conversation.** Heuristics carry their assumptions
+silently: `q̃/q → 5/3` was a small-`p`, equal-exponent approximation, and
+writing it into Remark 2″ as `κ_B → ∞` behaviour turned a safe estimate into
+a false asymptotic claim. If a constant cannot be derived on the spot, state
+the inequality and defer the constant to the milestone that measures it.
+This binds both roles: the builder who offers a heuristic must label it one,
+and the transcriber must harden it or drop it before it enters a document.
+
 ## Artifact persistence for GPU runs (human-issued 2026-07-28)
 
 **Every GPU run persists metrics + provenance + a checkpoint archive

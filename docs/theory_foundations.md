@@ -392,6 +392,15 @@ plot $J^*$ vs. $\kappa_B$ with and without comms.)
 > Phase-5 pre-flight before any code was written; (ii)'s residual — that
 > slack lets denied play buy information by idling — is measured, not
 > reasoned around (M5.2 "denied + dawdle" curve).
+>
+> **Amended again the same day — Remark 2‴ (2026-07-28).** The amendment
+> that fixed (ii) introduced its own unverified constant: $\tilde q/q \to
+> 5/3$ as $\kappa_B \to \infty$, transliterated from a chat heuristic whose
+> equal-exponent assumption fails. Struck and replaced in place; the ratio
+> tends to 1, and the correction's real bite is at *low* $\kappa_B$. Three
+> corrections to one remark in one day, each caught before it reached a
+> measurement — which is the pre-flight working as intended, and why
+> numerical claims now enter these documents derived (CLAUDE.md).
 
 Extend $E_{2C}$ with a second agent.
 
@@ -414,9 +423,23 @@ $\ell_f = 0$), so
 $$\mathrm{VoC}_{\mathrm{true}}(\kappa_B) \;=\; \tfrac12\big(1 - \tilde q(\kappa_B)\big) \;\le\; \tfrac12\big(1 - q(\kappa_B)\big).$$
 
 Both $q$ and $\tilde q$ are decreasing in $\kappa_B$, so **VoC increasing in
-perception decay survives unweakened**; only the constant tightens.
-Numerically at Option-A geometry, $\tilde q / q \to 5/3$ as
-$\kappa_B \to \infty$.
+perception decay survives unweakened**.
+
+*Size of the correction (**Remark 2‴**, 2026-07-28 — supersedes 2″'s
+"$\tilde q/q \to 5/3$" clause, which was a small-$p$, equal-exponent
+heuristic promoted to an asymptotic claim it does not support).* The five
+draws do not share an exponent: their optical depths differ, so as
+$\kappa_B \to \infty$ the single lowest-depth draw dominates both products
+and $\tilde q / q \to 1$. The gap is therefore **not** asymptotic — it peaks
+at moderate $\kappa_B$ and vanishes at both ends of the range. In VoC the
+arithmetic runs the other way, because VoC lives in $1 - q$: the *relative*
+correction is largest at **low** $\kappa_B$, where $q$ sits near 1 and the
+surviving margin is thin. The corrected curve is consequently not a shifted
+copy of the protocol-matched one, it is **steeper** — which strengthens
+rather than weakens the claim that communication is load-bearing exactly
+when perception fails. Constants are deferred to M5.2, where $q$ and
+$\tilde q$ are measured on the same grid by the shared MC machinery; no
+numeric ratio belongs in this document before then.
 
 The corrected lesson is sharper than the original: **communication is
 load-bearing exactly when perception fails *and redundancy is unavailable***
