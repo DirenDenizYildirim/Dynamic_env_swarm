@@ -356,3 +356,10 @@ renders exist only at Medium per amendment 4c, but the headline result
 is at High — a matched High pair is ~2 GPU-min; (b) the Low survival
 reversal (+0.0059, opposite sign to High) is at 1.16x its own threshold
 on two seeds and is recorded as a hypothesis, not a result.
+
+PHASE 6 ENTRY GATE (do not start Phase 6 without executing this line):
+Re-read D6-proposal with the RA. Decisions owed before any Phase-6 run:
+(1) dose-response design formalized into the phase prompt;
+(2) pilot scoped (2 mixture points);
+(3) one-paper vs two-paper fork scheduled for after the pilot.
+
