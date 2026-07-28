@@ -224,11 +224,15 @@ def make_train_fns(cfg: Config) -> TrainFns:
             trans,
         )
 
+    # M5.1g: remat only the differentiated forward. The collector's forward
+    # is not differentiated, so it retains nothing worth recomputing.
+    _apply = jax.checkpoint(network.apply) if tcfg.remat else network.apply
+
     def _loss_fn(params, mb, clip_eps, ent_coef):
         # The emitted message is discarded here: no term of the loss depends
         # on it, which is exactly why the message head never receives a
         # gradient (Q3 ruling — networks.py documents the consequence).
-        logits, value, _ = network.apply(
+        logits, value, _ = _apply(
             params, mb["obs_grid"], mb["obs_vec"], mb["obs_msg"]
         )
         pi = distrax.Categorical(logits=logits)

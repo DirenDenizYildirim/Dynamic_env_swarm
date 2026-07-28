@@ -125,6 +125,13 @@ class TrainConfig:
     # config hash; the gate/Phase-6-7 configs switch it on explicitly.
     # Off and on are different runs, never bitwise-comparable.
     uint8_obs: bool = False
+    # M5.1g: gradient checkpointing (rematerialization) in the PPO loss.
+    # Backprop activations across the population vmap — not obs storage —
+    # are the dominant term at gate scale: 98,304 agent-rows x ~18.7 KiB x
+    # 12 members, doubled by the backward pass. remat recomputes the forward
+    # instead of retaining it. Mathematically neutral (same hyperparameters,
+    # same updates), unlike changing n_minibatches; costs compute.
+    remat: bool = False
 
 
 @dataclasses.dataclass(frozen=True)
