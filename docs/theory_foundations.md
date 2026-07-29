@@ -437,9 +437,34 @@ correction is largest at **low** $\kappa_B$, where $q$ sits near 1 and the
 surviving margin is thin. The corrected curve is consequently not a shifted
 copy of the protocol-matched one, it is **steeper** — which strengthens
 rather than weakens the claim that communication is load-bearing exactly
-when perception fails. Constants are deferred to M5.2, where $q$ and
-$\tilde q$ are measured on the same grid by the shared MC machinery; no
-numeric ratio belongs in this document before then.
+when perception fails.
+
+*Constants (measured at M5.2, 2026-07-29; the deferral above is hereby
+discharged).* On the locked Option-A geometry, with $q$ and $\tilde q$
+computed exactly from the shared transmittance profile:
+
+| $\kappa_B$ | 0 | 0.25 | 0.5 | 1.0 | 1.5 | 2.0 | 3.0 | 5.0 | 8.0 | 16 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| $\tilde q/q$ | 1.000 | 1.007 | 1.036 | 1.126 | 1.199 | **1.235** | 1.232 | 1.143 | 1.052 | 1.002 |
+
+The ratio peaks at $1.235$ near $\kappa_B \approx 2$ and returns to $1$ at
+both ends, as this remark predicted; the struck $5/3 = 1.667$ exceeds the
+measured maximum anywhere on the grid. At the locked $\kappa_B = 1.0$ it
+is $1.126$. The *relative* correction to VoC is largest at low
+$\kappa_B$ — it removes $79\%$ of $\mathrm{VoC}_{\mathrm{gated}}$ at
+$\kappa_B = 0.5$, $54\%$ at $1.0$, and $7\%$ at $3.0$ — confirming that
+the bite is at the thin-margin end and not asymptotic. Full sweep and
+figure: `che/bench/results/phase5/m52/`.
+
+One property M5.2 measured that this remark did not anticipate: **idling
+is not free**. The smoke field grows every step, so spending a slack step
+early pushes every later observation to a smokier time, and individual
+idle placements can be *worse* than committing on schedule. $\tilde q \ge
+q$ survives because the open-loop family contains "move first, then idle
+at the branch", whose draws strictly contain the pinned schedule's — and
+that placement is the argmax at every $\kappa_B$ on the grid. The
+inequality is therefore a statement about the family's maximum, which is
+what makes $\tfrac12 + \tfrac{\tilde q}2$ an equality rather than a bound.
 
 The corrected lesson is sharper than the original: **communication is
 load-bearing exactly when perception fails *and redundancy is unavailable***

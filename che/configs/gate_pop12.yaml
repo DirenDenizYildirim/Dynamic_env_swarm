@@ -4,9 +4,30 @@
 # throughput, because training is what spends the budget.
 #
 # This is the Phase-6/7 spending configuration: the M0.6 operating point
-# (64^2, 12 agents, 256 envs per member, rollout 128, population 12,
-# K_pbt 20 — fallback-ladder rung 2, phase0_report.md) carrying every
+# (64^2, 12 agents, rollout 128, population 12, K_pbt 20) carrying every
 # stressor Phase 6/7 will actually run.
+#
+# FALLBACK-LADDER RUNG 2, APPLIED TWICE (phase0_substrate_prompt.md ladder;
+# reported, not silent). Phase 0 moved 1024 -> 256 envs/member because the
+# reference did not fit a 32 GB card (phase0_report.md). M5.1d/g hit the
+# same wall again at k=9: this configuration needs 49.31 GiB and XLA's own
+# rematerialization pass reports it cannot get below 28.31 GiB, so 256 ->
+# 128 is the second application of the same rung (24.69 GiB, 78 % of card).
+#
+# Why rung 2 and not rung 1: the ladder says apply in order, but rung 1
+# (grid 64^2 -> 48^2) is UNAVAILABLE now in a way it was not in Phase 0 —
+# beta_c = 0.500 and the three severities were calibrated at 64^2, and
+# percolation thresholds are finite-size dependent, so shrinking the grid
+# would invalidate severity_lock.md and both coupling locks that sit on it.
+# Rung 3 (n_agents 12 -> 8) is likewise unavailable: M5.4's R_comm band is
+# defined at "reference density (12 agents, 64^2)". Full reasoning in
+# docs/decision_log.md, "Phase-5 delegated rulings".
+#
+# CONSEQUENCE (the ladder's "never silently reduce planned experiment
+# steps"): halving envs/member halves env-steps per update, so Phase-6/7
+# runs at this config take 1000 updates, not 500. Total planned steps and
+# therefore budget are unchanged IF throughput holds — which is exactly
+# what the re-benched row B must confirm before any Phase-6 costing.
 #
 # Measured with `pbt.py --bench`, the same instrument that produced the
 # Phase-0 159.0 k steps/s row, so the number is comparable to it and to the
@@ -49,7 +70,7 @@ train:
   # copies it, which does not fit the 32 GiB card (M5.1d row B, OOM).
   # uint8 makes the same tensor 2.85 GiB.
   uint8_obs: true
-  n_envs: 256
+  n_envs: 128  # rung 2, second application — see the header
   pop_size: 12
   rollout_len: 128
   n_minibatches: 4

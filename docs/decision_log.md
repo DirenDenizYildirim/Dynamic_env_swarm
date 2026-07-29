@@ -635,3 +635,85 @@ Re-read D6-proposal with the RA. Decisions owed before any Phase-6 run:
     throughput (M5.1d row C), headline runs go deterministic: eliminating
     run noise outright is worth a modest slowdown in a project whose
     contribution is methodological credibility.
+
+## Phase-5 delegated rulings (human 2026-07-29, RA-executed)
+
+Human directive, verbatim in effect: *"You shall proceed with M5.2 if
+there are important decisions this time I am handing them to you."* The
+two decisions outstanding at the M5.2 STOP are therefore taken by the RA
+and transcribed here before being acted on, per the meta-rule. Both are
+reversible by the human; neither invents scope beyond the two items that
+were explicitly parked.
+
+### 1. Gate-config remedy — fallback-ladder rung 2, applied a second time
+
+`gate_pop12.yaml` needs 49.31 GiB against a 31.8 GiB card and nothing
+experiment-preserving fits (M5.1g probe; XLA's own remat pass reports it
+cannot go below 28.31 GiB = 89 % of the card). This was parked as a
+"scope decision". On inspection it is **not** a free choice: the
+pre-agreed fallback ladder exists — in `phase0_substrate_prompt.md`, not
+in the Phase-5 prompt, which is why it was not found earlier — and reads
+"apply in order, re-measure after each; never skip to escalation while
+rungs remain": 1) grid 64²→48²; 2) n_envs tuning for occupancy;
+3) n_agents 12→8; 4) grid 48²→32²; 5) population 12→10 (M0.6 only).
+
+Rung availability **now**, which is not what it was when the ladder was
+written (nothing was locked in Phase 0):
+
+- **Rung 1 (grid 64²→48²) — UNAVAILABLE.** β_c = 0.500 and the three
+  severity levels were calibrated at 64² (Phase 2, `severity_lock.md`);
+  percolation thresholds are finite-size dependent, so shrinking the grid
+  invalidates that calibration and the Coupling-A/B locks that sit on it.
+  Phase 0 skipped this rung too, and correctly.
+- **Rung 2 (n_envs) — AVAILABLE, and already applied once**: Phase 0 moved
+  1024 → 256 envs/member for this same reason (`phase0_report.md`,
+  "Deviation applied (fallback ladder rung 2 — reported, not silent)").
+  Applying it again gives 256 → 128 and a measured 24.69 GiB (78 % of the
+  card). Touches no calibrated quantity — the environment, the task and
+  every locked θ are unchanged.
+- **Rung 3 (n_agents 12→8) — UNAVAILABLE during Phase 5.** M5.4's R_comm
+  band is *defined* at "reference density (12 agents, 64²)"; changing the
+  agent count changes the observable the lock is measured against.
+- **Rung 4** = rung 1. **Rung 5** is marked "M0.6 only".
+
+**RULING: apply rung 2 again — `n_envs` 256 → 128 in `gate_pop12.yaml` —
+and re-bench row B.** Reported, not silent, as the ladder requires.
+
+Consequences recorded because the ladder demands it:
+
+- The ladder's "**never** silently reduce planned experiment steps" binds:
+  halving envs/member halves env-steps per update, so Phase-6/7 runs at
+  this config take **1000 updates, not 500**, to preserve planned steps.
+  Total steps and therefore budget are unchanged if throughput holds —
+  which is why the ladder says re-measure, and row B must now be
+  re-measured before any Phase-6 costing is quoted.
+- We are now **8× below the Phase-0 reference n_envs** (1024 → 128). That
+  is a fact for the Phase-6 entry gate to weigh, not a blocker here.
+
+**Considered and rejected: `n_minibatches` 4 → 16** (18.66 GiB, the most
+headroom of any candidate). It is not on the ladder, it is not reported
+anywhere as a deviation mechanism, and it changes the optimization
+(sixteen smaller gradient steps per epoch instead of four) without any
+pre-agreement about what that does to PBT selection. Preferring an
+unlisted knob because it measures better is precisely the
+band-shopping the M4.3 precedent forbids.
+
+### 2. Remark 2‴'s deferred constants — written in
+
+Remark 2‴ states its constants "are deferred to M5.2, where q and q̃ are
+measured on the same grid by the shared MC machinery; no numeric ratio
+belongs in this document before then." M5.2 has now measured them, in
+this session, by that machinery — so the sub-rule on numbers entering
+documents *derived* is satisfied, and the deferral has been discharged.
+
+**RULING: amend Remark 2‴ in `docs/theory_foundations.md` with the
+measured constants.** Theory-doc edits are a Phase-5 non-goal; this edit
+is authorized by the delegation above and is confined to discharging a
+deferral the document itself created. No other theory text is touched.
+
+Measured (analytic, MC-free where the asymptotics are claimed): q̃/q
+peaks at **1.235 near κ_B ≈ 2**, equals **1.126 at the locked
+κ_B = 1.0**, and → 1 at both ends. The struck 5/3 = 1.667 claim exceeds
+the measured maximum anywhere on the grid, confirming the strike. The
+relative VoC correction is largest at low κ_B: 79 % of VoC_gated at
+κ_B = 0.5, 54 % at 1.0, 7 % at 3.0.

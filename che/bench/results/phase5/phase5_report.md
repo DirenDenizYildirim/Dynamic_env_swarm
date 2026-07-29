@@ -159,10 +159,38 @@ rematerialization the configuration needs 28.31 GiB, which is 89 % of the
 card — and a config that needs 89 % of the card to compile is not a safe
 operating point for a multi-run grid.
 
-**Status: the gate is UNRESOLVED and the remedy is a human scope
-decision.** Every option that fits alters `n_minibatches`, `pop_size` or
-`n_envs`. Recommendation deferred to the Phase-6 entry gate, where D6 is
-already owed — Phase 5's own milestones do not use the population path.
+**Remedy: fallback-ladder rung 2, applied a second time** (delegated
+ruling 2026-07-29, `decision_log.md`). This was initially parked as a
+"scope decision"; it is not one. The pre-agreed ladder lives in
+`phase0_substrate_prompt.md` — not in the Phase-5 prompt, which is why it
+was missed on the first pass — and Phase 0 already applied rung 2 once,
+moving 1024 → 256 envs/member for this identical reason. Rung
+availability has since changed:
+
+| rung | status |
+|---|---|
+| 1. grid 64²→48² | **unavailable** — β_c = 0.500 and the severities were calibrated at 64²; percolation thresholds are finite-size dependent |
+| 2. n_envs tuning | **applied**: 256 → 128 (24.69 GiB, 78 % of card) |
+| 3. n_agents 12→8 | **unavailable** — M5.4's R_comm band is defined at "12 agents, 64²" |
+| 4. grid 48²→32² | same objection as rung 1 |
+| 5. pop 12→10 | marked "M0.6 only" |
+
+Rung 2 is the only live rung and the only one that moves no calibrated
+quantity: the environment, the task and every locked θ are untouched.
+`n_minibatches` 4→16 fits better (18.66 GiB) and was **rejected** — it is
+not on the ladder and changes the optimization with no pre-agreement
+about what that does to PBT selection, which is the band-shopping the
+M4.3 precedent forbids.
+
+Two consequences, recorded because the ladder requires it: Phase-6/7 runs
+at this config need **1000 updates rather than 500** to preserve planned
+experiment steps, and we are now **8× below the Phase-0 reference
+n_envs** (1024 → 128) — a fact for the Phase-6 entry gate to weigh.
+Row B is re-benched by `run_m51i_gate_rung2.sh`; **the 100 k line is not
+renormalized**, and if the re-bench lands under it that is reported to
+the entry gate, not fixed by another config edit.
+
+Phase 5's own milestones do not use the population path.
 M5.3–M5.5 are single-learner runs at the severity operating point, and
 that path is healthy. Two figures, because they measure different things
 and conflating them is easy:
@@ -343,11 +371,14 @@ the dawdle correction shaded orange as its own band, with the VoC curves
 and the relative correction below. The companion panel to the Theorem-1
 figure.
 
-### Owed to the human at this STOP
+### Theory-doc amendment — deferral discharged
 
-Theory-doc edits are a Phase-5 non-goal, so **no amendment was made**.
-Remark 2‴ says constants "are deferred to M5.2"; they are now measured
-and the proposed amendment is: replace "no numeric ratio belongs in this
-document before then" with the peak ratio 1.235 at κ_B ≈ 2, the locked
-value 1.126, and the → 1 asymptote. That is a human call at the fourth
-theory↔implementation handshake, not a builder's edit.
+Remark 2‴ created its own deferral: constants "are deferred to M5.2,
+where q and q̃ are measured on the same grid by the shared MC machinery".
+M5.2 measured them by that machinery in the same session, satisfying the
+sub-rule on numbers entering documents *derived*, so under the delegated
+ruling of 2026-07-29 the amendment was **made**: the ratio table, the
+1.235 peak at κ_B ≈ 2, the 1.126 locked value, the → 1 asymptote, and the
+"idling is not free" property the remark did not anticipate. The edit is
+confined to discharging that deferral; no other theory text was touched,
+and it remains reversible by the human at this handshake.

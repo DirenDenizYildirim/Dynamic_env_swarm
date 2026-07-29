@@ -48,8 +48,12 @@ def _candidates(cfg):
         ("nmb16", with_train(n_minibatches=16),
          "smaller minibatch (CHANGES optimization)"),
         ("pop6", with_train(pop_size=6), "half the population (CHANGES the design)"),
-        ("envs128", with_train(n_envs=128),
-         "half the envs per member (fallback-ladder rung 2)"),
+        # The gate config took rung 2 (256 -> 128) on 2026-07-29, so the
+        # next rung-2 application is the one worth pricing. Rungs 1/3/4
+        # are unavailable (they move calibrated quantities) — see
+        # decision_log.md "Phase-5 delegated rulings".
+        (f"envs{t.n_envs // 2}", with_train(n_envs=t.n_envs // 2),
+         "half the envs per member again (fallback-ladder rung 2)"),
     ]
 
 
