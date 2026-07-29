@@ -1,0 +1,39 @@
+[memprobe] compiling baseline ...
+           total 49.31 GiB (temp 49.08)
+[memprobe] compiling remat ...
+           total 47.22 GiB (temp 46.98)
+[memprobe] compiling remat+nmb8 ...
+           total 26.88 GiB (temp 26.65)
+[memprobe] compiling nmb8 ...
+           total 27.93 GiB (temp 27.69)
+[memprobe] compiling nmb16 ...
+           total 18.66 GiB (temp 18.43)
+[memprobe] compiling pop6 ...
+           total 24.66 GiB (temp 24.55)
+[memprobe] compiling envs128 ...
+           total 24.69 GiB (temp 24.55)
+
+========================================================================
+candidate      peak GiB  changes
+------------------------------------------------------------------------
+baseline          49.31  as committed
+remat             47.22  recompute activations; same hyperparameters, same updates
+remat+nmb8        26.88  remat + smaller minibatch (CHANGES optimization)
+nmb8              27.93  smaller minibatch (CHANGES optimization)
+nmb16             18.66  smaller minibatch (CHANGES optimization)
+pop6              24.66  half the population (CHANGES the design)
+envs128           24.69  half the envs per member (fallback-ladder rung 2)
+========================================================================
+A candidate that fits is not automatically the right choice: remat
+preserves the experiment exactly (same hyperparameters, same
+updates, loss verified identical), while n_minibatches / pop_size /
+n_envs change what is being run. That trade is a human call.
+
+Against a 31.8 GiB card:
+  fits: remat+nmb8, nmb8, nmb16, pop6, envs128
+  no experiment-preserving option fits: every candidate that
+  fits alters n_minibatches, pop_size or n_envs. HUMAN RULING
+  REQUIRED — do not pick one to make the gate pass.
+
+Headroom matters as much as fitting: a config that needs ~95 % of the
+card is not a safe operating point for a 14-run grid.

@@ -1,0 +1,4 @@
+train_medium_rep1 284s
+train_medium_rep2 285s
+train_medium_rep3 284s
+train_medium_rep4 282s

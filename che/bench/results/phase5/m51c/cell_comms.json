@@ -1,0 +1,1 @@
+{"grid": 64, "n_envs": 1024, "n_agents": 12, "compile_s": 3.51, "rates": [8356360, 8354931, 8360578], "median": 8356360, "iqr": 5647, "peak_bytes": 166580736, "platform": "gpu", "device": "NVIDIA GeForce RTX 5090", "jax_version": "0.11.0", "probe": "comms"}

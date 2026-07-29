@@ -1,0 +1,6 @@
+run: M5.1g memory probe (compile-only)
+date_utc: 2026-07-28T20:29:05Z
+git_commit: fa32113b1a27178c9d109cddff02d3d0d3d86d65
+git_dirty: 3 file(s)
+xla_flags: --xla_gpu_autotune_level=0
+gpu: NVIDIA GeForce RTX 5090

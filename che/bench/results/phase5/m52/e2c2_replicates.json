@@ -1,0 +1,42 @@
+{
+  "n_seeds": 16,
+  "n_episodes": 1024,
+  "n_mc": 2048,
+  "per_point": [
+    {
+      "kappa_B": 0.5,
+      "mean_z": 0.15361521367906142,
+      "sd_z": 1.3353351896653352,
+      "n_exceed_2sigma": 2
+    },
+    {
+      "kappa_B": 1.0,
+      "mean_z": -0.25998398338543294,
+      "sd_z": 1.4858644137370682,
+      "n_exceed_2sigma": 3
+    },
+    {
+      "kappa_B": 1.5,
+      "mean_z": -0.23092013725820032,
+      "sd_z": 0.9734203678855292,
+      "n_exceed_2sigma": 1
+    },
+    {
+      "kappa_B": 2.0,
+      "mean_z": -0.3145698189103633,
+      "sd_z": 0.9517847525678224,
+      "n_exceed_2sigma": 0
+    },
+    {
+      "kappa_B": 3.0,
+      "mean_z": -0.3730239587752985,
+      "sd_z": 0.8559303558134628,
+      "n_exceed_2sigma": 1
+    }
+  ],
+  "pooled_mean_z": -0.2049765369300467,
+  "pooled_sd_z": 1.1330208909382637,
+  "pooled_frac_exceed_2sigma": 0.0875,
+  "pooled_n": 80,
+  "verdict_hint": "sd_z ~ 1 means the gate is calibrated"
+}

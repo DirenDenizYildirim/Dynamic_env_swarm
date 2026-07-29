@@ -1,0 +1,5 @@
+row_A SKIPPED (SKIP_A=1; reusing the 2026-07-28 measurement)
+row_B 1056s FAILED(rc=1)
+row_B1 38s FAILED(rc=1)
+row_B2 37s FAILED(rc=1)
+NOTE: row B did not compile; pricing determinism on m06_probe.yaml instead so ruling 1d still gets a number.

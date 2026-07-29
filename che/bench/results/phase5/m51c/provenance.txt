@@ -1,0 +1,5 @@
+run: M5.1c probe decomposition
+date_utc: 2026-07-28T18:38:40Z
+git_commit: cbb3c634ab575e553c8994fd6074e307513b2781
+git_dirty: 1 file(s)
+gpu: NVIDIA GeForce RTX 5090

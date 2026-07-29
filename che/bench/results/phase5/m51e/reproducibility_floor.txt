@@ -1,0 +1,21 @@
+Reproducibility floor — 4 identical runs (Medium, dp 0.5, seed 0,
+500 updates, couplings locked, comms live at delta = 0).
+Same seed throughout: this is nondeterminism alone, NOT seed spread.
+
+  metric                       mean         sd      range   max|dev|
+  completion                 0.7381     0.0145     0.0319     0.0191
+  survival_rate              0.9191     0.0129     0.0316     0.0161
+  episode_return            23.1328     0.5026     1.1182     0.7031
+  deaths_fire                0.7852     0.1606     0.3789     0.2148
+  mean_smoke_exposure        0.0001     0.0000     0.0001     0.0001
+
+How to use this (ruling 3b): falsifier condition (i) reads 'within the
+measured reproducibility floor', citing this study. A cross-arm effect
+smaller than ~2x the sd here is NOT resolvable at one run per cell.
+
+CAVEAT, stated because it bounds every use: n = 4 gives an sd with
+3 degrees of freedom — itself uncertain by roughly +/-40 %. Treat
+the floor as an order of magnitude, not a threshold to three decimals.
+It also describes the NON-DETERMINISTIC regime; if headline runs go
+deterministic (ruling 1d/3c), their floor is a different, smaller
+quantity dominated by seed variation and must be measured separately.

@@ -1,0 +1,6 @@
+run: M5.1e mini replication study (reproducibility floor)
+date_utc: 2026-07-28T20:50:52Z
+git_commit: fa32113b1a27178c9d109cddff02d3d0d3d86d65
+git_dirty: 4 file(s)
+config: che/configs/severity_medium.yaml  dp=0.5  seed=0 (identical across replicates)  reps=4
+gpu: NVIDIA GeForce RTX 5090

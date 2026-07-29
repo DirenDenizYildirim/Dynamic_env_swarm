@@ -238,3 +238,44 @@ def test_sweep_grid_spans_the_gap():
     assert KAPPA_GRID[0] == 0.0
     assert KAPPA_GRID[-1] >= 5.0
     assert list(KAPPA_GRID) == sorted(KAPPA_GRID)
+
+
+# --- M5.2 / Q2 ruling: the horizon derivation's load-bearing step -------
+# Placed here rather than as a runtime assert (round-2 ruling item 2): the
+# claim is about the geometry, so it belongs with the geometry tests, and
+# a jitted rollout is the wrong place to discover it.
+
+
+def test_scout_dies_at_the_fire_anchored_step():
+    """T = d + l_f + ell rests on exactly one fact: the scout's verdict is
+    determinate at step d + l_f, not earlier.
+
+    Surviving *one* step into the corridor certifies nothing when the fire
+    sits at depth l_f = 2 — that was Remark 2's l_f = 1 special case read
+    as if it were general. So the scout must die precisely at d + l_f when
+    it probed the burning corridor, and never when it did not. If this
+    step moved, the derived horizon would be wrong and the courier would
+    either commit on an uncertified report or run out of clock.
+    """
+    from che.env.e2c2 import (
+        CORRIDOR_LEN,
+        E2C2_HORIZON,
+        horizon,
+        scout_alive,
+        scout_verdict_step,
+    )
+
+    verdict = scout_verdict_step()
+    assert verdict == D_PATH + L_F
+    assert E2C2_HORIZON == horizon() == D_PATH + L_F + CORRIDOR_LEN
+
+    # Probed corridor is the burning one: alive strictly before the fire
+    # depth is reached, dead from that step on.
+    for t in range(E2C2_HORIZON + 1):
+        assert bool(scout_alive(t, SIDE_L)) == (t < verdict), f"Z=L at t={t}"
+        assert bool(scout_alive(t, SIDE_R)), f"Z=R at t={t}"
+
+    # The verdict step is the *first* dead step — the courier cannot learn
+    # anything by waiting less, and gains nothing by waiting more.
+    assert bool(scout_alive(verdict - 1, SIDE_L))
+    assert not bool(scout_alive(verdict, SIDE_L))

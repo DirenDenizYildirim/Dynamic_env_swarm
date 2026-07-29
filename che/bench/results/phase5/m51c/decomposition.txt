@@ -1,0 +1,21 @@
+Reference cell 64^2 / 1024 envs / 12 agents, by keep-alive set:
+
+  probe       median steps/s   proj (/81)  vs legacy
+  legacy           8,608,593      106,279    +0.0 %
+  comms            8,356,360      103,165    -2.9 %
+  training         7,921,594       97,797    -8.0 %
+  all              3,386,909       41,814   -60.7 %
+
+  legacy vs the published M4.1 row (8,375,048): +2.8 %  <- same probe, so this is between-session
+     variation plus any real change since M4.1
+  comms axis alone (legacy -> comms):      -2.9 %
+  what TRAINING pays (legacy -> training): -8.0 %
+  what EVAL pays    (legacy -> all):       -60.7 %
+
+Standing-rule arithmetic on the TRAINING row: 97,797 train steps/s
+  -> below the 100k line on the training-faithful measurement.
+
+NOT a verdict. Which row is canonical for the standing rule is a
+human ruling (the rule predates the discovery that 'the env cost'
+depends on the consumer). The direct end-to-end evidence — 68,475
+env-steps/s in M5.1 vs 68,598 in M4.1 — is the other half of it.
