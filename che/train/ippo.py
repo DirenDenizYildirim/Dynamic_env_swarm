@@ -60,6 +60,11 @@ class Transition(NamedTuple):
     alive_agents: jax.Array  # [n_envs] out-degree denominator
 
 
+# M5.3: dedicated stream id for the shuffled-arm permutation, following the
+# env's convention (env.py _OBS_STREAM 47 / _COMMS_STREAM 53). Reached by
+# fold_in, never by a split, so selecting an arm shifts no other stream.
+_MSG_SHUFFLE_STREAM = 71
+
 # Episode metrics surfaced at done (M1.4): info key -> logged metric name.
 EP_METRICS = {
     "survival_rate": "survival_rate",
@@ -173,15 +178,40 @@ def make_train_fns(cfg: Config) -> TrainFns:
         messages = jnp.zeros((tcfg.n_envs, ecfg.n_agents, MSG_DIM), jnp.float32)
         return Runner(train_state, hyper, env_states, obs, ep_ret, key, messages)
 
-    def _delivered(messages, obs):
+    def _delivered(messages, obs, key):
         """Masked-mean aggregate of last step's messages over this step's
-        realized links (M5.0). vmap'd over envs; see comms.aggregate."""
-        return jax.vmap(aggregate)(messages, obs["links"])
+        realized links (M5.0), under the M5.3 arm in `tcfg.msg_mode`.
+
+        The arms are static Python branches on a frozen config field, so
+        each compiles to its own program with no traced branching — and
+        `key` is a fold_in, not a split, so choosing an arm cannot shift
+        any other PRNG stream. Live and zeroed therefore see bitwise the
+        same environment as shuffled given the same seed.
+        """
+        if tcfg.msg_mode == "shuffled":
+            # Permute the SENDER axis, independently per env. links is
+            # untouched, so every receiver's in-degree and the multiset of
+            # emitted messages are exactly preserved; what is destroyed is
+            # the correspondence between a message and who sent it.
+            n_env, n_ag = messages.shape[0], messages.shape[1]
+            perms = jax.vmap(lambda k: jax.random.permutation(k, n_ag))(
+                jax.random.split(key, n_env)
+            )
+            messages = jnp.take_along_axis(messages, perms[:, :, None], axis=1)
+        agg = jax.vmap(aggregate)(messages, obs["links"])
+        if tcfg.msg_mode == "zeroed":
+            # Zero at the aggregation point, not by deleting the input: the
+            # network keeps its message Dense layer and its parameter count,
+            # so the arm differs from live in content alone.
+            agg = jnp.zeros_like(agg)
+        return agg
 
     def _env_step(runner, _):
         train_state, hyper, env_states, last_obs, ep_ret, key, messages = runner
         key, k_sample, k_step = jax.random.split(key, 3)
-        delivered = _delivered(messages, last_obs)
+        delivered = _delivered(
+            messages, last_obs, jax.random.fold_in(k_step, _MSG_SHUFFLE_STREAM)
+        )
         obs_grid = _store_grid(last_obs["grid"])
         logits, value, emitted = network.apply(
             train_state.params, obs_grid, last_obs["vec"], delivered
@@ -296,7 +326,13 @@ def make_train_fns(cfg: Config) -> TrainFns:
             train_state.params,
             _store_grid(last_obs["grid"]),
             last_obs["vec"],
-            _delivered(messages, last_obs),
+            # Bootstrap value: same arm as the rollout saw, or the critic
+            # would be evaluated on an input distribution the policy never
+            # acted under. fold_in on the carried key keeps it deterministic
+            # without consuming the stream.
+            _delivered(
+                messages, last_obs, jax.random.fold_in(key, _MSG_SHUFFLE_STREAM)
+            ),
         )
         adv, targets = compute_gae(
             traj.reward[:, :, None],
@@ -565,6 +601,13 @@ def main():
         help="override theta.kappa_B (M4.3 probe policies / M4.4 arm)",
     )
     p.add_argument(
+        "--msg-mode",
+        choices=("live", "zeroed", "shuffled"),
+        default=None,
+        dest="msg_mode",
+        help="M5.3 utility-gate arm (default: the config's)",
+    )
+    p.add_argument(
         "--baseline",
         action="store_true",
         help="print the random-policy baseline metrics and exit",
@@ -606,6 +649,7 @@ def main():
         for k, v in (
             ("n_envs", args.n_envs),
             ("rollout_len", args.rollout_len),
+            ("msg_mode", args.msg_mode),
         )
         if v
     }

@@ -132,6 +132,25 @@ class TrainConfig:
     # instead of retaining it. Mathematically neutral (same hyperparameters,
     # same updates), unlike changing n_minibatches; costs compute.
     remat: bool = False
+    # M5.3 utility gate: which message content reaches the aggregation
+    # point. All three arms share the architecture, the parameter count and
+    # the input shapes exactly — the ablation is content, not capacity.
+    #   "live"     — as emitted.
+    #   "zeroed"   — hard-zeroed aggregate: the channel carries nothing.
+    #   "shuffled" — sender identities permuted within the step (round-2
+    #                ruling item 3). The link graph and the multiset of
+    #                emitted messages are untouched, so delivery pattern and
+    #                marginal content distribution survive and only
+    #                who-said-what is destroyed. It separates "the swarm
+    #                uses sender-specific content" from "the swarm only
+    #                needs connectivity or a global summary".
+    # The shuffle key is derived by fold_in, never by an extra split, so all
+    # three arms consume identical PRNG streams and stay CRN-paired.
+    msg_mode: str = "live"
+
+    def __post_init__(self) -> None:
+        if self.msg_mode not in ("live", "zeroed", "shuffled"):
+            raise ValueError(f"unknown msg_mode: {self.msg_mode!r}")
 
 
 @dataclasses.dataclass(frozen=True)

@@ -27,7 +27,12 @@ import orbax.checkpoint as ocp
 from che.env.config import Config, load_config
 from che.env.env import N_ACTIONS
 from che.env.observation import plane_scales, quantize_grid
-from che.train.ippo import _ckpt_manager, config_hash, make_train_fns
+from che.train.ippo import (
+    _MSG_SHUFFLE_STREAM,
+    _ckpt_manager,
+    config_hash,
+    make_train_fns,
+)
 from che.train.networks import ActorCritic
 from che.train.rollout import PolicyFn, batch_rollout
 
@@ -131,6 +136,13 @@ def make_policy_fn(
     would be a train/eval input mismatch — small, but exactly the kind of
     unforced discrepancy that later shows up as an unexplained gap. The
     config hash keeps the two modes from being mixed by accident.
+
+    M5.3: `cfg.train.msg_mode` is honoured here too, so an arm is evaluated
+    under the regime it was trained under. `mute` stays a separate,
+    eval-time override — it is what M5.5's message-usage diagnostic needs
+    (zero the channel on a policy that was *trained* with it live), which
+    is a different question from M5.3's trained-arm comparison. Setting
+    `mute` on an already-zeroed arm is a no-op, as it should be.
     """
     ecfg, tcfg = cfg.env, cfg.train
     net = ActorCritic(N_ACTIONS, obs_scale=plane_scales(ecfg))
@@ -140,8 +152,19 @@ def make_policy_fn(
     ) -> tuple[jax.Array, jax.Array]:
         grid = quantize_grid(obs["grid"], ecfg) if tcfg.uint8_obs else obs["grid"]
         logits, _, emitted = net.apply(params, grid, obs["vec"], msg)
-        if mute:  # static Python flag — a separate jitted policy
+        if mute or tcfg.msg_mode == "zeroed":  # static — its own jitted policy
             emitted = jnp.zeros_like(emitted)
+        elif tcfg.msg_mode == "shuffled":
+            # Sender-axis permutation, as in training. rollout_episode is
+            # single-env here, so this permutes the agent axis directly.
+            # fold_in, not the raw key: `key` already seeds the action
+            # sample below and a key is never reused.
+            emitted = emitted[
+                jax.random.permutation(
+                    jax.random.fold_in(key, _MSG_SHUFFLE_STREAM),
+                    emitted.shape[0],
+                )
+            ]
         if greedy:  # static Python flag — two distinct jitted policies
             return jnp.argmax(logits, axis=-1).astype(jnp.int32), emitted
         return (
@@ -159,13 +182,14 @@ def evaluate(
     n_episodes: int = 512,
     seed: int = 0,
     greedy: bool = False,
+    mute: bool = False,
 ) -> dict[str, np.ndarray]:
     """Run n_episodes vmap'd fixed-length episodes; return per-episode arrays.
 
     Every array has shape [n_episodes]; `episode_return` is the summed team
     reward, the rest follow EVAL_METRICS.
     """
-    policy = make_policy_fn(cfg, params, greedy=greedy)
+    policy = make_policy_fn(cfg, params, greedy=greedy, mute=mute)
     ecfg = cfg.env
     rewards, _, infos = jax.jit(
         lambda k: batch_rollout(k, ecfg, policy, ecfg.horizon, n_episodes)
@@ -251,6 +275,20 @@ def main(argv: list[str] | None = None):
         "config-hash mismatch (repeatable); the old->current "
         "mapping is recorded in the summary JSON",
     )
+    p.add_argument(
+        "--msg-mode",
+        choices=("live", "zeroed", "shuffled"),
+        default=None,
+        dest="msg_mode",
+        help="M5.3 arm — must match the training run (hash guard)",
+    )
+    p.add_argument(
+        "--mute",
+        action="store_true",
+        help="zero the emitted message at EVAL time on a policy trained "
+        "with it live (M5.5 message-usage diagnostic). Distinct from "
+        "--msg-mode zeroed, which is a trained arm and changes the hash",
+    )
     p.add_argument("--out-npz", required=True, help="per-episode arrays output")
     p.add_argument("--out-json", help="summary JSON output (default: npz stem + .json)")
     args = p.parse_args(argv)
@@ -286,6 +324,10 @@ def main(argv: list[str] | None = None):
         cfg = dataclasses.replace(
             cfg, env=dataclasses.replace(cfg.env, obs_version=args.obs_version)
         )
+    if args.msg_mode is not None:
+        cfg = dataclasses.replace(
+            cfg, train=dataclasses.replace(cfg.train, msg_mode=args.msg_mode)
+        )
     params, step = load_params(
         args.ckpt_dir, cfg, step=args.step, allow_hashes=tuple(args.allow_hash)
     )
@@ -305,7 +347,12 @@ def main(argv: list[str] | None = None):
             "mapping recorded in summary JSON"
         )
     per_episode = evaluate(
-        cfg, params, n_episodes=args.n_episodes, seed=args.seed, greedy=args.greedy
+        cfg,
+        params,
+        n_episodes=args.n_episodes,
+        seed=args.seed,
+        greedy=args.greedy,
+        mute=args.mute,
     )
     out_npz = Path(args.out_npz)
     out_npz.parent.mkdir(parents=True, exist_ok=True)
@@ -319,6 +366,11 @@ def main(argv: list[str] | None = None):
         "seed": args.seed,
         "greedy": args.greedy,
         "obs_version": cfg.env.obs_version,
+        # M5.3/M5.5: which arm this is, and whether the channel was cut at
+        # eval time. Two different questions, so both are recorded — a
+        # summary that showed only one would be ambiguous.
+        "msg_mode": cfg.train.msg_mode,
+        "eval_muted": args.mute,
         "metrics": summarize(per_episode),
     }
     if hash_compat is not None:
