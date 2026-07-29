@@ -49,12 +49,41 @@ grep -q "n_envs: 128" che/configs/gate_pop12.yaml || {
   exit 1
 }
 
+# Instrument settings, not experiment settings. Both are forced because
+# the first m51i run hung: elapsed climbed while CPU time stayed flat, the
+# process spinning in a ~10 s retry loop against a fixed allocation that
+# nothing was ever going to free.
+#
+#   autotune off   — the autotuner allocates scratch to TIME candidate
+#                    algorithms, on top of the working set. That is what
+#                    killed the original row B during compilation (m51d
+#                    rows B1/B2 worked around it; m51i failed to carry it
+#                    forward, which is a script defect, not a finding).
+#   mem fraction   — JAX preallocates 75 % of the card by default = 23.85
+#                    GiB, which is BELOW the 24.69 GiB this config needs.
+#                    0.95 gives 30.2 GiB for a 24.69 GiB requirement.
+#
+# Autotuning off makes the measurement SLOWER, so the resulting throughput
+# is a conservative lower bound — and it is the operative number anyway:
+# if Phase-6/7 runs can only execute with the autotuner off, then that is
+# the throughput the configuration actually has.
+BENCH_FLAGS=${BENCH_FLAGS:-"--xla_gpu_autotune_level=0"}
+export XLA_PYTHON_CLIENT_MEM_FRACTION=${XLA_PYTHON_CLIENT_MEM_FRACTION:-0.95}
+# A bench row that stops making progress must fail, not hang. Generous
+# enough for compile + WINDOWS x 30 s, tight enough to bound a spin.
+ROW_TIMEOUT=${ROW_TIMEOUT:-900}
+
 bench_row () {  # $1 = label, $2 = config, $3 = extra XLA_FLAGS
-  local label=$1 cfg=$2 flags=${3:-} rc=0 t0=$SECONDS
+  local label=$1 cfg=$2 flags=${3:-$BENCH_FLAGS} rc=0 t0=$SECONDS
   echo "=== row ${label}: pbt --bench --config ${cfg} ${flags:+[$flags]} ==="
-  XLA_FLAGS="${flags}" uv run python -m che.train.pbt --bench \
+  timeout --signal=KILL "$ROW_TIMEOUT" \
+    env XLA_FLAGS="${flags}" uv run python -m che.train.pbt --bench \
     --config "$cfg" --windows "$WINDOWS" --window-secs 30 \
     --report "$OUT/gate_rows_${label}.md" || rc=$?
+  if [ "$rc" -eq 137 ]; then
+    echo "row_${label}: KILLED after ${ROW_TIMEOUT}s — no forward progress." \
+      | tee -a "$OUT/timings.txt"
+  fi
   if [ "$rc" -eq 0 ]; then
     echo "row_${label} $((SECONDS - t0))s OK" | tee -a "$OUT/timings.txt"
   else
@@ -68,7 +97,9 @@ B_OK=0
 bench_row B che/configs/gate_pop12.yaml && B_OK=1
 
 # Row C: determinism pricing (ruling 1d) — never got a number at the gate
-# config because row B did not compile. Now it can.
+# config because row B did not compile. Now it can. Note row B already
+# runs with autotuning off, so C-vs-B isolates the deterministic-ops flag
+# rather than confounding it with the autotuner.
 DET_FLAGS="--xla_gpu_deterministic_ops=true --xla_gpu_autotune_level=0"
 if [ "$B_OK" -eq 1 ]; then
   bench_row C che/configs/gate_pop12.yaml "$DET_FLAGS" || true
@@ -108,11 +139,15 @@ if c and b:
           f"({100 * (c / b - 1):+.1f} %)")
 print()
 if b is None:
-    print("VERDICT: STILL UNRESOLVED — rung 2 did not make it fit. The "
-          "remaining ladder is priced in memprobe_rung2.json. Rungs 1/3/4 "
-          "move calibrated quantities (grid size, agent count), so this "
-          "goes to the Phase-6 entry gate as a scope question, not to a "
-          "config edit.")
+    print("VERDICT: NO NUMBER — row B did not produce a rate.")
+    print("Read the memprobe beside this before concluding anything about "
+          "the ladder: the probe runs with autotuning off, so a 'fits' "
+          "there alongside a failed run is NOT a contradiction — it means "
+          "buffer assignment fits and the instrument on top of it did not. "
+          "Rung 2 already cut the requirement 49.31 -> ~24.7 GiB, so a "
+          "failure here is about how the row is measured, not about "
+          "whether the rung worked. Only if the probe ALSO reports no fit "
+          "is this a ladder question for the Phase-6 entry gate.")
 elif b >= 100_000:
     print(f"VERDICT: PASS — {b:,.0f} >= 100k at the applied rung.")
     print("Budget note: envs/member halved, so Phase-6/7 runs need 1000 "
