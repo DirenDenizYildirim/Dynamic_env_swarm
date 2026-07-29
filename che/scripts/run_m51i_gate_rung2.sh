@@ -50,9 +50,12 @@ grep -q "n_envs: 128" che/configs/gate_pop12.yaml || {
 }
 
 # Instrument settings, not experiment settings. Both are forced because
-# the first m51i run hung: elapsed climbed while CPU time stayed flat, the
-# process spinning in a ~10 s retry loop against a fixed allocation that
-# nothing was ever going to free.
+# the first m51i row B ran out of memory after 1112 s: elapsed climbed
+# while CPU time stayed flat, the process retrying a fixed 5.72 GiB
+# allocation that nothing was ever going to free. It was reported as a
+# hang and I agreed too readily; it was in fact a slow, bounded failure
+# that raised a proper OOM. The distinction matters for how long the
+# guard below waits.
 #
 #   autotune off   — the autotuner allocates scratch to TIME candidate
 #                    algorithms, on top of the working set. That is what
@@ -69,9 +72,22 @@ grep -q "n_envs: 128" che/configs/gate_pop12.yaml || {
 # the throughput the configuration actually has.
 BENCH_FLAGS=${BENCH_FLAGS:-"--xla_gpu_autotune_level=0"}
 export XLA_PYTHON_CLIENT_MEM_FRACTION=${XLA_PYTHON_CLIENT_MEM_FRACTION:-0.95}
-# A bench row that stops making progress must fail, not hang. Generous
-# enough for compile + WINDOWS x 30 s, tight enough to bound a spin.
-ROW_TIMEOUT=${ROW_TIMEOUT:-900}
+# Backstop for a genuine hang — deliberately set ABOVE the longest
+# observed natural failure, not below it.
+#
+# The first m51i row B looked hung (elapsed climbing, CPU time flat, a
+# ~10 s retry loop on a fixed allocation) and was reported as such. It
+# was not: the BFC allocator's retry budget is bounded and it raised a
+# real OOM at 1112 s, carrying the allocation size in the message. A
+# 900 s guard would have killed it at 900 s and replaced that diagnostic
+# with a bare rc=137 — a timeout that fires before the tool's own error
+# handling makes the artifact *less* informative, which is the opposite
+# of the point.
+#
+# So: a healthy row finishes in ~3 min (compile with autotune off plus
+# WINDOWS x 30 s), a natural failure surfaces its own error around
+# ~1100 s, and only something genuinely stuck reaches 1800 s.
+ROW_TIMEOUT=${ROW_TIMEOUT:-1800}
 
 bench_row () {  # $1 = label, $2 = config, $3 = extra XLA_FLAGS
   local label=$1 cfg=$2 flags=${3:-$BENCH_FLAGS} rc=0 t0=$SECONDS
@@ -81,7 +97,10 @@ bench_row () {  # $1 = label, $2 = config, $3 = extra XLA_FLAGS
     --config "$cfg" --windows "$WINDOWS" --window-secs 30 \
     --report "$OUT/gate_rows_${label}.md" || rc=$?
   if [ "$rc" -eq 137 ]; then
-    echo "row_${label}: KILLED after ${ROW_TIMEOUT}s — no forward progress." \
+    echo "row_${label}: KILLED after ${ROW_TIMEOUT}s — genuinely stuck." \
+      | tee -a "$OUT/timings.txt"
+    echo "  (a natural OOM surfaces its own error well before this; if" \
+      "this fires, the process was not making progress at all)" \
       | tee -a "$OUT/timings.txt"
   fi
   if [ "$rc" -eq 0 ]; then
