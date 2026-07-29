@@ -121,9 +121,20 @@ class TrainConfig:
     # M5.1f: the pre-registered uint8 obs-storage contingency (standing rule
     # 2026-07-21), ACTIVATED. Trajectory crops are stored quantized and
     # normalized back in-network, cutting the PPO batch's dominant tensor 4x.
-    # Default off so every pre-M5.1f config keeps its exact behaviour and
-    # config hash; the gate/Phase-6-7 configs switch it on explicitly.
-    # Off and on are different runs, never bitwise-comparable.
+    # Default off so every pre-M5.1f config keeps its exact behaviour; the
+    # gate/Phase-6-7 configs switch it on explicitly. Off and on are
+    # different runs, never bitwise-comparable.
+    #
+    # CORRECTION (2026-07-29): this comment previously also claimed the
+    # default preserved the *config hash*. It does not, and could not —
+    # config_hash is sha256(repr(cfg)) and a frozen dataclass repr lists
+    # every field, so ADDING a field moves the hash of every config
+    # regardless of its default. Pre-M5.1f checkpoints therefore need
+    # `--allow-hash` to evaluate or resume, which is the mechanism the
+    # harness already documents for exactly this ("config-schema changes
+    # move the hash of an unchanged physical config"). Stated plainly
+    # because someone resuming an old checkpoint would otherwise trust a
+    # guarantee that was never true.
     uint8_obs: bool = False
     # M5.1g: gradient checkpointing (rematerialization) in the PPO loss.
     # Backprop activations across the population vmap — not obs storage —
@@ -146,6 +157,10 @@ class TrainConfig:
     #                needs connectivity or a global summary".
     # The shuffle key is derived by fold_in, never by an extra split, so all
     # three arms consume identical PRNG streams and stay CRN-paired.
+    #
+    # Adding this field moved every config hash again (see the uint8_obs
+    # correction above). Pre-M5.3 checkpoints — the Phase-4 grid, the
+    # pretask replicates, m51/m51e — need `--allow-hash` from here on.
     msg_mode: str = "live"
 
     def __post_init__(self) -> None:
