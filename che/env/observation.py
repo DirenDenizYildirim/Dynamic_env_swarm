@@ -61,6 +61,7 @@ import math
 import chex
 import jax
 import jax.numpy as jnp
+import numpy as np
 
 from che.env.config import EnvConfig
 from che.env.tasks import occupancy_grid
@@ -210,9 +211,30 @@ def dequantize_grid(grid_u8: jax.Array, scales) -> jax.Array:
     `scales` is a plain tuple so callers can hold it as a static attribute
     (see networks.ActorCritic.obs_scale) rather than threading cfg into the
     module.
+
+    The reciprocal is folded on the HOST, in numpy, and the device sees a
+    single multiply by a literal. This is not micro-optimization: fp32
+    division is *not* correctly rounded on the GPU backend, which lowers it
+    to an approximate reciprocal sequence. Dividing on device made a full-
+    scale code reconstruct as 0.99999994 instead of 1.0, so an indicator
+    plane no longer round-tripped exactly and two M5.1f tests failed on the
+    box while passing on CPU (correctly-rounded there). IEEE fp32
+    multiplication *is* exact-rounded on both backends and there is no
+    addend for XLA to fuse an FMA against, so the host-folded constant makes
+    the round trip exact by construction rather than by luck of rounding.
+    `test_dequantize_does_no_device_division` guards the property on any
+    backend by inspecting the lowered HLO.
     """
-    s = jnp.asarray(scales, dtype=jnp.float32) / 255.0
-    return grid_u8.astype(jnp.float32) * s
+    return grid_u8.astype(jnp.float32) * jnp.asarray(
+        _recip_scales(scales), dtype=jnp.float32
+    )
+
+
+def _recip_scales(scales) -> tuple[float, ...]:
+    """scale/255 per plane, evaluated in host float32 (correctly rounded)."""
+    return tuple(
+        float(np.float32(s) / np.float32(255.0)) for s in np.atleast_1d(scales)
+    )
 
 
 def observe(

@@ -63,16 +63,50 @@ def test_scales_match_the_plane_table():
     assert rho_max(ECFG) == pytest.approx(2.5414940825, rel=1e-9)
 
 
-def test_indicator_planes_round_trip_exactly():
+@pytest.mark.parametrize("jit", [False, True])
+def test_indicator_planes_round_trip_exactly(jit):
     """Binary planes must survive quantization bit-for-bit: a masked cell has
     to stay exactly 0 and a burning cell exactly 1, or Coupling B's semantics
-    would drift with the storage format."""
+    would drift with the storage format.
+
+    Run both eagerly and under jit because the first version of this ran only
+    one way. The GPU failure it missed was a compiled-only effect: fp32
+    divide lowers to an approximate reciprocal there, and full scale came
+    back as 0.99999994.
+    """
+    scales = plane_scales(ECFG)
     g = jnp.zeros((1, 9, 9, n_planes(ECFG)), jnp.float32)
     g = g.at[0, :, :, 0].set(1.0).at[0, :, :, 7].set(1.0)  # burning + visibility
-    back = dequantize_grid(quantize_grid(g, ECFG), plane_scales(ECFG))
+    g = g.at[0, :, :, 2].set(rho_max(ECFG))  # full-scale smoke
+    def trip(x):
+        return dequantize_grid(quantize_grid(x, ECFG), scales)
+
+    back = (jax.jit(trip) if jit else trip)(g)
     np.testing.assert_array_equal(np.asarray(back[0, ..., 0]), np.ones((9, 9)))
     np.testing.assert_array_equal(np.asarray(back[0, ..., 7]), np.ones((9, 9)))
     np.testing.assert_array_equal(np.asarray(back[0, ..., 3]), np.zeros((9, 9)))
+    # Full-scale smoke is an endpoint of the quantization range, so it is
+    # representable and must also come back exactly.
+    np.testing.assert_array_equal(
+        np.asarray(back[0, ..., 2]), np.full((9, 9), np.float32(rho_max(ECFG)))
+    )
+
+
+def test_dequantize_does_no_device_division():
+    """Reconstruction must be one multiply by a host-folded constant.
+
+    Backend-independent guard on the M5.1f GPU failure: fp32 division is not
+    correctly rounded on the GPU backend, so *any* device divide here costs
+    the exactness the plane table claims — invisibly on CPU, where division
+    is correctly rounded and the same code passed.
+    """
+    scales = plane_scales(ECFG)
+    hlo = (
+        jax.jit(lambda g: dequantize_grid(g, scales))
+        .lower(jnp.zeros((1, 9, 9, n_planes(ECFG)), jnp.uint8))
+        .as_text()
+    )
+    assert "divide" not in hlo, "device-side division reintroduced in dequantize"
 
 
 def test_smoke_error_is_bounded_by_half_a_quantization_step():
@@ -136,12 +170,36 @@ def test_collector_stores_uint8_and_acts_on_the_same_array():
     acted = net.apply(runner.train_state.params, q, obs["vec"], msg)
     replayed = net.apply(runner.train_state.params, q, obs["vec"], msg)
     chex.assert_trees_all_equal(acted, replayed)
-    # And the float path would NOT agree — which is why the collector must
-    # never mix them (this is the failure mode, asserted as such).
-    float_path = net.apply(runner.train_state.params, obs["grid"], obs["vec"], msg)
-    assert not jnp.allclose(float_path[0], acted[0], atol=0, rtol=0) or bool(
-        jnp.all(obs["grid"] == dequantize_grid(q, plane_scales(cfg.env)))
+
+
+def test_mixing_float_and_uint8_paths_would_bias_the_surrogate():
+    """Why the guard above is not vacuous.
+
+    On a crop carrying smoke — the one lossy plane — the float32 and uint8
+    paths give different logits. A collector that acted on float crops and
+    stored uint8 ones would replay a policy it never ran, so PPO's
+    first-epoch ratio would differ from 1 by a quantization artifact.
+
+    The smoke level is constructed, not taken from a reset: whether a random
+    reset puts smoke inside anyone's crop is luck, and the earlier version of
+    this assertion silently depended on it.
+    """
+    cfg = _cfg(True)
+    scales = plane_scales(cfg.env)
+    net = ActorCritic(N_ACTIONS, obs_scale=scales)
+    step = rho_max(cfg.env) / 255.0
+    grid = jnp.zeros((2, 9, 9, n_planes(cfg.env)), jnp.float32)
+    grid = grid.at[:, :, :, 2].set(1.3 * step)  # strictly between two codes
+    vec = jnp.zeros((2, 4), jnp.float32)
+    msg = jnp.zeros((2, MSG_DIM), jnp.float32)
+    q = quantize_grid(grid, cfg.env)
+    assert not bool(jnp.all(dequantize_grid(q, scales) == grid)), (
+        "the constructed grid must be lossy or this test proves nothing"
     )
+    params = net.init(jax.random.PRNGKey(0), q, vec, msg)
+    from_u8 = net.apply(params, q, vec, msg)
+    from_f32 = net.apply(params, grid, vec, msg)
+    assert not bool(jnp.allclose(from_u8[0], from_f32[0], atol=0, rtol=0))
 
 
 def test_memory_saving_is_four_fold():
