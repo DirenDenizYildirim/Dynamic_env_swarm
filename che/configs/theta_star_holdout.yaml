@@ -1,0 +1,84 @@
+# theta* — THE HELD-OUT COMPOSITION POINT (Def. 8).
+#
+# ##########################################################################
+# THIS CONFIG DOES NOT LOAD, ON PURPOSE. `beta` is a sentinel, and
+# che.env.config.load_config raises on it. That is the intended state until
+# the Phase-6 entry gate fixes AND calibrates the held-out severity.
+# ##########################################################################
+#
+# WHY IT EXISTS UNRUNNABLE. Def. 8 (docs/theory_foundations.md §7) fixes
+# theta* as "all elements active, at HELD-OUT severity levels", and defines
+# the JOINT protocol as training on multi-element configurations "still
+# excluding theta*'s held-out severities". The compositional gap
+#
+#     Gamma(theta*) = J_theta*(pi_joint) - J_theta*(pi_iso)
+#
+# is the paper's locked hypothesis, and it is only meaningful if theta* is a
+# point NEITHER protocol trained on. So theta* cannot reuse 0.43 / 0.49 /
+# 0.70 — those are the training severities (see joint_{low,medium,high}.yaml
+# for the all-elements-ON configs at those points).
+#
+# WHY beta IS NOT FILLED IN. No repo document fixes a held-out beta. It is
+# PHASE 6 ENTRY GATE item 1 (dose-response design), and it needs the same
+# treatment the other three got in Phase 2: a measured P_span / burnt
+# fraction / front speed at L = 64, not a number chosen because it looks
+# reasonable between two locked ones. CLAUDE.md's sub-rule is explicit —
+# numbers enter documents derived or measured in the SAME session, never
+# transliterated from a plausible-sounding heuristic. So the file ships with
+# the gap visible instead of papered over.
+#
+# WHAT TO DO WHEN THE GATE RULES IT
+#   1. Calibrate the chosen beta the way Phase 2 calibrated the others.
+#   2. Set `beta_holdout.value` in docs/locks.yaml (currently null) with its
+#      provenance and evidence artifact.
+#   3. Replace the sentinel below with that value.
+#   4. che/tests/test_locks.py goes green on its own — the beta tripwire
+#      admits beta_holdout as soon as it is registered, and refuses any
+#      other unregistered severity.
+#
+# Every OTHER value here is locked and written out explicitly, constructed
+# from docs/locks.yaml (ruling 1b, 2026-07-31) — nothing inherited, nothing
+# from argv.
+env:
+  grid_size: 64
+  n_agents: 12
+  horizon: 256
+  obs_window: 9
+  obs_version: 3
+  n_food: 32
+
+theta:
+  # OWED — Phase 6 entry gate item 1. See the header before touching this.
+  beta: PENDING_PHASE6_CALIBRATION
+  # ELEMENT: Coupling A — M3.4 HUMAN-LOCKED 2026-07-21 (coupling_a_lock.md).
+  # kappa_A is severity-independent by ruling: per-severity values were
+  # considered and REJECTED because they would break Phase-7 factorial
+  # semantics. It therefore transfers to the held-out severity unchanged,
+  # which is precisely why that ruling mattered.
+  kappa_A: 0.06
+  lambda_0: 5.0e-5
+  lambda_load: 4.0e-4
+  f_weak: 0.15
+  # ELEMENT: Coupling B — M4.3 HUMAN-LOCKED 2026-07-27, revised to 1.0 by
+  # the M4.4 amendments (kappa_b_lock.md).
+  kappa_B: 1.0
+  # ELEMENT: comms denial — M5.3 CLOSURE RULING 2026-07-30 (comms_lock.md).
+  # ELEMENT-ON. Retained in theta* for REGISTRATION FIDELITY AT ZERO COST:
+  # the element stays in the recorded design even though it is certified
+  # inert, so the Phase-7 composition is effectively over {Coupling A,
+  # Coupling B}. The dose-response x-axis (A x B co-active visitation) is
+  # unaffected (D6 append).
+  delta: 1.0
+  r_comm: 16.0
+  # D4 (decision_log 2026-07-19).
+  death_penalty: 0.5
+  iota: 0.0
+  sigma_s: 1.0
+  eta: 0.5
+
+train:
+  n_envs: 256
+  rollout_len: 128
+  n_minibatches: 4
+  n_epochs: 4
+  ckpt_interval: 50

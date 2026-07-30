@@ -47,7 +47,8 @@ theta:
   # Comms — M5.3 CLOSURE RULING 2026-07-30 (comms_lock.md; recorded in
   # docs/locks.yaml, asserted by che/tests/test_locks.py).
   # delta 0.0 is ELEMENT-OFF and is correct for a base config: the locked
-  # element-ON value delta = 1.0 belongs to theta_star_*.yaml. R_comm is
+  # element-ON value delta = 1.0 belongs to joint_*.yaml and
+  # theta_star_holdout.yaml (round-2 ruling 2026-07-31). R_comm is
   # stated explicitly rather than inherited (repo-explorer ruling 1a,
   # 2026-07-31) — it was previously reachable only via `--r-comm 16` on
   # the command line. Locked on the geometric observable alone: the
@@ -55,7 +56,14 @@ theta:
   # policies): 2.99-3.37 at R = 16 vs 0.93-1.06 at R = 8, band [2, 5].
   delta: 0.0
   r_comm: 16.0
-  death_penalty: 0.0
+  # D4 (decision_log 2026-07-19): dp = 0.5 for ALL training from Phase 3
+  # onward. Written inline 2026-07-31 (repo-explorer round-2 ruling): it
+  # was previously reachable only via `--death-penalty 0.5`, the same
+  # defect class as r_comm. No past run changes — every Phase-3/4/5 script
+  # passes the flag explicitly, so the override sets the value it always
+  # set. What changes is that a bare `--config ...` run with no flag no
+  # longer silently runs at 0.0, i.e. no longer silently violates D4.
+  death_penalty: 0.5
   iota: 0.0
   sigma_s: 1.0
   eta: 0.5

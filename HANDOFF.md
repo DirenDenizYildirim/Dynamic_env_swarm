@@ -25,6 +25,44 @@ has grown a queue (below).
   an unbounded `pytest che/tests` once crashed the machine:
   `OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 nice -n 15 uv run pytest <subset>`.
 
+## Added 2026-07-31 — locks are now enforced by test
+
+A read-only structural review found a locked constant that **no config
+could reach**: R_comm was locked at 16 on 07-30 and `ThetaConfig.r_comm`
+still defaulted to 8.0, with the locked geometry supplied only by
+`--r-comm 16` inside two shell scripts. Consequence check came back clean —
+**M5.5 ran at R = 16** (its own `provenance.txt`; measured out-degree 3.213,
+the R=16 geometry) — so the inertness certificate covers the locked
+geometry and nothing needed re-running.
+
+What changed, all in `docs/decision_log.md` under "REPO-EXPLORER RULINGS":
+
+- **`docs/locks.yaml`** is now the single machine-readable registry of every
+  locked constant, and **`che/tests/test_locks.py` (35 tests)** asserts
+  configs and dataclass defaults agree with it. The load-bearing assertion
+  is anti-inheritance: a locked value must be *written* in the configs that
+  carry it. **New standing rule in CLAUDE.md: every lock lands in
+  `locks.yaml` in the same commit it is ruled.**
+- `r_comm: 16.0` and `death_penalty: 0.5` are now written into the severity
+  configs. **No past run changes** — every Phase-3/4/5 script passed both
+  as flags already. A bare `--config severity_*.yaml` run no longer
+  silently violates D4.
+- **`joint_{low,medium,high}.yaml`** — all elements ON (δ = 1.0) at the
+  three calibrated severities. This is the JOINT protocol's multi-element
+  training support (Def. 8), not θ*.
+- **`theta_star_holdout.yaml`** — the Def.-8 held-out composition point.
+  **It does not load, on purpose**: β is the sentinel
+  `PENDING_PHASE6_CALIBRATION` and `load_config` raises on it. Every other
+  locked value is written out. Fill it in only after the entry gate fixes
+  *and calibrates* the held-out β; `beta_holdout.value` in `locks.yaml` is
+  null until then, and the test tripwire refuses any unregistered β.
+- CLAUDE.md's **layout block** was refreshed (it had omitted
+  `che/calibration/` and `che/eval/` entirely) and a **phase-close
+  checklist** added, whose first item is keeping it refreshed.
+
+**This adds a ninth entry-gate item, implicitly: the held-out β is now a
+loud missing value in the tree.** It is entry-gate item 1's output.
+
 ## Two rules added 2026-07-30 — read them before writing any script
 
 1. **Bars come with floors** (`CLAUDE.md`). No acceptance threshold enters

@@ -1377,3 +1377,56 @@ produced with the override present. `locks.yaml` records it as
 `supplied_by: cli` with the discrepancy explicit, and `test_locks.py`
 asserts that documented state rather than forcing a change. **A human
 ruling is owed on whether Phase 6 configs carry `dp: 0.5` inline.**
+*(Ruled the same session — see "dp lock" below.)*
+
+## Repo-explorer rulings, round 2 (human 2026-07-31, RA-executed)
+
+Two questions raised by executing round 1; both answered the same session.
+
+### 1. θ\* vs JOINT — the ruling's filename met Def. 8, and Def. 8 won
+
+Ruling 1b named `theta_star_*.yaml` carrying a **held-out β**. Executing it
+surfaced a conflict the ruling could not have known about: **Def. 8 fixes
+θ\* at "all elements active, at held-out severity levels", and the JOINT
+protocol trains on a mixture "still excluding θ\*'s held-out severities".**
+No repo document fixes a held-out β — it is Phase-6 entry-gate item 1 — and
+inventing one would violate the numbers-enter-derived sub-rule.
+
+Naming an all-elements-ON config at β ∈ {0.43, 0.49, 0.70} `theta_star_`
+would have blurred exactly the distinction the compositional-gap claim
+rests on: Γ(θ\*) = J(π_joint) − J(π_iso) is only meaningful if θ\* is a
+point **neither** protocol trained on.
+
+**RULED: ship both, named for what they are.**
+
+- **`joint_{low,medium,high}.yaml`** — all elements ON (κ_A = 0.06,
+  κ_B = 1.0, **δ = 1.0**, R_comm = 16) at the three *calibrated* severities.
+  This is the **JOINT protocol's multi-element training support** (Def. 8),
+  runnable today, every locked value written out, enforced by
+  `test_locks.py`.
+- **`theta_star_holdout.yaml`** — the Def.-8 composition point. Every
+  locked element value written out; **β is a sentinel that makes the config
+  fail to load**, so it cannot be run by accident and cannot silently
+  inherit the placeholder 0.35. `beta_holdout.value` stays **null** in
+  `locks.yaml` until Phase 6 fixes *and calibrates* it the way Phase 2
+  calibrated the other three.
+
+The tripwire is the point: the held-out β is now a **loud missing value**
+in the tree rather than an absence nobody would notice.
+
+### 2. dp lock — `death_penalty: 0.5` goes inline
+
+**RULED: write `death_penalty: 0.5` into the severity configs**, and flip
+`locks.yaml` to `supplied_by: config`.
+
+The reasoning that made this safe rather than disruptive: **no past run
+changes.** Every Phase-3/4/5 script passes `--death-penalty 0.5`
+explicitly, so the override sets the same value it always did and the
+scripts are bit-identical. The only behaviour that changes is a **bare
+`--config severity_medium.yaml` run with no flag** — which today silently
+runs at dp = 0.0, i.e. **silently violates D4**. Making the lock reachable
+removes a D4-violating default; it does not create a new configuration.
+
+With this, every locked constant in `locks.yaml` is `supplied_by: config`
+or `default` — none is reachable only from argv. That was the point of the
+round-1 systemic fix, and this closes the last instance of the class.

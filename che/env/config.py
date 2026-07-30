@@ -190,10 +190,43 @@ class Config:
     train: TrainConfig
 
 
+# A locked constant that has been RULED but not yet measured is written
+# into its config as this sentinel rather than left absent. Absent would
+# silently inherit a dataclass default -- exactly the failure mode the
+# locks registry exists to prevent (repo-explorer ruling 1c, 2026-07-31).
+# Present-but-unloadable is loud. Registered in docs/locks.yaml with a
+# null value until the milestone that measures it fills it in.
+PENDING = "PENDING_PHASE6_CALIBRATION"
+
+
+def _reject_pending(raw: dict, path: str | Path) -> None:
+    """Fail loudly on a config whose locked values are not yet measured.
+
+    Numeric knobs are numbers. A string reaching one means a sentinel is
+    still in place, so the config is a registered placeholder, not a
+    runnable configuration. Raising here beats constructing a ThetaConfig
+    whose beta is a string and failing somewhere inside a jitted kernel.
+    """
+    for section in ("theta", "env"):
+        for key, value in (raw.get(section) or {}).items():
+            if isinstance(value, str):
+                raise ValueError(
+                    f"{path}: {section}.{key} = {value!r} is a placeholder, not "
+                    f"a value — this config is NOT runnable.\n"
+                    f"  If this is {PENDING}: the constant is ruled but not yet "
+                    f"measured. See docs/locks.yaml for what is owed and which "
+                    f"milestone owes it.\n"
+                    f"  Do not substitute a plausible number to make this load "
+                    f"(CLAUDE.md: numerical claims enter documents derived or "
+                    f"measured in the same session)."
+                )
+
+
 def load_config(path: str | Path) -> Config:
     """Load a YAML config; unknown keys raise (typo protection)."""
     with open(path) as f:
         raw = yaml.safe_load(f) or {}
+    _reject_pending(raw, path)
     theta = ThetaConfig(**raw.get("theta", {}))
     env_kwargs = raw.get("env", {})
     env = EnvConfig(theta=theta, **env_kwargs)

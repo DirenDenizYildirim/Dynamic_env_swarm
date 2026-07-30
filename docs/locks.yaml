@@ -90,9 +90,10 @@ constants:
   beta_holdout:
     value: null
     locked: false
-    supplied_by: none
+    supplied_by: config           # theta_star_holdout.yaml, as a sentinel
     source: docs/theory_foundations.md    # Definition 8
     ruled: null
+    owed_by: PHASE 6 ENTRY GATE item 1 (dose-response design)
     note: >-
       OWED, NOT LOCKED. Def. 8 fixes theta* at "all elements active, at
       held-out severity levels", and the JOINT protocol trains on a mixture
@@ -101,9 +102,14 @@ constants:
       dose-response design fixes it AND calibrates it the way Phase 2
       calibrated the other three. It is null here on purpose: writing a
       plausible number would violate the CLAUDE.md sub-rule that numbers
-      enter documents derived or measured in the same session. PHASE 6
-      ENTRY GATE owes it. test_locks.py treats any beta outside the locked
-      set as a tripwire so an invented value cannot enter quietly.
+      enter documents derived or measured in the same session. It appears
+      in che/configs/theta_star_holdout.yaml as the sentinel
+      PENDING_PHASE6_CALIBRATION, which makes load_config RAISE — present
+      and loud beats absent and silently inherited. To fill it in:
+      calibrate, set `value` here with provenance + evidence, replace the
+      sentinel. test_locks.py then goes green on its own; until then it
+      treats any beta outside the locked set as a tripwire so an invented
+      value cannot enter quietly.
 
   # -- Coupling A + structure ----------------------------------- Phase 3
   kappa_A:
@@ -218,21 +224,21 @@ constants:
   death_penalty:
     value: 0.5
     locked: true
-    supplied_by: cli
+    supplied_by: config
     source: docs/decision_log.md    # D4
     ruled: 2026-07-19
-    discrepancy: >-
-      SAME DEFECT CLASS AS r_comm, FLAGGED AND DELIBERATELY NOT FIXED
-      (repo-explorer ruling, 2026-07-31). D4 locks dp = 0.5 for all
-      training from Phase 3 onward, yet all three severity_*.yaml carry
-      death_penalty: 0.0 and every milestone script supplies
-      `--death-penalty 0.5` on the command line — a locked value reachable
-      only from argv. Unlike r_comm it is load-bearing at run time: editing
-      the configs would change what a bare `--config severity_medium.yaml`
-      run does, and every Phase-3/4/5 result was produced with the override
-      present. A HUMAN RULING IS OWED on whether Phase-6 configs carry
-      dp: 0.5 inline. Until then test_locks.py asserts the documented state
-      (severity configs carry 0.0) rather than forcing a change.
+    inlined: 2026-07-31
+    note: >-
+      Was the last constant in the argv-only defect class: D4 locked
+      dp = 0.5 for all training from Phase 3 onward, yet the severity
+      configs carried 0.0 and every milestone script supplied
+      `--death-penalty 0.5`. RULED INLINE 2026-07-31 (repo-explorer
+      round 2). NO PAST RUN CHANGES — every Phase-3/4/5 script passes the
+      flag explicitly, so the override sets the value it always set. What
+      changed is that a bare `--config severity_medium.yaml` run with no
+      flag no longer silently runs at 0.0, i.e. no longer silently
+      violates D4. With this, no locked constant is reachable only from
+      argv.
 
   obs_version:
     value: 3
@@ -284,9 +290,14 @@ defaults:
 # is unenforced by design.
 #
 # roles:
-#   science   — produces results that enter the paper
+#   science   — single-element / base configs that produce paper results
+#   joint     — all elements ON at a CALIBRATED (training) severity; the
+#               JOINT protocol's multi-element support (Def. 8)
+#   theta_star_pending
+#             — the HELD-OUT composition point (Def. 8). Not loadable: its
+#               beta is a sentinel until the Phase-6 entry gate calibrates
+#               it. Enforced from raw YAML, never through load_config.
 #   gate      — throughput/benchmark instrument
-#   theta_star— all elements ON (Def. 8 composition point)
 #   archival  — superseded; kept to re-read old runs, NOT for new science
 configs:
 
@@ -301,10 +312,10 @@ configs:
       kappa_B: kappa_B
       delta: delta_element_off
       r_comm: r_comm
+      death_penalty: death_penalty
     env:
       obs_version: obs_version
-    explicit: [beta, kappa_A, kappa_B, delta, r_comm]
-    death_penalty_is_cli: true
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
 
   che/configs/severity_medium.yaml:
     role: science
@@ -317,10 +328,10 @@ configs:
       kappa_B: kappa_B
       delta: delta_element_off
       r_comm: r_comm
+      death_penalty: death_penalty
     env:
       obs_version: obs_version
-    explicit: [beta, kappa_A, kappa_B, delta, r_comm]
-    death_penalty_is_cli: true
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
 
   che/configs/severity_high.yaml:
     role: science
@@ -333,10 +344,10 @@ configs:
       kappa_B: kappa_B
       delta: delta_element_off
       r_comm: r_comm
+      death_penalty: death_penalty
     env:
       obs_version: obs_version
-    explicit: [beta, kappa_A, kappa_B, delta, r_comm]
-    death_penalty_is_cli: true
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
 
   che/configs/gate_pop12.yaml:
     role: gate
@@ -356,6 +367,84 @@ configs:
       [n, n] Chebyshev matrix and sample_links draws [n, n] uniforms
       unconditionally (invariant #3), so neither delta nor r_comm changes
       any array shape or draw count.
+
+  # -- JOINT protocol: all elements ON at the three CALIBRATED severities.
+  # Identical to the matching severity_*.yaml except delta 0.0 -> 1.0, so
+  # an ISO-vs-JOINT comparison differs in protocol, not in substrate.
+  che/configs/joint_low.yaml:
+    role: joint
+    theta:
+      beta: beta_low
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_on
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+
+  che/configs/joint_medium.yaml:
+    role: joint
+    theta:
+      beta: beta_medium
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_on
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+
+  che/configs/joint_high.yaml:
+    role: joint
+    theta:
+      beta: beta_high
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_on
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: >-
+      Coupling A's ignition channel is fuel-limited at High (seeded/ep 0.78,
+      below the [1, 5] band) — recorded at the M3.4 lock as
+      fuel-exhaustion self-limitation, not a miss to be tuned away. High is
+      also the WEAKER measurement cell: floors completion 0.0522 / survival
+      0.0621 vs Medium's 0.0399 / 0.0130.
+
+  # -- theta*: the held-out composition point. DOES NOT LOAD by design.
+  che/configs/theta_star_holdout.yaml:
+    role: theta_star_pending
+    raw_theta:                     # checked against the file text, not load_config
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_on
+      r_comm: r_comm
+      death_penalty: death_penalty
+    pending_key: beta
+    pending_constant: beta_holdout
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: >-
+      Every locked element value is written out; only beta is a sentinel.
+      load_config RAISES on it (che/env/config.py PENDING), so the config
+      cannot be run by accident and cannot silently inherit the pre-Phase-2
+      placeholder beta 0.35. Fill it in per beta_holdout's note.
 
   # Archival — pre-Phase-2 placeholder theta (beta 0.35, elements off).
   # Registered so their status is machine-readable, enforced only in that

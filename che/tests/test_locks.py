@@ -41,8 +41,11 @@ CONSTANTS = LOCKS["constants"]
 CONFIGS = LOCKS["configs"]
 
 # Roles whose beta must be a calibrated severity — archival configs still
-# carry the pre-Phase-2 placeholder and are exempt by design.
-CALIBRATED_ROLES = {"science", "gate", "theta_star"}
+# carry the pre-Phase-2 placeholder and are exempt by design, and
+# theta_star_pending carries a sentinel that does not load at all.
+CALIBRATED_ROLES = {"science", "gate", "joint"}
+# Roles whose comms element is ON (delta = 1.0) rather than OFF.
+ELEMENT_ON_ROLES = {"joint", "theta_star_pending"}
 
 
 def _value(name: str):
@@ -90,11 +93,33 @@ def test_every_config_in_the_tree_is_registered():
 def test_referenced_constants_all_exist():
     """Typos in locks.yaml must fail loudly rather than silently skip."""
     for path, spec in CONFIGS.items():
-        for section in ("theta", "env"):
+        for section in ("theta", "env", "raw_theta"):
             for key, cname in (spec.get(section) or {}).items():
                 assert cname in CONSTANTS, (
                     f"{path}:{section}.{key} references unknown constant {cname!r}"
                 )
+        if "pending_constant" in spec:
+            assert spec["pending_constant"] in CONSTANTS
+
+
+def test_no_locked_constant_is_reachable_only_from_argv():
+    """The class-level regression test for the whole ruling.
+
+    r_comm was locked and reachable only via `--r-comm 16`; death_penalty
+    was locked (D4) and reachable only via `--death-penalty 0.5`. Both are
+    now config-supplied. If a future lock lands as `supplied_by: cli`, this
+    fails and the ruling gets re-litigated on purpose.
+    """
+    argv_only = [
+        name
+        for name, spec in CONSTANTS.items()
+        if spec.get("locked") and spec.get("supplied_by") == "cli"
+    ]
+    assert not argv_only, (
+        f"locked constants reachable only from argv: {argv_only}. A locked "
+        "value must be reachable from a config (CLAUDE.md: locks are "
+        "enforced by test, not by memory)."
+    )
 
 
 # ---------------------------------------------------------------- defaults
@@ -170,41 +195,106 @@ def test_beta_is_a_calibrated_severity(path):
     )
 
 
-def test_death_penalty_documented_state_is_the_actual_state():
-    """dp = 0.5 is locked (D4) but reachable only from argv — flagged, not
-    fixed, pending a human ruling. This asserts the DOCUMENTED state so the
-    discrepancy cannot drift unnoticed in either direction."""
-    spec = CONSTANTS["death_penalty"]
-    assert spec["supplied_by"] == "cli"
-    assert spec.get("discrepancy"), "the discrepancy note is the record — keep it"
-    for path, cspec in CONFIGS.items():
-        if not cspec.get("death_penalty_is_cli"):
-            continue
+def test_death_penalty_is_now_reachable_from_config():
+    """D4's dp = 0.5 went inline 2026-07-31 (round-2 ruling).
+
+    No past run changed: every Phase-3/4/5 script passes `--death-penalty
+    0.5`, so the override sets the value it always set. What changed is
+    that a bare `--config severity_*.yaml` run no longer silently runs at
+    0.0, i.e. no longer silently violates D4.
+    """
+    assert CONSTANTS["death_penalty"]["supplied_by"] == "config"
+    locked = _value("death_penalty")
+    for path in (
+        "che/configs/severity_low.yaml",
+        "che/configs/severity_medium.yaml",
+        "che/configs/severity_high.yaml",
+    ):
         dp = load_config(REPO_ROOT / path).env.theta.death_penalty
-        assert dp == pytest.approx(0.0), (
-            f"{path}: death_penalty is now {dp}. If configs are meant to carry "
-            "dp inline, that is the owed human ruling — update locks.yaml "
-            "(supplied_by: config) and this test together."
-        )
+        assert dp == pytest.approx(locked), f"{path}: dp = {dp}, D4 locks {locked}"
 
 
 def test_comms_element_semantics_are_not_confused():
     """delta 0.0 in base configs is ELEMENT-OFF and correct; the locked
-    element-ON value 1.0 belongs to theta_star configs only. Recorded
-    because reading the uniform `delta: 0.0` as drift was the misdiagnosis
-    the ruling explicitly corrected."""
+    element-ON value 1.0 belongs to the joint_* and theta_star configs.
+    Recorded because reading the uniform `delta: 0.0` as drift was the
+    misdiagnosis the round-1 ruling explicitly corrected."""
     assert _value("delta_element_off") == pytest.approx(0.0)
     assert _value("delta_element_on") == pytest.approx(1.0)
     for path, spec in CONFIGS.items():
-        want = (spec.get("theta") or {}).get("delta")
+        theta = (spec.get("theta") or {}) | (spec.get("raw_theta") or {})
+        want = theta.get("delta")
         if want is None:
             continue
-        if spec.get("role") == "theta_star":
-            assert want == "delta_element_on", f"{path}: theta* must be element-ON"
+        if spec.get("role") in ELEMENT_ON_ROLES:
+            assert want == "delta_element_on", (
+                f"{path}: role {spec['role']} is all-elements-ON"
+            )
         else:
             assert want == "delta_element_off", (
                 f"{path}: base/gate configs are element-OFF"
             )
+
+
+# --------------------------------------------------- theta*, held out
+
+
+def _pending_configs() -> list[str]:
+    return [p for p, s in CONFIGS.items() if s.get("role") == "theta_star_pending"]
+
+
+@pytest.mark.parametrize("path", _pending_configs())
+def test_pending_config_does_not_load(path):
+    """theta* is registered but NOT runnable, and that is the design.
+
+    Present-and-loud beats absent: an absent theta* config would silently
+    inherit the pre-Phase-2 placeholder beta 0.35 the moment somebody wrote
+    one, which is the failure mode this whole registry exists to prevent.
+    """
+    with pytest.raises(ValueError, match="placeholder"):
+        load_config(REPO_ROOT / path)
+
+
+@pytest.mark.parametrize("path", _pending_configs())
+def test_pending_config_has_every_other_lock_written_out(path):
+    """Only the owed value may be a sentinel — everything else is locked
+    and explicit, checked from the raw YAML since the config cannot load."""
+    spec = CONFIGS[path]
+    raw_theta = _raw(path).get("theta", {})
+    for key, cname in (spec.get("raw_theta") or {}).items():
+        assert key in raw_theta, f"{path}: theta.{key} is locked but not written"
+        assert raw_theta[key] == pytest.approx(_value(cname)), (
+            f"{path}: theta.{key} = {raw_theta[key]}, locks.yaml says {cname} = "
+            f"{_value(cname)} (source: {CONSTANTS[cname]['source']})"
+        )
+
+
+@pytest.mark.parametrize("path", _pending_configs())
+def test_pending_key_matches_an_unmeasured_constant(path):
+    """The sentinel and the registry must agree that the value is owed.
+
+    Filling in one without the other is exactly the drift this catches: a
+    number in the YAML with `value: null` still in locks.yaml, or vice
+    versa.
+    """
+    spec = CONFIGS[path]
+    key, cname = spec["pending_key"], spec["pending_constant"]
+    raw_value = _raw(path).get("theta", {}).get(key)
+    registered = CONSTANTS[cname]["value"]
+    if registered is None:
+        assert isinstance(raw_value, str), (
+            f"{path}: {cname} is still null in docs/locks.yaml, so theta.{key} "
+            f"must remain a sentinel — found {raw_value!r}. Calibrate and "
+            "register the value before writing it here."
+        )
+        assert CONSTANTS[cname].get("owed_by"), (
+            f"{cname} is unmeasured but does not say which milestone owes it"
+        )
+    else:
+        assert raw_value == pytest.approx(registered), (
+            f"{path}: theta.{key} = {raw_value!r} but docs/locks.yaml "
+            f"registers {cname} = {registered}. Update them together."
+        )
 
 
 def test_r_comm_reachable_without_argv():

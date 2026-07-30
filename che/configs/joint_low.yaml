@@ -1,0 +1,69 @@
+# JOINT protocol — all elements ON at severity LOW (subcritical).
+#
+# WHAT THIS IS, in Def.-8 terms (docs/theory_foundations.md §7). The JOINT
+# protocol trains "a single policy on a mixture whose support includes
+# multi-element configurations (all elements co-active) at TRAINING
+# severity levels (still excluding theta*'s held-out severities)". This
+# file is one point of that support. It is deliberately NOT named
+# theta_star_*: theta* is the HELD-OUT composition point and lives in
+# theta_star_holdout.yaml. Blurring the two would undermine the very claim
+# they serve — Gamma(theta*) = J(pi_joint) - J(pi_iso) means nothing unless
+# theta* is a point neither protocol trained on. (Round-2 ruling
+# 2026-07-31, docs/decision_log.md.)
+#
+# CONSTRUCTED FROM LOCKS, NOT DERIVED BY INHERITANCE (ruling 1b). Every
+# locked value below is written out explicitly and asserted against
+# docs/locks.yaml by che/tests/test_locks.py.
+#
+# The ONLY difference from severity_low.yaml is delta: 0.0 -> 1.0 (the
+# comms element switched ON).
+#
+# NOTE for Phase 6/7 design: Low is the severity where Coupling A's
+# ignition channel is strongest — the seeded share of total burnt area is
+# 0.763 here (coupling_a_lock.md), against a High regime where the channel
+# is fuel-limited because the primary fire has already consumed what
+# collapse would ignite. "Structural fire-seeding matters most precisely
+# where fire is otherwise rare" — the empirical mirror of Prop. 3.
+env:
+  grid_size: 64
+  n_agents: 12
+  horizon: 256
+  obs_window: 9
+  # M4.1 (2026-07-24): obs v3 — Coupling B masking + visibility plane.
+  obs_version: 3
+  n_food: 32
+
+theta:
+  # Severity — M2.4 HUMAN-LOCKED 2026-07-19 (severity_lock.md).
+  # Subcritical: P_span 0.021, burnt fraction 1.9 % at L = 64, 512 seeds;
+  # spec band P_span < 0.05 AND bf in [1, 5] % SATISFIED.
+  beta: 0.43
+  # ELEMENT: Coupling A — M3.4 HUMAN-LOCKED 2026-07-21 (coupling_a_lock.md,
+  # candidate 2). Random-policy targets met here: collapses/ep 8.5,
+  # seeded/ep 4.47, deaths_collapse 0.180, seeded-burnt share 0.763.
+  kappa_A: 0.06
+  lambda_0: 5.0e-5
+  lambda_load: 4.0e-4
+  f_weak: 0.15
+  # ELEMENT: Coupling B — M4.3 HUMAN-LOCKED 2026-07-27, revised to 1.0 by
+  # the M4.4 amendments (kappa_b_lock.md).
+  kappa_B: 1.0
+  # ELEMENT: comms denial — M5.3 CLOSURE RULING 2026-07-30 (comms_lock.md).
+  # delta = 1.0 is the ELEMENT-ON value: maximal denial, by convention,
+  # because the performance bands are VOID-BY-NULL rather than missed.
+  # Retained for registration fidelity at zero cost.
+  delta: 1.0
+  # R_comm locked on the geometric observable alone (M5.3b Cell B).
+  r_comm: 16.0
+  # D4 (decision_log 2026-07-19): dp = 0.5 for all training from Phase 3 on.
+  death_penalty: 0.5
+  iota: 0.0
+  sigma_s: 1.0
+  eta: 0.5
+
+train:
+  n_envs: 256
+  rollout_len: 128
+  n_minibatches: 4
+  n_epochs: 4
+  ckpt_interval: 50
