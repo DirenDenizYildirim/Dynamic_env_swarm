@@ -1,0 +1,7 @@
+run: M5.3 utility gate (live / zeroed / shuffled)
+date_utc: 2026-07-29T17:57:48Z
+git_commit: 5030992cf4a12a5a26857d9d91f0cc9514e23953
+git_dirty: 2 file(s)
+config: che/configs/severity_medium.yaml   dp: 0.5   updates: 500
+seeds: 0 1   modes: live zeroed shuffled   eval_episodes: 512
+gpu: NVIDIA GeForce RTX 5090

@@ -140,7 +140,13 @@ at once rather than discovering one layer at a time:
 | nmb8 | 27.93 | smaller minibatch (**changes optimization**) |
 | nmb16 | 18.66 | smaller minibatch (**changes optimization**) |
 | pop6 | 24.66 | half the population (**changes the design**) |
-| envs128 | 24.69 | half the envs (fallback-ladder rung 2) |
+| envs128 | 24.69 ⚠ | half the envs (fallback-ladder rung 2) |
+
+⚠ **Corrected 2026-07-30 (M5.1j).** This 24.69 GiB is stale by 2.85 GiB.
+The identical configuration measured **27.5349 GiB** when it was re-priced
+as the committed baseline a day later, on the same card with the same
+flags. See M5.1j below; the ladder choice does not change, the headroom
+claim does.
 
 **Nothing experiment-preserving fits a 31.8 GiB card.** My arithmetic had
 predicted remat would roughly halve the requirement; it delivered 4 %.
@@ -170,7 +176,7 @@ availability has since changed:
 | rung | status |
 |---|---|
 | 1. grid 64²→48² | **unavailable** — β_c = 0.500 and the severities were calibrated at 64²; percolation thresholds are finite-size dependent |
-| 2. n_envs tuning | **applied**: 256 → 128 (24.69 GiB, 78 % of card) |
+| 2. n_envs tuning | **applied**: 256 → 128 (24.69 GiB, 78 % of card — ⚠ corrected 2026-07-30 to 27.53 GiB, **87 %**; M5.1j) |
 | 3. n_agents 12→8 | **unavailable** — M5.4's R_comm band is defined at "12 agents, 64²" |
 | 4. grid 48²→32² | same objection as rung 1 |
 | 5. pop 12→10 | marked "M0.6 only" |
@@ -241,6 +247,104 @@ multiply on device — exact by construction rather than by luck of
 rounding. The round-trip test now runs under jit as well as eagerly (the
 failure was compile-only), and `test_dequantize_does_no_device_division`
 inspects the lowered HLO so the property is guarded on any backend.
+
+### M5.1i–j — the re-bench produced no rate, and the requirement had moved
+
+**M5.1i (2026-07-29): row B was killed at the 1800 s backstop, `rc=137`,
+no rate.** Three attempts have now produced three artifacts and no gate
+number: an OOM naming 49.08 GiB, a bounded OOM after 1112 s retrying a
+fixed 5.72 GiB allocation, and a bare SIGKILL. The last one carries no
+diagnostic at all — `pbt.py --bench` is atomic from outside, so init,
+compile, warm-up and the timing windows all fail identically.
+
+**M5.1j (2026-07-30) found that the requirement itself had drifted.** Two
+committed artifacts price a byte-identical configuration on the same card
+with the same `--xla_gpu_autotune_level=0` flag:
+
+| envs 128 / pop 12 / nmb 4 / uint8 / remat off | temp GiB | total GiB |
+|---|---|---|
+| `m51g/memprobe.json`, candidate `envs128` (fa32113) | 24.5467 | **24.6872** |
+| `m51i/memprobe_rung2.json`, `baseline` (dbdb15c) | 27.3944 | **27.5349** |
+
+**+2.8477 GiB, +11.53 %.** In the same pair, `jax.checkpoint` went from
+saving 2.09 GiB to saving 5 KB (27.394371 → 27.394376 GiB), so what moved
+is *activation retention*, not merely a level.
+
+Three consequences, which is why this is a correction and not a footnote:
+
+- The rung-2 ruling was taken on "24.69 GiB, 78 % of the card". At
+  27.53 GiB it is **87 %** of a 31.8 GiB card. The ladder choice stands —
+  rung 2 is still the only rung that moves no calibrated quantity — but
+  the headroom claim attached to it was wrong.
+- `run_m51i_gate_rung2.sh` sized `MEM_FRACTION=0.95` as "30.2 GiB for a
+  24.69 GiB requirement", i.e. 5.5 GiB of slack. The real slack is
+  2.7 GiB, 8.8 % of the arena, which BFC fragmentation can consume.
+- `m51i/verdict.txt` concluded "rung 2 already cut the requirement 49.31 →
+  ~24.7 GiB, so a failure here is about how the row is measured, not about
+  whether the rung worked". Against 27.53 GiB that is **not established**;
+  the failure may be capacity after all. The artifact is left unedited —
+  run artifacts are immutable — and this section is the correction of
+  record.
+
+This is the ÷81 pattern one level down: a number measured once, written
+into a config header and a ladder decision, then cited across two
+milestones while the thing it measured moved underneath it.
+
+**What the local CPU bisect settled, and what it could not.** Compile-only
+probes on this CPU box, at reduced scale, cleared four candidate causes
+outright:
+
+| candidate | effect on compiled temp |
+|---|---|
+| M5.1h dequantize hunk reverted (divide on device) | **0.00 MiB** |
+| `msg_mode` live / zeroed / shuffled (M5.3) | 0.14 MiB at probe scale, ~54 MiB scaled to gate |
+| probe **order** within one process (`lru_cache` eviction) | **0.00 MiB** |
+| candidate path vs baseline path, identical config | **0.00 MiB** |
+
+The last two matter because m51g priced `envs128` as its 7th candidate and
+m51i priced it as its 1st: the instrument is a deterministic function of
+the config, so that is not the difference. CPU fusion is not GPU fusion,
+so a null here does not clear a suspect on the box — M5.1h in particular
+touches the differentiated forward path, where a multiply-by-literal and a
+divide can fuse differently on GPU only.
+
+Exactly two candidates survive: **GPU-specific fusion** from one of the
+five commits between the runs, or a **toolchain change between two
+rentals**, which no provenance file recorded. `memprobe.py` now writes
+jax/jaxlib/backend/device into its JSON; comparing a memory requirement
+across rentals without them is the env-only-throughput mistake in a
+different unit.
+
+**The instrument, not a fourth attempt.** `che/bench/rowb_probe.py` runs
+the ladder `init → compile → one chunk → windows` in stages that print as
+they go and **rewrite their JSON after every stage**, with device
+`memory_stats()` at each one and on failure, so a kill leaves a trail
+instead of a return code. `run_m51j_rowb_diagnostic.sh` wraps it with the
+code-vs-toolchain 2×2 (HEAD and a fa32113 worktree, same box, same
+session, module path asserted so it cannot silently resolve to today's
+code), a 5 s sampler recording GPU memory / utilisation / host RSS — which
+is what separates an allocator-retry loop from host swap from
+slow-but-progressing — a `preallocate=false` contrast that names the
+failing allocation, and a check that no leftover process from the three
+killed attempts is holding the card.
+
+**Scope, stated so it cannot drift.** Row B guards Phase-6/7 spending
+only; no Phase-5 milestone uses the population path, and that path is
+healthy at 68.5 k steps/s. The gate number is owed to the **Phase-6 entry
+gate**. If M5.1j lands without a rate, the trail goes to that gate and row
+B is not attempted again inside Phase 5. The 100 k line is not
+renormalized and no experiment quantity is touched.
+
+**Recorded unpriced, not implemented:** the remaining ladder rungs all move
+calibrated quantities, and the off-ladder knobs change the optimization or
+the design — but there is one option in the same class as `remat`
+(mathematically neutral: same hyperparameters, same updates, same PBT
+selection, trading wall clock for memory) that nobody has priced —
+**evaluating the population vmap in G sequential groups**. From the
+measured `pop6` candidate (13.77 GiB), two groups of six should peak near
+13.9 GiB at roughly 2× the update-phase wall clock. That is arithmetic
+from measured numbers and is **labelled an estimate**, not a measurement;
+adopting it is a Phase-6-entry-gate decision.
 
 ---
 
@@ -382,3 +486,172 @@ ruling of 2026-07-29 the amendment was **made**: the ratio table, the
 "idling is not free" property the remark did not anticipate. The edit is
 confined to discharging that deferral; no other theory text was touched,
 and it remains reversible by the human at this handshake.
+
+---
+
+## M5.3 — Utility gate: does the swarm USE messages?
+
+**VERDICT: NULL BRANCH.** All three arms are indistinguishable at the
+measured reproducibility floor. Per the phase prompt and round-2 ruling
+item 3 this is a STOP: the message design goes to a human discussion
+before any lock, DIAL-style differentiable comms is pre-registered as
+item #1, and **the architecture was not iterated here.**
+
+### Protocol
+
+Three arms at Medium, both couplings on, δ = 0, d_p = 0.5, 500 updates,
+2 seeds, 512 CRN-paired eval episodes per cell (`run_m53_utility_gate.sh`,
+run from `5030992`). Identical architecture and parameter count
+throughout — the ablation is message *content*, never capacity:
+
+| arm | what it cuts |
+|---|---|
+| live | nothing; messages as emitted |
+| zeroed | the aggregate, hard-zeroed at the aggregation point — content dies, the link graph survives (so it is **not** the δ = 1 denial arm) |
+| shuffled | sender identities permuted within the step — delivery pattern and the multiset of emitted messages preserved exactly, only who-said-what destroyed |
+
+`test_msg_modes.py` pins the properties the verdict depends on: the three
+arms init to bitwise-identical parameters, the shuffle leaves every
+receiver's in-degree and the emitted multiset untouched, the arm choice
+shifts no other PRNG stream (the shuffle key is a `fold_in`, never a
+split), and eval honours the trained arm with `mute` kept separate for
+M5.5's diagnostic.
+
+### Results (seed-averaged eval means ± sd over 2 seeds)
+
+| arm | completion | survival | episode return |
+|---|---|---|---|
+| live | 0.7403 ± 0.0211 | 0.9340 ± 0.0206 | 23.2944 ± 0.5517 |
+| zeroed | 0.7242 ± 0.0336 | 0.9136 ± 0.0030 | 22.6553 ± 1.0924 |
+| shuffled | 0.7271 ± 0.0104 | 0.9194 ± 0.0234 | 22.7817 ± 0.4716 |
+
+Pairwise, graded against the M5.1e floor (bar = 2 × floor: completion
+0.0290, survival 0.0258):
+
+| pair | Δcompletion | Δsurvival | Δreturn | fraction of bar |
+|---|---|---|---|---|
+| live − zeroed | +0.0161 | +0.0204 | +0.639 | 0.56 / 0.79 |
+| live − shuffled | +0.0133 | +0.0146 | +0.513 | 0.46 / 0.57 |
+| zeroed − shuffled | −0.0029 | −0.0058 | −0.127 | 0.10 / 0.22 |
+
+Nothing clears the bar, so the mechanically applied label is the null
+branch. The pre-registered alternatives — "live > shuffled → sender-
+specific content used" and "live ~ shuffled > zeroed → connectivity /
+global content only" — both require a strong grade that no pair achieves.
+
+### The nominal ordering, and why it is not the verdict
+
+Live is nominally first on all three metrics against both other arms,
+with zeroed − shuffled ≈ 0. That is the pattern a real effect would
+make, and it is worth stating plainly rather than burying — but it is
+not evidence at this n, for three reasons:
+
+1. **It does not survive per-seed.** On completion, zeroed seed 0
+   (0.7479) beats live seed 0 (0.7254); on survival, shuffled seed 1
+   (0.9359) beats live seed 1 (0.9194). The ordering exists only in the
+   seed-averaged means, and every arm's own ± spread is comparable to or
+   larger than the deltas.
+2. **The paired SE is the wrong bar, and a large one.** Pooled over the
+   shared eval episode set, live − zeroed reads +0.0161 with a paired SE
+   of 0.0047 — nominally 3.4 σ. That SE measures *eval-episode* noise
+   only. The arms are different trained policies, so the operative
+   uncertainty is training nondeterminism (M5.1e), against which the same
+   delta is 0.56 of the bar. Quoting "+0.0161 ± 0.0047" would manufacture
+   a significance the design cannot support; the script grades against
+   the floor for exactly this reason, and the number is recorded here so
+   nobody re-derives the wrong one later.
+3. **Δsurvival and Δdeaths_fire are one fact, not two.** deaths_fire
+   pools to 0.608 (live) / 0.848 (zeroed) / 0.763 (shuffled); the
+   live − zeroed gap of 0.240 deaths over 12 agents is 0.0200, i.e. the
+   +0.0204 survival delta re-expressed. It corroborates nothing.
+
+### Channel diagnostics (pooled over both seeds, 1024 episodes/arm)
+
+Ratios of sums, never means of ratios (the M4.4 numerator/denominator
+discipline):
+
+| arm | delivery rate | mean alive out-degree | masked_frac | danger rate | masked at danger |
+|---|---|---|---|---|---|
+| live | 1.0000 | 1.1094 | 0.00224 | 0.0364 | 0.0546 |
+| zeroed | 1.0000 | 1.4216 | 0.00239 | 0.0338 | 0.0609 |
+| shuffled | 1.0000 | 1.2768 | 0.00224 | 0.0321 | 0.0608 |
+
+Two of these are handshakes rather than findings. Delivery rate is
+**exactly** 1.0000 in every arm and every training run — δ = 0 recovers
+the deterministic range graph, as `comms.py` claims and `test_comms.py`
+pins. And the masking channels reproduce M4.4's Medium row
+(danger rate 0.0396, masked_frac 0.00249, masked-at-danger 0.0560) to
+within seed noise, so the environment these arms trained in is the
+calibrated one.
+
+The out-degree column is a *measurement for M5.4*, recorded not ruled:
+at the plumbing default R_comm = 8.0 the mean alive out-degree is
+1.11–1.42 under trained policies, against M5.4's prior band of [2, 5].
+The Q5 ruling already logged that the band was written without the
+geometry arithmetic (uniform 12 agents on 64² gives ~0.41 at R = 6 rising
+to only ~2.22 at R = 16), and converted M5.4's R_comm step to
+curves-first for that reason. This row is consistent with that
+accounting and is not a band failure, because R_comm is not yet locked.
+
+### Three candidate mechanisms — for the discussion, none actioned
+
+Listed because the null is a design question and the discussion should
+start from measurements rather than from scratch. Each is a hypothesis;
+none is a proposal, and no code was changed on the strength of any.
+
+1. **Nothing optimizes what to say.** Under the Q3 ruling the message
+   head receives zero gradient for the whole run, so content is a
+   frozen-at-init random projection of trained trunk features. Receivers
+   *can* learn to decode it, which is what keeps M5.3 falsifiable, but
+   "the swarm learned what to say" was out of scope by construction. This
+   is the mechanism DIAL (item #1) addresses.
+2. **There may be little to say at this operating point.** Averaged over
+   the swarm, 0.22 % of a crop is masked; even at danger moments it is
+   5.5 %, and danger moments are 3.4 % of alive agent-steps. Remark 2's
+   premise is that comms is load-bearing exactly where perception fails —
+   at Medium, perception mostly does not fail. M4.4 measured
+   masked-at-danger at High as 0.2424, 4.4× the Medium value.
+3. **There may be nobody to say it to.** With mean out-degree ~1.1–1.4,
+   the typical receiver aggregates one neighbour or none, and the masked
+   mean over a single sender is that sender's message. R_comm is
+   unlocked, so this is a knob the gate ran at an arbitrary setting.
+
+Candidates 2 and 3 are questions about *where the gate was run*, not
+about the architecture, and both are answerable with the existing code
+path. Candidate 1 is not. Which of the three the discussion pursues
+first is a human call, and the M5.3 STOP is where it is owed.
+
+### What the null does and does not license
+
+It does **not** retract anything. M5.2's VoC handshake stands on its own
+evidence — scripted policies in a micro-environment where the courier's
+role is irreplaceable by construction — and M5.3 asks a different
+question about a trained swarm with 12 interchangeable agents. Remark 2′(i)
+predicted exactly that redundancy substitutes for communication when
+agents are interchangeable and at least as numerous as the hypotheses;
+M5.2's coverage arm measured J = 1 at every κ_B under total denial. A
+null utility gate at swarm scale is the same statement, one level up, and
+it was on the record before the numbers existed.
+
+What it does block is the downstream reading. M5.4 proposes to lock δ as
+the Phase-7 element value, and M5.5's inertness falsifier grades a denial
+ablation — both interpret δ as removing something the swarm was using. On
+this evidence that premise is unestablished at Medium, and the falsifier
+would be measuring the removal of a channel not yet shown to carry usable
+content. That is a discussion input, not a decision taken here.
+
+### Artifacts
+
+`che/bench/results/phase5/m53/`: six checkpoint archives
+(`ckpt_{arm}_s{seed}.tar.zst` + `.sha256`, asserted by the job script per
+the artifact-persistence rule), per-arm JSONL training metrics, per-episode
+eval `.npz` + summary `.json`, `verdict.txt`, `timings.txt` (283–286 s per
+training run), `provenance.txt`. The three arms carry distinct config
+hashes (`660418c6…` live, `7328b27b…` zeroed, `96498520…` shuffled) so a
+resume can never mistake one arm's checkpoint for another's. These
+checkpoints cannot be regenerated: GPU training is not reproducible
+run-to-run (M5.1e).
+
+**Caveat carried from M5.1e and binding on every grade above:** the floor
+has 3 dof and is itself uncertain by ~±40 %. Differences near the bar are
+near the bar, not resolved. The largest here is 0.79 of it.

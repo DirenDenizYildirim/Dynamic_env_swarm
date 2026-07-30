@@ -122,6 +122,17 @@ def main():
             print(f"           DID NOT COMPILE — wanted "
                   f"{w:.2f} GiB" if w else "           DID NOT COMPILE", flush=True)
 
+    # M5.1j: the toolchain goes in the artifact. The m51g -> m51i comparison
+    # (24.69 -> 27.53 GiB for a byte-identical config) could not be resolved
+    # into "code changed" vs "toolchain changed" because neither run recorded
+    # a jax/jaxlib version — the env-only-throughput mistake in a different
+    # unit. See decision_log.md, "Phase-5 delegated rulings, round 2".
+    from che.bench.rowb_probe import toolchain
+
+    tc = toolchain()
+    print(f"\n[memprobe] jax {tc['jax']} / jaxlib {tc['jaxlib']} on "
+          f"{tc['backend']} ({tc['device_kind']})")
+
     print("\n" + "=" * 72)
     print(f"{'candidate':12s} {'peak GiB':>10s}  changes")
     print("-" * 72)
@@ -135,7 +146,10 @@ def main():
     print("updates, loss verified identical), while n_minibatches / pop_size /")
     print("n_envs change what is being run. That trade is a human call.")
     if args.out_json:
-        json.dump(rows, open(args.out_json, "w"), indent=1)
+        # The toolchain rides in the artifact as its own labelled row, after
+        # the candidates so the table loop above never sees it.
+        json.dump(rows + [{"label": "_toolchain", **tc}],
+                  open(args.out_json, "w"), indent=1)
 
 
 if __name__ == "__main__":

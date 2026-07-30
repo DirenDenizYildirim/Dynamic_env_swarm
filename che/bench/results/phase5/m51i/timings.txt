@@ -1,0 +1,4 @@
+row_B: KILLED after 1800s — genuinely stuck.
+  (a natural OOM surfaces its own error well before this; if this fires, the process was not making progress at all)
+row_B 1800s FAILED(rc=137)
+row C skipped: row B did not run.

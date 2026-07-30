@@ -1,0 +1,30 @@
+[memprobe] compiling baseline ...
+           total 27.53 GiB (temp 27.39)
+[memprobe] compiling remat ...
+           total 27.53 GiB (temp 27.39)
+[memprobe] compiling remat+nmb8 ...
+           total 15.42 GiB (temp 15.28)
+[memprobe] compiling nmb8 ...
+           total 15.42 GiB (temp 15.28)
+[memprobe] compiling nmb16 ...
+           total 9.36 GiB (temp 9.22)
+[memprobe] compiling pop6 ...
+           total 13.77 GiB (temp 13.70)
+[memprobe] compiling envs64 ...
+           total 13.80 GiB (temp 13.71)
+
+========================================================================
+candidate      peak GiB  changes
+------------------------------------------------------------------------
+baseline          27.53  as committed
+remat             27.53  recompute activations; same hyperparameters, same updates
+remat+nmb8        15.42  remat + smaller minibatch (CHANGES optimization)
+nmb8              15.42  smaller minibatch (CHANGES optimization)
+nmb16              9.36  smaller minibatch (CHANGES optimization)
+pop6              13.77  half the population (CHANGES the design)
+envs64            13.80  half the envs per member again (fallback-ladder rung 2)
+========================================================================
+A candidate that fits is not automatically the right choice: remat
+preserves the experiment exactly (same hyperparameters, same
+updates, loss verified identical), while n_minibatches / pop_size /
+n_envs change what is being run. That trade is a human call.

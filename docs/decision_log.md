@@ -717,3 +717,144 @@ peaks at **1.235 near κ_B ≈ 2**, equals **1.126 at the locked
 the measured maximum anywhere on the grid, confirming the strike. The
 relative VoC correction is largest at low κ_B: 79 % of VoC_gated at
 κ_B = 0.5, 54 % at 1.0, 7 % at 3.0.
+
+## Phase-5 delegated rulings, round 2 (human 2026-07-30, RA-executed)
+
+Human directive, verbatim: *"You are given creative freedom moving
+forward for this problem"*, issued on the row-B failure after the M5.3
+report section was accepted. Decisions taken under that delegation are
+transcribed here before being acted on, per the meta-rule. All are
+reversible by the human.
+
+### 1. The gate requirement DRIFTED, and the drift invalidates the rung-2 arithmetic
+
+Measured, from two committed GPU artifacts on the same card with the same
+`--xla_gpu_autotune_level=0` flag:
+
+| config: envs 128 / pop 12 / nmb 4 / uint8 / remat off | temp GiB | total GiB |
+|---|---|---|
+| `m51g/memprobe.json`, candidate `envs128` (fa32113, 2026-07-28) | 24.5467 | **24.6872** |
+| `m51i/memprobe_rung2.json`, `baseline` (dbdb15c, 2026-07-29) | 27.3944 | **27.5349** |
+
+**+2.8477 GiB, +11.53 %, for a byte-identical configuration.** In the same
+pair of runs `jax.checkpoint` went from saving 2.09 GiB to saving 5 KB
+(27.394371 → 27.394376), so what changed is *activation retention*, not
+merely a level.
+
+Consequences, which is why this is a ruling and not a note:
+
+- The delegated rung-2 ruling of 2026-07-29 chose `n_envs` 256 → 128 on the
+  strength of "24.69 GiB (78 % of the card)". At the measured 27.53 GiB it
+  is **87 %** of a 31.8 GiB card. The rung is still the only available one
+  and the choice does not change, but the *headroom claim* attached to it
+  was wrong by 2.85 GiB.
+- `run_m51i_gate_rung2.sh` sized `XLA_PYTHON_CLIENT_MEM_FRACTION=0.95`
+  as "30.2 GiB for a 24.69 GiB requirement" — 5.5 GiB of slack. The real
+  slack is 2.7 GiB, 8.8 % of the arena, which BFC fragmentation can
+  plausibly consume.
+- **`m51i/verdict.txt`'s framing is therefore NOT ESTABLISHED.** It says
+  "Rung 2 already cut the requirement 49.31 → ~24.7 GiB, so a failure here
+  is about how the row is measured, not about whether the rung worked."
+  Against 27.53 GiB the failure may be capacity after all. The artifact is
+  **not edited** — run artifacts are immutable; the correction goes in the
+  phase report, which is the document of record.
+
+**RULING: the 24.69 GiB figure is corrected to the measured 27.53 GiB
+wherever it is load-bearing** — `phase5_report.md` (dated correction note,
+never a silent edit, M5.1 precedent) and `gate_pop12.yaml`'s header — and
+the "78 % of card" claim is retracted in favour of 87 %.
+
+*Accountability:* this is the ÷81 pattern one level down. A number was
+measured once, written into a config header and a ladder decision, and
+then cited for two milestones while the thing it measured moved
+underneath it. It was the RA's number and the RA's citation both times.
+
+### 2. Row B gets an instrument, not a fourth attempt
+
+Three attempts have produced three artifacts and no rate: an OOM at
+49.08 GiB (m51d), a bounded OOM after 1112 s retrying a fixed 5.72 GiB
+allocation (m51i, first), and `rc=137` at the 1800 s backstop (m51i,
+second). The last one carries **no diagnostic at all** — a bare SIGKILL
+cannot distinguish an allocator-retry loop from a genuine hang from host
+swap, and re-running the same command measures the same unknown again.
+
+**RULING: no further row-B attempt without staging and sampling.**
+`che/bench/rowb_probe.py` + `run_m51j_rowb_diagnostic.sh` run the ladder
+`init → compile → one chunk → windows`, each stage timed, flushed and
+guarded on its own, with device `memory_stats()` reported at every stage
+and on failure, and a 5 s background sampler recording GPU memory,
+utilisation and process RSS. A kill at any point then leaves a trail
+instead of a return code.
+
+### 3. Code vs toolchain is decided by a 2×2, not by argument
+
+The local CPU bisect (this session) cleared what it could and named what
+it could not:
+
+- reverting the M5.1h dequantize hunk changes the compiled temp by
+  **0.00 MiB**;
+- `msg_mode` moves it by 0.14 MiB at probe scale, ~54 MiB scaled to the
+  gate — it cannot be 2,848 MiB;
+- probe **order** inside one process: 0.00 MiB (`lru_cache` eviction
+  cleared);
+- **candidate path vs baseline path** for the identical config: 0.00 MiB
+  (so m51g pricing `envs128` 7th and m51i pricing it 1st is not the
+  difference).
+
+CPU fusion is not GPU fusion, so a null on this backend does not clear a
+suspect on the box — M5.1h in particular touches the differentiated
+forward path, where a multiply-by-literal and a divide can fuse
+differently on GPU only. What remains is exactly two candidates: a
+GPU-specific fusion change from one of the five commits, or a **toolchain
+change between two rentals**, which no provenance file records.
+
+**RULING: the diagnostic job settles it with two compiles** — memprobe at
+HEAD and at fa32113 (git worktree), on the same box, same flags, same
+session. Old code reading 24.69 ⇒ the code moved it; old code reading
+27.53 ⇒ the toolchain moved it and the five commits are innocent.
+
+### 4. Provenance must record the toolchain (proposed rule, human to ratify)
+
+A memory requirement compared across two rentals without the jax/jaxlib/
+CUDA/driver versions is not a comparison — it is the env-only-throughput
+mistake in a different unit. `memprobe.py` now records them in its JSON
+and the diagnostic script prints them first.
+
+**Proposed for `CLAUDE.md`, NOT written there by the RA:** *every
+measurement persisted off-instance records its toolchain (jax, jaxlib,
+CUDA, driver, device, host RAM) alongside the git commit; a figure
+compared across instances without them is a diagnostic, not a
+measurement.* Flagged for human ratification because CLAUDE.md rules have
+been human-issued to date.
+
+### 5. Scope, stated so it cannot drift
+
+Row B guards **Phase-6/7 spending only**. No Phase-5 milestone uses the
+population path (M5.3–M5.5 are single-learner runs at the severity
+operating point, and that path is healthy at 68.5 k steps/s). The gate
+number is owed to the **Phase-6 entry gate**, which is already blocked on
+four other decisions. The diagnostic job is ~15 GPU-min; if it lands
+without a rate, the finding goes to the entry gate and row B is not
+attempted again in Phase 5.
+
+**The 100 k line is not renormalized here, and no experiment quantity is
+touched.**
+
+### 6. Recorded as unpriced, NOT implemented: sequential population groups
+
+The ladder's remaining rungs all move calibrated quantities, and the
+off-ladder knobs (`n_minibatches`, `pop_size`) change the optimization or
+the design. There is one option in the class `remat` belongs to —
+mathematically neutral, same hyperparameters, same updates, same PBT
+selection, trading wall-clock for memory — that nobody has priced:
+**evaluate the population vmap in G sequential groups** (`lax.map` /
+scan over groups of `pop_size / G`) instead of one 12-wide vmap.
+
+Estimate, labelled an estimate per the derived-numbers sub-rule: the
+measured `pop6` candidate is 13.77 GiB, so two groups of six should peak
+near 13.9 GiB (pop6 plus the full population's 0.14 GiB of state), at
+roughly 2× the update-phase wall clock. **This is arithmetic from
+measured numbers, not a measurement**, and implementing it is a
+Phase-6-entry-gate decision, not an RA one. Recorded here so the entry
+gate sees an experiment-preserving option beside the ones that cost
+calibration.

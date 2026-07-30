@@ -12,7 +12,17 @@
 # reference did not fit a 32 GB card (phase0_report.md). M5.1d/g hit the
 # same wall again at k=9: this configuration needs 49.31 GiB and XLA's own
 # rematerialization pass reports it cannot get below 28.31 GiB, so 256 ->
-# 128 is the second application of the same rung (24.69 GiB, 78 % of card).
+# 128 is the second application of the same rung.
+#
+# CORRECTION (2026-07-30, M5.1j): this line previously read "(24.69 GiB,
+# 78 % of card)". That figure came from pricing n_envs=128 as a CANDIDATE
+# at m51g; re-priced as the committed baseline a day later on the same card
+# with the same flags it reads 27.5349 GiB — +2.85 GiB, +11.53 % — which is
+# 87 % of a 31.8 GiB card, not 78 %. The rung choice does not change (rung 2
+# is still the only one that moves no calibrated quantity); the headroom
+# does, and the m51i mem-fraction sizing was built on the stale number.
+# Whether the drift is GPU fusion from the five intervening commits or a
+# toolchain change between rentals is the M5.1j 2x2. Never cite 24.69 again.
 #
 # Why rung 2 and not rung 1: the ladder says apply in order, but rung 1
 # (grid 64^2 -> 48^2) is UNAVAILABLE now in a way it was not in Phase 0 —

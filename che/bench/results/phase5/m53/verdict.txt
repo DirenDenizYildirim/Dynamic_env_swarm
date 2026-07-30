@@ -1,0 +1,30 @@
+M5.3 utility gate — Medium, both couplings, delta = 0, 2 seeds, CRN-paired eval episodes
+
+arm              completion     survival_rate    episode_return
+live         0.7403+-0.0211    0.9340+-0.0206   23.2944+-0.5517
+zeroed       0.7242+-0.0336    0.9136+-0.0030   22.6553+-1.0924
+shuffled     0.7271+-0.0104    0.9194+-0.0234   22.7817+-0.4716
+
+Pairwise deltas (positive = first arm better), against the M5.1e floor:
+  live - zeroed:
+    completion            +0.0161  (paired SE 0.0047, 2x floor 0.0290 -> within floor)
+    survival_rate         +0.0204  (paired SE 0.0038, 2x floor 0.0258 -> within floor)
+    episode_return        +0.6392  (paired SE 0.1536)
+  live - shuffled:
+    completion            +0.0133  (paired SE 0.0054, 2x floor 0.0290 -> within floor)
+    survival_rate         +0.0146  (paired SE 0.0039, 2x floor 0.0258 -> within floor)
+    episode_return        +0.5127  (paired SE 0.1760)
+  zeroed - shuffled:
+    completion            -0.0029  (paired SE 0.0045, 2x floor 0.0290 -> within floor)
+    survival_rate         -0.0058  (paired SE 0.0039, 2x floor 0.0258 -> within floor)
+    episode_return        -0.1265  (paired SE 0.1478)
+
+====================================================================
+VERDICT: NULL BRANCH — all three arms indistinguishable.
+STOP. Per the phase prompt this goes to a human discussion
+before any lock; DIAL-style differentiable comms is the
+pre-registered item #1. Do NOT iterate the architecture here.
+====================================================================
+
+Caveat carried from M5.1e: the floor has 3 dof and is uncertain by
+~+-40 %. Differences near the bar are near the bar, not resolved.

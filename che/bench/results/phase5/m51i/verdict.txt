@@ -1,0 +1,6 @@
+Re-anchored gate at fallback-ladder rung 2 (n_envs 128/member)
+(pbt.py --bench, pop 12 x 128 envs x rollout 128)
+
+
+VERDICT: NO NUMBER — row B did not produce a rate.
+Read the memprobe beside this before concluding anything about the ladder: the probe runs with autotuning off, so a 'fits' there alongside a failed run is NOT a contradiction — it means buffer assignment fits and the instrument on top of it did not. Rung 2 already cut the requirement 49.31 -> ~24.7 GiB, so a failure here is about how the row is measured, not about whether the rung worked. Only if the probe ALSO reports no fit is this a ladder question for the Phase-6 entry gate.

@@ -1,0 +1,7 @@
+run: M5.1i gate re-bench at fallback-ladder rung 2
+date_utc: 2026-07-29T18:40:47Z
+git_commit: dbdb15c071fc1677e3b17f40d8232679a66cadb8
+git_dirty: 1 file(s)
+n_envs:   n_envs: 128  # rung 2, second application — see the header
+windows_per_row: 3 x 30 s
+gpu: NVIDIA GeForce RTX 5090

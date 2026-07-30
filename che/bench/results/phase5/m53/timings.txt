@@ -1,0 +1,6 @@
+train_live_s0 283s
+train_live_s1 284s
+train_zeroed_s0 283s
+train_zeroed_s1 283s
+train_shuffled_s0 285s
+train_shuffled_s1 286s
