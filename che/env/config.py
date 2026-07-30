@@ -53,9 +53,23 @@ class ThetaConfig:
     # p = 1[d_Cheb <= r_comm] * (1 - delta), so the former `p_link_max`
     # multiplier is retired rather than left in as an unspecified knob —
     # it had no meaning under a hard cutoff and no config ever set it.
-    # r_comm is locked at M5.4 against measured degree/connectivity curves;
-    # 8.0 is the plumbing default, not a locked value.
-    r_comm: float = 8.0  # R_comm: hard comms range in cells (Chebyshev)
+    # R_comm is LOCKED at 16 (comms_lock.md, M5.3 CLOSURE RULING
+    # 2026-07-30; recorded in docs/locks.yaml, asserted by
+    # che/tests/test_locks.py). M5.4 was folded into that ruling rather
+    # than run, so R_comm is locked on the GEOMETRIC observable alone:
+    # mean alive out-degree 2.99-3.37 at R = 16 (M5.3b Cell B, 12 agents
+    # on 64^2, trained High policies) is inside the [2, 5] prior band,
+    # where R = 8 measures 0.93-1.06 and misses it. Only R in {8, 16} were
+    # ever measured; the {6..28} sweep was not run and P(swarm connected)
+    # was never measured — both recorded as limitations of the lock, which
+    # is admissible only because performance is insensitive to R_comm.
+    # The default carries the locked value so it cannot be reached by argv
+    # alone; configs still state it explicitly (repo-explorer ruling 1a,
+    # 2026-07-31). Cost is shape-invariant in r_comm: in_range_mask builds
+    # the full [n, n] Chebyshev matrix and sample_links draws [n, n]
+    # uniforms unconditionally (invariant #3), so throughput figures
+    # measured at 8.0 keep their meaning.
+    r_comm: float = 16.0  # R_comm: hard comms range in cells (Chebyshev)
 
 
 @dataclasses.dataclass(frozen=True)

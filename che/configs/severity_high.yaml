@@ -44,7 +44,17 @@ theta:
   # detection only at the band floor). M4.4 overrides to 0.0 for
   # the ablation arm.
   kappa_B: 1.0
+  # Comms — M5.3 CLOSURE RULING 2026-07-30 (comms_lock.md; recorded in
+  # docs/locks.yaml, asserted by che/tests/test_locks.py).
+  # delta 0.0 is ELEMENT-OFF and is correct for a base config: the locked
+  # element-ON value delta = 1.0 belongs to theta_star_*.yaml. R_comm is
+  # stated explicitly rather than inherited (repo-explorer ruling 1a,
+  # 2026-07-31) — it was previously reachable only via `--r-comm 16` on
+  # the command line. Locked on the geometric observable alone: the
+  # out-degree evidence IS this severity (M5.3b Cell B, trained High
+  # policies): 2.99-3.37 at R = 16 vs 0.93-1.06 at R = 8, band [2, 5].
   delta: 0.0
+  r_comm: 16.0
   death_penalty: 0.0
   iota: 0.0
   sigma_s: 1.0

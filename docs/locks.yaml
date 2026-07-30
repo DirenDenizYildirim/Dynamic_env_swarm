@@ -1,0 +1,376 @@
+# docs/locks.yaml — the single machine-readable source for every locked
+# constant in this project.
+#
+# WHY THIS FILE EXISTS (repo-explorer ruling 1c, human-issued 2026-07-31,
+# transcribed in docs/decision_log.md). R_comm was locked at 16 in
+# comms_lock.md on 2026-07-30 and remained unreachable from any config for
+# a day: ThetaConfig.r_comm defaulted to 8.0, no YAML set it, and the
+# locked geometry was supplied only by `--r-comm 16` inside two shell
+# scripts. A lock recorded only in prose is a lock the next session
+# inherits by memory. This project has now been bitten by that twice
+# (tooling rule 3c/3d; R_comm).
+#
+# STANDING RULE: every future lock lands in this file in the SAME COMMIT it
+# is ruled. che/tests/test_locks.py asserts that configs and code defaults
+# agree with what is written here, so a lock that is not here is not
+# enforced, and a config that drifts from here fails the suite.
+#
+# This file records constants ONLY. It does not rule anything: every entry
+# cites the document that did. Numbers here are transcribed from those
+# locks, never derived here (CLAUDE.md sub-rule: numerical claims enter
+# documents derived or measured in the same session).
+#
+# HOW TO ADD A LOCK
+#   1. The ruling lands in docs/decision_log.md (meta-rule: transcribe
+#      first).
+#   2. The constant lands in `constants:` below with its provenance.
+#   3. Every config that must carry it gains an entry under `configs:`.
+#   4. `uv run pytest che/tests/test_locks.py` goes green in that commit.
+
+version: 1
+updated: 2026-07-31
+
+# ---------------------------------------------------------------- constants
+#
+# supplied_by tells you WHERE the value legitimately comes from:
+#   config   — written explicitly in the YAML(s) listed under `configs:`
+#   default  — carried by the dataclass default in che/env/config.py
+#   cli      — supplied at run time by a --flag (see the `discrepancy` note)
+#
+# `locked: false` means "held fixed by convention, never calibrated" — it
+# is recorded so that a change is visible, not because a ruling fixed it.
+
+constants:
+
+  # -- hazard / severity ---------------------------------------- Phase 2
+  beta_c:
+    value: 0.500
+    tolerance: 0.005
+    locked: true
+    supplied_by: none          # an estimate, not a config knob
+    source: severity_lock.md
+    ruled: 2026-07-19
+    evidence: che/bench/results/phase2/calibration_crossing.npz
+    note: >-
+      R_L logistic-center family, L in {32,48,64}, 512 seeds. Reproduces
+      the idealized kernel's exact beta_c = 1/2 (Kesten) to three decimals;
+      self-duality R(beta_c) ~ 1/2 holds at all three sizes.
+
+  beta_low:
+    value: 0.43
+    locked: true
+    supplied_by: config
+    source: severity_lock.md
+    ruled: 2026-07-19
+    note: >-
+      Subcritical. P_span 0.021, burnt fraction 1.9 % at L = 64 — spec band
+      P_span < 0.05 AND bf in [1, 5] % satisfied.
+
+  beta_medium:
+    value: 0.49
+    locked: true
+    supplied_by: config
+    source: severity_lock.md
+    ruled: 2026-07-19
+    note: >-
+      Near-critical. P_span 0.547, burnt fraction 19.8 %. Deliberately
+      between the finite-size pseudo-critical point beta_c(64) ~ 0.486 and
+      beta_c_hat = 0.500; also centers the P_span spec band.
+
+  beta_high:
+    value: 0.70
+    locked: true
+    supplied_by: config
+    source: severity_lock.md
+    ruled: 2026-07-19
+    note: >-
+      Supercritical race. v_hat 0.83 cells/step (83 % of agent speed —
+      outrunnable, barely), P_span 0.998, burnt fraction 98.3 %.
+
+  beta_holdout:
+    value: null
+    locked: false
+    supplied_by: none
+    source: docs/theory_foundations.md    # Definition 8
+    ruled: null
+    note: >-
+      OWED, NOT LOCKED. Def. 8 fixes theta* at "all elements active, at
+      held-out severity levels", and the JOINT protocol trains on a mixture
+      "still excluding theta*'s held-out severities" — so a held-out beta is
+      definitionally required and definitionally unknown until the Phase-6
+      dose-response design fixes it AND calibrates it the way Phase 2
+      calibrated the other three. It is null here on purpose: writing a
+      plausible number would violate the CLAUDE.md sub-rule that numbers
+      enter documents derived or measured in the same session. PHASE 6
+      ENTRY GATE owes it. test_locks.py treats any beta outside the locked
+      set as a tripwire so an invented value cannot enter quietly.
+
+  # -- Coupling A + structure ----------------------------------- Phase 3
+  kappa_A:
+    value: 0.06
+    locked: true
+    supplied_by: config
+    source: coupling_a_lock.md
+    ruled: 2026-07-21
+    evidence: che/bench/results/phase3/m34/coupling_a_calibration.json
+    note: >-
+      Candidate 2 of a factored design, 128 episodes/cell. Per-severity
+      kappa_A was considered and REJECTED — it would break Phase-7
+      factorial semantics.
+  lambda_0:
+    value: 5.0e-5
+    locked: true
+    supplied_by: config
+    source: coupling_a_lock.md
+    ruled: 2026-07-21
+  lambda_load:
+    value: 4.0e-4
+    locked: true
+    supplied_by: config
+    source: coupling_a_lock.md
+    ruled: 2026-07-21
+  f_weak:
+    value: 0.15
+    locked: true
+    supplied_by: config
+    source: coupling_a_lock.md
+    ruled: 2026-07-21
+  r_seed:
+    value: 1
+    locked: true
+    supplied_by: default
+    source: coupling_a_lock.md
+    ruled: 2026-07-21
+    note: >-
+      "r_seed = 1 / weak_smooth = 2 are the config defaults, locked as-is."
+      Not swept — no target constrains r_seed and the Prop.-3 machinery
+      (M3.3) is calibrated at 1.
+  weak_smooth:
+    value: 2
+    locked: true
+    supplied_by: default
+    source: coupling_a_lock.md
+    ruled: 2026-07-21
+
+  # -- Coupling B ----------------------------------------------- Phase 4
+  kappa_B:
+    value: 1.0
+    locked: true
+    supplied_by: config
+    source: kappa_b_lock.md
+    ruled: 2026-07-27
+    evidence: che/bench/results/phase4/m43/
+    note: >-
+      Revised from an initial 1.1 by the M4.4 amendments. Locked on the
+      env-native detection band (P(Burning cell at crop distance 3
+      revealed) = 0.438/0.427 under the two probe arms, inside [0.4, 0.7]);
+      the E2C cross-reference is a demoted consistency check and the
+      masked_frac band was retired as policy-suppressible.
+
+  # -- comms ---------------------------------------------------- Phase 5
+  delta_element_off:
+    value: 0.0
+    locked: true
+    supplied_by: config
+    source: comms_lock.md
+    ruled: 2026-07-30
+    note: >-
+      The ELEMENT-OFF value, correct for every base config. Uniform
+      `delta: 0.0` across the base configs is NOT drift — it is the
+      composable element switched off (D1: the composable elements are
+      {Coupling A, Coupling B, comms denial}).
+
+  delta_element_on:
+    value: 1.0
+    locked: true
+    supplied_by: config          # theta_star_*.yaml only
+    source: comms_lock.md
+    ruled: 2026-07-30
+    note: >-
+      Maximal denial, by convention — cleanest element semantics for
+      theta*. Performance bands are VOID-BY-NULL, not missed: the channel's
+      content is unused, so M5.4's "smallest delta whose cost carries a
+      strong grade" had no output and was folded into the closure ruling.
+      Retained in theta* for registration fidelity at zero cost; the
+      Phase-7 composition is effectively over {Coupling A, Coupling B}.
+
+  r_comm:
+    value: 16.0
+    locked: true
+    supplied_by: [default, config]
+    source: comms_lock.md
+    ruled: 2026-07-30
+    evidence: che/bench/results/phase5/m55/provenance.txt
+    note: >-
+      Locked on the GEOMETRIC observable alone: mean alive out-degree
+      2.99-3.37 at R = 16 (M5.3b Cell B, 12 agents on 64^2, trained High
+      policies) sits inside the [2, 5] prior band, where R = 8 measures
+      0.93-1.06 and misses it. LIMITATIONS, recorded not hidden: only
+      R in {8, 16} were ever measured, the {6,8,10,12,16,20,24,28} sweep
+      was not run, and P(swarm connected) in [0.3, 0.7] was never measured.
+      The geometric lock is admissible only BECAUSE performance is
+      insensitive to R_comm, so the choice cannot be tuned toward a
+      favourable result. The M5.5 falsifier ran at this value
+      (provenance.txt "R_comm: 16 (LOCKED)"; measured out-degree 3.213),
+      so the inertness certificate covers the locked geometry.
+
+  # -- training protocol ----------------------------------------- D4 / D5
+  death_penalty:
+    value: 0.5
+    locked: true
+    supplied_by: cli
+    source: docs/decision_log.md    # D4
+    ruled: 2026-07-19
+    discrepancy: >-
+      SAME DEFECT CLASS AS r_comm, FLAGGED AND DELIBERATELY NOT FIXED
+      (repo-explorer ruling, 2026-07-31). D4 locks dp = 0.5 for all
+      training from Phase 3 onward, yet all three severity_*.yaml carry
+      death_penalty: 0.0 and every milestone script supplies
+      `--death-penalty 0.5` on the command line — a locked value reachable
+      only from argv. Unlike r_comm it is load-bearing at run time: editing
+      the configs would change what a bare `--config severity_medium.yaml`
+      run does, and every Phase-3/4/5 result was produced with the override
+      present. A HUMAN RULING IS OWED on whether Phase-6 configs carry
+      dp: 0.5 inline. Until then test_locks.py asserts the documented state
+      (severity configs carry 0.0) rather than forcing a change.
+
+  obs_version:
+    value: 3
+    locked: true
+    supplied_by: [default, config]
+    source: docs/decision_log.md    # D5 + M4.1
+    ruled: 2026-07-24
+    note: >-
+      obs v3 = v2 indicator planes gated by Coupling-B masking, plus the
+      visibility plane. Schema frozen after M4.1; v2/v1 restorable for
+      archival evaluation only.
+
+  # -- held fixed by convention, never calibrated ---------------------------
+  sigma_s:
+    value: 1.0
+    locked: false
+    supplied_by: [default, config]
+    source: che/env/config.py
+    note: >-
+      Optical depth is the product kappa_B * rho, so sweeping kappa_B alone
+      spans the whole attenuation family; changing the smoke constants
+      would change the env family for no expressive gain (Phase-4 prompt).
+  eta:
+    value: 0.5
+    locked: false
+    supplied_by: [default, config]
+    source: che/env/config.py
+  iota:
+    value: 0.0
+    locked: false
+    supplied_by: [default, config]
+    source: che/env/config.py
+    note: Spontaneous ignition disabled in every config to date.
+
+# ------------------------------------------------------------------ defaults
+# Locked constants that che/env/config.py must carry as its dataclass
+# default, so the value cannot be reached by argv alone.
+defaults:
+  theta:
+    r_comm: r_comm
+    r_seed: r_seed
+    weak_smooth: weak_smooth
+  env:
+    obs_version: obs_version
+
+# ------------------------------------------------------------------- configs
+# Per-config enforcement. `theta`/`env` map a config key to a constant name
+# above; the test asserts equality after load_config(). Anything not listed
+# is unenforced by design.
+#
+# roles:
+#   science   — produces results that enter the paper
+#   gate      — throughput/benchmark instrument
+#   theta_star— all elements ON (Def. 8 composition point)
+#   archival  — superseded; kept to re-read old runs, NOT for new science
+configs:
+
+  che/configs/severity_low.yaml:
+    role: science
+    theta:
+      beta: beta_low
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm]
+    death_penalty_is_cli: true
+
+  che/configs/severity_medium.yaml:
+    role: science
+    theta:
+      beta: beta_medium
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm]
+    death_penalty_is_cli: true
+
+  che/configs/severity_high.yaml:
+    role: science
+    theta:
+      beta: beta_high
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm]
+    death_penalty_is_cli: true
+
+  che/configs/gate_pop12.yaml:
+    role: gate
+    theta:
+      beta: beta_medium
+      kappa_A: kappa_A
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+      death_penalty: death_penalty     # the one config that carries dp inline
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: >-
+      Throughput instrument, not science. Its measured figure is unaffected
+      by the r_comm 8.0 -> 16.0 change: in_range_mask builds the full
+      [n, n] Chebyshev matrix and sample_links draws [n, n] uniforms
+      unconditionally (invariant #3), so neither delta nor r_comm changes
+      any array shape or draw count.
+
+  # Archival — pre-Phase-2 placeholder theta (beta 0.35, elements off).
+  # Registered so their status is machine-readable, enforced only in that
+  # they must NOT masquerade as calibrated science configs.
+  che/configs/debug.yaml:
+    role: archival
+    note: CPU-scale test fixture; 16x16 grid, 4 agents, population 2.
+  che/configs/reference.yaml:
+    role: archival
+    note: >-
+      Phase-0 reference cell at n_envs 1024; the operating point moved to
+      256 (phase0_report.md) and the gate config to 128 (rung 2, twice).
+  che/configs/m06_probe.yaml:
+    role: archival
+    note: Header claims n_envs 1024 over a body setting 256.
+  che/configs/phase1_accept.yaml:
+    role: archival
+    note: Phase-1 acceptance at placeholder beta 0.35.

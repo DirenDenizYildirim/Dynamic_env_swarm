@@ -1278,3 +1278,102 @@ analysis: runs = design × seeds-derived-from-measured-floors, costed
 directly. The $81 figure is noted for what it means rather than as a
 target: **money is not a constraint on any Phase-6 decision; wall-clock
 and statistical power are the real currencies.**
+
+## REPO-EXPLORER RULINGS (human, 2026-07-31) — pre-Phase-6 structural
+
+Issued after a read-only structural review of the tree found two defects
+that are invisible from inside any single milestone: a locked constant
+that no config could reach, and a layout block that new sessions treat as
+authoritative on day zero. Both are doc/plumbing defects, not science
+defects; no measured result changes.
+
+### 1. Comms-lock reachability — the lock existed only in prose
+
+`comms_lock.md` locks **δ = 1.0** and **R_comm = 16**. Neither was
+reachable from a config: `ThetaConfig.r_comm` defaulted to **8.0**, no
+YAML set `r_comm` at all, and the locked geometry was supplied only by
+`--r-comm 16` inside two milestone shell scripts.
+
+**The δ half is NOT a defect, and the ruling says so explicitly.** All
+eight configs carrying `delta: 0.0` is *correct*: base configs are
+**element-OFF**, and δ = 1.0 is the **element-ON** value belonging to
+θ*/joint configs, which do not exist yet. Reading the uniform `delta: 0.0`
+as drift would have been a misdiagnosis. The real defects are `r_comm`
+and the silent-inheritance path that let a locked value be supplied by
+argv.
+
+**Consequence check, ordered before any edit and answered from run
+provenance — the certificate is CLEAN.** The question was which geometry
+the M5.5 inertness grid actually ran at, because a certificate measured
+at R = 8 would not cover a lock at R = 16.
+
+| source | evidence | R_comm |
+|---|---|---|
+| `che/scripts/run_m55_acceptance.sh` | `R_COMM=${R_COMM:-16}  # LOCKED`, passed to train, eval **and** render | 16 |
+| `results/phase5/m55/provenance.txt` | `R_comm: 16 (LOCKED)`, RTX PRO 6000, jax 0.11.0 | 16 |
+| `results/phase5/m55/verdict.txt` | measured out-degree **3.213** at δ = 0 | 16 |
+
+The out-degree is the decisive line: R = 8 measures 0.93–1.06 on this
+geometry (`comms_lock.md`), R = 16 measures 2.99–3.37. M5.5 reports
+3.213. **The falsifier ran on the locked geometry**, so no patch
+certification is owed and no ruling on "inertness-at-8 transferred to 16"
+is needed. Content ablation additionally spans both points by
+construction (M5.3 + M5.3b Cell A at R = 8, Cell B at R = 16).
+
+Three fixes, ruled:
+
+**(a) `r_comm` becomes reachable.** `ThetaConfig.r_comm` default
+8.0 → **16.0**, and `r_comm` written explicitly into
+`severity_{low,medium,high}.yaml` and `gate_pop12.yaml` with provenance
+citing `comms_lock.md`. The stale in-code comment "r_comm is locked at
+M5.4 against measured degree/connectivity curves" is corrected: M5.4 was
+folded into the M5.3 closure ruling and R_comm is locked **on the
+geometric observable alone**, with the un-run {6…28} sweep recorded as a
+limitation of the lock.
+
+*Throughput provenance is not disturbed by the default change.*
+`in_range_mask` builds the full [n, n] Chebyshev matrix and `sample_links`
+draws [n, n] uniforms unconditionally (invariant #3), so cost is
+shape-invariant in `r_comm`. The gate figure keeps its meaning; the pin is
+for explicitness, not for cost.
+
+**(b) θ\* becomes an explicit committed config.** `theta_star_*.yaml`
+carrying κ_A = 0.06, κ_B = 1.0, δ = 1.0, R_comm = 16 and a held-out β —
+every locked value **written out**, **constructed from locks, never
+derived by inheritance**. Born in the Phase-6 prompt.
+
+**(c) SYSTEMIC FIX — locks stop being enforced by memory.** `docs/locks.yaml`
+becomes the single machine-readable source for every locked constant (βs,
+κ_A, κ_B, δ_element, R_comm, dp, obs_version) with provenance keys, and
+`che/tests/test_locks.py` asserts configs and code defaults agree with it.
+**Standing rule: every future lock lands in `locks.yaml` in the same commit
+it is ruled.** This is the ruling that matters — (a) fixes one constant,
+(c) fixes the class. A lock recorded only in prose is a lock that the next
+session inherits by memory, and this project has now been bitten by that
+twice (tooling rule 3c/3d; R_comm).
+
+### 2. CLAUDE.md layout block refreshed, and kept refreshed
+
+The layout block omitted `che/calibration/` (6 modules) and `che/eval/`
+entirely, listed only `throughput.py` under `bench/`, and did not mention
+`e2c.py` / `e2c2.py`. Refreshed from the actual tree. Added to the
+phase-close checklist: **"CLAUDE.md layout refreshed against the tree."**
+Doc-rot is worse here than elsewhere because a new session reads this
+block before it reads any code.
+
+### Flagged, NOT acted on — `death_penalty` is the same defect class as `r_comm`
+
+Recorded because the audit surfaced it and silence would repeat the
+pattern: **D4 locks `dp = 0.5` for all training from Phase 3 onward**, yet
+all three `severity_*.yaml` carry `death_penalty: 0.0` and every milestone
+script supplies `--death-penalty 0.5` on the command line. That is a
+locked value reachable only from argv — structurally identical to the
+`r_comm` defect just fixed.
+
+It is **not** changed here, because unlike `r_comm` the value is load-
+bearing at run time: editing it would change what a bare
+`--config severity_medium.yaml` run does, and every Phase-3/4/5 result was
+produced with the override present. `locks.yaml` records it as
+`supplied_by: cli` with the discrepancy explicit, and `test_locks.py`
+asserts that documented state rather than forcing a change. **A human
+ruling is owed on whether Phase 6 configs carry `dp: 0.5` inline.**

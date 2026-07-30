@@ -48,10 +48,23 @@
 #   kappa_A 0.06 + lambda_0/lambda_load/f_weak  coupling_a_lock.md 2026-07-21
 #   kappa_B 1.0      kappa_b_lock.md 2026-07-27 (M4.4-revised)
 #   death_penalty 0.5  D4, decision_log 2026-07-19
-#   delta 0.0        comms live but undenied; r_comm is NOT locked until
-#                    M5.4, so 8.0 is the plumbing default. Link draws are
-#                    unconditional, so throughput is insensitive to both
-#                    (che/env/comms.py) — the cost is the same at any delta.
+#   delta 0.0        comms live but undenied (ELEMENT-OFF; the locked
+#                    element-ON delta = 1.0 lives in theta_star_*.yaml)
+#   r_comm 16.0      comms_lock.md 2026-07-30, stated explicitly rather
+#                    than inherited (repo-explorer ruling 1a 2026-07-31).
+#                    CORRECTION: this block previously read "r_comm is NOT
+#                    locked until M5.4, so 8.0 is the plumbing default".
+#                    M5.4 was folded into the M5.3 closure ruling and never
+#                    run; R_comm was locked at 16 on the geometric
+#                    observable alone.
+#                    THE MEASURED THROUGHPUT FIGURE IS UNAFFECTED by the
+#                    8.0 -> 16.0 change, and this is a shape argument, not
+#                    an estimate: in_range_mask builds the full [n, n]
+#                    Chebyshev matrix and sample_links draws [n, n]
+#                    uniforms unconditionally (invariant #3), so neither
+#                    delta nor r_comm changes a single array shape or draw
+#                    count (che/env/comms.py). Cost is identical at any
+#                    value of either knob.
 env:
   grid_size: 64
   n_agents: 12
@@ -68,6 +81,7 @@ theta:
   f_weak: 0.15
   kappa_B: 1.0
   delta: 0.0
+  r_comm: 16.0
   death_penalty: 0.5
   iota: 0.0
   sigma_s: 1.0

@@ -74,31 +74,64 @@ structure are theorems' hypotheses.
 
 ## Repository layout
 
+Refreshed against the tree 2026-07-31. **Keep it that way**: the
+phase-close checklist requires re-reading this block against the actual
+tree, because a new session treats it as authoritative before it has read
+any code. It previously omitted `che/calibration/` and `che/eval/`
+entirely — about a third of the codebase.
+
 ```
 CLAUDE.md
-docs/theory_foundations.md        # formal spec — the source of truth
+HANDOFF.md                        # session state for the next model
+docs/
+  theory_foundations.md           # formal spec — the source of truth
+  locks.yaml                      # MACHINE-READABLE registry of every locked
+                                  #   constant; asserted by tests/test_locks.py
+  decision_log.md                 # rulings, in the order they were issued
+  architecture_decisions_v1.md    # pre-Phase-0 architecture record
+*_lock.md                         # per-axis lock records at repo root:
+                                  #   severity_, coupling_a_, kappa_b_, comms_
 che/
   env/
     types.py        # chex.dataclass state containers (EnvState incl. rho)
     config.py       # frozen dataclasses; theta=(beta,kappa_A,kappa_B,delta)
                     #   + sub-params (sigma_s, eta, iota, collapse params,
-                    #   seeding radius, p_link params)
+                    #   seeding radius, r_comm)
     hazard.py       # CA fire kernel (Def. 3) + smoke field (Def. 6)
     structure.py    # collapse dynamics + Coupling A impulse (Def. 5)
     observation.py  # egocentric crops + Beer–Lambert attenuation (Coupling B)
     comms.py        # link graph sampling + message masking (Def. 7)
     tasks.py        # task dynamics + reward (reward-independent, Def. 2)
     env.py          # composed reset/step in the Prop.-1 order
+    e2c.py          # Thm.-1 memorization-gap harness (E2C, Phase 4)
+    e2c2.py         # E2C² — the comms-coupled variant (Remark 2″, Phase 5)
   train/
     networks.py     # shared-parameter actor-critic (swarm homogeneity)
     ippo.py         # PureJaxRL-style IPPO: GAE, clipped surrogate
     rollout.py      # lax.scan rollouts, batched via vmap
     pbt.py          # population outer loop (vmap over members, exploit/explore)
+                    #   `--bench` is the throughput gate instrument
+  calibration/      # measurement code behind the locks — NOT training
+    percolation.py  # Prop. 2 / Cor. 1: P_span, R_L crossings, beta_c
+    coupling_a.py   # Def. 5 calibration (collapse/seeding rates)
+    coupling_b.py   # Def. 6 calibration (detection band, masked_frac)
+    prop3.py        # Prop. 3 acceptance machinery
+    estimates.py    # estimators + CIs shared by the above
+    figures.py      # calibration figures
+  eval/
+    harness.py      # checkpoint -> policy -> episode eval -> summary JSON/NPZ
   bench/
-    throughput.py   # Phase 0 gate benchmark
-  tests/
-  configs/          # debug.yaml (CPU-scale), reference.yaml (gate scale)
-  scripts/
+    throughput.py   # Phase 0 gate benchmark (env-only; states keep-alive set)
+    memprobe.py     # compile-time memory probe (M5.1 arena ladder)
+    rowb_probe.py   # M5.1j row-B diagnostic
+    results/        # phase{0..5} reports, metrics, provenance (large; most
+                    #   checkpoints + renders are gitignored)
+  tests/            # 27 files; theory tests are ground truth (invariant #4)
+  configs/          # severity_{low,medium,high}.yaml + gate_pop12.yaml are
+                    #   live; debug.yaml is the CPU fixture; reference.yaml,
+                    #   m06_probe.yaml, phase1_accept.yaml are ARCHIVAL
+                    #   (pre-Phase-2 placeholder theta) — see docs/locks.yaml
+  scripts/          # run_m*.sh GPU job scripts + plotting/report .py
 ```
 
 ## Coding conventions
@@ -136,6 +169,20 @@ che/
 - When something is ambiguous, prefer the smallest implementation that
   satisfies the theory doc, and leave a `# DECISION:` comment.
 
+### Phase-close checklist
+
+At the close of every phase, in addition to the per-milestone routine:
+
+- [ ] **CLAUDE.md layout refreshed against the tree.** (human-issued
+      2026-07-31) Doc-rot here is worse than elsewhere: a new session reads
+      the layout block on day zero and treats it as authoritative. It had
+      drifted to omit `che/calibration/` and `che/eval/` entirely.
+- [ ] Every lock ruled during the phase is in `docs/locks.yaml` and
+      `che/tests/test_locks.py` is green.
+- [ ] Phase report written; GPU artifacts archived off-instance with
+      `sha256` recorded (see the artifact-persistence rule).
+- [ ] `HANDOFF.md` rewritten for the next session.
+
 ## Rulings bind only once transcribed (meta-rule, human-issued 2026-07-28)
 
 **A chat ruling binds only once it is transcribed into `decision_log.md` or
@@ -156,6 +203,29 @@ a false asymptotic claim. If a constant cannot be derived on the spot, state
 the inequality and defer the constant to the milestone that measures it.
 This binds both roles: the builder who offers a heuristic must label it one,
 and the transcriber must harden it or drop it before it enters a document.
+
+## Locks are enforced by test, not by memory (human-issued 2026-07-31)
+
+**Every locked constant lands in `docs/locks.yaml` in the same commit its
+ruling is transcribed, and `che/tests/test_locks.py` asserts that the
+configs and the `che/env/config.py` defaults agree with it.** A locked
+value must be *reachable from a config* — never supplied only by a
+command-line flag, and never left to a dataclass default in the configs
+that are required to carry it. `locks.yaml` records constants only; every
+entry cites the document that ruled it.
+
+Origin: **R_comm was locked at 16 on 2026-07-30 and was unreachable from
+any config for a day.** `ThetaConfig.r_comm` defaulted to 8.0, no YAML set
+it, and the locked geometry existed only as `--r-comm 16` inside two shell
+scripts — a geometry whose own lock record notes that R = 8 misses the
+prior band it was locked to hit. Nothing failed, because nothing checked.
+The same defect class is currently open for `death_penalty` (D4 locks 0.5;
+the configs carry 0.0 and every script passes `--death-penalty 0.5`),
+recorded in `locks.yaml` with a human ruling owed.
+
+This rule is the class-level fix for the same failure the transcription
+meta-rule addresses at the ruling level: **a lock that lives only in prose
+is inherited by memory, and memory is not a mechanism.**
 
 ## Throughput gates bind to measured training throughput (human-issued 2026-07-28)
 
