@@ -148,10 +148,21 @@ def run(
     depth = STAGES.index(stage)
     trail = Trail(out_json)
 
+    tcfg = cfg.train
     tc = toolchain()
-    trail.add(stage="provenance", ok=True, **tc, memory=device_memory())
+    # The artifact must say what was probed, not only what it found — a size
+    # bisect produces several trails and they have to be tellable apart.
+    trail.add(stage="provenance", ok=True, **tc, memory=device_memory(),
+              pop_size=tcfg.pop_size, n_envs=tcfg.n_envs,
+              n_minibatches=tcfg.n_minibatches, rollout_len=tcfg.rollout_len,
+              pbt_interval=tcfg.pbt_interval, uint8_obs=tcfg.uint8_obs,
+              remat=tcfg.remat)
     print(f"[rowb] toolchain jax {tc['jax']} / jaxlib {tc['jaxlib']} on "
           f"{tc['backend']} ({tc['device_kind']}, {tc['device_count']} dev)",
+          flush=True)
+    print(f"[rowb] probing pop {tcfg.pop_size} x envs {tcfg.n_envs} x rollout "
+          f"{tcfg.rollout_len}, K_pbt {tcfg.pbt_interval}, nmb "
+          f"{tcfg.n_minibatches}, uint8 {tcfg.uint8_obs}, remat {tcfg.remat}",
           flush=True)
     print(f"[rowb] device at rest: {_mem_line(device_memory())}", flush=True)
     if depth == 0:
@@ -250,11 +261,31 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--windows", type=int, default=3)
     p.add_argument("--window-secs", type=float, default=30.0)
     p.add_argument("--out-json")
+    # Size overrides for a "does it execute AT ALL" bisect. These change what
+    # is being run and can never produce a gate number — a rate measured under
+    # them is a diagnostic, and the trail records the effective config so the
+    # two can never be confused later.
+    p.add_argument("--pop-size", type=int, help="diagnostic override")
+    p.add_argument("--n-envs", type=int, help="diagnostic override")
+    p.add_argument("--n-minibatches", type=int, help="diagnostic override")
     args = p.parse_args(argv)
+
+    import dataclasses
 
     from che.env.config import load_config
 
-    rows = run(load_config(args.config), stage=args.stage, seed=args.seed,
+    cfg = load_config(args.config)
+    overrides = {k: v for k, v in (("pop_size", args.pop_size),
+                                   ("n_envs", args.n_envs),
+                                   ("n_minibatches", args.n_minibatches))
+                 if v is not None}
+    if overrides:
+        cfg = dataclasses.replace(cfg,
+                                  train=dataclasses.replace(cfg.train, **overrides))
+        print(f"[rowb] DIAGNOSTIC OVERRIDES {overrides} — this is not a gate "
+              "configuration and any rate below is not a gate number",
+              flush=True)
+    rows = run(cfg, stage=args.stage, seed=args.seed,
                windows=args.windows, window_secs=args.window_secs,
                out_json=args.out_json)
     reached = [r["stage"] for r in rows if r.get("ok")]
