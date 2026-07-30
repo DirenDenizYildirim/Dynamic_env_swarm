@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
-# M5.1j GPU job — diagnose row B, and settle the requirement drift (~15 GPU-min).
+# M5.1j GPU job — diagnose row B, and settle the requirement drift.
+#
+# COST, corrected from measurement (2026-07-30): the original '~15 GPU-min'
+# was wrong by an order of magnitude. The FIRST execution of a chunk at this
+# configuration costs ~17 min (measured: 1036 s of a 1054 s row, with compile
+# at ~18 s), so budget ~45-90 min. The arena ladder early-stops at its first
+# success, so at most one rung pays that cost; failures are cheap.
 #
 # Row B has failed three times and produced no rate:
 #   m51d  OOM naming 49.08 GiB (float32 obs; uint8 contingency activated)
@@ -76,7 +82,19 @@ export XLA_PYTHON_CLIENT_MEM_FRACTION=${XLA_PYTHON_CLIENT_MEM_FRACTION:-0.95}
 # guard that fires first replaces a real diagnostic with a return code — the
 # m51i lesson. Unlike m51i, a kill now still leaves the stage trail on disk.
 PROBE_TIMEOUT=${PROBE_TIMEOUT:-1200}
-STAGE_TIMEOUT=${STAGE_TIMEOUT:-1500}
+STAGE_TIMEOUT=${STAGE_TIMEOUT:-2700}
+# The windows stage pays the first-execution cost AGAIN (bench_population
+# re-inits, re-compiles and runs its own warm-up round) before it times
+# anything, so its guard cannot be the same as stage one's.
+#
+# MEASURED 2026-07-30, first M5.1j run: the 31.8 GiB rung took 1054 s, of
+# which ~1036 s was a SINGLE first execution — compile was ~18 s. So the
+# first call costs ~17 min at this configuration and the original 1500 s
+# guard left ~7 min for warm-up plus three 30 s windows. That is why three
+# row-B attempts died without a rate: not a hang, not capacity, a one-time
+# cost longer than every guard placed in front of it. Guards are now sized
+# from that measurement rather than from the 1112 s OOM.
+WINDOWS_TIMEOUT=${WINDOWS_TIMEOUT:-5400}
 
 mkdir -p "$OUT"
 : > "$OUT/timings.txt"
@@ -204,7 +222,11 @@ TOTAL_GIB=$(uv run python -c "print(f'{${TOTAL_MIB:-0} / 1024:.1f}')" 2>/dev/nul
 echo "detected card: ${TOTAL_GIB} GiB total" | tee -a "$OUT/provenance.txt"
 
 # 31.8 = the 5090 the gate config must eventually fit; the rest bracket it.
-ARENA_TARGETS_GIB=${ARENA_TARGETS_GIB:-"31.8 36 42 56"}
+# Rungs below 31.8 come FIRST: the 2026-07-30 run stopped at its lowest
+# rung (31.8 RUNS, peak 27.53 GiB), which bounded the minimum without
+# locating it. 30.2 is what a 5090 actually offers at mem_fraction 0.95
+# — the rung that decides Phase 6/7 — and 28 brackets the measured peak.
+ARENA_TARGETS_GIB=${ARENA_TARGETS_GIB:-"28 30.2 31.8 36 42 56"}
 MIN_ARENA=""
 ONE_OK=0
 : > "$OUT/arena_ladder.txt"
@@ -256,7 +278,7 @@ fi
 # --------------------------------------------- 5. the gate number, if earned
 WIN_OK=0
 if [ "$ONE_OK" -eq 1 ]; then
-  stage "rowb --stage windows (THE GATE)" "$STAGE_TIMEOUT" \
+  stage "rowb --stage windows (THE GATE)" "$WINDOWS_TIMEOUT" \
     env XLA_FLAGS="$BENCH_FLAGS" uv run python -m che.bench.rowb_probe \
     --config "$CFG" --stage windows --windows "$WINDOWS" \
     --window-secs "$WINDOW_SECS" --out-json "$OUT/rowb_windows.json" \
@@ -265,7 +287,7 @@ if [ "$ONE_OK" -eq 1 ]; then
     # Ruling 1d: determinism pricing, which never got a number at this
     # config. Row B already runs with autotuning off, so this isolates the
     # deterministic-ops flag rather than confounding it with the autotuner.
-    stage "rowb --stage windows (deterministic flags, ruling 1d)" "$STAGE_TIMEOUT" \
+    stage "rowb --stage windows (deterministic flags, ruling 1d)" "$WINDOWS_TIMEOUT" \
       env XLA_FLAGS="--xla_gpu_deterministic_ops=true $BENCH_FLAGS" \
       uv run python -m che.bench.rowb_probe \
       --config "$CFG" --stage windows --windows "$WINDOWS" \
