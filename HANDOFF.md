@@ -1,84 +1,101 @@
-# HANDOFF — session state for the next model (written 2026-07-27)
+# HANDOFF — session state for the next model (written 2026-07-30)
 
-You are picking up mid-Phase-4 as the implementation engineer. Read, in
-order, before doing anything: `CLAUDE.md` (invariants — non-negotiable),
-`phase4_prompt.md` (the milestone spec governing all current work),
-`docs/theory_foundations.md` §5 (Def. 6, Thm. 1) and §10 (Phase-4 hook).
+You are picking up at the **Phase-5 close**. Read, in order, before doing
+anything: `CLAUDE.md` (invariants — non-negotiable, and note the two rules
+added 2026-07-30), `docs/decision_log.md` from "M5.3 CLOSURE RULING"
+onward, and `che/bench/results/phase5/phase5_report.md`.
+
+**Do not start Phase 6.** The PHASE 6 ENTRY GATE is a human decision and it
+has grown a queue (below).
 
 ## Where things stand
 
-- **Phases 0–3: complete and locked.** Severities β = 0.43/0.49/0.70
-  (Low/Med/High, β_c = 0.500), Coupling A locked (f_weak 0.15, λ₀ 5e-5,
-  λ_load 4e-4, κ_A 0.06, r_seed 1), dp = 0.5 (D4), obs v2 was D5.
-- **M4.0 (30905c9): done.** `burnt_fraction` + `masked_frac` info
-  channels and eval-harness metrics.
-- **M4.1 (bfab1d2 code, 52e8a76 close): done, STOP satisfied.** Obs v3 =
-  Coupling B live: per-cell stochastic masking by Beer–Lambert
-  transmittance + visibility plane 7 (8 planes total, schema frozen —
-  Phase 5 adds message inputs, not grid planes).
-  - `transmittance()` in `che/env/observation.py` is **THE ONE** shared
-    code path — env, E2C validation, diagnostics must all call it. Never
-    fork or inline a variant.
-  - Reveal uniforms come from `jax.random.fold_in(key, _OBS_STREAM=47)`
-    (see `che/env/env.py`) so kernel streams are untouched; κ_B=0 is
-    bitwise-identical to the pre-masking env (tests prove it).
-  - Bench row (RTX 5090, in `che/bench/results/gate_report.md`):
-    env-only 8,375,048 steps/s (−12.6 % vs v2); training projection ÷81
-    = **103.4k ≥ 100k → uint8 contingency UNTRIGGERED**, margin ~3 %.
-    End-to-end training neutral (276 s vs 285 s medium probe). PASS with
-    flag: any further env-side cost (Phase 5 comms) will cross the line
-    and auto-trigger the contingency (standing rule 2026-07-21: activate
-    and re-bench, don't ask; the 100k line moves only via a human budget
-    recalc in the decision log).
-- Suite: **103 passed** (+7 `@slow` deselected), `ruff check` clean.
-  Note: `ruff format` is NOT enforced (pre-existing files aren't
-  format-clean). CPU suite wall time ~140 s — slightly past the ~2 min
-  CLAUDE.md guidance, flagged but not acted on.
+- **Phases 0–5 complete.** Severities β = 0.43/0.49/0.70 (β̂_c = 0.500),
+  κ_A = 0.06, κ_B = 1.0, d_p = 0.5, obs v3, **δ = 1.0 and R_comm = 16**
+  (`comms_lock.md`).
+- **Phase 5's result is a certified negative.** Communication is worth
+  nothing measurable to this swarm: five content-ablation arms across two
+  severities and two connectivity regimes, plus total denial, all null.
+  Theory predicted it (Remark 2″(i) — redundancy substitutes). The
+  load-bearing evidence is the **unused connectivity bit**: that signal
+  needs no encoder, so its neglect is demand-side, not a limitation of the
+  frozen random-projection channel. DIAL was formally declined with
+  reasons; the paper carries "gradient-shaped messaging remains untested".
+- Suite green, `ruff` clean. Run the suite **chunked and thread-capped** —
+  an unbounded `pytest che/tests` once crashed the machine:
+  `OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 nice -n 15 uv run pytest <subset>`.
 
-## Next: M4.2 — E2C micro-env, Theorem-1 validation (per phase4_prompt.md)
+## Two rules added 2026-07-30 — read them before writing any script
 
-Wait for the human's go-ahead, then:
+1. **Bars come with floors** (`CLAUDE.md`). No acceptance threshold enters
+   a script without a measured floor for the quantity it grades, or an
+   explicit UNDERPOWERED flag. **Thresholds finer than their instruments
+   are void by construction** — void, not failed, because they would void
+   a PASS identically. Four bars in one phase were set without floors and
+   each was wrong. Floors are **per-metric AND per-hardware** facts.
+2. **Throughput figures state their XLA flags** (proposed by the RA, in
+   the decision log; the standing keep-alive-set rule is its sibling). The
+   same config measures 3,795 and 62,084 steps/s on one flag.
 
-- Build `che/env/e2c.py`: two-corridor environment, d=6, ℓ_f=2, k=17;
-  smoke via the standard σ_s=1.0 / η=0.5 dynamics from t=0; the agent's
-  information about the correct corridor flows **only** through the real
-  Coupling-B code path (`observation.transmittance` + reveal draw).
-- Predicted J*(κ_B) = ½ + q(κ_B)/2 with q computed **numerically by MC**
-  through the shared `transmittance` (robustness note replaces the
-  closed form q = 1 − ∏_{j=ℓ_f}^{d+ℓ_f} (1 − e^{−κ_B j})).
-- Empirical: hand-coded optimal policy, ≥4096 episodes per κ_B point,
-  plus an always-L memorizing policy.
-- Acceptance (@slow, CPU): empirical within 2·SE of predicted
-  everywhere; memorizing policy flat at ½; J*(0) ≥ 0.99; large-κ_B gap
-  ≤ 0.02. Figure goes into `phase4_report.md`. **STOP — human reviews
-  the figure.**
+## Hardware — the plan changed on measurement
 
-## Then
+**A 31.8 GiB 5090 cannot run `configs/gate_pop12.yaml`.** Autotuning on
+needs ~61.6 GiB *at compile*; autotuning off fits but is 16.4× slower
+(→ 6,295 GPU-hours). Both fail. Phase 5 finished on an **RTX PRO 6000
+Blackwell (96 GB, ~$1/h) at 62,084 steps/s** — one 1000-update population
+run costs **$0.88** and takes 53 min. **No box is running**; that instance
+was destroyed after all artifacts were pulled and sha256-verified.
 
-- **M4.3:** κ_B sweep (≥5 candidates; random + 200-update probe policies
-  per severity, obs v3, both couplings on) against three bands: Medium
-  masked_frac ∈ [0.15, 0.45] on fire-active steps; P(Burning at crop
-  distance 3 revealed) ∈ [0.4, 0.7]; E2C q ∈ [0.3, 0.7]. Propose in
-  `kappa_b_lock.md`. **STOP — human locks κ_B.** (σ_s, η stay fixed;
-  optical depth is the κ_B·ρ product, so sweeping κ_B alone is general.
-  Pattern to follow: `che/calibration/coupling_a.py` — CRN pairing,
-  reference-scale 64²/12 agents/horizon 256.)
-- **M4.4:** acceptance grid — 3 severities × κ_B ∈ {0, locked} × 2
-  seeds, dp 0.5, 500 updates, Coupling A ON; report the per-episode
-  coupling-co-active distribution (first nonzero data); render audit ≥6
-  eps/severity incl. the m31b fire-free-coverage watch item conditioned
-  on burnt_fraction; complete `phase4_report.md`. **STOP — Phase 4 end;
-  Phase 5 GO/NO-GO is human.**
+Never set `--xla_gpu_autotune_level=0` on this workload. Toolchain matters:
+the same config measured 24.69 GiB on one rental and 27.53 on the next,
+from a jax/jaxlib change alone.
 
-## Working agreements (beyond CLAUDE.md)
+## The PHASE 6 ENTRY GATE queue (all human-owed)
 
-- GPU jobs: no local CUDA (GTX 1650 display only). The human runs shell
-  scripts you place in `che/scripts/` on a vast.ai RTX 5090 box (git
-  pull → `bash che/scripts/<job>.sh 2>&1 | tee <tag>_console.log`) and
-  brings results back into `che/bench/results/`. Orbax checkpoint dirs
-  stay on disk, out of git (m31b/m41 precedent).
-- After each milestone: `uv run ruff check che/`, full CPU suite
-  (`uv run pytest che/tests -m "not slow"`), commit naming the
-  milestone. Never start the next milestone red.
-- Obs v1/v2 are archival — no cross-version comparisons, ever.
+Original four: (1) dose-response design formalized into the phase prompt;
+(2) pilot scoped to 2 mixture points; (3) one-paper vs two-paper fork
+scheduled after the pilot; (4) power analysis from the **measured**
+reproducibility floors, checking the registered 4 seeds/point against them.
+
+Added this session:
+
+5. **Budget decomposition** — 86e9 planned steps has **no bottom-up
+   derivation anywhere in the repo**. It is the same computation as the
+   power analysis (runs = design × seeds-from-floors, costed at $0.88/run).
+   A realistic Phase 6/7 is ~$81, so **money is not the constraint —
+   wall-clock and statistical power are**.
+6. **Hardware**, given the 5090 is out.
+7. **Composition is effectively {Coupling A, Coupling B}**; δ = 1.0 is
+   retained in θ* for registration fidelity at zero cost. The
+   dose-response x-axis (A×B co-active visitation) is unaffected.
+8. **Power reality:** High resolves only ~11-point effects (floor
+   completion 0.0522 / survival 0.0621) where Medium resolves ~3
+   (0.0399 / 0.0130). Any High claim needs a huge effect or many seeds —
+   ~46 seeds/arm to reach Medium's bar. Design Phase 6 knowing this.
+
+## Open threads (small)
+
+- **24 M5.5 renders are un-inspected** — the branch-loitering /
+  information-buying watch item is genuinely open
+  (`che/bench/results/phase5/m55/renders/`).
+- **M5.1k lever sweep truncated at 3/6 rows** (instance stopped
+  mid-sweep). The two informative rows already answered it: there is **no
+  free throughput win**; more concurrent envs are marginally *worse*.
+- **Untracked/deleted in the worktree, deliberately left alone:**
+  `phase4_prompt.md`, `phase5_prompt.md` untracked; `phase2_results.zip`,
+  `phase3_prompt.md` deleted. Ask before reconciling.
+
+## Working agreements
+
+- GPU jobs: no local CUDA. Either hand the user scripts in `che/scripts/`,
+  or — as on 2026-07-30 — drive a box directly over SSH if given access.
+  Launch detached with `nohup`, poll in separate calls, `scp` artifacts
+  back, **verify sha256 before releasing any instance**. Watch out:
+  `pkill -f <pattern>` matches your own SSH command line.
+- After each milestone: `uv run ruff check che/`, the chunked CPU suite,
+  commit naming the milestone. Never start the next milestone red.
 - Milestones marked STOP end the turn: report and wait for the human.
+- **Rulings bind only once transcribed** into `decision_log.md` or
+  `CLAUDE.md` in the same session. Transcribe first, then act.
+- Numbers enter documents **derived or measured in the same session** —
+  never transliterated from a chat heuristic.
