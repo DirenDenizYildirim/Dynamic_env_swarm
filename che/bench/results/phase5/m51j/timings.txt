@@ -1,0 +1,4 @@
+requirement HEAD (cc53a4e) 27s OK
+requirement fa32113 (old code, today's toolchain) 25s OK
+arena 31.8 GiB (mem_fraction 0.3326) --stage one 1054s OK
+rowb --stage one (full card, mem_fraction 0.95) 1055s OK

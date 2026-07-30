@@ -1,0 +1,19 @@
+
+=== requirement fa32113 (old code, today's toolchain) ===
+[2x2] probing with /tmp/che_m51g_tree/che/bench/memprobe.py
+[memprobe] compiling baseline ...
+           total 27.53 GiB (temp 27.39)
+[memprobe] compiling remat ...
+           total 27.53 GiB (temp 27.39)
+
+========================================================================
+candidate      peak GiB  changes
+------------------------------------------------------------------------
+baseline          27.53  as committed
+remat             27.53  recompute activations; same hyperparameters, same updates
+========================================================================
+A candidate that fits is not automatically the right choice: remat
+preserves the experiment exactly (same hyperparameters, same
+updates, loss verified identical), while n_minibatches / pop_size /
+n_envs change what is being run. That trade is a human call.
+requirement fa32113 (old code, today's toolchain) 25s OK

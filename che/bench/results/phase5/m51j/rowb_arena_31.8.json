@@ -1,0 +1,79 @@
+[
+ {
+  "stage": "provenance",
+  "ok": true,
+  "jax": "0.11.0",
+  "jaxlib": "0.11.0",
+  "backend": "gpu",
+  "device_kind": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "device_count": 1,
+  "disable_jit": false,
+  "memory": {
+   "num_allocs": 2,
+   "bytes_in_use": 256,
+   "peak_bytes_in_use": 512,
+   "largest_alloc_size": 256,
+   "bytes_limit": 33917239296,
+   "bytes_reserved": 0,
+   "peak_bytes_reserved": 0,
+   "largest_free_block_bytes": 33917238784,
+   "pool_bytes": 33917239296,
+   "peak_pool_bytes": 33917239296
+  }
+ },
+ {
+  "stage": "init",
+  "ok": true,
+  "seconds": 4.378624149598181,
+  "memory": {
+   "num_allocs": 115,
+   "bytes_in_use": 150859008,
+   "peak_bytes_in_use": 305016832,
+   "largest_alloc_size": 151010816,
+   "bytes_limit": 33917239296,
+   "bytes_reserved": 0,
+   "peak_bytes_reserved": 0,
+   "largest_free_block_bytes": 33766379264,
+   "pool_bytes": 33917239296,
+   "peak_pool_bytes": 33917239296
+  }
+ },
+ {
+  "stage": "compile",
+  "ok": true,
+  "seconds": 9.86271034553647,
+  "temp_bytes": 29414482096,
+  "temp_gib": 27.394371196627617,
+  "memory": {
+   "num_allocs": 115,
+   "bytes_in_use": 150859008,
+   "peak_bytes_in_use": 305016832,
+   "largest_alloc_size": 151010816,
+   "bytes_limit": 33917239296,
+   "bytes_reserved": 0,
+   "peak_bytes_reserved": 0,
+   "largest_free_block_bytes": 33766379264,
+   "pool_bytes": 33917239296,
+   "peak_pool_bytes": 33917239296
+  }
+ },
+ {
+  "stage": "one",
+  "ok": true,
+  "seconds": 1036.2482213731855,
+  "steps": 3932160,
+  "steps_per_s": 3794.612061952969,
+  "memory": {
+   "num_allocs": 132,
+   "bytes_in_use": 150874368,
+   "peak_bytes_in_use": 29565357312,
+   "largest_alloc_size": 29414482176,
+   "bytes_limit": 33917239296,
+   "bytes_reserved": 0,
+   "peak_bytes_reserved": 0,
+   "largest_free_block_bytes": 33766363904,
+   "pool_bytes": 33917239296,
+   "peak_pool_bytes": 33917239296
+  }
+ }
+]

@@ -1,0 +1,20 @@
+
+=== requirement HEAD (cc53a4e) ===
+[memprobe] compiling baseline ...
+           total 27.53 GiB (temp 27.39)
+[memprobe] compiling remat ...
+           total 27.53 GiB (temp 27.39)
+
+[memprobe] jax 0.11.0 / jaxlib 0.11.0 on gpu (NVIDIA RTX PRO 6000 Blackwell Workstation Edition)
+
+========================================================================
+candidate      peak GiB  changes
+------------------------------------------------------------------------
+baseline          27.53  as committed
+remat             27.53  recompute activations; same hyperparameters, same updates
+========================================================================
+A candidate that fits is not automatically the right choice: remat
+preserves the experiment exactly (same hyperparameters, same
+updates, loss verified identical), while n_minibatches / pop_size /
+n_envs change what is being run. That trade is a human call.
+requirement HEAD (cc53a4e) 27s OK

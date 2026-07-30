@@ -372,6 +372,93 @@ measured `pop6` candidate (13.77 GiB), two groups of six should peak near
 from measured numbers and is **labelled an estimate**, not a measurement;
 adopting it is a Phase-6-entry-gate decision.
 
+### M5.1j results (2026-07-30, RTX PRO 6000 Blackwell, jax/jaxlib 0.11.0)
+
+**Q1 — the requirement drift is the TOOLCHAIN; the five commits are
+cleared.** Same box, same session, same flags:
+
+| code | measured | card / date |
+|---|---|---|
+| fa32113 (m51g's tree) | 27.534881 GiB | PRO 6000, 07-30 |
+| HEAD `cc53a4e` | 27.534886 GiB | PRO 6000, 07-30 |
+| dbdb15c (m51i), for reference | 27.534882 GiB | **5090**, 07-29 |
+| fa32113 (m51g), for reference | **24.6872 GiB** | **5090**, 07-28 |
+
+Old and new code agree to five decimals today, and today's figure matches
+m51i's *on a different GPU* to seven. Two cards agree; two dates do not. The
++11.53 % moved with the rental's toolchain between 07-28 and 07-29 — not
+with our code, not with the device. `remat` tells the same story in a second
+quantity: 2.09 GiB saved at m51g, +5×10⁻⁶ GiB today.
+
+**Q2 — row B was never broken. The cause was our own instrument flag.**
+
+| | compile | one chunk | rate | peak |
+|---|---|---|---|---|
+| `--xla_gpu_autotune_level=0` | 10.0 s | 1036.2 s | 3,795 steps/s | 27.53 GiB |
+| autotuning **on** (default) | 101.8 s | 63.2 s | **62,186 steps/s** | **61.56 GiB** |
+
+**16.4× apart**, reproduced three times at 1036.6 / 1036.2 / 1036.2 s and
+twice at 63.2 s. The peak column is the whole history: the autotuner's
+scratch is a **compile-time** requirement of ~61.6 GiB, so on a 31.8 GiB
+5090 it cannot fit — *that* was m51d's "49.08 GiB" and m51i's 5.72 GiB
+retry loop. We disabled autotuning to make it fit, which made it 16×
+slower, then spent three attempts diagnosing the slowness we had
+introduced, behind guards sized for the OOM we had removed. Every "hang"
+was arithmetic proceeding correctly at an untuned convolution's pace.
+
+Memory was never the constraint on *execution*: the 31.8 GiB arena and the
+90.22 GiB full card both executed in 1036 s, with stage-one peak 27.53 GiB
+in both — exactly memprobe's prediction.
+
+**Q3 — the gate row: 62,084 steps/s (IQR 25)**, rates [62102, 62077,
+62084]. Warm equals cold (62,186), so there is no amortization; that is the
+steady-state rate. It is **below the 100 k line**, and it is **not on the
+spending consumer** — CLAUDE.md binds the gate to the card that spends, and
+the 5090 is now out (below).
+
+### The budget was computed from the wrong configuration
+
+| config | rate | GPU-h for 86e9 steps | @$0.45/h | @$1.00/h |
+|---|---|---|---|---|
+| row A — `m06_probe.yaml`, **obs_window 5** | 142,421 | 167.7 | $75 | $168 |
+| **gate config — obs_window 9, autotune on** | **62,084** | **384.8** | **$173** | **$385** |
+| gate config, autotune off | 3,795 | 6,294.8 | $2,833 | $6,295 |
+
+The "86e9 steps → 167.7 GPU-hours, ~$151 with ×2 buffer" line came from row
+A, which runs `m06_probe.yaml` at **obs_window 5** — superseded at M1.2. The
+configuration Phase 6/7 actually runs carries obs_window 9, 3.24× the
+observation volume, and measures **2.29× slower**. Phase 6/7 therefore needs
+**384.8 GPU-hours, not 167.7**, against a $150–215 total budget.
+
+**This was true before any hardware question and is not fixed by choosing a
+card.** It is the ÷81 pattern a third time: a headline number attached to a
+configuration that is not the one that spends.
+
+### The 5090 is not viable at this configuration
+
+Autotuning on needs ~61.6 GiB at compile against a 5090's 31.8 GiB → OOM.
+Autotuning off fits, at 3,795 steps/s → 6,295 GPU-hours → $2,833. Both
+fail, so the hardware split ruled earlier on 2026-07-30 (Phase 6/7 on a
+~$0.40/h 5090) does not survive its own measurement. Even a 96 GB card
+shows BFC pressure warnings during autotuned compiles, and the autotuner's
+temp varied run to run (27.39 vs 28.26 GiB), so the requirement is not a
+fixed number.
+
+### Owed to the Phase-6 entry gate
+
+Reported, not resolved here; the 100 k line is not renormalized:
+
+1. The budget must be **recomputed at the real configuration**; the $151
+   figure is retired.
+2. Phase 6/7 needs either a card with ~62 GiB of compile headroom (~$1/h →
+   $385) or a configuration that lets the autotuner fit a cheaper card —
+   `n_minibatches` 16 prices at 9.36 GiB and sequential population groups at
+   ~13.9 GiB, both untested against autotuner scratch.
+3. Any future throughput figure **states its XLA flags**, exactly as the
+   standing rule already requires a keep-alive set. A rate without its flags
+   is not a measurement: 3,795 and 62,084 are the same code, same card, same
+   day.
+
 ---
 
 ## M5.2 — ★ Remark-2 VoC validation ★ (theory §5 Remark 2′/2″/2‴)

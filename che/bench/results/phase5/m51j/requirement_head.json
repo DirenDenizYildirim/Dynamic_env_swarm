@@ -1,0 +1,39 @@
+[
+ {
+  "ok": true,
+  "temp_gib": 27.394371196627617,
+  "argument_gib": 0.14049625396728516,
+  "output_gib": 0.14051029831171036,
+  "total_gib": 27.534881494939327,
+  "label": "baseline",
+  "note": "as committed",
+  "n_minibatches": 4,
+  "pop_size": 12,
+  "n_envs": 128,
+  "uint8_obs": true,
+  "remat": false
+ },
+ {
+  "ok": true,
+  "temp_gib": 27.3943759649992,
+  "argument_gib": 0.14049625396728516,
+  "output_gib": 0.14051029831171036,
+  "total_gib": 27.53488626331091,
+  "label": "remat",
+  "note": "recompute activations; same hyperparameters, same updates",
+  "n_minibatches": 4,
+  "pop_size": 12,
+  "n_envs": 128,
+  "uint8_obs": true,
+  "remat": true
+ },
+ {
+  "label": "_toolchain",
+  "jax": "0.11.0",
+  "jaxlib": "0.11.0",
+  "backend": "gpu",
+  "device_kind": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "device_count": 1,
+  "disable_jit": false
+ }
+]

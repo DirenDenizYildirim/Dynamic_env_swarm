@@ -976,3 +976,44 @@ at High to be interpretable — so High precedes it on either path.
 
 Cost ~2.2 GPU-hours (~$2.20 at the PRO 6000 rate): 4 floor runs + 2 cells ×
 3 arms × 3 seeds, CRN-paired evals throughout.
+
+## M5.1j outcome (RA, 2026-07-30) — three findings, one of them budgetary
+
+Measured on an RTX PRO 6000 Blackwell, jax/jaxlib 0.11.0. Full record:
+`phase5_report.md`, "M5.1j results". Recorded here because two prior
+rulings are superseded by measurement and one budget line is retired.
+
+1. **The requirement drift was the TOOLCHAIN.** fa32113 and HEAD measure
+   27.534881 / 27.534886 GiB on the same box today, and today's figure
+   matches m51i's 27.534882 *on a different GPU*. Two cards agree, two dates
+   do not. The five commits between m51g and m51i are cleared; ruling 3 of
+   the round-2 delegated rulings is discharged.
+2. **Row B was never broken — `--xla_gpu_autotune_level=0` was.** With it:
+   1036 s per chunk, 3,795 steps/s, 27.53 GiB. Without it: 63 s, 62,186
+   steps/s, 61.56 GiB *at compile*. The autotuner's scratch is what never
+   fit a 5090; disabling it bought a fit at 16.4× the cost, and three
+   attempts were then spent diagnosing that cost behind guards sized for
+   the OOM the flag had removed.
+   **Consequence: the hardware split ruled earlier today is SUPERSEDED.**
+   Phase 6/7 cannot run on a 5090 at this configuration — autotuning on
+   OOMs at 31.8 GiB, autotuning off costs 6,295 GPU-hours.
+3. **The budget was computed from the wrong configuration.** The "86e9
+   steps → 167.7 GPU-h, ~$151" line came from row A, which runs
+   `m06_probe.yaml` at obs_window 5 — superseded at M1.2. The real
+   Phase-6/7 configuration measures 62,084 steps/s (IQR 25), so it needs
+   **384.8 GPU-hours**: $173 at $0.45/h, $385 at $1.00/h, against a
+   $150–215 total budget. **RULING: the $151 figure is retired.** No
+   replacement is set here — the entry gate recomputes it, because the
+   remedy (cheaper card vs cheaper configuration) changes the number.
+
+**The 100 k line is NOT renormalized.** The measured 62,084 sits below it;
+the pre-committed contingency (uint8) is already active, so the ladder is
+exhausted and this is a Phase-6-entry-gate decision, exactly as ruling 1c
+anticipated. Noted for that gate: the measurement is not on the spending
+consumer, and what the spending consumer will be is now itself open.
+
+**Proposed for `CLAUDE.md`, NOT written there by the RA** (same handling as
+the toolchain-provenance proposal): *every throughput figure states the XLA
+flags it was measured under, exactly as it must state its keep-alive set. A
+rate without its flags is not a measurement* — 3,795 and 62,084 steps/s are
+the same code, the same card and the same day.

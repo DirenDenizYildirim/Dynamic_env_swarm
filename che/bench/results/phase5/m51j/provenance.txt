@@ -1,0 +1,15 @@
+run: M5.1j row-B diagnostic + requirement 2x2
+date_utc: 2026-07-30T10:12:36Z
+git_commit: cc53a4e0127eeeafd5dc25a7b6516cf07385c6d5
+git_dirty: 1 file(s)
+config: che/configs/gate_pop12.yaml
+old_ref: fa32113 (fa32113)
+xla_flags: --xla_gpu_autotune_level=0
+mem_fraction: 0.95
+gpu: NVIDIA RTX PRO 6000 Blackwell Workstation Edition, 97887 MiB, 590.44.01
+cuda_smi: 98.02.81.00.07
+nvcc: Build cuda_13.1.r13.1/compiler.37061995_0
+host_ram_gib: 1511 total, 1407 available
+nproc: 256
+compute_apps_before: 
+detected card: 95.6 GiB total
