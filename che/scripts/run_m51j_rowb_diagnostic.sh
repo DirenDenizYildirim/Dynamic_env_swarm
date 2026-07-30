@@ -29,6 +29,22 @@
 #    allocator-retry loop (GPU pinned at the limit, util 0 %) from host swap
 #    (RSS at host RAM, util 0 %) from slow-but-progressing (util > 0).
 #
+# Q3 CAN PHASE 6/7 RUN ON A 5090? Planned card split (human, 2026-07-30):
+#    Phase 5 finishes on a large card, Phase 6/7 spends on a ~$0.40/h 5090
+#    because that is the only price at which 86e9 steps fits the budget. So
+#    the question a large card must answer before it is released is not "does
+#    the gate config run here" — it will — but "what is the SMALLEST arena it
+#    runs in". Section 3 caps XLA's arena in GiB and walks it upward, which
+#    gives the 5090 question a control arm on identical silicon. If the
+#    minimum lands above ~30 GiB usable, Phase 6/7 on a 5090 needs sequential
+#    population groups or another rung, and the entry gate should know that
+#    BEFORE the 5090 is rented rather than after it fails a fourth time.
+#
+#    What this does NOT do: produce the gate number. Throughput measured here
+#    is this card's throughput. CLAUDE.md binds the gate to measured training
+#    throughput of the SPENDING consumer, so the binding row still has to come
+#    from a 5090 — informed, now, by a minimum-arena figure instead of a guess.
+#
 # THE 100 k LINE IS NOT RENORMALIZED AND NO EXPERIMENT QUANTITY IS TOUCHED.
 # If a rate comes back under the line, that is reported to the Phase-6 entry
 # gate. If no rate comes back, the trail says where it stopped and that also
@@ -166,11 +182,61 @@ runpy.run_module('che.bench.memprobe', run_name='__main__')
   fi
 fi
 
-# ------------------------------------------------- 3. where does row B stop?
-# Preallocated, exactly as the gate would run. --stage one is the decisive
-# depth: it allocates the population, compiles, and executes ONE K_pbt chunk.
+# ---------------------------------- 3. THE ARENA LADDER: what does it need?
+# The point of running this on a large card. Phase 6/7 is planned for a
+# 5090 (~31.8 GiB) because that is where the budget arithmetic works, so the
+# question that decides Phase 6/7 is not "does it run here" — it will — but
+# "what is the SMALLEST arena this config runs in".
+#
+# Capping XLA's preallocated arena emulates a smaller card *with a control
+# arm on the same silicon, toolchain and driver*: a 5090 alone can only
+# provide the failing half. Targets are stated in GiB and converted to a
+# fraction of the detected card, so the ladder means the same thing on any
+# box. Ascending with an early stop, so the first success IS the minimum
+# viable arena at this resolution.
+#
+# HONEST LIMIT, and it belongs in the report: this emulates arena SIZE, not a
+# 5090. Same-size arenas on different cards can still fragment differently,
+# and throughput here is not a 5090 throughput. The binding gate row must
+# still be measured on the card that spends the budget (CLAUDE.md).
+TOTAL_MIB=$(nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits 2>/dev/null | head -1)
+TOTAL_GIB=$(uv run python -c "print(f'{${TOTAL_MIB:-0} / 1024:.1f}')" 2>/dev/null || echo 0)
+echo "detected card: ${TOTAL_GIB} GiB total" | tee -a "$OUT/provenance.txt"
+
+# 31.8 = the 5090 the gate config must eventually fit; the rest bracket it.
+ARENA_TARGETS_GIB=${ARENA_TARGETS_GIB:-"31.8 36 42 56"}
+MIN_ARENA=""
 ONE_OK=0
-stage "rowb --stage one (preallocated)" "$STAGE_TIMEOUT" \
+: > "$OUT/arena_ladder.txt"
+
+for target in $ARENA_TARGETS_GIB; do
+  # Skip rungs the card cannot host, and never exceed 0.95 of it.
+  frac=$(uv run python -c "
+t, c = $target, ${TOTAL_GIB:-0}
+print(f'{t / c:.4f}' if c > 0 and t / c <= 0.95 else 'skip')" 2>/dev/null)
+  if [ "$frac" = "skip" ] || [ -z "$frac" ]; then
+    echo "arena ${target} GiB: SKIPPED (needs > 95 % of a ${TOTAL_GIB} GiB card)" \
+      | tee -a "$OUT/arena_ladder.txt"
+    continue
+  fi
+  rc=0
+  stage "arena ${target} GiB (mem_fraction ${frac}) --stage one" "$STAGE_TIMEOUT" \
+    env XLA_FLAGS="$BENCH_FLAGS" XLA_PYTHON_CLIENT_MEM_FRACTION="$frac" \
+    uv run python -m che.bench.rowb_probe \
+    --config "$CFG" --stage one \
+    --out-json "$OUT/rowb_arena_${target}.json" || rc=$?
+  if [ "$rc" -eq 0 ]; then
+    echo "arena ${target} GiB: RUNS" | tee -a "$OUT/arena_ladder.txt"
+    MIN_ARENA=$target
+    break
+  fi
+  echo "arena ${target} GiB: FAILED(rc=$rc)" | tee -a "$OUT/arena_ladder.txt"
+done
+
+# Full card: the "does it work at all here" row, and the one the windows
+# stage will run under.
+stage "rowb --stage one (full card, mem_fraction $XLA_PYTHON_CLIENT_MEM_FRACTION)" \
+  "$STAGE_TIMEOUT" \
   env XLA_FLAGS="$BENCH_FLAGS" uv run python -m che.bench.rowb_probe \
   --config "$CFG" --stage one --out-json "$OUT/rowb_one.json" \
   && ONE_OK=1
@@ -280,6 +346,55 @@ else:
     print("\n  VERDICT Q1: NO NUMBER — even the compile-only probe failed. "
           "That is itself new: at m51i it succeeded on this card.")
 
+def report_arena():
+    print("\nQ3  WHAT IS THE SMALLEST ARENA THE GATE CONFIG RUNS IN?")
+    print("    (arena size emulated on THIS card — not a 5090 measurement, and")
+    print("     the throughput here is this card's, not a gate number.)")
+    arena = []
+    for name in sorted(os.listdir(out)):
+        if not name.startswith("rowb_arena_"):
+            continue
+        target = name[len("rowb_arena_"):-len(".json")]
+        rows = load(name) or []
+        ok = any(r.get("stage") == "one" and r.get("ok") for r in rows)
+        failed = [r for r in rows if r.get("ok") is False]
+        arena.append((float(target), ok, failed[-1] if failed else None))
+    for target, ok, fail in sorted(arena):
+        line = f"  {target:6.1f} GiB arena : {'RUNS' if ok else 'FAILED'}"
+        if fail:
+            mem = fail.get("memory") or {}
+            line += f" at stage {fail['stage']}"
+            if mem.get("bytes_limit"):
+                line += (f" (limit {mem['bytes_limit'] / GIB:.1f} GiB, in-use "
+                         f"{mem.get('bytes_in_use', 0) / GIB:.1f})")
+        print(line)
+
+    runs = [t for t, ok, _ in sorted(arena) if ok]
+    if not arena:
+        print("  no capped rungs ran — on a card this size every target")
+        print("  exceeded 95 % of it, which is expected on a 5090 itself.")
+        return
+    if not runs:
+        print("\n  MINIMUM VIABLE ARENA: not found on the tested ladder — every")
+        print("  capped rung failed. If the full-card row below also failed,")
+        print("  the problem is not capacity at all.")
+        return
+    m = runs[0]
+    print(f"\n  MINIMUM VIABLE ARENA (this resolution): {m:.1f} GiB")
+    if m <= 30.0:
+        print(f"  -> PHASE 6/7 ON A 5090 IS VIABLE on capacity: {m:.1f} GiB fits")
+        print("     inside a 31.8 GiB card with headroom. The remaining question")
+        print("     is the RATE, which must be measured on the 5090 itself.")
+    else:
+        print(f"  -> PHASE 6/7 ON A 5090 IS NOT VIABLE AS CONFIGURED: {m:.1f} GiB")
+        print("     leaves too little of a 31.8 GiB card, and m51i already")
+        print("     failed at that margin. The experiment-preserving option is")
+        print("     sequential population groups (pop6 priced at 13.77 GiB, so")
+        print("     two groups of six estimated near 13.9); every other remedy")
+        print("     moves a calibrated quantity. Entry-gate decision, not an")
+        print("     RA one — and it is now a decision made BEFORE renting.")
+
+
 print("\nQ2  WHERE DOES ROW B STOP?")
 for name, label in (("rowb_one.json", "stage one, preallocated"),
                     ("rowb_one_noprealloc.json", "stage one, preallocate=false"),
@@ -312,27 +427,49 @@ for name, label in (("rowb_one.json", "stage one, preallocated"),
                   f"{mem.get('largest_free_block_bytes', 0) / GIB:.2f} GiB")
         print(f"{'':36s}{f.get('error', '')[:300]}")
 
+report_arena()
+
 gate = load("rowb_windows.json")
 rate = None
+device = "unknown"
 for r in gate or []:
     if r.get("stage") == "windows" and r.get("ok"):
         rate = r.get("median")
+    if r.get("stage") == "provenance":
+        device = r.get("device_kind", "unknown")
+
+# Whether this run produced THE gate row depends on the card. CLAUDE.md binds
+# the gate to measured training throughput of the SPENDING consumer, and the
+# planned spending consumer for Phase 6/7 is a 5090. Detected, not assumed,
+# so the same script says the right thing on either box.
+is_spender = "5090" in device
 print()
 if rate is None:
-    print("GATE: still no rate. The trail above says how deep it got and the")
-    print("sampler says what the process was doing — which is the whole point")
-    print("of this job. This goes to the PHASE 6 ENTRY GATE, not to a fourth")
-    print("blind attempt. Row B is not re-run inside Phase 5.")
-elif rate >= 100_000:
-    print(f"GATE: PASS — {rate:,.0f} >= 100k at fallback-ladder rung 2.")
-    print("Budget: envs/member halved, so Phase-6/7 runs need 1000 updates")
-    print("rather than 500 to preserve planned experiment steps; total steps")
-    print("are unchanged, so cost tracks steps/s alone.")
+    print("RATE: none. The trail above says how deep it got and the sampler")
+    print("says what the process was doing — which is the whole point of this")
+    print("job. It goes to the PHASE 6 ENTRY GATE, not to a fourth blind")
+    print("attempt. Row B is not re-run inside Phase 5.")
+elif is_spender:
+    print(f"GATE ROW (spending consumer: {device})")
+    if rate >= 100_000:
+        print(f"  PASS — {rate:,.0f} >= 100k at fallback-ladder rung 2.")
+        print("  Budget: envs/member halved, so Phase-6/7 runs need 1000")
+        print("  updates rather than 500 to preserve planned experiment steps;")
+        print("  total steps are unchanged, so cost tracks steps/s alone.")
+    else:
+        print(f"  BELOW THE LINE — {rate:,.0f} < 100k at rung 2. The line is")
+        print("  NOT renormalized. Rung 2 is the last rung that moves no")
+        print("  calibrated quantity, so this is a Phase-6 entry-gate decision")
+        print("  (scope or hardware), reported here and not resolved here.")
 else:
-    print(f"GATE: BELOW THE LINE — {rate:,.0f} < 100k at rung 2. The line is")
-    print("NOT renormalized. Rung 2 is the last rung that moves no calibrated")
-    print("quantity, so this is a Phase-6 entry-gate decision (scope or")
-    print("hardware) and it is reported here, not resolved here.")
+    print(f"RATE ON THIS CARD ({device}): {rate:,.0f} steps/s.")
+    print("  This is NOT the gate row and must not be compared to the 100k")
+    print("  line. CLAUDE.md binds the gate to measured training throughput of")
+    print("  the spending consumer, and Phase 6/7 is planned for a 5090. What")
+    print("  this number IS good for: an upper reference for what the config")
+    print("  can do when memory is not the constraint, and a sanity check that")
+    print("  the population path is healthy at all — which three failed row-B")
+    print("  attempts never established.")
 
 det = load("rowb_windows_det.json")
 d_rate = None
@@ -354,7 +491,7 @@ PY
   echo "sampler_rows: $(wc -l < "$SAMPLE")"
 } | tee -a "$OUT/provenance.txt"
 
-for f in provenance.txt timings.txt verdict.txt sampler.csv; do
+for f in provenance.txt timings.txt verdict.txt sampler.csv arena_ladder.txt; do
   [ -s "$OUT/$f" ] || {
     echo "FATAL: $OUT/$f missing or empty — do NOT release the instance" >&2
     exit 1

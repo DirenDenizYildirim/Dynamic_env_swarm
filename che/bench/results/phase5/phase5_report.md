@@ -335,6 +335,32 @@ gate**. If M5.1j lands without a rate, the trail goes to that gate and row
 B is not attempted again inside Phase 5. The 100 k line is not
 renormalized and no experiment quantity is touched.
 
+**Hardware split (human, 2026-07-30).** Phase 5 finishes on an RTX PRO
+6000 Blackwell (96 GB, ~$1.00/h); Phase 6/7 spends on a 5090 (~$0.40/h),
+because the required rate to keep 86e9 steps inside $150 scales linearly
+with price — 71.7 k steps/s at $0.45/h against 239 k at $1.50/h — and two
+same-generation cards will not differ by 3×.
+
+That split changes what M5.1j is *for*. On a 96 GB card the gate config
+simply runs, which answers nothing; so section 3 of the job caps XLA's
+arena in GiB and walks it upward, and the first rung that runs is the
+**minimum viable arena**. That is the number deciding whether Phase 6/7 on
+a 5090 is feasible at all, and it is measured with a control arm on
+identical silicon — something a 5090 alone cannot provide, because it can
+only supply the failing half. It is an emulation of arena *size*, not a
+5090 measurement, and it is labelled as such in the verdict.
+
+The gate row itself still has to come from the 5090: CLAUDE.md binds
+throughput gates to the spending consumer, and the verdict script detects
+the device and refuses to compare a non-5090 rate to the 100 k line.
+
+Three obligations follow, recorded in `decision_log.md`: the **M5.1e
+reproducibility floor is card-specific and is re-measured** before M5.4/M5.5
+run on the new card (M5.5's falsifier condition (i) cites it by name, and
+grading against a floor from other hardware is the defect M5.1j just caught
+one level up); **no comparison straddles cards**; and M5.3 stays closed on
+the 5090, where its three arms were CRN-paired.
+
 **Recorded unpriced, not implemented:** the remaining ladder rungs all move
 calibrated quantities, and the off-ladder knobs change the optimization or
 the design — but there is one option in the same class as `remat`

@@ -858,3 +858,47 @@ measured numbers, not a measurement**, and implementing it is a
 Phase-6-entry-gate decision, not an RA one. Recorded here so the entry
 gate sees an experiment-preserving option beside the ones that cost
 calibration.
+
+## Hardware split (human, 2026-07-30) — big card for Phase 5, 5090 for Phase 6/7
+
+**Human decision:** finish Phase 5 on an RTX PRO 6000 Blackwell (96 GB) at
+~$1.00/h; spend Phase 6/7 on a 5090 at ~$0.40/h.
+
+Cost basis, derived here from the committed budget line (86e9 steps;
+cost = $/h × 23,888,889 / rate): the required rate to keep 86e9 steps
+inside $150 scales linearly with price — 71.7 k steps/s at $0.45/h,
+239 k at $1.50/h. Two same-generation Blackwell cards of comparable
+bandwidth will not differ by 3×, so the cheap card wins the bulk spend by
+a wide margin. Phase 5's remaining GPU work is a few hours, so the
+premium there is a couple of dollars. The split is sound; what follows
+are the obligations it creates, none of which are optional.
+
+1. **The gate still binds to the 5090.** CLAUDE.md: throughput gates bind
+   to measured training throughput of the *spending consumer*. Phase 6/7
+   spends on the 5090, so no PRO 6000 rate can stand in for row B — the
+   verdict script detects the device and refuses to compare a non-5090
+   rate to the 100 k line. What the big card produces instead is the
+   **minimum viable arena** (M5.1j section 3), which decides whether
+   renting a 5090 for Phase 6/7 is worth doing *before* it is rented.
+2. **The M5.1e reproducibility floor is CARD-SPECIFIC and must be
+   re-measured.** The floor (completion 0.0145, survival 0.0129) was
+   measured on the 5090, and M5.5's pre-registered falsifier condition (i)
+   reads "within the measured reproducibility floor (replication study,
+   cited)". Grading M5.5 against a floor measured on different hardware is
+   the same defect M5.1j just caught one level up — a number cited past
+   the conditions it was measured under. **RULING: if M5.4/M5.5 run on the
+   PRO 6000, `run_m51e_replication.sh` is re-run there first** (4 runs,
+   ~20 GPU-min, ~$0.35) and M5.5 cites that floor. Same 3-dof, ±40 %
+   caveat applies to the new estimate.
+3. **No comparison may straddle cards.** Every arm of a comparison runs on
+   one card. Two consequences, both satisfiable: M5.4 evaluates M5.3's
+   5090-trained checkpoints, which is eval-only and internally consistent
+   as long as *all* δ arms are evaluated on the same card; and M5.5's
+   message-usage re-check is internal to M5.5's own δ = 0 policies, so it
+   does not reach back to the 5090-trained M5.3 arms.
+4. **M5.3 is closed on the 5090 and is not re-run.** Its three arms were
+   CRN-paired on one card, which is what its verdict rests on. A card
+   change does not reopen it.
+5. Provenance already records the device (M5.1j); with the split in force,
+   **every Phase-5 result from here states its card in the report table**,
+   not only in the artifact.
