@@ -1,0 +1,18 @@
+HIGH reproducibility floor — 4 identical runs (High, dp 0.5,
+seed fixed, 500 updates, couplings locked, comms live at delta = 0).
+Same seed throughout: nondeterminism alone, NOT seed spread.
+
+  metric                       mean         sd      range   max|dev|
+  completion                 0.7820     0.0522     0.1239     0.0644
+  survival_rate              0.8473     0.0621     0.1356     0.0894
+  episode_return            24.1064     2.0231     4.7783     2.5957
+  deaths_fire                1.6362     0.7772     1.6934     1.1157
+  mean_smoke_exposure        0.0071     0.0017     0.0036     0.0023
+
+This file is what section 4 grades against. It is NOT the M5.1e
+Medium floor, and the two are not interchangeable: M4.4 measured
+sigma_seed 2-4x larger at High than at Medium.
+
+CAVEAT: n = 4 gives an sd with 3 dof, itself uncertain by
+roughly +/-40 %. An order of magnitude, not a threshold to three
+decimals. It describes the NON-DETERMINISTIC regime only.

@@ -1017,3 +1017,47 @@ the toolchain-provenance proposal): *every throughput figure states the XLA
 flags it was measured under, exactly as it must state its keep-alive set. A
 rate without its flags is not a measurement* — 3,795 and 62,084 steps/s are
 the same code, the same card and the same day.
+
+## M5.3b outcome (RA, 2026-07-30) — pre-registered branch 3 taken, decision owed
+
+Both cells null. No pairwise difference reaches 0.65× the bar in either
+cell. Full record: `phase5_report.md`, "M5.3b". No ruling was made here —
+the branch was fixed in advance and the data selected it.
+
+1. **Connectivity is eliminated.** Cell B tripled mean alive out-degree
+   (1.01 → 2.99, delivery 1.0000) and changed nothing. That was the cell's
+   pre-registered purpose and it discharged it.
+2. **The completion difference flips sign between cells** (−0.0338 at
+   R = 8, +0.0354 at R = 16), which is noise with a sign rather than a
+   mechanism.
+3. **The High floor is the milestone's most consequential number:**
+   completion sd 0.0522, survival 0.0621 — 3.6× and 4.8× the Medium floor.
+   Measured before the arms were compared, so it could not be chosen after.
+
+**Correction the RA owes on its own recommendation:** re-siting at High was
+argued on the mechanism being 4.3× stronger there. It is, but the floor is
+3.6–4.8× larger, so the bar rose in step and **High is worse powered than
+Medium, not better** — Medium bounds the effect at < 3 points, High only at
+< 11. Reaching Medium's bar at High needs ~46 seeds per arm. The noise side
+should have been checked before the recommendation was made.
+
+**Owed to the human, not actioned:**
+
+- The pre-registered choice: accept the null as a **reportable negative**
+  (Remark 2′(i) confirmed at swarm scale) or build **DIAL**. If DIAL, it
+  must be evaluated at **Medium** — High cannot resolve a comms-scale
+  effect at any affordable seed count.
+- **Downstream:** M5.4 locks δ and M5.5 ablates it. Both assume δ removes
+  something the swarm uses. On two severities and two connectivity regimes
+  that premise is now unsupported, so the Phase-6/7 element set may be
+  {Coupling A, Coupling B} plus a δ that is inert by construction.
+- **A power ruling worth making beyond comms:** M4.4's High survival result
+  (−0.0876, graded "strong" against σ_seed = 0.0295 from two seeds) is
+  **1.41× the measured High floor**, not 3σ. The direction survives (M5.1
+  replication 3/3); the confidence language does not. M5.5's High cells at
+  2 seeds inherit the same limit. Recommend: **grades cite a measured floor
+  or declare themselves underpowered.**
+
+**M5.4 datum recorded regardless:** R_comm = 16 gives mean alive out-degree
+2.99–3.37 under trained High policies, inside the [2, 5] prior band that
+R = 8 (1.0) misses.

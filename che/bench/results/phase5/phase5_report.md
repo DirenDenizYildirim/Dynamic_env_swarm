@@ -819,3 +819,88 @@ run-to-run (M5.1e).
 **Caveat carried from M5.1e and binding on every grade above:** the floor
 has 3 dof and is itself uncertain by ~±40 %. Differences near the bar are
 near the bar, not resolved. The largest here is 0.79 of it.
+
+---
+
+## M5.3b — the gate re-sited at High: null at both ranges
+
+Run 2026-07-30 on an RTX PRO 6000 Blackwell, jax/jaxlib 0.11.0. Both cells
+complete: 4 floor runs + 2 cells × 3 arms × 3 seeds, CRN-paired evals,
+22 checkpoint archives. **Verdict: NULL AT HIGH TOO, AT BOTH RANGES** —
+the third pre-registered branch.
+
+### The measured High floor, and what it costs the gate
+
+| metric | Medium (M5.1e) | **High (M5.3b)** | ratio | bar = 2× |
+|---|---|---|---|---|
+| completion | 0.0145 | **0.0522** | 3.6× | 0.1044 |
+| survival_rate | 0.0129 | **0.0621** | 4.8× | 0.1243 |
+
+Four identical runs, same seed: at High a single run's survival moves by
+±0.06 from nondeterminism alone. **This is the milestone's most consequential
+number**, and it was measured before the arms were compared, exactly so it
+could not be chosen afterwards.
+
+### Results
+
+| cell | arm | completion (SE of mean) | survival (SE) | out-degree |
+|---|---|---|---|---|
+| **A**, R=8 | live | 0.7574 (0.0280) | 0.8436 (0.0458) | 1.012 |
+| | zeroed | 0.7911 (0.0059) | 0.8289 (0.0419) | 0.930 |
+| | shuffled | 0.8103 (0.0061) | 0.8464 (0.0450) | 1.055 |
+| **B**, R=16 | live | 0.7774 (0.0298) | 0.8299 (0.0452) | 2.985 |
+| | zeroed | 0.7420 (0.0118) | 0.8273 (0.0185) | 3.256 |
+| | shuffled | 0.7094 (0.0118) | 0.8397 (0.0599) | 3.369 |
+
+No pairwise difference exceeds **0.65× the bar** anywhere in either cell.
+
+### Three things make this null more informative than M5.3's
+
+1. **Connectivity is eliminated as the explanation.** Cell B tripled mean
+   alive out-degree (1.01 → 2.99) at delivery rate 1.0000, and changed
+   nothing. The "there was nobody in range to hear it" hypothesis —
+   candidate 3 of the M5.3 discussion — is dead, and that is precisely what
+   the pre-registered sensitivity cell existed to decide.
+2. **The completion difference flips sign between cells**: live − zeroed is
+   **−0.0338** at R=8 and **+0.0354** at R=16. An effect that reverses when
+   agents are given three times as many neighbours is noise with a sign, not
+   a mechanism.
+3. **The bar is honest about what was not tested.** With arm-mean SEs of
+   0.028–0.046 and a bar of 0.104/0.124, Cell A can only resolve effects of
+   roughly ten points. **This null means "no effect larger than ~11 points",
+   where M5.3's Medium null meant "no effect larger than ~3 points".**
+
+### The re-siting traded measurability for mechanism — stated plainly
+
+M5.3b was recommended because Coupling B's mechanism is 4.3× stronger at
+High (masked-at-danger 0.2424 vs 0.0560). It is. But the floor is 3.6–4.8×
+larger there too, so the bar rose in step and the High cell is **not better
+powered than Medium** — it is worse. Reaching Medium's bar at High would
+take roughly 46 seeds per arm, which is a wall rather than a budget line.
+
+The consequence for reading the two milestones together: **Medium is the
+cell that bounds the effect (< 3 points); High is the cell that eliminates
+connectivity.** Neither alone would have settled it.
+
+### Carried forward
+
+- **M5.4 datum:** R_comm = 16 yields mean alive out-degree 2.99–3.37 under
+  trained High policies — inside the [2, 5] prior band that R = 8 (1.0)
+  misses. Recorded whatever M5.4's fate.
+- **A general power finding, beyond comms:** any claim at High needs a
+  measured floor beside it. M4.4's High survival result (−0.0876, graded
+  "strong" against σ_seed = 0.0295 from two seeds) is **1.41× this measured
+  floor**, not 3σ. M4.4's own report warned that "Var of two points can
+  collapse toward zero by chance"; it did. The direction survives (M5.1
+  replication, 3/3), the confidence language does not. Flagged for the
+  human — M5.5's High cells at 2 seeds inherit the same limit.
+
+### Branch taken
+
+Per the pre-registration, both cells null returns the reading to Remark
+2′(i): **redundancy substitutes for communication** when agents are
+interchangeable, expendable and at least as numerous as the hypotheses —
+which is what M5.2's coverage arm measured in miniature (J = 1 under total
+denial). The choice between accepting this as a reportable negative and
+building DIAL is the human's, now with two severities, two connectivity
+regimes and three content ablations behind it.

@@ -1,0 +1,10 @@
+run: M5.3b utility gate re-sited at High (2 cells x 3 arms x 3 seeds)
+date_utc: 2026-07-30T13:26:55Z
+git_commit: 1c1ce7667f0bb3ffe9e753da61026a03bf56803b
+git_dirty: 5 file(s)
+config: che/configs/severity_high.yaml   dp: 0.5   updates: 500
+seeds: 0 1 2   modes: live zeroed shuffled   eval_episodes: 512
+cell A R_comm: 8   cell B R_comm: 16
+floor: 4 identical runs at seed 0, R_comm 8
+gpu: NVIDIA RTX PRO 6000 Blackwell Workstation Edition
+jax: 0.11.0 0.11.0

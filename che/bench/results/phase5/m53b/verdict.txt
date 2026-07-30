@@ -1,0 +1,49 @@
+M5.3b — utility gate re-sited at High (both couplings, delta = 0,
+3 seeds, CRN-paired eval episodes)
+
+Grading bar: 2x the MEASURED High floor, from this run's own replication study
+  completion       sd 0.0522  ->  bar 0.1044
+  survival_rate    sd 0.0621  ->  bar 0.1243
+  (M5.1e's Medium floor was completion 0.0145 / survival 0.0129 — NOT used here)
+
+CELL A (verdict) — High, R_comm = 8
+  arm              completion     survival_rate    episode_return
+  live         0.7574+-0.0485    0.8436+-0.0794   23.2972+-1.8155
+  zeroed       0.7911+-0.0101    0.8289+-0.0725   24.2891+-0.7177
+  shuffled     0.8103+-0.0106    0.8464+-0.0780   25.0078+-0.4471
+  pairwise (positive = first arm better):
+    live - zeroed: completion -0.0338 (SE 0.0036) [0.32x bar]; survival_rate +0.0147 (SE 0.0043) [0.12x bar]; episode_return -0.9919 (SE 0.1247)
+    live - shuffled: completion -0.0529 (SE 0.0036) [0.51x bar]; survival_rate -0.0028 (SE 0.0035) [0.02x bar]; episode_return -1.7106 (SE 0.1192)
+    zeroed - shuffled: completion -0.0192 (SE 0.0034) [0.18x bar]; survival_rate -0.0175 (SE 0.0044) [0.14x bar]; episode_return -0.7188 (SE 0.1157)
+    live       out-degree 1.013  delivery 1.0000
+    zeroed     out-degree 0.936  delivery 1.0000
+    shuffled   out-degree 1.063  delivery 1.0000
+
+CELL B (sensitivity) — High, R_comm = 16
+  arm              completion     survival_rate    episode_return
+  live         0.7774+-0.0517    0.8299+-0.0783   23.8558+-1.8680
+  zeroed       0.7420+-0.0204    0.8273+-0.0321   22.7070+-0.5199
+  shuffled     0.7094+-0.0204    0.8397+-0.1037   21.7399+-1.1791
+  pairwise (positive = first arm better):
+    live - zeroed: completion +0.0354 (SE 0.0039) [0.34x bar]; survival_rate +0.0027 (SE 0.0041) [0.02x bar]; episode_return +1.1488 (SE 0.1324)
+    live - shuffled: completion +0.0680 (SE 0.0035) [0.65x bar]; survival_rate -0.0098 (SE 0.0044) [0.08x bar]; episode_return +2.1159 (SE 0.1242)
+    zeroed - shuffled: completion +0.0326 (SE 0.0040) [0.31x bar]; survival_rate -0.0124 (SE 0.0041) [0.10x bar]; episode_return +0.9671 (SE 0.1345)
+    live       out-degree 2.981  delivery 1.0000
+    zeroed     out-degree 3.266  delivery 1.0000
+    shuffled   out-degree 3.353  delivery 1.0000
+
+======================================================================
+VERDICT: NULL AT HIGH TOO, AT BOTH RANGES.
+  The null is regime- and connectivity-independent across the
+  tested range. The reading returns to Remark 2'(i): redundancy
+  substitutes for communication, exactly as M5.2's coverage arm
+  measured (J = 1 under total denial with interchangeable agents).
+  STOP — human chooses between a reportable negative and DIAL,
+  now with two cells and two severities of evidence. Do NOT
+  iterate the architecture here.
+======================================================================
+
+Both cells are reported together, and M5.3's Medium null stands as
+reported either way (decision_log.md, 2026-07-30). The floor above
+has 3 dof and is uncertain by ~+-40 %:
+differences near the bar are near the bar, not resolved.
