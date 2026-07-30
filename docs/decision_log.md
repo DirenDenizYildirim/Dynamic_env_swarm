@@ -1061,3 +1061,91 @@ should have been checked before the recommendation was made.
 **M5.4 datum recorded regardless:** R_comm = 16 gives mean alive out-degree
 2.99–3.37 under trained High policies, inside the [2, 5] prior band that
 R = 8 (1.0) misses.
+
+## M5.3 CLOSURE RULING (human + RA, 2026-07-30) — comms axis closed as a certified negative
+
+Issued at the M5.3b STOP, on the third pre-registered branch (both cells
+null). Transcribed before any of the work it authorizes.
+
+### 1. Reportable negative ADOPTED
+
+The null is certified as the **swarm-scale manifestation of Remark 2″(i)**:
+redundancy substitutes for communication in a homogeneous, expendable
+swarm.
+
+**The load-bearing evidence is the unused CONNECTIVITY bit.** That signal
+needs no encoder to be decodable — a receiver knows it heard from someone
+without decoding anything — so its worthlessness is **demand-side** (the
+swarm does not need the information) rather than **channel-side** (the
+swarm cannot read the message). This is what makes the negative certifiable
+rather than merely unmeasured, and it is why the frozen-encoder objection
+does not rescue the channel.
+
+**Hedge stated honestly:** `dp = 0.5` prices deaths, so the theory's
+clean-zero conditions (interchangeable, *expendable*, ≥ as numerous as the
+hypotheses) were **not fully met**. The measured null therefore also says
+the deficit formulation's "value returns" term is **weak at this scale and
+this death price** — a stronger statement than the clean-zero case would
+have supported, and it belongs in the paper as such.
+
+### 2. DIAL formally DECLINED — with reasons, because it was item #1
+
+DIAL was the pre-registered first item of this discussion, so the
+declination is recorded with its grounds rather than by omission:
+
+(a) **The demand-side evidence above.** The channel's cheapest,
+    encoder-free signal already goes unused.
+(b) **A memory constraint not raised in the options:** DIAL's ~2× batch
+    memory collides head-on with the m51g wall (XLA's own 28.31 GiB
+    rematerialization floor against a 32 GB card). Building it means
+    fighting the memory decision early and twice.
+(c) **The capped upside** — with the honest caveat that a < 3-point cap
+    measured on a *frozen random encoder* does not strictly bound a
+    *trained* encoder.
+
+**Paper limitation, carried explicitly:** *"gradient-shaped messaging
+remains untested; the channel was a fixed random projection."*
+
+Options 3 and 4 rejected: 3 (irreplaceable roles) re-runs the project
+against the deadline; 4 (drop comms) amends registered scope to discard a
+finding we can instead certify.
+
+### 3. M5.4 FOLDED INTO THIS RULING — δ locked, bands void-by-null
+
+The performance-cost δ bands are **void-by-null**: one cannot pick "the
+smallest δ whose cost carries a strong grade" when the cost is ≈ 0 at every
+δ. That is not a band failure to be re-shopped; it is the band's premise
+being falsified.
+
+- **LOCKED: δ = 1.0 by convention** — maximal denial, the cleanest element
+  semantics for θ*.
+- **R_comm locked on the geometric observable alone** (mean alive-degree
+  band), with performance-insensitivity recorded beside it.
+- `comms_lock.md` documents the void-by-null status **explicitly**. A lock
+  that says *"this knob does nothing, and here is the certification"* is a
+  legitimate lock.
+
+### 4. M5.5 RESCOPED
+
+Medium × δ ∈ {0, 1.0} × **4 seeds** — Medium is comms' best-chance cell per
+Remark 2 and per the M5.3b severity comparison (Medium bounds the effect at
+< 3 points; High only at < 11). Falsifier graded against the M5.1e
+reproducibility floor with **its regime named**. Matched renders kept; watch
+item is **branch-loitering / information-buying behaviour**. **Expected
+verdict: INERT — and that expectation is the point. This run is
+certification, not exploration.**
+
+*RA flag, raised not resolved:* the M5.1e floor was measured on a **5090**,
+and the hardware-split ruling of the same day requires a card-specific
+floor. The two rulings interact. Cheapest reconciliation, adopted unless
+overridden: **re-measure the Medium floor on the card M5.5 actually runs on
+(4 runs, ~20 GPU-min, ~$0.35) and report both**, grading against the
+same-card figure and printing M5.1e's beside it. Naming the regime is
+satisfied either way.
+
+### 5. D6 APPEND
+
+With comms certified inert, the composition experiment is effectively over
+**{Coupling A, Coupling B}**. **δ = 1.0 is retained in θ\*** for
+registration fidelity at zero cost. The dose-response x-axis (A×B
+co-active visitation) is unaffected.

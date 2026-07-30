@@ -134,6 +134,21 @@ def main(argv=None):
                    help="theta override — must match training (hash guard); "
                         "M4.4 renders the kappa_B = 0 ablation arm too, for "
                         "the smoke-periphery positioning audit")
+    p.add_argument(
+        "--delta",
+        type=float,
+        default=None,
+        help="override theta.delta, the comms-denial level (Def. 7). "
+        "M5.5 grid arm; changes the config hash, so every consumer of a "
+        "checkpoint must pass the same value",
+    )
+    p.add_argument(
+        "--r-comm",
+        type=float,
+        default=None,
+        dest="r_comm",
+        help="override theta.r_comm — must match the training run (hash guard)",
+    )
     p.add_argument("--obs-version", type=int, default=None, choices=(1, 2, 3),
                    help="override cfg obs_version — archival renders of "
                         "obs-v1/v2 checkpoints only (D5/M4.1)")
@@ -168,6 +183,22 @@ def main(argv=None):
             env=dataclasses.replace(
                 cfg.env,
                 theta=dataclasses.replace(cfg.env.theta, kappa_B=args.kappa_B),
+            ),
+        )
+    if args.delta is not None:
+        cfg = dataclasses.replace(
+            cfg,
+            env=dataclasses.replace(
+                cfg.env,
+                theta=dataclasses.replace(cfg.env.theta, delta=args.delta),
+            ),
+        )
+    if args.r_comm is not None:
+        cfg = dataclasses.replace(
+            cfg,
+            env=dataclasses.replace(
+                cfg.env,
+                theta=dataclasses.replace(cfg.env.theta, r_comm=args.r_comm),
             ),
         )
     if args.obs_version is not None:

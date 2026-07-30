@@ -601,6 +601,14 @@ def main():
         help="override theta.kappa_B (M4.3 probe policies / M4.4 arm)",
     )
     p.add_argument(
+        "--delta",
+        type=float,
+        default=None,
+        help="override theta.delta, the comms-denial level (Def. 7). "
+        "M5.5 grid arm; changes the config hash, so every consumer of a "
+        "checkpoint must pass the same value",
+    )
+    p.add_argument(
         "--r-comm",
         type=float,
         default=None,
@@ -650,6 +658,14 @@ def main():
             env=dataclasses.replace(
                 cfg.env,
                 theta=dataclasses.replace(cfg.env.theta, kappa_B=args.kappa_B),
+            ),
+        )
+    if args.delta is not None:
+        cfg = dataclasses.replace(
+            cfg,
+            env=dataclasses.replace(
+                cfg.env,
+                theta=dataclasses.replace(cfg.env.theta, delta=args.delta),
             ),
         )
     if args.r_comm is not None:
