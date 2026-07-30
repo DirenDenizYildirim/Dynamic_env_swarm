@@ -1,0 +1,107 @@
+[
+ {
+  "stage": "provenance",
+  "ok": true,
+  "jax": "0.11.0",
+  "jaxlib": "0.11.0",
+  "backend": "gpu",
+  "device_kind": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "device_count": 1,
+  "disable_jit": false,
+  "memory": {
+   "num_allocs": 2,
+   "bytes_in_use": 256,
+   "peak_bytes_in_use": 512,
+   "largest_alloc_size": 256,
+   "bytes_limit": 96875839488,
+   "bytes_reserved": 0,
+   "peak_bytes_reserved": 0,
+   "largest_free_block_bytes": 96875838976,
+   "pool_bytes": 96875839488,
+   "peak_pool_bytes": 96875839488
+  },
+  "pop_size": 12,
+  "n_envs": 128,
+  "n_minibatches": 4,
+  "rollout_len": 128,
+  "pbt_interval": 20,
+  "uint8_obs": true,
+  "remat": false
+ },
+ {
+  "stage": "init",
+  "ok": true,
+  "seconds": 4.808478347025812,
+  "memory": {
+   "num_allocs": 130,
+   "bytes_in_use": 150859008,
+   "peak_bytes_in_use": 305016832,
+   "largest_alloc_size": 151010816,
+   "bytes_limit": 96875839488,
+   "bytes_reserved": 0,
+   "peak_bytes_reserved": 0,
+   "largest_free_block_bytes": 96724979456,
+   "pool_bytes": 96875839488,
+   "peak_pool_bytes": 96875839488
+  }
+ },
+ {
+  "stage": "compile",
+  "ok": true,
+  "seconds": 101.8127870541066,
+  "temp_bytes": 30348827824,
+  "temp_gib": 28.26454846560955,
+  "memory": {
+   "num_allocs": 3156,
+   "bytes_in_use": 9324023808,
+   "peak_bytes_in_use": 66094519040,
+   "largest_alloc_size": 53678850816,
+   "bytes_limit": 96875839488,
+   "bytes_reserved": 0,
+   "peak_bytes_reserved": 0,
+   "largest_free_block_bytes": 78344875776,
+   "pool_bytes": 96875839488,
+   "peak_pool_bytes": 96875839488
+  }
+ },
+ {
+  "stage": "one",
+  "ok": true,
+  "seconds": 63.22303563915193,
+  "steps": 3932160,
+  "steps_per_s": 62195.0521712207,
+  "memory": {
+   "num_allocs": 3173,
+   "bytes_in_use": 9324039168,
+   "peak_bytes_in_use": 66094519040,
+   "largest_alloc_size": 53678850816,
+   "bytes_limit": 96875839488,
+   "bytes_reserved": 0,
+   "peak_bytes_reserved": 0,
+   "largest_free_block_bytes": 78344875776,
+   "pool_bytes": 96875839488,
+   "peak_pool_bytes": 96875839488
+  }
+ },
+ {
+  "stage": "windows",
+  "ok": true,
+  "seconds": 254.4267317065969,
+  "pop_size": 12,
+  "n_envs": 128,
+  "n_agents": 12,
+  "grid": 64,
+  "rollout_len": 128,
+  "k_pbt": 20,
+  "compile_s": 0.01,
+  "rates": [
+   62076,
+   62084,
+   62122
+  ],
+  "median": 62084,
+  "iqr": 46,
+  "peak_bytes": 66094519040,
+  "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition"
+ }
+]

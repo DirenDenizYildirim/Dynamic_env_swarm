@@ -459,6 +459,49 @@ Reported, not resolved here; the 100 k line is not renormalized:
    is not a measurement: 3,795 and 62,084 are the same code, same card, same
    day.
 
+### M5.1k — the throughput levers do not exist
+
+Run 2026-07-30, autotuning on, same card. Priced before cutting any
+science, on the argument that a 1.5× throughput win is worth more than a
+seed.
+
+| lever | pop/envs/nmb | steps/s | vs baseline | $/run |
+|---|---|---|---|---|
+| baseline | 12/128/4 | **62,084** (IQR 46) | 1.00× | $0.88 |
+| envs256_nmb8 | 12/256/8 | 60,492 (IQR 112) | **0.97×** | $0.90 |
+| envs512_nmb16 | 12/512/16 | 60,044 (cold call only) | ~0.97× | — |
+
+The baseline canary reproduces M5.1j **to the digit** (62,084 vs 62,084),
+across an instance restart, so the table is trustworthy.
+
+**The hypothesis is falsified.** It was argued from per-env efficiency —
+40.4 steps/s/env here against 51.8 at Phase 0 (159,000 / 3072) — that part
+of the gap was launch overhead and more concurrent envs would recover it.
+Doubling and quadrupling them recovers nothing, and is marginally *worse*
+both times. The whole gap is the 3.24× observation volume of obs_window 9;
+this workload is compute-bound, and there is no free throughput win.
+
+Two consequences: the fallback-ladder rung-2 application costs nothing in
+throughput (n_envs 128 and 256 measure the same), and **the budget cannot
+be fixed by engineering** — it is a scope question or nothing.
+
+The remaining rows (`envs256_nmb4`, `nmb16`, `pop8`) were not run: the
+instance stopped mid-sweep, and the two cleanest tests had already settled
+the question. `pop8` is a scope cut rather than a throughput lever in any
+case. Partial artifacts are in `m51k/`; the truncation is recorded here
+rather than left as a silent gap.
+
+**Where the budget actually stands.** At $1/h a 1000-update population run
+costs **$0.88** and takes 53 min, so $200 buys 227 runs (113 with the ×2
+buffer). The 86e9 envelope has **no bottom-up derivation anywhere in the
+repo** — it appears in `phase0_substrate_prompt.md`, in `throughput.py` as
+a constant, and in every report that cites it. A generous sketch of the
+actual Phase 6/7 (5 configs × 4 seeds × 3 severities, plus 8 dose-response
+points × 4 seeds) is 92 runs ≈ 81 GPU-h ≈ **$81**, or $162 with the buffer —
+9 % of the envelope. **Decomposing the number is the entry gate's job and
+should precede any cut**, because pricing a placeholder is how the $151
+line survived three phases.
+
 ---
 
 ## M5.2 — ★ Remark-2 VoC validation ★ (theory §5 Remark 2′/2″/2‴)

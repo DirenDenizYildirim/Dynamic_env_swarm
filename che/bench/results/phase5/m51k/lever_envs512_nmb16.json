@@ -1,0 +1,86 @@
+[
+ {
+  "stage": "provenance",
+  "ok": true,
+  "jax": "0.11.0",
+  "jaxlib": "0.11.0",
+  "backend": "gpu",
+  "device_kind": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "device_count": 1,
+  "disable_jit": false,
+  "memory": {
+   "num_allocs": 2,
+   "bytes_in_use": 256,
+   "peak_bytes_in_use": 512,
+   "largest_alloc_size": 256,
+   "bytes_limit": 96875839488,
+   "bytes_reserved": 0,
+   "peak_bytes_reserved": 0,
+   "largest_free_block_bytes": 96875838976,
+   "pool_bytes": 96875839488,
+   "peak_pool_bytes": 96875839488
+  },
+  "pop_size": 12,
+  "n_envs": 512,
+  "n_minibatches": 16,
+  "rollout_len": 128,
+  "pbt_interval": 20,
+  "uint8_obs": true,
+  "remat": false
+ },
+ {
+  "stage": "init",
+  "ok": true,
+  "seconds": 4.530838013626635,
+  "memory": {
+   "num_allocs": 130,
+   "bytes_in_use": 449125632,
+   "peak_bytes_in_use": 1056287232,
+   "largest_alloc_size": 604014592,
+   "bytes_limit": 96875839488,
+   "bytes_reserved": 0,
+   "peak_bytes_reserved": 0,
+   "largest_free_block_bytes": 96426712832,
+   "pool_bytes": 96875839488,
+   "peak_pool_bytes": 96875839488
+  }
+ },
+ {
+  "stage": "compile",
+  "ok": true,
+  "seconds": 100.27694223541766,
+  "temp_bytes": 39593179824,
+  "temp_gib": 36.8740221709013,
+  "memory": {
+   "num_allocs": 3159,
+   "bytes_in_use": 9622290432,
+   "peak_bytes_in_use": 66392785664,
+   "largest_alloc_size": 53678850816,
+   "bytes_limit": 96875839488,
+   "bytes_reserved": 0,
+   "peak_bytes_reserved": 0,
+   "largest_free_block_bytes": 78046609152,
+   "pool_bytes": 96875839488,
+   "peak_pool_bytes": 96875839488
+  }
+ },
+ {
+  "stage": "one",
+  "ok": true,
+  "seconds": 261.95338342152536,
+  "steps": 15728640,
+  "steps_per_s": 60043.66041987736,
+  "memory": {
+   "num_allocs": 3176,
+   "bytes_in_use": 9622305792,
+   "peak_bytes_in_use": 66392785664,
+   "largest_alloc_size": 53678850816,
+   "bytes_limit": 96875839488,
+   "bytes_reserved": 0,
+   "peak_bytes_reserved": 0,
+   "largest_free_block_bytes": 78046609152,
+   "pool_bytes": 96875839488,
+   "peak_pool_bytes": 96875839488
+  }
+ }
+]
