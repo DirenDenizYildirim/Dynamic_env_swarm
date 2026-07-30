@@ -557,6 +557,30 @@ when a threat is in view.
 
 ---
 
+## Correction (2026-07-30, measured High floor) — human-issued, transcribed
+
+**The High survival effect stands on REPLICATION (direction 3/3, range
+−0.047 to −0.107); its pooled magnitude is 1.41× the measured
+reproducibility floor. Reported as a consistent, modest effect. The
+"3σ/strong" label is retracted — its σ was a two-point spread, per the
+M5.1 correction.**
+
+Basis: M5.3b measured the High reproducibility floor directly — four
+identical runs, same seed, same config — at **survival sd 0.0621**, against
+the `σ_seed = 0.0295` this report graded −0.0876 against. The report's own
+methods section anticipated the failure mode in writing ("Var of two points
+can collapse toward zero by chance and make 2·sigma_seed absurdly small");
+it did. Every `SEPARATED(strong)` label on a High row in the tables above
+should be read against this note, and the "|delta| = 3.0 sigma_seed"
+phrasing at line 262 is retracted with it.
+
+Direction: robust. Magnitude language: honest. Claim: survives.
+
+*Flagged three times before it was ruled, which is on the author: the
+M5.1 correction retracted σ-phrasings project-wide and this label survived
+two subsequent passes.* The general rule that now prevents the recurrence
+is "Bars come with floors" (`CLAUDE.md`, 2026-07-30).
+
 ## Correction (2026-07-28, replication study) — human-issued, transcribed
 
 Coupling B's survival cost at High is robust — cross-arm direction

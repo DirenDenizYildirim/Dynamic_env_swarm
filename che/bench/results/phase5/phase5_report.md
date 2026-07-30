@@ -947,3 +947,101 @@ which is what M5.2's coverage arm measured in miniature (J = 1 under total
 denial). The choice between accepting this as a reportable negative and
 building DIAL is the human's, now with two severities, two connectivity
 regimes and three content ablations behind it.
+
+---
+
+## M5.5 — Phase-5 acceptance: the denial element, certified
+
+Run 2026-07-30 on an RTX PRO 6000 Blackwell. Rescoped per the M5.3 closure
+ruling: Medium × δ ∈ {0, 1.0} × 4 seeds, **message path live in both arms**
+(the ablation is denial, never architecture), R_comm = 16 at the locked
+value. 4 floor runs + 8 grid runs + mute diagnostic + 24 matched renders.
+
+### FINAL VERDICT
+
+> **INERT WITHIN MEASUREMENT RESOLUTION** — conditions (i), (ii) pass
+> against measured bars; condition (iii) as-registered is retracted as
+> structurally defective (threshold 20 % < instrument floor 27.2 %) and
+> re-graded against the pre-dated floor: 23.2 % < 27.2 %, not resolvable.
+> The inertness claim rests jointly on this certification and on M5.3's
+> demand-side mechanism evidence (the unused connectivity bit).
+
+The verdict **as produced** (`m55/verdict.txt`, "NOT INERT") stands
+unedited in the artifact, with this adjudication beside it.
+
+### Results
+
+| δ | completion | survival | delivery | out-degree | fire/danger |
+|---|---|---|---|---|---|
+| 0.0 | 0.7396 ± 0.0195 | 0.9188 ± 0.0114 | 1.0000 | 3.213 | 0.00744 |
+| 1.0 | 0.7358 ± 0.0131 | 0.9331 ± 0.0065 | 0.0000 | 0.000 | 0.00571 |
+
+- **(i)** Δcompletion +0.0038 vs bar 0.0799; Δsurvival −0.0143 vs bar
+  0.0260. Both within the floor measured on this card.
+- **(ii)** The knob provably moved: delivery 1.0000 → 0.0000, out-degree
+  3.213 → 0.000 — the empty graph `comms.py` specifies, not a weakened one.
+- **(iii)** Void (below).
+
+### Why condition (iii) is VOID rather than FAILED
+
+The distinction is load-bearing. A threshold set below its instrument's
+measured floor **cannot pass under the null**; a test that cannot pass
+regardless of the truth is not a test, and its output is not evidence.
+
+The quantity is fire deaths per danger agent-step. Four identical runs
+(same seed, same config) measure it at 0.00810 / 0.00408 / 0.00776 /
+0.00688 — **sd 0.00182, 27.2 % relative**. The registered threshold was
+20 %. The observed cross-arm difference, 23.2 %, sits between the two: it
+exceeds the threshold and falls short of the noise.
+
+Three clauses license the re-grade against the charge of special pleading,
+and they are stated here rather than assumed:
+
+1. **The floor data pre-date the comparison.** Section 1 ran before Section
+   2 by construction. This is instrument calibration, not post-hoc rescue.
+2. **The defect is structural** — it would void a PASS identically. A bar
+   finer than its instrument is broken in both directions.
+3. **The counterfactual is on the record:** had the 23.2 % exceeded the
+   27.2 % floor, **NOT INERT would stand**, and this ruling says so.
+
+For scale, the δ = 0 arm's own per-seed spread (0.00517–0.01041) is wider
+than the entire cross-arm difference it was being graded against.
+
+### The floor, and why re-measuring it was not optional
+
+| metric | M5.1e (5090) | M5.5 (PRO 6000) | ratio |
+|---|---|---|---|
+| completion | 0.0145 | **0.0399** | **2.75×** |
+| survival_rate | 0.0129 | **0.0130** | 1.01× |
+
+The card reconciliation flagged in the M5.5 script discharged itself:
+re-measurement mattered for one metric and not the other. Neither "it will
+be the same" nor "it will differ" was safe to assume — which is now the
+motivating exhibit for the **bars-come-with-floors** rule (`CLAUDE.md`,
+2026-07-30). Floors are per-metric *and* per-hardware facts.
+
+### What the certification does and does not claim
+
+It claims the denial element is inert **at the resolution these
+measurements have**: no effect on completion above ~8 points, on survival
+above ~2.6 points, or on danger-moment outcomes above ~27 % relative, at
+Medium with 4 seeds. It does not claim a point null.
+
+The strength of the Phase-5 comms result comes from the *joint* argument,
+not this grid alone: M5.3/M5.3b established the mechanism (the unused
+connectivity bit is demand-side — that signal needs no encoder, so its
+neglect cannot be blamed on the frozen random projection), and M5.5
+certifies that removing the channel entirely changes nothing measurable.
+Either half alone would be weaker.
+
+Carried limitation, unchanged: **gradient-shaped messaging remains
+untested; the channel was a fixed random projection.**
+
+### Artifacts
+
+`che/bench/results/phase5/m55/` — 12 checkpoint archives (all 12 verified
+against their sha256 before the instance was released), per-episode evals,
+the muted-eval diagnostic, both floors, 24 matched renders (δ = 0 vs
+δ = 1 at identical episode seeds; the branch-loitering watch item is
+un-inspected and left for the human), provenance, and the unedited
+verdict.

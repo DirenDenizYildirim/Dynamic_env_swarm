@@ -1207,3 +1207,74 @@ and not the other, which is why it was not assumed either way.
 verified against their committed sha256 (12/12 OK). `workspace_is_volume`
 was False, so nothing survives on the box; the archives are local and the
 `.sha256`/provenance are committed.
+
+## PHASE-5 CLOSE RULINGS (human + RA, 2026-07-30)
+
+Issued on the M5.5 report. Transcribed verbatim in intent before action.
+
+### 1. M5.5 verdict — condition (iii) is VOID, not failed
+
+**The distinction is load-bearing.** A threshold set below its instrument's
+measured floor cannot pass under the null; a test that cannot pass
+regardless of the truth is not a test, and its output is not evidence.
+
+Three clauses license the re-grade against the charge of special pleading,
+and are stated explicitly in the report rather than assumed:
+
+(a) the floor data **pre-date the comparison** — instrument calibration,
+    not post-hoc rescue;
+(b) the defect is **structural** — it would void a PASS identically;
+(c) the **counterfactual is recorded**: had the 23.2 % exceeded the 27.2 %
+    floor, NOT INERT would stand, and this ruling says so.
+
+**FINAL VERDICT for the report, verbatim:** *"INERT WITHIN MEASUREMENT
+RESOLUTION — conditions (i),(ii) pass against measured bars; condition
+(iii) as-registered is retracted as structurally defective (threshold
+20 % < instrument floor 27.2 %) and re-graded against the pre-dated floor:
+23.2 % < 27.2 %, not resolvable. The inertness claim rests jointly on this
+certification and on M5.3's demand-side mechanism evidence (the unused
+connectivity bit)."*
+
+The verdict-as-produced stays in the artifact with this adjudication
+beside it — exactly as the RA left it.
+
+### 2. Bars-with-floors rule — ADOPTED into CLAUDE.md, effective now
+
+> *"No acceptance threshold enters any script without either a measured
+> floor for the quantity it grades (cited) or an explicit UNDERPOWERED
+> flag in its output. Thresholds finer than their instruments are void by
+> construction."*
+
+**Accountability, split honestly.** The four invented constants are the
+builder's. The framework that requested conditions without specifying how
+their bars derive is the author's — "within seed noise" and "no cross-arm
+difference" were written four times without once writing *against what
+floor*. The rule closes both ends.
+
+The card-reconciliation finding is the rule's **motivating exhibit**:
+completion floor 2.75× across cards (0.0145 → 0.0399), survival identical
+(0.0129 → 0.0130). **Floors are per-metric AND per-hardware facts.**
+
+### 3. M4.4 High survival label — RULED
+
+Dated correction appended to `phase4_report.md`, verbatim:
+
+> *"The High survival effect stands on REPLICATION (direction 3/3, range
+> −0.047 to −0.107); its pooled magnitude is 1.41× the measured
+> reproducibility floor. Reported as a consistent, modest effect. The
+> '3σ/strong' label is retracted — its σ was a two-point spread, per the
+> M5.1 correction."*
+
+Direction: robust. Magnitude language: honest. Claim: survives.
+
+*Flagged three times before being ruled, which the author records as
+their own lapse: the M5.1 correction retracted σ-phrasings project-wide
+and this label survived twice afterwards.*
+
+### 4. Budget — decomposition DEFERRED INTO the Phase-6 entry gate
+
+It belongs there because it **is** the same computation as the D6 power
+analysis: runs = design × seeds-derived-from-measured-floors, costed
+directly. The $81 figure is noted for what it means rather than as a
+target: **money is not a constraint on any Phase-6 decision; wall-clock
+and statistical power are the real currencies.**

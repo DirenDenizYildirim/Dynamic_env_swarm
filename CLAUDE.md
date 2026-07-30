@@ -171,6 +171,34 @@ was added unbenched. Measure what actually spends the budget: population-
 aggregate training throughput at the phase's real configuration
 (`pbt.py --bench`, `configs/gate_pop12.yaml`).
 
+## Bars come with floors (human-issued 2026-07-30)
+
+**No acceptance threshold enters any script without either a measured
+floor for the quantity it grades (cited) or an explicit UNDERPOWERED flag
+in its output. Thresholds finer than their instruments are void by
+construction.**
+
+A threshold set below its instrument's measured noise cannot pass under
+the null, so it is not a test and its output is not evidence — void, not
+failed, and the distinction is load-bearing because a *void* test voids a
+PASS identically.
+
+Origin: four bars set without floors in one phase. M4.4's `σ_seed` 0.0295
+against a later-measured High floor of 0.0621; M5.3's hardcoded Medium
+floor applied to a run on different hardware; M5.3b's 2×sd bar at High,
+which no affordable seed count could reach (~46 seeds/arm); and M5.5's
+20 % relative threshold on a quantity whose measured nondeterminism is
+27.2 %. Accountability splits both ways: the invented constants were the
+builder's, and the framework that asked for "within seed noise" and "no
+cross-arm difference" four times without ever specifying *against what
+floor* was the author's. This rule closes both ends.
+
+**Floors are per-metric AND per-hardware facts.** Motivating exhibit
+(M5.5): re-measuring the Medium floor on a different card moved the
+completion floor 2.75× (0.0145 → 0.0399) while leaving survival identical
+(0.0129 → 0.0130). Neither "it will be the same" nor "it will differ" is
+safe to assume — measure it on the card that runs the grid.
+
 ## Artifact persistence for GPU runs (human-issued 2026-07-28)
 
 **Every GPU run persists metrics + provenance + a checkpoint archive
