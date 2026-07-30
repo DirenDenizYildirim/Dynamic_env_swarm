@@ -666,6 +666,57 @@ this evidence that premise is unestablished at Medium, and the falsifier
 would be measuring the removal of a channel not yet shown to carry usable
 content. That is a discussion input, not a decision taken here.
 
+### Settled at the STOP: the gate is re-sited at High (M5.3b, pre-registered)
+
+The human discussion the prompt required was held on 2026-07-30. It found
+that **the gate was run at the severity where its own mechanism measures
+zero.** M4.4 Result 1, which predates the Phase-5 prompt:
+
+| severity | Δsurvival (κ_B 0 → 1.0) | verdict | masked at danger | danger rate |
+|---|---|---|---|---|
+| low | +0.0059 | strong (1.16× threshold) | 0.0809 | 0.0068 |
+| **medium** | **−0.0003** | **within noise** | 0.0560 | 0.0396 |
+| high | **−0.0876** | **strong**, deaths_fire ×2.6 | **0.2424** | 0.0621 |
+
+M5.3 asked whether neighbours can supply information the hazard withholds,
+at the severity where our own prior measurement says it withholds nothing.
+The prompt's stated expectation — "masked perception at Medium leaves
+information on the table that neighbours can supply" — is contradicted by
+M4.4's own Medium row.
+
+**This is covering the range, not band-shopping** (M4.3 precedent, as
+institutionalized for R_comm by the Q5 ruling): no threshold, label or
+grading rule moves, **Medium's null stands as reported and is not
+superseded**, and both cells are reported together whatever High returns.
+
+**DIAL (item #1) is deferred on a dependency, not rejected.** It fixes what
+gets said; whether the encoding binds cannot be measured in a cell with
+nothing to encode, so a differentiable channel at Medium would return this
+same null for this same reason. Even if built, it must be evaluated at High
+to be interpretable — so High precedes it on either path.
+
+Design, fixed before any number exists (`run_m53b_high_utility_gate.sh`):
+
+- **The floor is measured first, on the same card, and the verdict reads
+  it.** M5.3's script hardcoded the M5.1e floor, which is Medium- *and*
+  card-specific; M4.4's σ_seed at High (0.0227/0.0295) is 2–4× Medium's
+  (0.0107/0.0072). Section 1 runs four identical High runs and section 4
+  grades against that file, refusing to produce a verdict if it is absent.
+- **3 seeds**, per the M4.4 precedent for large-variance cells.
+- **Cell A (verdict):** High, δ = 0, R_comm = 8 — one change from M5.3.
+- **Cell B (sensitivity):** High, δ = 0, R_comm = 16. At High the swarm
+  loses agents, so the graph is sparser exactly where the need is greatest:
+  High raises demand and cuts supply at once. Cell B separates "no content
+  is useful" from "no one was in range to hear it".
+
+Pre-registered labels, all three fixed in advance:
+
+| outcome | reading |
+|---|---|
+| A separates | comms load-bearing where perception fails; Remark 2 confirmed at swarm scale; proceed to M5.4 |
+| A null, B separates | the constraint is **connectivity**; R_comm is load-bearing, not a plumbing default, and M5.4 must lock it where the channel is usable |
+| both null | regime- and connectivity-independent; the reading returns to Remark 2′(i) — redundancy substitutes for communication, as M5.2's coverage arm measured — and the human chooses between a reportable negative and DIAL, with two cells and two severities of evidence |
+
 ### Artifacts
 
 `che/bench/results/phase5/m53/`: six checkpoint archives

@@ -902,3 +902,77 @@ are the obligations it creates, none of which are optional.
 5. Provenance already records the device (M5.1j); with the split in force,
    **every Phase-5 result from here states its card in the report table**,
    not only in the artifact.
+
+## M5.3 null branch settled (human, 2026-07-30) — the gate is re-sited at High
+
+The M5.3 STOP required a human discussion before any lock. Held; the
+decision is **re-site the utility gate at High severity (M5.3b)** before
+either accepting the null or building DIAL.
+
+**Basis — the gate was run where its own mechanism measures zero.** M4.4
+Result 1 measured Coupling B's effect per severity:
+
+| severity | Δsurvival (κ_B 0 → 1.0) | verdict | masked at danger | danger rate |
+|---|---|---|---|---|
+| low | +0.0059 | strong (1.16× threshold, 2 seeds) | 0.0809 | 0.0068 |
+| **medium** | **−0.0003** | **within noise** | 0.0560 | 0.0396 |
+| high | **−0.0876** | **strong**, deaths_fire ×2.6 | **0.2424** | 0.0621 |
+
+M5.3 asked whether neighbours can supply information the hazard withholds,
+at the severity where our own prior measurement says the hazard withholds
+nothing. The phase prompt's stated expectation ("masked perception at
+Medium leaves information on the table that neighbours can supply") is
+contradicted by M4.4's Medium row, which predates it.
+
+**This is covering the range, not band-shopping** (M4.3 precedent, as
+institutionalized for R_comm by the Q5 ruling): no threshold, label or
+grading rule moves. **Medium's null stands as reported, is not superseded,
+and both cells are reported together whatever High returns.**
+
+**What M5.3 established that re-siting does not disturb:** zeroed ≈
+shuffled (0.10–0.22 of the bar). Had sender identity carried anything,
+shuffled would sit between live and zeroed; it sits on zeroed. **No
+sender-specific content is used at Medium**, independent of why.
+
+**DIAL (item #1) is deferred on a dependency, not rejected.** It fixes
+*what gets said*; whether the encoding binds cannot be measured in a cell
+with nothing to encode, so a differentiable channel at Medium would return
+the same null for the same reason. Even if built, it has to be evaluated
+at High to be interpretable — so High precedes it on either path.
+
+**Design, fixed before the numbers exist:**
+
+1. **Floor first.** The M5.1e floor is Medium-specific *and* card-specific;
+   M4.4's σ_seed at High (0.0227 / 0.0295) is 2–4× Medium's (0.0107 /
+   0.0072). So a High reproducibility floor is measured **on the same card,
+   before the gate cells run** (4 identical runs, same seed), and the
+   verdict grades against *that* file rather than a transcribed constant.
+   M5.3's script hardcoded the Medium floor; M5.3b reads the measured one.
+2. **3 seeds, not 2**, per the M4.4 precedent that approved a third seed
+   where variance is large.
+3. **Cell A (verdict cell):** High, δ = 0, R_comm = 8 — one change from
+   M5.3, so the comparison is attributable.
+4. **Cell B (sensitivity cell):** High, δ = 0, R_comm = 16. At High the
+   swarm loses agents, so the comms graph is *sparser* exactly where the
+   need is greatest; High raises demand and cuts supply at once. Cell B
+   separates "no content is useful" from "no one was in range to hear it",
+   and it feeds M5.4's R_comm lock directly.
+
+**Pre-registered labels, all three fixed now:**
+
+- **A separates** (live > zeroed by > 2× the measured High floor on
+  completion or survival) → comms is load-bearing where perception fails;
+  Remark 2's prediction confirmed at swarm scale; proceed to M5.4.
+- **A null, B separates** → the binding constraint is **connectivity**, not
+  content or regime. R_comm becomes load-bearing rather than a plumbing
+  default, and M5.4 must lock it where the channel is usable. Reportable
+  finding either way.
+- **A and B both null** → the null is regime- and connectivity-independent
+  across the tested range, and the reading returns to Remark 2′(i):
+  redundancy substitutes for communication, as M5.2's coverage arm measured
+  (J = 1 under total denial with interchangeable agents). At that point the
+  human chooses between accepting it as a reportable negative and building
+  DIAL — with two cells of evidence instead of one.
+
+Cost ~2.2 GPU-hours (~$2.20 at the PRO 6000 rate): 4 floor runs + 2 cells ×
+3 arms × 3 seeds, CRN-paired evals throughout.

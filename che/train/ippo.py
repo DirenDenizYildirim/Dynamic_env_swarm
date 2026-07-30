@@ -601,6 +601,14 @@ def main():
         help="override theta.kappa_B (M4.3 probe policies / M4.4 arm)",
     )
     p.add_argument(
+        "--r-comm",
+        type=float,
+        default=None,
+        dest="r_comm",
+        help="override theta.r_comm (M5.3b sensitivity cell / M5.4 sweep); "
+        "changes the config hash, so eval must pass the same value",
+    )
+    p.add_argument(
         "--msg-mode",
         choices=("live", "zeroed", "shuffled"),
         default=None,
@@ -642,6 +650,14 @@ def main():
             env=dataclasses.replace(
                 cfg.env,
                 theta=dataclasses.replace(cfg.env.theta, kappa_B=args.kappa_B),
+            ),
+        )
+    if args.r_comm is not None:
+        cfg = dataclasses.replace(
+            cfg,
+            env=dataclasses.replace(
+                cfg.env,
+                theta=dataclasses.replace(cfg.env.theta, r_comm=args.r_comm),
             ),
         )
     train_overrides = {

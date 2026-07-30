@@ -259,6 +259,14 @@ def main(argv: list[str] | None = None):
         "(M4.3 probe policies / M4.4 kappa_B arm; hash guard)",
     )
     p.add_argument(
+        "--r-comm",
+        type=float,
+        default=None,
+        dest="r_comm",
+        help="theta override — must match the training run "
+        "(M5.3b sensitivity cell / M5.4 sweep; hash guard)",
+    )
+    p.add_argument(
         "--obs-version",
         type=int,
         default=None,
@@ -318,6 +326,14 @@ def main(argv: list[str] | None = None):
             env=dataclasses.replace(
                 cfg.env,
                 theta=dataclasses.replace(cfg.env.theta, kappa_B=args.kappa_B),
+            ),
+        )
+    if args.r_comm is not None:
+        cfg = dataclasses.replace(
+            cfg,
+            env=dataclasses.replace(
+                cfg.env,
+                theta=dataclasses.replace(cfg.env.theta, r_comm=args.r_comm),
             ),
         )
     if args.obs_version is not None:
