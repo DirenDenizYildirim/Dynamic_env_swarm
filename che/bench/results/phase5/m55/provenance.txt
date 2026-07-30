@@ -1,0 +1,10 @@
+run: M5.5 Phase-5 acceptance (rescoped: Medium x delta x 4 seeds)
+date_utc: 2026-07-30T15:29:35Z
+git_commit: 1c1ce7667f0bb3ffe9e753da61026a03bf56803b
+git_dirty: 10 file(s)
+config: che/configs/severity_medium.yaml   dp: 0.5   updates: 500   R_comm: 16 (LOCKED)
+seeds: 0 1 2 3   deltas: 0.0 1.0   eval_episodes: 512
+msg_mode: live in BOTH arms (the ablation is denial, not architecture)
+floor: 4 identical runs at seed 0, delta 0
+gpu: NVIDIA RTX PRO 6000 Blackwell Workstation Edition
+jax: 0.11.0 0.11.0

@@ -1,0 +1,13 @@
+{
+ "config": "che/configs/severity_medium.yaml",
+ "ckpt_dir": "che/bench/results/phase5/m55/ckpt_d0.0_s0",
+ "seed": 0,
+ "greedy": false,
+ "obs_version": 3,
+ "allow_hash": null,
+ "steps": 256,
+ "final_completion": 0.6875,
+ "final_alive": 11,
+ "n_agents": 12,
+ "episode_return": 21.5
+}

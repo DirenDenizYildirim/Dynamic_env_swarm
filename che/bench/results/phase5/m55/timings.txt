@@ -1,0 +1,12 @@
+train_floor_rep1 256s
+train_floor_rep2 258s
+train_floor_rep3 257s
+train_floor_rep4 257s
+train_d0.0_s0 256s
+train_d0.0_s1 257s
+train_d0.0_s2 257s
+train_d0.0_s3 256s
+train_d1.0_s0 256s
+train_d1.0_s1 256s
+train_d1.0_s2 256s
+train_d1.0_s3 257s

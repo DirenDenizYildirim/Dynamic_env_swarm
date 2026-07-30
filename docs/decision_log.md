@@ -1149,3 +1149,61 @@ With comms certified inert, the composition experiment is effectively over
 **{Coupling A, Coupling B}**. **δ = 1.0 is retained in θ\*** for
 registration fidelity at zero cost. The dose-response x-axis (A×B
 co-active visitation) is unaffected.
+
+## M5.5 outcome (RA, 2026-07-30) — falsifier failed on an RA-chosen threshold
+
+**Verdict as computed: NOT INERT**, failing condition (iii) alone. Reported
+as the instrument produced it; the script's own instruction ("do not
+reconcile it here") is honoured — what follows is analysis for the human,
+not a re-grade.
+
+| δ | completion | survival | delivery | out-deg | fire/danger |
+|---|---|---|---|---|---|
+| 0.0 | 0.7396 ± 0.0195 | 0.9188 ± 0.0114 | 1.0000 | 3.213 | 0.00744 |
+| 1.0 | 0.7358 ± 0.0131 | 0.9331 ± 0.0065 | 0.0000 | 0.000 | 0.00571 |
+
+Conditions (i) and (ii) hold: Δcompletion +0.0038 and Δsurvival −0.0143
+against bars of 0.0799 / 0.0260, and the knob provably moved (delivery
+1.0000 → 0.0000, out-degree 3.213 → 0.000 — the empty graph `comms.py`
+specifies).
+
+**Condition (iii) failed at 23.2 % against a 20 % threshold that the RA
+chose, and that threshold is finer than the quantity's own noise.** The
+floor study — collected in Section 1, *before* the arms were compared —
+gives fire deaths per danger agent-step across four identical runs as
+0.00810 / 0.00408 / 0.00776 / 0.00688: **sd 0.00182, 27.2 % relative**. The
+cross-arm difference of 0.00172 is **0.95× that floor sd**, and the δ = 0
+arm's own per-seed spread (0.00517–0.01041) is wider than the difference
+it is being compared against.
+
+So the two readings are:
+
+- **as operationalized by the RA** — 23.2 % > 20 % → NOT INERT;
+- **as the human specified it** ("no cross-arm difference in danger-moment
+  outcomes"), graded against the measured floor → 0.95 σ → no difference,
+  and all three conditions hold → **INERT**.
+
+**This is offered knowing it looks like special pleading after a failed
+test.** Two things distinguish it: the floor data predate the comparison,
+and the defect is structural rather than convenient — a threshold finer
+than its own instrument cannot pass whatever the truth is. The RA does not
+re-grade; the human rules.
+
+**The systemic finding, and the fourth instance of it today:** a bar chosen
+without a measured floor. M4.4's σ_seed (0.0295 vs a measured 0.0621 at
+High); M5.3's hardcoded Medium floor applied to a different card; M5.3b's
+2×sd bar at High, which no affordable seed count could reach; and now a
+20 % relative threshold below a 27.2 % noise level. **Recommended ruling:
+no acceptance threshold enters a script without a measured floor for the
+quantity it grades, or an explicit statement that it is underpowered.**
+
+**Floor note (the card reconciliation, discharged):** the Medium floor
+re-measured on the PRO 6000 is completion sd 0.0399, survival sd 0.0130 —
+survival matches M5.1e's 5090 figure (0.0129) almost exactly, completion is
+2.75× larger (0.0145). The re-measurement therefore mattered for one metric
+and not the other, which is why it was not assumed either way.
+
+**Instance released** after all 12 checkpoint archives were pulled and
+verified against their committed sha256 (12/12 OK). `workspace_is_volume`
+was False, so nothing survives on the box; the archives are local and the
+`.sha256`/provenance are committed.

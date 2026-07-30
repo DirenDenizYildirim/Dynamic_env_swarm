@@ -1,0 +1,12 @@
+MEDIUM reproducibility floor — 4 identical runs, same seed.
+Nondeterminism alone, NOT seed spread. Measured on the card this
+grid runs on (hardware-split ruling); M5.1e's 5090 figures are
+printed beside it in the verdict.
+
+  metric                     mean         sd      range
+  completion               0.7443     0.0399     0.0877
+  survival_rate            0.9242     0.0130     0.0309
+  episode_return          23.3628     1.3445     2.9170
+  deaths_fire              0.6909     0.1495     0.3281
+
+CAVEAT: n = 4 gives an sd with 3 dof, uncertain by ~+/-40 %.
