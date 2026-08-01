@@ -386,6 +386,12 @@ configs:
       obs_version: obs_version
     explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
 
+  # SUPERSEDED for Phase 6 by the theta*-siting ruling (2026-08-02): training
+  # is now {Low, High}, so Medium is NOT a JOINT training point and this
+  # config's theta is identical to theta_star_holdout.yaml's. Kept, not
+  # deleted, because Phase 7's factorial may want it — but do NOT train on it
+  # in Phase 6: doing so would put theta*'s severity into the training
+  # distribution and destroy the held-out property Gamma depends on.
   che/configs/joint_medium.yaml:
     role: joint
     theta:

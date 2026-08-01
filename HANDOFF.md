@@ -27,9 +27,33 @@ has grown a queue (below).
 
 ## Added 2026-08-01/02 — the Phase-6 red team, and the M6.0 spike
 
-**Read `phase6_redteam_v1.md` before anything Phase-6.** The design v1 was
-reviewed and **should not be registered as written**. Five findings, all
-traced to measured artifacts; the three fatal ones:
+**Read `phase6_redteam_v1.md`, then `phase6_redteam_remedies.md`.** The
+design v1 was reviewed and **must not be registered as written**. All four
+open findings were RULED on 2026-08-02 (`decision_log.md`, "PHASE-6 REMEDY
+RULINGS"); the remedies doc records the options and which were selected.
+
+**The four rulings, in one line each:**
+1. **θ\* siting** — train on the EXTREMES {0.43, 0.70}, hold out the MIDDLE
+   (θ\* = 0.49). Def. 8 satisfied literally, both couplings live, smallest
+   floors. **`beta_holdout` is now resolved to a MEASURED value** and
+   `theta_star_holdout.yaml` loads.
+2. **Estimand** — endpoints (ISO vs JOINT-classic) confirmatory; matched
+   sweep secondary with its no-element gradient reported; **c = 0.4
+   identification arm** so the confound is bounded, not just noted.
+3. **Seeds — k = 20** uniformly (~$15). At k = 4 completion was unresolvable
+   before a single run.
+4. **Floors — 8 reps** per evaluation config, before any bar, on the grid's
+   card, **per-arm** (per-artifact rule).
+
+Still unruled: the ablation certification table (15 runs for a property
+`test_nesting.py` already proves).
+
+**Do NOT train on `joint_medium.yaml` in Phase 6** — Medium is θ\*'s
+severity now, and training on it would destroy the held-out property Γ
+depends on. Flagged in `locks.yaml`.
+
+The findings that produced those rulings, for context — the three fatal
+ones:
 
 1. **§6 costs Phase 6 from row A (142,421 steps/s)** — `m06_probe.yaml`,
    `obs_window` 5, elements off. `phase5_report.md:119` calls that "a drift
@@ -71,7 +95,9 @@ generalization axes; it costs nothing.
   that had been **passing for the wrong reason** with masking silently off.
 - Owed before any ≥3-component design: **per-component count logging** (a
   mean over component indices only reads as a ratio for two components).
-- **GPU ladder finding, and a candidate rule amendment.** On GPU, two
+- **Per-artifact floors are now REPO LAW** (CLAUDE.md, adopted 2026-08-02):
+  measure the floor on the artifact being graded, never on its reference.
+- **GPU ladder finding that produced that rule.** On GPU, two
   Def.-2 diagnostics (`masked_frac`, `masked_danger_sum`, High seed 0)
   differ run-to-run. It first read as a real traced-vs-folded difference
   because the floor had been measured on the BASELINE tree — which is
@@ -79,8 +105,9 @@ generalization axes; it costs nothing.
   (1/4 against itself). No trajectory field differed in any of 13
   comparisons; CPU is unaffected. **Floors are per-metric, per-hardware and
   — this is the new part — PER-ARTIFACT: measure the floor on the thing
-  being graded, not on its reference.** A human ruling is owed on whether
-  that goes into CLAUDE.md alongside bars-with-floors.
+  being graded, not on its reference.** Operational form: an equivalence
+  claim between A and B needs A-vs-A and B-vs-B, not just A-vs-B — two
+  deterministic artifacts cannot compare intermittently.
 
 ## Added 2026-07-31 — locks are now enforced by test
 
