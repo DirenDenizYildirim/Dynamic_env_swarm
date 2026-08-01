@@ -72,6 +72,17 @@ EP_METRICS = {
     "ep_deaths_fire": "deaths_fire",
     "ep_deaths_collapse": "deaths_collapse",
     "mean_smoke_exposure": "mean_smoke_exposure",  # Phase-2 (M2.5 report)
+    # M6.0c (spike acceptance 2d): which mixture component each finished
+    # episode was drawn from. Done-masked and averaged over finished
+    # episodes like every other entry here, so for the spike's TWO-component
+    # mixture (labels 0/1) the logged mean IS the realized weight of
+    # component 1 — the audit the acceptance asks for.
+    # LIMITATION, stated rather than discovered later: a mean over component
+    # INDICES only reads as a mixture ratio for two components. Phase 6's
+    # four-component design needs per-component counts, which is a logging
+    # change (one channel per component, or a one-hot sum), not a mechanism
+    # change. Deliberately out of the spike's 2-component scope fence.
+    "mixture_component": "mixture_component",
 }
 
 

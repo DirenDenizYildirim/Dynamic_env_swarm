@@ -73,6 +73,60 @@ class ThetaConfig:
 
 
 @dataclasses.dataclass(frozen=True)
+class MixtureComponent:
+    """One point of a training mixture (M6.0c).
+
+    A component is a **patch on the base theta**, not a full theta: any field
+    left None inherits `EnvConfig.theta`. That is deliberate — the Phase-6
+    treatment varies which *elements* are co-active, and expressing a
+    component as "the base config, with Coupling A off" keeps every locked
+    constant in one place (docs/locks.yaml) instead of restating them per
+    component, where they could silently drift apart.
+
+    Only the four traced fields may be patched; everything else is static
+    (see `types.ThetaLive` for why).
+    """
+
+    name: str
+    weight: float
+    beta: float | None = None
+    kappa_A: float | None = None
+    kappa_B: float | None = None
+    delta: float | None = None
+
+    def __post_init__(self) -> None:
+        if self.weight < 0.0:
+            raise ValueError(f"mixture component {self.name!r}: negative weight")
+
+
+@dataclasses.dataclass(frozen=True)
+class MixtureConfig:
+    """The training distribution over theta (M6.0c).
+
+    Empty means "no mixture": every episode runs the config's own theta. That
+    degenerate case is not a separate code path — `env.sample_theta_live`
+    synthesizes a single component from `cfg.theta`, so the traced path is
+    the only path and the mixture draw always consumes its stream
+    (invariant #3).
+
+    Weights are normalized at sample time; they need not sum to 1.
+    """
+
+    components: tuple[MixtureComponent, ...] = ()
+
+    def __post_init__(self) -> None:
+        names = [c.name for c in self.components]
+        if len(set(names)) != len(names):
+            raise ValueError(f"duplicate mixture component names: {names}")
+        if self.components and sum(c.weight for c in self.components) <= 0.0:
+            raise ValueError("mixture weights sum to zero")
+
+    @property
+    def is_empty(self) -> bool:
+        return not self.components
+
+
+@dataclasses.dataclass(frozen=True)
 class EnvConfig:
     """Arena and task geometry. grid_size is the side length L (Sec. 3)."""
 
@@ -95,6 +149,11 @@ class EnvConfig:
     hazard_mode: str = "dynamic"  # {"dynamic", "frozen"}
     t_gen: int | None = None  # frozen burn-in CA steps; None -> horizon // 2
     theta: ThetaConfig = dataclasses.field(default_factory=ThetaConfig)
+    # M6.0c: the training distribution over theta. Lives on EnvConfig because
+    # reset() needs it, and stays STATIC (a Python object closed over by the
+    # jitted function) — it is the *specification* of the draw, while the
+    # drawn values are the traced part. Empty = every episode runs cfg.theta.
+    mixture: MixtureConfig = dataclasses.field(default_factory=MixtureConfig)
 
     def __post_init__(self) -> None:
         if self.obs_window % 2 != 1:
@@ -228,7 +287,15 @@ def load_config(path: str | Path) -> Config:
         raw = yaml.safe_load(f) or {}
     _reject_pending(raw, path)
     theta = ThetaConfig(**raw.get("theta", {}))
-    env_kwargs = raw.get("env", {})
-    env = EnvConfig(theta=theta, **env_kwargs)
+    env_kwargs = dict(raw.get("env", {}))
+    # M6.0c: `mixture:` is a top-level block, parsed into the frozen spec.
+    # Unknown component keys raise, same typo protection as everywhere else.
+    mix_raw = raw.get("mixture") or {}
+    mixture = MixtureConfig(
+        components=tuple(
+            MixtureComponent(**c) for c in mix_raw.get("components", [])
+        )
+    )
+    env = EnvConfig(theta=theta, mixture=mixture, **env_kwargs)
     train = TrainConfig(**raw.get("train", {}))
     return Config(env=env, train=train)

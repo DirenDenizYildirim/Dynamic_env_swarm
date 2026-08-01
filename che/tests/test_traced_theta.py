@@ -29,9 +29,16 @@ import jax
 import jax.numpy as jnp
 import pytest
 
-from che.env.config import EnvConfig, ThetaConfig
+from che.env.config import (
+    EnvConfig,
+    MixtureComponent,
+    MixtureConfig,
+    ThetaConfig,
+    load_config,
+)
 from che.env.env import N_ACTIONS, reset, step
 from che.env.types import theta_live_from
+from che.train.rollout import step_autoreset
 
 L = 16
 
@@ -148,6 +155,148 @@ def test_production_theta_overrides_are_applied_before_reset():
     # delta = 1 is total denial: the realized link graph must be empty.
     obs, _ = reset(jax.random.PRNGKey(4), overridden)
     assert not bool(jnp.asarray(obs["links"]).any())
+
+
+# ------------------------------------------------------- M6.0c: the mixture
+
+
+def _mix(*comps) -> MixtureConfig:
+    return MixtureConfig(components=tuple(comps))
+
+
+def _mixture_cfg(*comps, **theta_kw) -> EnvConfig:
+    return dataclasses.replace(_cfg(**theta_kw), mixture=_mix(*comps))
+
+
+def test_component_is_a_patch_on_the_base_theta():
+    """Unset component fields inherit cfg.theta — the point being that
+    locked constants stay in one place instead of being restated per
+    component, where they could silently drift apart."""
+    cfg = _mixture_cfg(
+        MixtureComponent(name="a_off", weight=1.0, kappa_A=0.0),
+        beta=0.49,
+        kappa_A=0.06,
+        kappa_B=1.0,
+        delta=1.0,
+    )
+    _, s = reset(jax.random.PRNGKey(0), cfg)
+    assert float(s.theta_live.kappa_A) == pytest.approx(0.0)  # patched
+    assert float(s.theta_live.beta) == pytest.approx(0.49)  # inherited
+    assert float(s.theta_live.kappa_B) == pytest.approx(1.0)  # inherited
+    assert float(s.theta_live.delta) == pytest.approx(1.0)  # inherited
+
+
+def test_realized_mixture_ratio_matches_weights():
+    """Spike acceptance 2d, at CPU scale: the draw must actually realize the
+    declared distribution, not merely accept it."""
+    cfg = _mixture_cfg(
+        MixtureComponent(name="pillar", weight=0.25, kappa_A=0.0, kappa_B=0.0),
+        MixtureComponent(name="joint", weight=0.75),
+        kappa_A=0.06,
+        kappa_B=1.0,
+    )
+    n = 2000
+    keys = jax.random.split(jax.random.PRNGKey(7), n)
+    comps = jax.vmap(lambda k: reset(k, cfg)[1].mixture_component)(keys)
+    frac_joint = float((comps == 1).mean())
+    # ~2.5 sd of a Binomial(2000, 0.75) proportion is ~0.024.
+    assert abs(frac_joint - 0.75) < 0.03, f"realized {frac_joint:.3f} vs 0.75"
+    # And the drawn theta tracks the component, not just the label.
+    kb = jax.vmap(lambda k: reset(k, cfg)[1].theta_live.kappa_B)(keys)
+    assert bool(jnp.all((comps == 1) == (kb == 1.0)))
+
+
+def test_zero_weight_component_is_never_drawn():
+    cfg = _mixture_cfg(
+        MixtureComponent(name="never", weight=0.0, beta=0.99),
+        MixtureComponent(name="always", weight=1.0, beta=0.11),
+    )
+    keys = jax.random.split(jax.random.PRNGKey(11), 256)
+    betas = jax.vmap(lambda k: reset(k, cfg)[1].theta_live.beta)(keys)
+    assert bool(jnp.all(betas == jnp.float32(0.11)))
+
+
+def test_autoreset_resamples_the_component():
+    """The mixture draws per EPISODE, so the boundary is where it must move —
+    this is the path the Phase-6 trainer actually runs."""
+    cfg = dataclasses.replace(
+        _mixture_cfg(
+            MixtureComponent(name="lo", weight=1.0, beta=0.0),
+            MixtureComponent(name="hi", weight=1.0, beta=1.0),
+        ),
+        horizon=2,  # done fires every other step
+    )
+    key = jax.random.PRNGKey(13)
+    _, s = reset(key, cfg)
+    seen, dones = set(), 0
+    for t in range(60):
+        k = jax.random.fold_in(key, t)
+        _, s, _, done, _ = step_autoreset(k, s, _stay(), cfg)
+        seen.add(int(s.mixture_component))
+        dones += int(done)
+    assert dones > 0, "horizon=2 should have produced episode boundaries"
+    assert seen == {0, 1}, f"component never varied across resets: {seen}"
+
+
+def test_info_reports_the_stepping_episodes_component():
+    """Under autoreset the returned state may already be a fresh draw while
+    `info` describes the episode that just ended — the same numerator/
+    denominator discipline the M4.4 and M5.0 channels follow."""
+    cfg = dataclasses.replace(
+        _mixture_cfg(
+            MixtureComponent(name="lo", weight=1.0, beta=0.0),
+            MixtureComponent(name="hi", weight=1.0, beta=1.0),
+        ),
+        horizon=1,  # every step is a boundary
+    )
+    key = jax.random.PRNGKey(17)
+    _, s = reset(key, cfg)
+    for t in range(20):
+        before = int(s.mixture_component)
+        k = jax.random.fold_in(key, t)
+        _, s, _, done, info = step_autoreset(k, s, _stay(), cfg)
+        assert bool(done)
+        assert int(info["mixture_component"]) == before, (
+            "info must describe the ending episode, not the fresh draw"
+        )
+
+
+def test_empty_mixture_is_exactly_the_config_theta():
+    """The degenerate case is a real single-component mixture, not a bypass:
+    it still draws (invariant #3) and still lands on cfg.theta."""
+    plain = _cfg(beta=0.37, kappa_A=0.02, kappa_B=0.5, delta=0.25)
+    assert plain.mixture.is_empty
+    _, s = reset(jax.random.PRNGKey(19), plain)
+    for f in ("beta", "kappa_A", "kappa_B", "delta"):
+        assert getattr(s.theta_live, f) == pytest.approx(getattr(plain.theta, f))
+    assert int(s.mixture_component) == 0
+
+
+def test_mixture_spec_validation_and_yaml_round_trip(tmp_path):
+    with pytest.raises(ValueError, match="duplicate"):
+        _mix(
+            MixtureComponent(name="x", weight=1.0),
+            MixtureComponent(name="x", weight=1.0),
+        )
+    with pytest.raises(ValueError, match="negative weight"):
+        MixtureComponent(name="x", weight=-0.5)
+    with pytest.raises(ValueError, match="sum to zero"):
+        _mix(MixtureComponent(name="x", weight=0.0))
+
+    path = tmp_path / "mix.yaml"
+    path.write_text(
+        "env:\n  grid_size: 16\n  n_agents: 4\n"
+        "theta:\n  beta: 0.49\n  kappa_A: 0.06\n  kappa_B: 1.0\n"
+        "mixture:\n  components:\n"
+        "    - {name: a_only, weight: 0.5, kappa_B: 0.0}\n"
+        "    - {name: joint, weight: 0.5}\n"
+    )
+    cfg = load_config(path)
+    assert [c.name for c in cfg.env.mixture.components] == ["a_only", "joint"]
+    assert cfg.env.mixture.components[0].kappa_B == 0.0
+    assert cfg.env.mixture.components[1].kappa_B is None  # inherits
+    with pytest.raises(TypeError):  # typo protection, as everywhere else
+        MixtureComponent(name="x", weight=1.0, kappa_C=1.0)
 
 
 def test_theta_live_survives_a_jitted_step():

@@ -25,7 +25,7 @@ import jax
 import jax.numpy as jnp
 
 from che.env.comms import in_range_mask, sample_links
-from che.env.config import EnvConfig
+from che.env.config import EnvConfig, MixtureComponent
 from che.env.hazard import hazard_step, seed_ignitions, smoke_step
 from che.env.observation import masked_fraction, observe, per_agent_masked
 from che.env.structure import (
@@ -42,7 +42,6 @@ from che.env.types import (
     INTACT,
     EnvState,
     ThetaLive,
-    theta_live_from,
 )
 
 # Action set: 5 discrete actions (stay + 4 von-Neumann moves).
@@ -69,21 +68,60 @@ _MIXTURE_STREAM = 59
 _ACTION_OFFSETS = jnp.array([[0, 0], [-1, 0], [1, 0], [0, -1], [0, 1]], dtype=jnp.int32)
 
 
+def _mixture_table(cfg: EnvConfig) -> tuple[jax.Array, dict[str, jax.Array]]:
+    """Static -> arrays: (log-weights, {field: per-component values}).
+
+    A component is a patch on the base theta, so an unset field inherits
+    `cfg.theta`. Built from Python floats at trace time; the only traced
+    thing is the index that selects a row.
+    """
+    comps = cfg.mixture.components or (
+        # The degenerate case, synthesized rather than branched: one
+        # component that IS the config's theta. This is what keeps the
+        # traced path the only path (invariant #3 — the draw always happens
+        # and always consumes its stream, even when it cannot change).
+        MixtureComponent(name="_config", weight=1.0),
+    )
+    total = sum(c.weight for c in comps)
+    logits = jnp.log(
+        jnp.asarray([c.weight / total for c in comps], dtype=jnp.float32)
+    )
+    base = cfg.theta
+    table = {
+        field: jnp.asarray(
+            [
+                getattr(base, field) if getattr(c, field) is None
+                else getattr(c, field)
+                for c in comps
+            ],
+            dtype=jnp.float32,
+        )
+        for field in ("beta", "kappa_A", "kappa_B", "delta")
+    }
+    return logits, table
+
+
 def sample_theta_live(
     key: jax.Array, cfg: EnvConfig
 ) -> tuple[ThetaLive, jax.Array]:
     """Draw this episode's traced theta (M6.0), returning (theta_live, index).
 
-    M6.0b: the degenerate single-component case — theta_live carries exactly
-    the config's locked constants, so the traced path is the only path and no
-    kernel needs an `if mixture is None` branch. The mixture spec arrives at
-    M6.0c and changes only this function.
+    Called once per reset/autoreset. `key` must already be the dedicated
+    mixture stream (see `_MIXTURE_STREAM`), so the draw can never perturb the
+    reset splits and a single-component mixture bitwise-recovers pre-M6.0
+    trajectories.
 
-    `key` is expected to be the caller's reset key; the draw derives its own
-    stream via fold_in, so it can never perturb the reset splits.
+    The draw is UNCONDITIONAL (invariant #3): a one-component mixture still
+    samples a categorical whose outcome is forced, exactly as the zeroed
+    stressor branches still sample uniforms they compare against 0. Nothing
+    here branches on a config value in a way that changes key consumption.
     """
-    del key  # degenerate mixture: nothing to draw yet (M6.0c uses the stream)
-    return theta_live_from(cfg.theta), jnp.zeros((), dtype=jnp.int32)
+    logits, table = _mixture_table(cfg)
+    idx = jax.random.categorical(key, logits)
+    return (
+        ThetaLive(**{field: values[idx] for field, values in table.items()}),
+        idx.astype(jnp.int32),
+    )
 
 
 def _comms_obs(
@@ -430,5 +468,12 @@ def step(
         # graph; the reward never reads them (Def. 2).
         "links_alive": links.sum(dtype=jnp.float32),
         "links_in_range": links_in_range.sum(dtype=jnp.float32),
+        # M6.0c: which mixture component this episode was drawn from, so a
+        # training run can be audited against its intended weights (spike
+        # acceptance 2d). Reports the STEPPING episode's component: under
+        # autoreset, `state` is the ending episode while the returned state
+        # may already be a fresh draw, and `info` describes the former.
+        # Deterministic, info-only, consumes no PRNG (invariants #3, Def. 2).
+        "mixture_component": state.mixture_component,
     }
     return obs, state_new, reward, done, info
