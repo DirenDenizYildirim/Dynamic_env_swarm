@@ -1430,3 +1430,104 @@ removes a D4-violating default; it does not create a new configuration.
 With this, every locked constant in `locks.yaml` is `supplied_by: config`
 or `default` — none is reachable only from argv. That was the point of the
 round-1 systemic fix, and this closes the last instance of the class.
+
+## M6.0 SPIKE — authorized pre-gate (human, 2026-08-01)
+
+Origin: the Phase-6 design v1 red team (`phase6_redteam_v1.md`) found that
+**the mixture-training machinery the headline experiment depends on does
+not exist**, and that θ is a frozen dataclass closed over by the jitted
+train function (`ippo.py: make_train_fns(cfg)`; `env.py: th = cfg.theta`),
+i.e. a compile-time constant rather than a traced value. §1 of the design
+therefore registered a treatment structure against an assumed mechanism.
+
+**RULED: run an M6.0 spike NOW, before the gate convenes** — Phase-0 logic,
+de-risk the largest unknown before the design session, so the gate
+registers §1 against a *demonstrated* mechanism and a *measured* cost.
+
+**Scope.** θ becomes per-env traced fields sampled at reset/autoreset from
+a mixture spec on a dedicated PRNG stream; minimal end-to-end path.
+
+### 1. Bench targets — APPROVED as proposed, with the tax named
+
+Rows: **`gate_pop12.yaml` (the spending consumer) + a single-policy grid
+row**, each stating its keep-alive set. **`reference.yaml` is explicitly
+NOT a headline row** — it is archival (`n_envs` 1024, `obs_window` 9,
+elements off, placeholder β) and quoting it would be the row-A error class,
+here named in advance rather than diagnosed afterwards.
+
+**The elements-OFF traced row is REQUIRED**, and the ruling records what it
+means so the docket cannot miss it: **under per-env traced θ a mixed batch
+is never constant-foldable for ANY env.** Today `κ_A = 0` lets XLA delete
+the seeding path outright; once θ is traced, that work runs for every env
+in every batch regardless of the value it carries. The elements-OFF delta
+is therefore **the permanent DCE tax the mixture design pays everywhere**,
+not a corner-case measurement. **That number feeds the gate's cost line
+directly.**
+
+### 2. Bitwise fallback ladder — RATIFIED, with a floor requirement added
+
+Ratified as proposed: bitwise required on CPU (jitted and
+`JAX_DISABLE_JIT=1`); on GPU bitwise preferred, else equivalence within a
+tolerance, with the regime named and the divergence localized to a specific
+op. Any outcome off the ladder: **stop and report.**
+
+**Added per bars-with-floors:** before grading any GPU divergence,
+**measure the same-code GPU rerun floor under the flags in use** (the
+deterministic flags if rows C/D verified them). The floor **may be exactly
+zero** — in which case any traced-vs-folded difference is real and the
+localize-to-an-op branch applies rather than a tolerance. A tolerance may
+only be graded against that measured floor, with its regime named. No bar
+before its floor, here as everywhere.
+
+### 3. δ in scope — APPROVED
+
+Traced set is **{β, κ_A, κ_B, δ}**. θ\* is then constructible without a
+second refactor, and the marginal cost is one more compared scalar in a
+kernel (`sample_links`) that already draws its uniforms unconditionally
+(invariant #3).
+
+### Scope fence — ACCEPTED as stated
+
+**Out of scope:** traced `r_seed` and any shape/loop parameter;
+`sigma_s`/`eta`; PBT integration; the full 4-component *c*-parameterized
+matched mixture of design §1 (the smoke test is 2 components).
+
+**`sigma_s`/`eta` are a HARD exclusion with a verified mechanism, not a
+preference.** `observation.plane_scales` → `rho_max` reads them, those
+scales are the uint8 quantization scales, and `dequantize_grid` folds their
+reciprocal **on the host** precisely because fp32 division is not correctly
+rounded on the GPU backend — the M5.1h incident where a full-scale code
+reconstructed as 0.99999994 and an indicator plane stopped round-tripping.
+`test_dequantize_does_no_device_division` guards it by inspecting lowered
+HLO. Tracing σ_s/η would make the scales traced and dismantle that fix.
+Verified this session: **`plane_scales` does not depend on κ_B**, so the
+uint8 path is untouched by the mixture as scoped.
+
+### Ordering — the one irreversible constraint
+
+**The golden artifact (M6.0a) is the first commit; nothing lands on the
+refactor path before its hash exists.** Acceptance 2a compares against a
+baseline that ceases to exist the moment the tree changes.
+
+### Acceptance, in order (2a → 2d)
+
+- **a. BITWISE REGRESSION** — traced-θ at fixed locked values reproduces
+  current-main trajectories bitwise under matched keys (cross-tree hash
+  pattern). *This is the safety proof of the whole refactor.*
+- **b.** Nesting suite green **unmodified**.
+- **c.** Bench row per §1 above — traced θ defeats constant folding, so the
+  cost is **measured, not assumed**; the standing throughput rule applies.
+- **d.** 50-update smoke train on a 2-component mixture; per-episode
+  component labels logged; realized mixture ratio ≈ weights.
+
+### Deliverable
+
+Report lands **on the gate docket**: feasibility + measured cost + any
+surprises. Design doc v1 gains the honest line: *"Mixture machinery did not
+exist at drafting; flagged in review; M6.0 spike de-risks before
+registration."* The precompiled-variant fallback is recorded with its
+**granularity cost**: the mixture would be realized at *update* rather than
+*episode* granularity, so every env within an update shares a component and
+PPO's advantage normalization sees a homogeneous batch — a different
+effective objective from per-env mixing, and the reason the traced path is
+worth the spike.
