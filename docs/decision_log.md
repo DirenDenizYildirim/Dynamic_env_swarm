@@ -1531,3 +1531,33 @@ registration."* The precompiled-variant fallback is recorded with its
 PPO's advantage normalization sees a homogeneous batch — a different
 effective objective from per-env mixing, and the reason the traced path is
 worth the spike.
+
+## Per-artifact floors — ADOPTED (human, 2026-08-02)
+
+**RULED: the per-artifact floor amendment proposed by the M6.0 report is
+adopted into CLAUDE.md**, alongside per-metric and per-hardware.
+
+**Measure the floor on the artifact being graded, never on its reference.**
+A floor taken on the comparison target describes *that* thing's stability;
+if the reference is the more deterministic of the two, the floor reads zero
+and the candidate's own noise gets promoted to a finding.
+
+Origin (M6.0, `che/bench/results/phase6/m60/m60_report.md` §2): the GPU
+rerun floor was measured on the **pre-refactor** tree — 0 differing digests
+in 4 of 4 comparisons. Against that zero floor, `info.masked_frac` and
+`info.masked_danger_sum` differing between traced and folded trees read as a
+real traced-vs-folded semantic difference, which by the ratified ladder
+meant "localize to a specific op, do not tolerance". Direct localization
+found **identical float32 bit patterns**. Repeating both arms resolved it:
+the **traced tree differs from itself 1 time in 4** on exactly those
+channels. The difference was inside the candidate's own floor throughout;
+the floor had been measured on the wrong tree.
+
+**Operational form:** an equivalence or bitwise claim between A and B
+requires **A-vs-A and B-vs-B**, not only A-vs-B graded against one of them.
+An intermittent cross-comparison between two artifacts is itself proof that
+at least one self-floor is nonzero and unmeasured — two deterministic
+artifacts cannot compare intermittently.
+
+Scope note: this does not reopen any Phase-0–5 result. It binds Phase 6
+onward and any future equivalence claim.

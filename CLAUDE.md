@@ -271,6 +271,29 @@ completion floor 2.75× (0.0145 → 0.0399) while leaving survival identical
 (0.0129 → 0.0130). Neither "it will be the same" nor "it will differ" is
 safe to assume — measure it on the card that runs the grid.
 
+### Amendment: floors are also PER-ARTIFACT (human-issued 2026-08-02)
+
+**Measure the floor on the artifact being graded, never on its reference.**
+A floor measured on the thing you are comparing *against* describes that
+thing's stability, not the stability of the thing under test — and if the
+reference happens to be the more deterministic of the two, the floor reads
+zero and the candidate's own noise is promoted to a finding.
+
+Motivating exhibit (M6.0, `results/phase6/m60/m60_report.md`): the GPU
+rerun floor was measured on the pre-refactor tree and came back **0
+differing digests in 4 of 4 comparisons**. Against that zero floor, two
+diagnostic channels differing between the traced and folded trees read as a
+real semantic difference — the ladder's "localize to a specific op" branch.
+Direct localization then found **identical bit patterns**, and repeating the
+arms showed why: **the traced tree differs from ITSELF 1 time in 4** on
+exactly those channels. The difference had been inside the candidate's own
+floor the whole time; the floor had simply been measured on the wrong tree.
+
+Practically: a bitwise or equivalence claim between A and B needs **A-vs-A
+and B-vs-B**, not just A-vs-B against one of them. Two deterministic
+artifacts cannot compare intermittently — an intermittent cross-comparison
+is proof that at least one self-floor is nonzero and has not been measured.
+
 ## Artifact persistence for GPU runs (human-issued 2026-07-28)
 
 **Every GPU run persists metrics + provenance + a checkpoint archive
