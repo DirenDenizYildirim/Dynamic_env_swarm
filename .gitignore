@@ -265,3 +265,5 @@ che/bench/results/phase3/m30b/renders/*.gif
 # report can cite a hash that identifies the exact archive.
 che/bench/results/phase5/**/ckpt_*/
 che/bench/results/phase5/**/*.tar.zst
+che/bench/results/phase6/**/*.tar.zst
+che/bench/results/phase6/**/ckpt_*/
