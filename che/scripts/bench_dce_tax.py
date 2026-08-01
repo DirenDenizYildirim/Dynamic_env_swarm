@@ -91,6 +91,7 @@ def _provenance(tag: str) -> dict:
         "device": dev.device_kind,
         "platform": platform.platform(),
         "xla_flags": None,  # default flags; autotuning ON (never set level 0)
+        "mixture_arm": None,  # set by main()
         "keep_alive": (
             "pbt.bench_population: compiled chunk returns the training metrics "
             "dict, blocks on total_loss, mean_return consumed host-side for "
@@ -106,10 +107,22 @@ def main() -> None:
     ap.add_argument("--windows", type=int, default=3)
     ap.add_argument("--window-secs", type=float, default=15.0)
     ap.add_argument("--only", help="comma-separated row names to run")
+    ap.add_argument(
+        "--mixture",
+        action="store_true",
+        help=(
+            "wrap each row in a real 2-component mixture (pillar vs all "
+            "elements). This is the arm the gate actually needs: it prices "
+            "the Phase-6 treatment itself, not just the tracing that enables "
+            "it. Requires M6.0c."
+        ),
+    )
     args = ap.parse_args()
 
     wanted = set(args.only.split(",")) if args.only else None
-    out: dict = {"provenance": _provenance(args.tag), "rows": {}}
+    prov = _provenance(args.tag)
+    prov["mixture_arm"] = bool(args.mixture)
+    out: dict = {"provenance": prov, "rows": {}}
 
     for name, cfg_path, elements_on, pop in ROWS:
         if wanted and name not in wanted:
@@ -120,6 +133,24 @@ def main() -> None:
         if pop is not None:
             cfg = dataclasses.replace(
                 cfg, train=dataclasses.replace(cfg.train, pop_size=pop)
+            )
+        if args.mixture:
+            from che.env.config import MixtureComponent, MixtureConfig
+
+            cfg = dataclasses.replace(
+                cfg,
+                env=dataclasses.replace(
+                    cfg.env,
+                    mixture=MixtureConfig(
+                        components=(
+                            MixtureComponent(
+                                name="pillar", weight=0.5, kappa_A=0.0,
+                                kappa_B=0.0, delta=0.0,
+                            ),
+                            MixtureComponent(name="joint", weight=0.5),
+                        )
+                    ),
+                ),
             )
         th = cfg.env.theta
         print(f"\n=== {args.tag}:{name}  ({cfg_path})", flush=True)
