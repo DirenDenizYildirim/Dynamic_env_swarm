@@ -298,3 +298,24 @@ protecting the feasibility constraints already validated.
 **All open decisions from the goal-setting phase are now resolved.** Next
 step: rewrite Stage 0 (and cascade through Stages 1–6) of the original
 Cowork pipeline prompt using everything locked in this document.
+
+---
+
+## AMENDMENT (2026-08-02) — the Phase-7 ablation table, as budgeted above
+
+The budget table in §7 lists *"Core ablations | 5 configs × 3 seeds = 15"*.
+**Those 15 runs are cut from the Phase-6 confirmatory plan** by a dated
+ruling (`docs/decision_log.md`, "PHASE-6 RULINGS, FINAL FIVE", ruling 5).
+
+Grounds, in one line each: the table's **certification** content is *proven*
+by `che/tests/test_nesting.py` and the M6.0 1520-field-digest goldens — a
+bitwise test establishes exact nesting more strongly than 15 retrainings
+demonstrate it — and its **attribution** content already exists in the
+Phase 3–5 acceptance grids, cited with their floor-graded honesty.
+
+**The nested-model semantics of `theory_foundations.md` §8 are unchanged.**
+Only the evidence vehicle changes. Retained as an optional revision-time
+table (~$1) if a reviewer asks for same-protocol attribution.
+
+This amendment exists so that a reader comparing budget tables finds a
+ruling rather than a silent omission.

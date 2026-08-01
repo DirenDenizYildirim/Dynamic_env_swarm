@@ -27,7 +27,20 @@ has grown a queue (below).
 
 ## Added 2026-08-01/02 — the Phase-6 red team, and the M6.0 spike
 
-**Read `phase6_redteam_v1.md`, then `phase6_redteam_remedies.md`.** The
+**READ `phase6_design_v2.md` FIRST — it is the registration.** v1 is
+retained only as the reviewed draft (its §5/§6 numbers are the ones the red
+team found fatal). Background, in order: `phase6_redteam_v1.md`, then
+`phase6_redteam_remedies.md`.
+
+**⚠ ONE RULING OWED BEFORE THE GRID.** v2 §5 records a correction the RA owes
+the gate: **k = 20 was ruled on a detection threshold, not a power
+calculation.** Corrected, with the Šidák m=2 the analysis plan requires,
+completion has **55.6 % power against a 0.03 effect** and reaches 80 % only
+at 0.0388. Survival is unaffected. Fix: **k = 34 on the two confirmatory arms
+only, +28 runs ≈ $2.** v2 registers k = 20 as ruled; the amendment needs a
+human ruling.
+
+**Also read for the earlier gate history:** The
 design v1 was reviewed and **must not be registered as written**. All four
 open findings were RULED on 2026-08-02 (`decision_log.md`, "PHASE-6 REMEDY
 RULINGS"); the remedies doc records the options and which were selected.

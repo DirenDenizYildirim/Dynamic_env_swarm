@@ -1651,3 +1651,134 @@ that runs the grid.
 The ablation certification table (5 nested configs × 3 seeds) was questioned
 by the red team as 15 runs for a property `test_nesting.py` already proves.
 Not ruled here.
+
+## PHASE-6 RULINGS, FINAL FIVE (human, 2026-08-02) — register, then v2
+
+Closes the Phase-6 entry gate. With these, every item on the original gate
+queue and on design v1's own docket is either ruled or resolved by
+measurement.
+
+### 1. Pilot — DROPPED, with its two jobs re-housed rather than lost
+
+**RULED: no pilot.** Its protective purpose — gating a large spend — is void
+at ~$20 total. A k = 10 pilot would spend half the grid to protect the other
+half, which is not risk management, it is arithmetic run backwards.
+
+The pilot did two other jobs, and both are re-sited, not dropped:
+
+- **(a) Shakedown → M6.2 IS the shakedown.** The floor milestone runs 24
+  full runs exercising ISO, JOINT-classic and p = 0.5 end-to-end *with
+  evals* before the grid. Any process surprise surfaces there and **STOPs**.
+  This is strictly better than the old pilot: it was going to be run anyway,
+  and it grades the instrument instead of guessing at the result.
+- **(b) The one-paper/two-paper FORK is re-sited** from a *pre-sweep spend*
+  decision to a **post-unblind framing** decision at the results-accepted
+  gate. With everything run, the fork chooses **how to write, not what to
+  buy** — which is what it should always have been, since the two-paper
+  option was only ever a way to avoid spending money that turns out to cost
+  $20.
+
+**Registrar: dated amendment to the D6 gate entry — pilot clause voided by
+the corrected cost basis** (recorded below).
+
+### 2. Metric amendment — RATIFIED EXPLICITLY
+
+**Completion is primary** (the task-performance claim, founding
+registration). **Survival is registered co-primary** for coupling and
+composition claims.
+
+Justification chain, all of it pre-dating Phase 6: **M3.5** and **M4.4**
+showed both couplings move survival while completion effects sit at or below
+reproducibility floors; the **D6 addendum** carries it. Ratified here as an
+explicit act rather than inherited, because the red team correctly noted it
+was doing load-bearing rescue work.
+
+**And the thing that makes the amendment honest rather than convenient:
+k = 20.** At k = 4 the founding primary metric was unresolvable *by MDE,
+before a single run* (completion MDE 0.0564 vs historical effects ≤ 0.03) —
+a co-primary would then have been a substitution dressed as an addition. At
+k = 20 completion resolves (0.0252), so survival is genuinely an *addition*
+to a measurable primary.
+
+### 3. Run length — 500 UPDATES, with a plateau guard
+
+**RULED: 500.** Every floor, every throughput number and every historical
+effect size this project owns was measured at 500 updates. Changing the
+length **orphans the M6.2 floor milestone and the priors behind k = 20** —
+the floors would no longer describe the runs they grade.
+
+**Guard instead of guess:** M6.2 adds a **plateau check** — final-100-update
+slope against zero, floor-graded. If the headline configs are still climbing,
+**STOP and re-rule**. This converts "is 500 enough?" from an argument into a
+measurement, and puts it where the answer is cheap.
+
+### 4. Analysis plan — FAMILY APPROVED, specifics frozen in v2
+
+- **Confirmatory:** {Γ_completion, Γ_survival} at θ\*, **Šidák with m = 2**,
+  bars taken from the **M6.2 per-arm floors** (per-artifact rule).
+- **Secondary — labelled, non-verdict-bearing:** isotonic dose-trend on the
+  c = 0.5 sweep; bootstrap knee CI with an **automatic UNDERPOWERED flag if
+  the CI spans the sweep**; and the c = 0.4 identification-arm confound
+  bound.
+- **Blind protocol governs: the analysis pipeline is frozen by commit hash
+  before unblinding.**
+
+### 5. Ablation certification table — CUT, by dated amendment
+
+**RULED: cut from the confirmatory plan.** This amends founding scope, so it
+is registered as a **dated amendment, not a quiet omission.**
+
+Grounds:
+
+- Its **certification** content is already *proven*, not merely evidenced:
+  `test_nesting.py` plus the 1520-field-digest goldens are stronger evidence
+  of exact nesting than 15 retrainings could be. Retraining demonstrates a
+  property that a bitwise test establishes.
+- Its **attribution** content already exists in the Phase 3–5 acceptance
+  grids, which are cited with their floor-graded honesty intact.
+
+Recorded as an **optional revision-time table (~$1)** if a reviewer asks for
+same-protocol attribution.
+
+---
+
+## DATED AMENDMENT (2026-08-02) — to the PHASE 6 ENTRY GATE / D6 entry
+
+The gate entry of 2026-07-28 reads, in part: *"(2) pilot scoped (2 mixture
+points); (3) one-paper vs two-paper fork scheduled for after the pilot"*.
+
+**Both clauses are amended, and the reason is a corrected number, not a
+change of mind.** That entry was written when Phase 6/7 was believed to cost
+enough for a pilot to be worth its own spend. The cost basis was wrong — it
+descended from row A (`m06_probe.yaml`, obs_window 5), the ÷81 pattern's
+fourth appearance, found by the design-v1 red team. Measured, a 500-update
+run is **257 s ≈ $0.07** and the whole phase is ~$20.
+
+- **Clause (2) — pilot: VOIDED.** A pilot cannot protect a spend smaller
+  than itself. Shakedown moves to M6.2 (24 full runs with evals, STOP on
+  surprise).
+- **Clause (3) — fork: RE-SITED**, not cancelled. It moves from a pre-sweep
+  spend decision to a post-unblind framing decision at the results-accepted
+  gate.
+
+Item (4) of that entry (power analysis against the measured floor, checking
+the registered 4 seeds) is **discharged**: the check was run, the 4 seeds
+**failed** it, and k = 20 is the replacement.
+
+---
+
+## DATED AMENDMENT (2026-08-02) — founding scope: the ablation table
+
+`docs/architecture_decisions_v1.md` budgets *"7 — Core ablations | 5 configs
+× 3 seeds = 15"*, and `docs/theory_foundations.md` §8 refers to *"the five
+locked Phase 7 configs"*.
+
+**Amended: the 15-run ablation certification table is cut from the Phase-6
+confirmatory plan.** The nested-model semantics of §8 are **unchanged and
+un-weakened** — what changes is only the *evidence vehicle*: exactness is
+established by `test_nesting.py` and the M6.0 goldens rather than
+re-demonstrated by retraining. The five configs remain five points in Θ, as
+§8 says; nothing about the ablation *semantics* is retracted.
+
+This is recorded here so a reader of the founding document is not left to
+discover a silent omission by comparing budget tables.
