@@ -126,7 +126,7 @@ che/
     rowb_probe.py   # M5.1j row-B diagnostic
     results/        # phase{0..5} reports, metrics, provenance (large; most
                     #   checkpoints + renders are gitignored)
-  tests/            # 28 files; theory tests are ground truth (invariant #4)
+  tests/            # 29 files; theory tests are ground truth (invariant #4)
     golden/         # committed pre-refactor trajectory digests (M6.0a); the
                     #   cross-tree bitwise baseline for the traced-theta spike
   configs/          # severity_{low,medium,high}.yaml + gate_pop12.yaml are
