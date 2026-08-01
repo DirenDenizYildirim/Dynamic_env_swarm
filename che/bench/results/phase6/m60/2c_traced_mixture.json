@@ -1,0 +1,56 @@
+{
+ "provenance": {
+  "tag": "traced_mixture",
+  "git_commit": "unknown",
+  "jax_version": "0.11.0",
+  "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "platform": "Linux-6.8.0-117-generic-x86_64-with-glibc2.39",
+  "xla_flags": null,
+  "mixture_arm": true,
+  "keep_alive": "pbt.bench_population: compiled chunk returns the training metrics dict, blocks on total_loss, mean_return consumed host-side for selection; env info channels are NOT read by this consumer"
+ },
+ "rows": {
+  "gate_elements_on": {
+   "pop_size": 12,
+   "n_envs": 128,
+   "n_agents": 12,
+   "grid": 64,
+   "rollout_len": 128,
+   "k_pbt": 20,
+   "compile_s": 102.09,
+   "rates": [
+    60140,
+    59835,
+    59839
+   ],
+   "median": 59839,
+   "iqr": 304,
+   "peak_bytes": 72209845248,
+   "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+   "wall_s": 371.2,
+   "config": "che/configs/gate_pop12.yaml",
+   "elements_on": true
+  },
+  "grid1_elements_on": {
+   "pop_size": 1,
+   "n_envs": 256,
+   "n_agents": 12,
+   "grid": 64,
+   "rollout_len": 128,
+   "k_pbt": 20,
+   "compile_s": 18.26,
+   "rates": [
+    70571,
+    70578,
+    70588
+   ],
+   "median": 70578,
+   "iqr": 17,
+   "peak_bytes": 72209845248,
+   "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+   "wall_s": 88.8,
+   "config": "che/configs/severity_medium.yaml",
+   "elements_on": true
+  }
+ }
+}

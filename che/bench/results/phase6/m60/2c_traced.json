@@ -1,0 +1,97 @@
+{
+ "provenance": {
+  "tag": "traced",
+  "git_commit": "unknown",
+  "jax_version": "0.11.0",
+  "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "platform": "Linux-6.8.0-117-generic-x86_64-with-glibc2.39",
+  "xla_flags": null,
+  "keep_alive": "pbt.bench_population: compiled chunk returns the training metrics dict, blocks on total_loss, mean_return consumed host-side for selection; env info channels are NOT read by this consumer"
+ },
+ "rows": {
+  "gate_elements_on": {
+   "pop_size": 12,
+   "n_envs": 128,
+   "n_agents": 12,
+   "grid": 64,
+   "rollout_len": 128,
+   "k_pbt": 20,
+   "compile_s": 102.36,
+   "rates": [
+    60162,
+    59966,
+    59960
+   ],
+   "median": 59966,
+   "iqr": 202,
+   "peak_bytes": 72209845248,
+   "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+   "wall_s": 370.6,
+   "config": "che/configs/gate_pop12.yaml",
+   "elements_on": true
+  },
+  "gate_elements_off": {
+   "pop_size": 12,
+   "n_envs": 128,
+   "n_agents": 12,
+   "grid": 64,
+   "rollout_len": 128,
+   "k_pbt": 20,
+   "compile_s": 11.25,
+   "rates": [
+    59836,
+    59720,
+    59795
+   ],
+   "median": 59795,
+   "iqr": 115,
+   "peak_bytes": 72209845248,
+   "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+   "wall_s": 278.7,
+   "config": "che/configs/gate_pop12.yaml",
+   "elements_on": false
+  },
+  "grid1_elements_on": {
+   "pop_size": 1,
+   "n_envs": 256,
+   "n_agents": 12,
+   "grid": 64,
+   "rollout_len": 128,
+   "k_pbt": 20,
+   "compile_s": 18.63,
+   "rates": [
+    70674,
+    70667,
+    70691
+   ],
+   "median": 70674,
+   "iqr": 24,
+   "peak_bytes": 72209845248,
+   "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+   "wall_s": 89.3,
+   "config": "che/configs/severity_medium.yaml",
+   "elements_on": true
+  },
+  "grid1_elements_off": {
+   "pop_size": 1,
+   "n_envs": 256,
+   "n_agents": 12,
+   "grid": 64,
+   "rollout_len": 128,
+   "k_pbt": 20,
+   "compile_s": 6.67,
+   "rates": [
+    70774,
+    70787,
+    70824
+   ],
+   "median": 70787,
+   "iqr": 50,
+   "peak_bytes": 72209845248,
+   "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+   "wall_s": 75.9,
+   "config": "che/configs/severity_medium.yaml",
+   "elements_on": false
+  }
+ }
+}

@@ -1,0 +1,20 @@
+{
+ "provenance": {
+  "git_commit": "unknown",
+  "jax_version": "0.11.0",
+  "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition"
+ },
+ "config": "che/configs/severity_medium.yaml",
+ "updates": 50,
+ "declared_weight_joint": 0.75,
+ "realized_weight_joint": 0.7425,
+ "total_finished_episodes": 6400.0,
+ "binomial_sd": 0.005412658773652742,
+ "z": -1.3856406460550927,
+ "wall_s": 48.4,
+ "updates_per_s": 1.033,
+ "pooled_numerator": 4752.0,
+ "final_completion": 0.2288818359375,
+ "final_survival": 0.8310546875,
+ "verdict": "MATCH"
+}

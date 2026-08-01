@@ -88,7 +88,9 @@ def _actions(key: jax.Array, n_agents: int) -> jax.Array:
     return jax.random.randint(key, (n_agents,), 0, N_ACTIONS, dtype=jnp.int32)
 
 
-def run_case(cfg_env, seed: int, n_steps: int, track: str) -> dict:
+def run_case(
+    cfg_env, seed: int, n_steps: int, track: str, jit_steps: bool = False
+) -> dict:
     """Roll one case and return a PER-FIELD digest map plus probes.
 
     ONE DIGEST PER FIELD, not one per trajectory — and the reason is the
@@ -143,6 +145,15 @@ def run_case(cfg_env, seed: int, n_steps: int, track: str) -> dict:
     key, k_reset = jax.random.split(key)
 
     transition = step if track == "kernel" else step_autoreset
+    if jit_steps:
+        # WHY THIS MATTERS ON GPU. Called plainly, `step` executes op by op:
+        # every kernel is dispatched separately and XLA never fuses anything.
+        # But fusion is exactly where a traced operand could diverge from a
+        # constant-folded one (an FMA contraction that the folded form does
+        # not get, say) — so an EAGER GPU comparison does not test the thing
+        # the bitwise ladder is worried about. Wrapping the transition puts
+        # the comparison back on the code path production actually runs.
+        transition = jax.jit(transition, static_argnums=(3,))
     obs, state = reset(k_reset, cfg_env)
     feed_mapping("obs", obs)
     feed_state(state)
@@ -176,7 +187,9 @@ def run_case(cfg_env, seed: int, n_steps: int, track: str) -> dict:
     }
 
 
-def build(cases=CASES, seeds=SEEDS) -> dict:
+def build(
+    cases=CASES, seeds=SEEDS, modes=("jit", "nojit"), jit_steps=False
+) -> dict:
     entries: list[dict] = []
     for cfg_path, n_steps in cases:
         base = load_config(cfg_path).env
@@ -187,10 +200,10 @@ def build(cases=CASES, seeds=SEEDS) -> dict:
                 else dataclasses.replace(base, horizon=AUTORESET_HORIZON)
             )
             for seed in seeds:
-                for mode in ("jit", "nojit"):
+                for mode in modes:
                     ctx = jax.disable_jit() if mode == "nojit" else _null_ctx()
                     with ctx:
-                        result = run_case(cfg_env, seed, n_steps, track)
+                        result = run_case(cfg_env, seed, n_steps, track, jit_steps)
                     entries.append(
                         {
                             "config": cfg_path,
@@ -211,6 +224,7 @@ def build(cases=CASES, seeds=SEEDS) -> dict:
         ),
         "provenance": _provenance(),
         "spec": {
+            "jit_steps": bool(jit_steps),
             "seeds": list(seeds),
             "autoreset_horizon": AUTORESET_HORIZON,
             "hashed": (
@@ -269,8 +283,15 @@ def _mode_agreement(entries: list[dict]) -> dict:
         by_case.setdefault(key, {})[e["mode"]] = e["fields"]
 
     diverging: list[dict] = []
+    n_compared = 0
     for case, modes in sorted(by_case.items()):
-        a, b = modes.get("jit", {}), modes.get("nojit", {})
+        # Only a case recorded in BOTH modes can disagree. A single-mode run
+        # (--modes jit, as GPU runs use) has nothing to compare, and treating
+        # a missing mode as a mismatch would report every field as diverging.
+        if "jit" not in modes or "nojit" not in modes:
+            continue
+        n_compared += 1
+        a, b = modes["jit"], modes["nojit"]
         bad = sorted(f for f in set(a) | set(b) if a.get(f) != b.get(f))
         if bad:
             diverging.append({"case": list(case), "fields": bad})
@@ -278,6 +299,7 @@ def _mode_agreement(entries: list[dict]) -> dict:
     all_fields = sorted({f for e in entries for f in e["fields"]})
     return {
         "n_cases": len(by_case),
+        "n_cases_compared_across_modes": n_compared,
         "n_cases_diverging": len(diverging),
         "diverging_fields": sorted({f for d in diverging for f in d["fields"]}),
         "detail": diverging,
@@ -291,6 +313,26 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out", default=str(DEFAULT_OUT))
     ap.add_argument(
+        "--jit-steps",
+        action="store_true",
+        help=(
+            "wrap each transition in jax.jit (cfg static). Required for a "
+            "meaningful GPU comparison: eager execution never fuses, so it "
+            "cannot surface a traced-vs-folded fusion difference. Produces a "
+            "DIFFERENT artifact from the eager one — compare like with like."
+        ),
+    )
+    ap.add_argument(
+        "--modes",
+        default="jit,nojit",
+        help=(
+            "which execution modes to record. The ladder requires bitwise on "
+            "CPU in BOTH modes; on GPU, disable_jit dispatches op-by-op and is "
+            "pathologically slow for no benefit the ladder asks for, so GPU "
+            "runs use --modes jit."
+        ),
+    )
+    ap.add_argument(
         "--check",
         action="store_true",
         help="regenerate and compare against the artifact instead of writing it",
@@ -298,7 +340,7 @@ def main() -> None:
     args = ap.parse_args()
     out = Path(args.out)
 
-    built = build()
+    built = build(modes=tuple(args.modes.split(",")), jit_steps=args.jit_steps)
     ma = built["mode_agreement"]
     print(
         f"cases {ma['n_cases']}   fields/case {ma['n_fields_tracked']} "

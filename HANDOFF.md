@@ -25,6 +25,63 @@ has grown a queue (below).
   an unbounded `pytest che/tests` once crashed the machine:
   `OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 nice -n 15 uv run pytest <subset>`.
 
+## Added 2026-08-01/02 — the Phase-6 red team, and the M6.0 spike
+
+**Read `phase6_redteam_v1.md` before anything Phase-6.** The design v1 was
+reviewed and **should not be registered as written**. Five findings, all
+traced to measured artifacts; the three fatal ones:
+
+1. **§6 costs Phase 6 from row A (142,421 steps/s)** — `m06_probe.yaml`,
+   `obs_window` 5, elements off. `phase5_report.md:119` calls that "a drift
+   reference, **not the gate**", and the report's own table has the gate at
+   62,084. It is the ÷81 pattern a fourth time. §3 also registers all evals
+   onto a 5090 the same report measured as non-viable.
+2. **Every bar in §5 is void**: floors come from Medium, the evaluation is at
+   β = 0.46/0.60 where **no floor has ever been measured**, and survival
+   floors move **4.8×** across severity (0.0130 → 0.0621).
+3. **k = 4 seeds is ~5× too small** — completion MDE 0.0564 against
+   historical effects ≤ 0.03. And seeds are nearly free: `m55/timings.txt`
+   measures a 500-update run at **257 s ≈ $0.07**. The whole redesign at
+   k = 20 is ~$15.
+
+Plus: §1's fixed-margin mixture cannot be clean (a 2×2 table with fixed
+margins has one degree of freedom, so no-element time moves 1:1 with
+co-occurrence — and the draft's own sign check is backwards), and **both
+held-out severities are where composition is weakest** (Coupling A is
+fuel-limited at high β, Coupling B near-dead at low β — neither point has
+both elements live). The proposed v2 fix is to separate the two
+generalization axes; it costs nothing.
+
+**M6.0 spike: COMPLETE, all four acceptances met.** See
+`che/bench/results/phase6/m60/m60_report.md`.
+
+- Theta is now **per-env traced** ({β, κ_A, κ_B, δ} in `EnvState.theta_live`)
+  and sampled at reset/autoreset from a `MixtureConfig`. **2a: bitwise, 1520
+  field digests, 0 changed.** 2b: nesting suite green, unmodified.
+  **2c: DCE tax ≤ 0.62 %** — and below the instrument's own jitter on the
+  gate config; memory +30,720 B. **2d: realized mixture 0.7425 vs 0.75
+  declared over 6,400 episodes.**
+- **The precompiled-variant fallback is not needed** and can be dropped from
+  the design along with its granularity cost.
+- **Theta binds at RESET, not at step time.** A mid-episode
+  `replace(cfg, theta=…)` is now silently inert. Production is unaffected
+  (all CLI overrides are applied in `main()` before reset) and both
+  directions are asserted in `che/tests/test_traced_theta.py`.
+- `zeros_state` now **requires** `theta_live`. That caught a Coupling-B test
+  that had been **passing for the wrong reason** with masking silently off.
+- Owed before any ≥3-component design: **per-component count logging** (a
+  mean over component indices only reads as a ratio for two components).
+- **GPU ladder finding, and a candidate rule amendment.** On GPU, two
+  Def.-2 diagnostics (`masked_frac`, `masked_danger_sum`, High seed 0)
+  differ run-to-run. It first read as a real traced-vs-folded difference
+  because the floor had been measured on the BASELINE tree — which is
+  deterministic (0/4) — while the instability lives in the traced tree
+  (1/4 against itself). No trajectory field differed in any of 13
+  comparisons; CPU is unaffected. **Floors are per-metric, per-hardware and
+  — this is the new part — PER-ARTIFACT: measure the floor on the thing
+  being graded, not on its reference.** A human ruling is owed on whether
+  that goes into CLAUDE.md alongside bars-with-floors.
+
 ## Added 2026-07-31 — locks are now enforced by test
 
 A read-only structural review found a locked constant that **no config
