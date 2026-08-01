@@ -48,7 +48,7 @@ from che.env.config import load_config
 from che.env.env import N_ACTIONS, reset, step
 from che.train.rollout import step_autoreset
 
-DEFAULT_OUT = Path("che/tests/golden/theta_golden_v1.json")
+DEFAULT_OUT = Path("che/tests/golden/theta_golden.json")
 
 # (config, n_steps). Kept small enough that the CPU suite stays fast in both
 # modes; large enough that fire spreads, structures collapse, and Coupling A
@@ -84,71 +84,86 @@ def _feed(h, name: str, value) -> None:
     h.update(np.ascontiguousarray(a).tobytes())
 
 
-def _feed_state(h, state) -> None:
-    for field in sorted(f.name for f in dataclasses.fields(state)):
-        _feed(h, f"state.{field}", getattr(state, field))
-
-
-def _feed_mapping(h, prefix: str, mapping: dict) -> None:
-    for k in sorted(mapping):
-        _feed(h, f"{prefix}.{k}", mapping[k])
-
-
 def _actions(key: jax.Array, n_agents: int) -> jax.Array:
     return jax.random.randint(key, (n_agents,), 0, N_ACTIONS, dtype=jnp.int32)
 
 
 def run_case(cfg_env, seed: int, n_steps: int, track: str) -> dict:
-    """Roll one case and return its digests plus human-readable probes.
+    """Roll one case and return a PER-FIELD digest map plus probes.
 
-    TWO DIGESTS, and the split is a measured necessity rather than tidiness.
+    ONE DIGEST PER FIELD, not one per trajectory — and the reason is the
+    whole point of the artifact.
 
-    `core`  — actions, EnvState, obs, reward, done: everything that *is* the
-              trajectory and everything a later step can read back.
-    `info`  — the diagnostic channels, which are Def.-2-compliant metrics no
-              kernel ever reads.
+    A lumped digest can express "something changed" but not "a field was
+    ADDED", and adding fields to `EnvState` is exactly what the traced-theta
+    refactor does (`theta_live`, `mixture_component`). Under a lumped hash,
+    acceptance 2a would fail on the very refactor it exists to certify, for a
+    reason that is not a regression — and the temptation would then be to
+    relax the criterion, which is how a safety proof quietly stops proving
+    anything. Per field, the criterion stays strict: every field that existed
+    before must hold identical bytes, while genuinely new fields surface as
+    additive and must be acknowledged in the test's explicit allow-list.
 
-    Generating this artifact surfaced a pre-existing jit/nojit divergence on
-    severity_high: `info.survival_rate` differs by exactly one float32 ULP
-    (5.96e-08) from t = 29 on, because `alive.mean()` reassociates differently
-    once the first agent dies and the mean stops being exactly 1.0. No state,
-    obs, reward or done field diverges. Splitting the digest lets acceptance
-    2a demand bitwise equality on the trajectory in BOTH modes while grading
-    float-reduction metrics separately, instead of being weakened wholesale
-    by a rounding difference that predates the refactor and cannot feed back
-    into any kernel.
+    Fields are classified by prefix. `info.*` are the Def.-2-compliant
+    diagnostic channels no kernel ever reads; everything else — `actions`,
+    `state.*`, `obs.*`, `reward`, `done` — is the trajectory itself and
+    everything a later step can read back. Nested dataclass state fields
+    (e.g. `theta_live`) are flattened one level, so each traced scalar gets
+    its own digest.
+
+    Generating the first version of this artifact surfaced a PRE-EXISTING
+    jit/nojit divergence on severity_high: `info.survival_rate` differs by
+    exactly one float32 ULP (5.96e-08) from t = 29 on, because
+    `alive.mean()` reassociates once the first agent dies and the mean stops
+    being exactly 1.0. Per-field digests localize that to the single channel
+    instead of tainting the trajectory verdict.
 
     The probes are not the test — the digests are. They exist so a failing
     comparison can be diagnosed without re-deriving the trajectory by hand.
     """
-    core = hashlib.sha256()
-    meta = hashlib.sha256()
+    hashes: dict = {}
+
+    def feed(name: str, value) -> None:
+        _feed(hashes.setdefault(name, hashlib.sha256()), name, value)
+
+    def feed_state(s) -> None:
+        for f in sorted(x.name for x in dataclasses.fields(s)):
+            value = getattr(s, f)
+            if dataclasses.is_dataclass(value):  # nested, e.g. theta_live
+                for g in sorted(x.name for x in dataclasses.fields(value)):
+                    feed(f"state.{f}.{g}", getattr(value, g))
+            else:
+                feed(f"state.{f}", value)
+
+    def feed_mapping(prefix: str, mapping: dict) -> None:
+        for k in sorted(mapping):
+            feed(f"{prefix}.{k}", mapping[k])
+
     key = jax.random.PRNGKey(seed)
     key, k_reset = jax.random.split(key)
 
     transition = step if track == "kernel" else step_autoreset
     obs, state = reset(k_reset, cfg_env)
-    _feed_mapping(core, "obs0", obs)
-    _feed_state(core, state)
+    feed_mapping("obs", obs)
+    feed_state(state)
 
     reward_sum = 0.0
     done_count = 0
-    for t in range(n_steps):
+    for _ in range(n_steps):
         key, k_act, k_step = jax.random.split(key, 3)
         actions = _actions(k_act, cfg_env.n_agents)
-        _feed(core, f"actions.{t}", actions)
+        feed("actions", actions)
         obs, state, reward, done, info = transition(k_step, state, actions, cfg_env)
-        _feed_mapping(core, f"obs.{t}", obs)
-        _feed_state(core, state)
-        _feed(core, f"reward.{t}", reward)
-        _feed(core, f"done.{t}", done)
-        _feed_mapping(meta, f"info.{t}", info)
+        feed_mapping("obs", obs)
+        feed_state(state)
+        feed("reward", reward)
+        feed("done", done)
+        feed_mapping("info", info)
         reward_sum += float(reward)
         done_count += int(np.asarray(done))
 
     return {
-        "digest_core": core.hexdigest(),
-        "digest_info": meta.hexdigest(),
+        "fields": {k: h.hexdigest() for k, h in sorted(hashes.items())},
         "probe": {
             "reward_sum": round(reward_sum, 6),
             "done_count": done_count,
@@ -188,6 +203,7 @@ def build(cases=CASES, seeds=SEEDS) -> dict:
                         }
                     )
     return {
+        "format": 2,
         "artifact": "M6.0a pre-refactor golden (theta as a compile-time constant)",
         "purpose": (
             "Cross-tree bitwise regression baseline for the traced-theta "
@@ -234,27 +250,41 @@ def _provenance() -> dict:
     }
 
 
+def is_info(field: str) -> bool:
+    """Diagnostic channels (Def.-2 metrics no kernel reads) vs the trajectory."""
+    return field.startswith("info.")
+
+
 def _mode_agreement(entries: list[dict]) -> dict:
     """Do jit and nojit already produce identical digests ON MAIN?
 
     This bounds what 'bitwise' can mean as an acceptance criterion, so it is
     measured and recorded rather than assumed in either direction. Reported
-    per digest: `core` is the trajectory, `info` the diagnostic channels.
+    per field so a divergence names the channel it lives in — the difference
+    between "High diverges" and "survival_rate diverges".
     """
-    out: dict = {}
-    for which in ("core", "info"):
-        by_case: dict[tuple, dict[str, str]] = {}
-        for e in entries:
-            key = (e["config"], e["track"], e["seed"])
-            by_case.setdefault(key, {})[e["mode"]] = e[f"digest_{which}"]
-        disagree = [k for k, v in by_case.items() if v.get("jit") != v.get("nojit")]
-        out[which] = {
-            "n_cases": len(by_case),
-            "n_agree": len(by_case) - len(disagree),
-            "n_disagree": len(disagree),
-            "disagreeing": [list(k) for k in disagree],
-        }
-    return out
+    by_case: dict[tuple, dict[str, dict]] = {}
+    for e in entries:
+        key = (e["config"], e["track"], e["seed"])
+        by_case.setdefault(key, {})[e["mode"]] = e["fields"]
+
+    diverging: list[dict] = []
+    for case, modes in sorted(by_case.items()):
+        a, b = modes.get("jit", {}), modes.get("nojit", {})
+        bad = sorted(f for f in set(a) | set(b) if a.get(f) != b.get(f))
+        if bad:
+            diverging.append({"case": list(case), "fields": bad})
+
+    all_fields = sorted({f for e in entries for f in e["fields"]})
+    return {
+        "n_cases": len(by_case),
+        "n_cases_diverging": len(diverging),
+        "diverging_fields": sorted({f for d in diverging for f in d["fields"]}),
+        "detail": diverging,
+        "n_fields_tracked": len(all_fields),
+        "n_trajectory_fields": sum(1 for f in all_fields if not is_info(f)),
+        "n_info_fields": sum(1 for f in all_fields if is_info(f)),
+    }
 
 
 def main() -> None:
@@ -269,32 +299,47 @@ def main() -> None:
     out = Path(args.out)
 
     built = build()
-    for which, ma in built["mode_agreement"].items():
-        print(
-            f"{which:5s}: cases {ma['n_cases']}   jit==nojit {ma['n_agree']}"
-            f"   differ {ma['n_disagree']}"
-        )
-        for row in ma["disagreeing"]:
-            print(f"    MODE DIVERGENCE: {row}")
+    ma = built["mode_agreement"]
+    print(
+        f"cases {ma['n_cases']}   fields/case {ma['n_fields_tracked']} "
+        f"({ma['n_trajectory_fields']} trajectory + {ma['n_info_fields']} info)"
+    )
+    print(f"jit vs nojit: {ma['n_cases_diverging']} case(s) diverge")
+    for row in ma["detail"]:
+        print(f"    MODE DIVERGENCE {row['case']}: {row['fields']}")
 
     if args.check:
         stored = json.loads(out.read_text())
-        bad = []
-        for which in ("core", "info"):
-            old = {
-                (e["config"], e["track"], e["seed"], e["mode"]): e[f"digest_{which}"]
-                for e in stored["entries"]
-            }
-            new = {
-                (e["config"], e["track"], e["seed"], e["mode"]): e[f"digest_{which}"]
-                for e in built["entries"]
-            }
-            bad += [(which, k) for k in sorted(old) if old.get(k) != new.get(k)]
-        n_digests = 2 * len(stored["entries"])
-        print(f"\ncompared {n_digests} digests; mismatches: {len(bad)}")
-        for which, k in bad:
-            print(f"  {which} {k}")
-        raise SystemExit(1 if bad else 0)
+        old = {
+            (e["config"], e["track"], e["seed"], e["mode"]): e["fields"]
+            for e in stored["entries"]
+        }
+        new = {
+            (e["config"], e["track"], e["seed"], e["mode"]): e["fields"]
+            for e in built["entries"]
+        }
+        changed, added, missing, n = [], set(), set(), 0
+        for case, fields in sorted(old.items()):
+            cur = new.get(case, {})
+            for f, d in sorted(fields.items()):
+                n += 1
+                if f not in cur:
+                    missing.add(f)
+                elif cur[f] != d:
+                    changed.append((case, f))
+            added |= set(cur) - set(fields)
+        print(f"\ncompared {n} field digests")
+        print(
+            f"  changed: {len(changed)}   missing: {len(missing)}"
+            f"   added: {len(added)}"
+        )
+        for case, f in changed[:20]:
+            print(f"    CHANGED {f}  {case}")
+        for f in sorted(missing):
+            print(f"    MISSING {f}")
+        for f in sorted(added):
+            print(f"    ADDED   {f}  (additive — acknowledge in the test allow-list)")
+        raise SystemExit(1 if (changed or missing) else 0)
 
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(built, indent=1) + "\n")
