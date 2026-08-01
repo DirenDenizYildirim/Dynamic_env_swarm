@@ -43,9 +43,9 @@ CONFIGS = LOCKS["configs"]
 # Roles whose beta must be a calibrated severity — archival configs still
 # carry the pre-Phase-2 placeholder and are exempt by design, and
 # theta_star_pending carries a sentinel that does not load at all.
-CALIBRATED_ROLES = {"science", "gate", "joint"}
+CALIBRATED_ROLES = {"science", "gate", "joint", "theta_star"}
 # Roles whose comms element is ON (delta = 1.0) rather than OFF.
-ELEMENT_ON_ROLES = {"joint", "theta_star_pending"}
+ELEMENT_ON_ROLES = {"joint", "theta_star", "theta_star_pending"}
 
 
 def _value(name: str):
@@ -307,3 +307,28 @@ def test_r_comm_reachable_without_argv():
     # And the override path still works, unchanged.
     overridden = dataclasses.replace(ThetaConfig(), r_comm=8.0)
     assert overridden.r_comm == pytest.approx(8.0)
+
+
+def test_pending_sentinel_mechanism_still_works(tmp_path):
+    """The tripwire must survive having no current occupant.
+
+    `theta_star_holdout.yaml` carried the PENDING sentinel until the gate
+    resolved beta_holdout (2026-08-02). No config carries one now, so the
+    three parametrized pending tests above sit on an empty set — which means
+    the MECHANISM would go unexercised exactly when it is dormant, and would
+    be free to rot until the next constant is owed. This tests it directly.
+    """
+    from che.env.config import PENDING
+
+    p = tmp_path / "owed.yaml"
+    p.write_text(
+        "env:\n  grid_size: 16\n  n_agents: 4\n"
+        f"theta:\n  beta: {PENDING}\n  kappa_A: 0.06\n"
+    )
+    with pytest.raises(ValueError, match="placeholder"):
+        load_config(p)
+
+    # And a numeric value in the same slot loads normally, so the guard is
+    # not just refusing everything.
+    p.write_text("env:\n  grid_size: 16\n  n_agents: 4\ntheta:\n  beta: 0.49\n")
+    assert load_config(p).env.theta.beta == pytest.approx(0.49)

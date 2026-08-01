@@ -1,12 +1,14 @@
 # theta* — THE HELD-OUT COMPOSITION POINT (Def. 8).
 #
 # ##########################################################################
-# THIS CONFIG DOES NOT LOAD, ON PURPOSE. `beta` is a sentinel, and
-# che.env.config.load_config raises on it. That is the intended state until
-# the Phase-6 entry gate fixes AND calibrates the held-out severity.
+# RESOLVED 2026-08-02. This config previously refused to load: `beta` was the
+# sentinel PENDING_PHASE6_CALIBRATION and the tripwire held until the gate
+# fixed the held-out severity. It did (PHASE-6 REMEDY RULINGS, ruling 1), and
+# the value arrived MEASURED rather than invented — which is exactly what the
+# tripwire was written to demand.
 # ##########################################################################
 #
-# WHY IT EXISTS UNRUNNABLE. Def. 8 (docs/theory_foundations.md §7) fixes
+# WHAT IT IS. Def. 8 (docs/theory_foundations.md §7) fixes
 # theta* as "all elements active, at HELD-OUT severity levels", and defines
 # the JOINT protocol as training on multi-element configurations "still
 # excluding theta*'s held-out severities". The compositional gap
@@ -14,27 +16,28 @@
 #     Gamma(theta*) = J_theta*(pi_joint) - J_theta*(pi_iso)
 #
 # is the paper's locked hypothesis, and it is only meaningful if theta* is a
-# point NEITHER protocol trained on. So theta* cannot reuse 0.43 / 0.49 /
-# 0.70 — those are the training severities (see joint_{low,medium,high}.yaml
-# for the all-elements-ON configs at those points).
+# point NEITHER protocol trained on. Which severities those are is a design
+# choice, and the gate made it: see below.
 #
-# WHY beta IS NOT FILLED IN. No repo document fixes a held-out beta. It is
-# PHASE 6 ENTRY GATE item 1 (dose-response design), and it needs the same
-# treatment the other three got in Phase 2: a measured P_span / burnt
-# fraction / front speed at L = 64, not a number chosen because it looks
-# reasonable between two locked ones. CLAUDE.md's sub-rule is explicit —
-# numbers enter documents derived or measured in the SAME session, never
-# transliterated from a plausible-sounding heuristic. So the file ships with
-# the gap visible instead of papered over.
+# HOW beta = 0.49 IS HELD OUT. Phase 6 trains on the EXTREMES
+# {0.43 (Low), 0.70 (High)} and holds out the middle. So 0.49 is a severity
+# NEITHER protocol trains on, which is what Def. 8 requires — and it is
+# already calibrated, at 512 seeds in Phase 2 (P_span 0.547, burnt fraction
+# 19.8 %, L = 64). No fresh calibration was needed and none was invented.
 #
-# WHAT TO DO WHEN THE GATE RULES IT
-#   1. Calibrate the chosen beta the way Phase 2 calibrated the others.
-#   2. Set `beta_holdout.value` in docs/locks.yaml (currently null) with its
-#      provenance and evidence artifact.
-#   3. Replace the sentinel below with that value.
-#   4. che/tests/test_locks.py goes green on its own — the beta tripwire
-#      admits beta_holdout as soon as it is registered, and refuses any
-#      other unregistered severity.
+# WHY THE MIDDLE. The two elements have OPPOSITE severity gradients:
+# Coupling A is "marginal by construction" at High (fuel-limited seeding,
+# coupling_a_lock.md) while Coupling B's masking ceiling runs
+# 0.028 / 0.130 / 0.419 across Low / Medium / High (kappa_b_lock.md). The
+# earlier candidates 0.46 and 0.60 each had one element effectively inert,
+# so Gamma ~ 0 would have been the expected result even under a TRUE
+# hypothesis. Medium is the only severity where both couplings satisfy their
+# own lock criteria. It also carries the smallest measured floors of the
+# three cells (survival 0.0130 vs High 0.0621).
+#
+# DESIGN PROPERTY, stated rather than left for a reviewer: training spans
+# sub- and super-critical only, so the NEAR-CRITICAL regime is the test
+# point and no training data sits near criticality.
 #
 # Every OTHER value here is locked and written out explicitly, constructed
 # from docs/locks.yaml (ruling 1b, 2026-07-31) — nothing inherited, nothing
@@ -48,8 +51,10 @@ env:
   n_food: 32
 
 theta:
-  # OWED — Phase 6 entry gate item 1. See the header before touching this.
-  beta: PENDING_PHASE6_CALIBRATION
+  # HELD-OUT severity (locks.yaml: beta_holdout). Numerically equal to
+  # beta_medium, but a DIFFERENT locked constant playing a different role —
+  # a future re-siting moves this one and not the training severity.
+  beta: 0.49
   # ELEMENT: Coupling A — M3.4 HUMAN-LOCKED 2026-07-21 (coupling_a_lock.md).
   # kappa_A is severity-independent by ruling: per-severity values were
   # considered and REJECTED because they would break Phase-7 factorial

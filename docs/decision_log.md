@@ -1561,3 +1561,93 @@ artifacts cannot compare intermittently.
 
 Scope note: this does not reopen any Phase-0–5 result. It binds Phase 6
 onward and any future equivalence claim.
+
+## PHASE-6 REMEDY RULINGS (human, 2026-08-02) — the red-team findings answered
+
+Selected from `phase6_redteam_remedies.md`. These are gate decisions on four
+of the red team's open findings. Two further findings needed no decision:
+**Part 1** (cost/hardware basis) was resolved by measurement — 62,084
+steps/s for the gate config or 257 s/run single-policy, and the 5090 is out —
+and **Part 6** (no mixture machinery) was resolved by the M6.0 spike.
+
+### 1. θ\* siting — TRAIN ON THE EXTREMES, HOLD OUT THE MIDDLE
+
+**RULED: train on {β = 0.43, 0.70}; evaluate at θ\* = Medium (β = 0.49).**
+
+This answers the scissors: Coupling A is "marginal by construction" at High
+(`coupling_a_lock.md`) while Coupling B's masking ceiling runs
+0.028 / 0.130 / 0.419 across Low / Medium / High (`kappa_b_lock.md`), so the
+drafted points at 0.46 and 0.60 each had one element effectively inert.
+Medium is the only severity where **both** couplings meet their own lock
+criteria — A's bands hold at Low *and* Medium; B's detection band was locked
+on Medium probes (0.438/0.427, inside [0.4, 0.7]).
+
+Three consequences, recorded because they are not obvious:
+
+- **Def. 8 is satisfied literally.** One θ\*, at a severity neither protocol
+  trained on. This is *not* the weaker "elements-only" reading.
+- **It fixes half the power problem for free.** Medium carries the smallest
+  measured floors of the three cells (survival 0.0130 vs High's 0.0621).
+- **`beta_holdout` is resolved immediately and needs no new calibration.**
+  The held-out β is 0.49, which Phase 2 already measured at 512 seeds
+  (P_span 0.547, burnt fraction 19.8 %). The tripwire built at M6.0 —
+  `theta_star_holdout.yaml` refusing to load while `beta_holdout` was null —
+  can be closed with a *measured* value, which is exactly the condition it
+  was written to demand.
+
+**Design property, stated rather than discovered by a reviewer:** training
+now spans sub- and super-critical only, and the **near-critical regime is
+the test point**. Testing where correlation length ~ L is defensible and
+arguably the most interesting choice, but the paper must say plainly that no
+training data sits near criticality.
+
+### 2. Estimand — ENDPOINTS CONFIRMATORY, DOSE SECONDARY, PLUS AN IDENTIFICATION ARM
+
+**RULED: Option 2-A.**
+
+- **Primary (confirmatory):** ISO vs JOINT-classic, verbatim as the founding
+  registration defines them. Unconfounded, and needs no mixture algebra.
+- **Secondary (mechanism):** the 5-point matched sweep at c = 0.5, reported
+  **with its induced no-element gradient stated numerically in the paper**,
+  not in a footnote.
+- **Identification arm:** a second sweep at **c = 0.4**. Two non-parallel
+  paths through the simplex make marginal and co-occurrence separately
+  identifiable, so the design can *bound* the confound rather than merely
+  acknowledge it.
+
+The confound itself is structural and cannot be parameterized away: for two
+binary elements P(neither) = 1 − P(A) − P(B) + P(A∧B), so fixing both
+marginals forces P(neither) to move 1:1 with co-occurrence. The draft's own
+[RT] note reasoned to the opposite sign.
+
+### 3. Seeds — k = 20 UNIFORMLY
+
+**RULED: k = 20.** MDE = 2σ√(2/k); at k = 4 the completion MDE is 0.0564
+against historical effects ≤ 0.03, i.e. **the founding primary metric was
+unresolvable before a single run**. At k = 20 completion resolves at Medium
+(0.0252) and survival has margin everywhere. ≈ $15 at the measured
+$0.07/run: the power problem was self-inflicted by rationing a resource that
+is not scarce.
+
+### 4. Floors — 8 REPS PER EVALUATION CONFIG, BEFORE ANY BAR
+
+**RULED: 8 reps.** M5.5 recorded that n = 4 leaves the sd uncertain by
+~±40 % (3 dof); 8 roughly halves that, for ~$1 more. Every threshold in the
+phase rests on these numbers.
+
+**Per-artifact floors apply (rule adopted this same session), and here that
+means PER-ARM:** ISO and JOINT are different artifacts with potentially
+different stability, so a floor measured on one may not grade the other. The
+milestone therefore measures ISO, JOINT-classic and the p = 0.5 sweep point
+separately. Floors for the intermediate sweep points are **assumed common
+and that assumption is flagged**, not silently taken — the sweep is
+secondary and not verdict-bearing.
+
+**Ordering:** this milestone runs before any bar is written, on the card
+that runs the grid.
+
+### Still open after these rulings
+
+The ablation certification table (5 nested configs × 3 seeds) was questioned
+by the red team as 15 runs for a property `test_nesting.py` already proves.
+Not ruled here.

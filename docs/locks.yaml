@@ -88,28 +88,27 @@ constants:
       outrunnable, barely), P_span 0.998, burnt fraction 98.3 %.
 
   beta_holdout:
-    value: null
-    locked: false
-    supplied_by: config           # theta_star_holdout.yaml, as a sentinel
-    source: docs/theory_foundations.md    # Definition 8
-    ruled: null
-    owed_by: PHASE 6 ENTRY GATE item 1 (dose-response design)
+    value: 0.49
+    locked: true
+    supplied_by: config           # theta_star_holdout.yaml
+    source: docs/decision_log.md    # PHASE-6 REMEDY RULINGS, ruling 1
+    ruled: 2026-08-02
+    evidence: che/bench/results/phase2/calibration.npz
     note: >-
-      OWED, NOT LOCKED. Def. 8 fixes theta* at "all elements active, at
-      held-out severity levels", and the JOINT protocol trains on a mixture
-      "still excluding theta*'s held-out severities" — so a held-out beta is
-      definitionally required and definitionally unknown until the Phase-6
-      dose-response design fixes it AND calibrates it the way Phase 2
-      calibrated the other three. It is null here on purpose: writing a
-      plausible number would violate the CLAUDE.md sub-rule that numbers
-      enter documents derived or measured in the same session. It appears
-      in che/configs/theta_star_holdout.yaml as the sentinel
-      PENDING_PHASE6_CALIBRATION, which makes load_config RAISE — present
-      and loud beats absent and silently inherited. To fill it in:
-      calibrate, set `value` here with provenance + evidence, replace the
-      sentinel. test_locks.py then goes green on its own; until then it
-      treats any beta outside the locked set as a tripwire so an invented
-      value cannot enter quietly.
+      RESOLVED 2026-08-02 by the theta*-siting ruling: Phase 6 trains on the
+      EXTREMES {0.43, 0.70} and holds out the middle, so the held-out
+      severity is 0.49 — which Phase 2 already calibrated at 512 seeds
+      (P_span 0.547, burnt fraction 19.8 %, L = 64). Def. 8 is satisfied
+      literally: one theta*, at a severity neither protocol trained on.
+      The value therefore enters MEASURED, not invented, which is exactly
+      the condition the M6.0 tripwire was written to demand — it refused to
+      load while this was null. Identical to beta_medium by construction;
+      the two are kept as separate entries because they play different
+      ROLES (training severity vs held-out evaluation point) and a future
+      re-siting must move only one of them.
+      Design property, stated: training now spans sub- and super-critical
+      only, so the NEAR-CRITICAL regime is the test point and no training
+      data sits near criticality.
 
   # -- Coupling A + structure ----------------------------------- Phase 3
   kappa_A:
@@ -425,10 +424,11 @@ configs:
       also the WEAKER measurement cell: floors completion 0.0522 / survival
       0.0621 vs Medium's 0.0399 / 0.0130.
 
-  # -- theta*: the held-out composition point. DOES NOT LOAD by design.
+  # -- theta*: the held-out composition point (Def. 8). RESOLVED 2026-08-02.
   che/configs/theta_star_holdout.yaml:
-    role: theta_star_pending
-    raw_theta:                     # checked against the file text, not load_config
+    role: theta_star
+    theta:
+      beta: beta_holdout
       kappa_A: kappa_A
       lambda_0: lambda_0
       lambda_load: lambda_load
@@ -437,14 +437,17 @@ configs:
       delta: delta_element_on
       r_comm: r_comm
       death_penalty: death_penalty
-    pending_key: beta
-    pending_constant: beta_holdout
+    env:
+      obs_version: obs_version
     explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
     note: >-
-      Every locked element value is written out; only beta is a sentinel.
-      load_config RAISES on it (che/env/config.py PENDING), so the config
-      cannot be run by accident and cannot silently inherit the pre-Phase-2
-      placeholder beta 0.35. Fill it in per beta_holdout's note.
+      Was role theta_star_pending and refused to load while beta_holdout was
+      null. The gate resolved it 2026-08-02 by siting theta* at the held-out
+      MIDDLE (train on {0.43, 0.70}), so beta arrived as an already-measured
+      Phase-2 value rather than an invented one. beta is enforced against
+      beta_holdout, NOT beta_medium, even though they are numerically equal:
+      they are different locked constants with different roles, and a future
+      re-siting must be able to move one without the other.
 
   # Archival — pre-Phase-2 placeholder theta (beta 0.35, elements off).
   # Registered so their status is machine-readable, enforced only in that
