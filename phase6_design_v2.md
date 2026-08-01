@@ -148,10 +148,11 @@ different questions.
   deaths by cause, co-active visitation, danger-moment channels, delivery
   rate, realized mixture weights.
 
-**What makes the amendment an addition rather than a substitution: k = 20.**
-At k = 4 the founding primary was unresolvable by MDE before a single run, so
-a co-primary would have been a rescue wearing an addition's clothes. See §5
-— including a correction the gate should read.
+**What makes the amendment an addition rather than a substitution: k = 34 on
+the Γ-graded arms.** At k = 4 the founding primary was unresolvable by MDE
+before a single run — and at k = 20 it still had only 55.6 % power against its
+own motivating effect band — so a co-primary would have been a rescue wearing
+an addition's clothes. See §5 for how that was caught and corrected.
 
 ---
 
@@ -188,36 +189,43 @@ count; the **actual bars come from M6.2**.
 With Šidák at m = 2 (family α = 0.05 → per-comparison α = 0.02532,
 z_crit = 2.2365):
 
-| metric | k | sd of Γ | detection threshold (50 % power) | **MDE at 80 % power** | power at a 0.03 effect |
+| metric | arm | k | sd of Γ | **MDE at 80 % power** | power at a 0.03 effect |
 |---|---|---|---|---|---|
-| completion | 20 | 0.01262 | 0.0282 | **0.0388** | **55.6 %** |
-| completion | 34 | 0.00968 | 0.0216 | **0.0298** | 80.6 % |
-| survival | 20 | 0.00411 | 0.0092 | 0.0127 | > 99 % |
+| completion | confirmatory | **34** | 0.00968 | **0.0298** | **80.6 %** |
+| survival | confirmatory | **34** | 0.00315 | 0.0097 | > 99 % |
+| completion | sweeps (secondary) | 20 | 0.01262 | 0.0388 | 55.6 % |
 
-> ### ⚠ CORRECTION OWED TO THE GATE
->
-> **k = 20 was ruled on a number this document's author supplied, and that
-> number was a detection threshold, not a power calculation.** The remedies
-> table quoted "completion MDE 0.0252 at k = 20", computed as 2σ√(2/k) — the
-> project's customary 2σ bar. That is the effect size at which one would
-> *just* reject, i.e. **50 % power**, and it omitted the Šidák correction the
-> analysis plan requires.
->
-> Correctly: at k = 20 the completion contrast has **55.6 % power against a
-> 0.03 effect**, and reaches 80 % power only at **0.0388** — above the
-> historical effect band (≤ 0.03) that motivated the whole seed discussion.
->
-> **Survival is unaffected** — its floor is 3× smaller, so it clears any of
-> these comfortably.
->
-> **The cheap fix, offered not assumed:** raise k on the **two confirmatory
-> arms only** (where Γ_completion is graded) to **k = 34**, leaving the
-> non-verdict-bearing sweeps at k = 20. That is **+28 runs ≈ 2.0 GPU-h ≈
-> $2**, and it puts completion at 80.6 % power against a 0.03 effect.
->
-> **This document registers k = 20 as ruled.** The amendment above is a
-> proposal, not an edit — it needs a ruling, and the honest reading of the
-> founding primary metric depends on it.
+*(50 %-power detection thresholds, for reference only and labelled as such:
+0.0216 completion at k = 34, 0.0282 at k = 20. Under the standing rule
+adopted 2026-08-02, a bare 2σ√(2/k) figure may be used **only** for post-hoc
+floor-grading of an observed effect — never for a design-stage power claim.)*
+
+### How this number was corrected, recorded because the class matters
+
+k = 20 was originally ruled across the board on a figure this document's own
+author supplied — "completion MDE 0.0252 at k = 20", computed as 2σ√(2/k).
+That is a **50 %-power detection threshold**, and it omitted the **Šidák
+correction the same session's analysis-plan ruling mandates**. Corrected,
+k = 20 gave completion **55.6 % power against its own motivating effect
+band** (≤ 0.03).
+
+**Amended 2026-08-02** (dated ruling, `decision_log.md`): **k = 34 on the
+Γ-graded arms, k = 20 on the secondary sweeps** — +28 runs ≈ $2. This also
+restores ruling 2's logic: survival is an *addition* to a measurable primary
+only if the primary is measurable.
+
+A **standing rule** now covers the class (CLAUDE.md): design-stage power
+statements are 80 %-power MDEs at the family-corrected α; the 2σ convention
+survives only for post-hoc floor-grading, labelled as such.
+
+### Provisional on M6.2
+
+These powers use **pre-M6.2 floors** — priors, not bars. After the per-arm
+floors land: **recompute**; if confirmatory completion power at k = 34 falls
+**below 75 %** on the measured floors, **STOP and re-rule** (seeds are $0.07
+each); if the floors come in smaller, **record the surplus and proceed**. The
+re-grading rule is fixed in advance so it cannot be chosen after seeing the
+floors.
 
 Caveat that applies either way: "historical effects ≤ 0.03" is an upper
 bound on *observed* completion effects in earlier phases, not a prior on the
@@ -238,19 +246,17 @@ appearance. **The 5090 is excluded** (~61.6 GiB at compile vs 31.8 GiB).
 
 | arm | points | k | runs |
 |---|---|---|---|
-| ISO | 1 | 20 | 20 |
-| JOINT-classic | 1 | 20 | 20 |
+| ISO | 1 | **34** | 34 |
+| JOINT-classic | 1 | **34** | 34 |
 | dose sweep, c = 0.5 | 5 | 20 | 100 |
 | identification, c = 0.4 | 3 | 20 | 60 |
 | M6.2 floors | 3 arms | 8 reps | 24 |
-| **total training runs** | | | **224** |
+| **total training runs** | | | **252** |
 
-224 × 257 s = **16.0 GPU-hours ≈ $16** at ~$1/h. Evaluation adds materially
+252 × 257 s = **18.0 GPU-hours ≈ $18** at ~$1/h. Evaluation adds materially
 and is **estimated, not measured** — M6.2 discharges that estimate. Budget
-**~$25 with margin**, against a project budget where the binding constraints
+**~$27 with margin**, against a project budget where the binding constraints
 were always wall-clock and statistical power, not money.
-
-*(With the §5 amendment: 252 runs, ~18 GPU-h, ~$27.)*
 
 **No pilot** (final-five ruling 1): a pilot cannot protect a spend smaller
 than itself.
@@ -289,7 +295,7 @@ ruling 1b). With everything run, it chooses how to write, not what to buy.
 |---|---|---|
 | θ\* at held-out β ∈ {0.46, 0.60} | θ\* at held-out **0.49**; train on {0.43, 0.70} | Remedy 1 |
 | Matched sweep primary | **Endpoints** primary; sweep secondary; **c = 0.4 identification arm** | Remedy 2 |
-| k = 4 | **k = 20** | Remedy 3 |
+| k = 4 | **k = 34** confirmatory / **20** secondary | Remedy 3 + amendment |
 | Floors assumed from Medium | **M6.2, 8 reps, per-arm, before any bar** | Remedy 4 |
 | Pilot, 2 arms × 2 seeds | **Dropped**; shakedown → M6.2; fork → post-unblind | Final-five 1 + amendment |
 | Metric amendment proposed | **Ratified** | Final-five 2 |
@@ -321,8 +327,8 @@ machinery at 2.
 Ordered by how much damage the finding would do, and written by the author
 who has the least standing to judge his own work here:
 
-1. **§5's power correction** — is 55.6 % power on the founding primary
-   metric acceptable, or does k = 34 become mandatory?
+1. **§5's provisional power.** k = 34 rests on pre-M6.2 floors; the STOP
+   rule at < 75 % measured power is registered. Is that threshold right?
 2. **§1's severity restructure.** Training on the extremes means no training
    data near criticality. Is testing at the near-critical point a strength
    (hardest regime, both couplings live) or a confound (the test point is

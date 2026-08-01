@@ -1782,3 +1782,52 @@ re-demonstrated by retraining. The five configs remain five points in Θ, as
 
 This is recorded here so a reader of the founding document is not left to
 discover a silent omission by comparing budget tables.
+
+## AMENDMENT (2026-08-02) to PHASE-6 REMEDY RULING 3 — seeds, split by role
+
+**Ruled:** **k = 34 on ISO and JOINT-classic** (the Γ-graded, verdict-bearing
+arms); **k = 20 on both sweeps and the identification arm** (secondary,
+non-verdict-bearing). **+28 runs ≈ $2.**
+
+**Grounds.** At k = 20 the founding primary metric had **55.6 % power against
+its own motivating effect band** (≤ 0.03). The ruled number was a **50 %-power
+detection threshold** — the project's customary 2σ√(2/k) bar — and it omitted
+the **Šidák correction that the same session's ruling 4 mandates**. Caught
+during v2 drafting, **before any run**.
+
+The amendment also restores ruling 2's logic: the co-primary is an *addition*
+to a measurable primary only if the primary is actually measurable.
+
+### NEW STANDING RULE — power statements are 80 %-power MDEs at the family-corrected α
+
+**Every design-stage power statement uses**
+
+    MDE(80 %) = (z_{α_family-corrected} + z_{0.8}) · σ · √(2/k)
+
+**never a bare 2σ√(2/k).** The 2σ convention **survives only for post-hoc
+floor-grading of an observed effect**, and must be **labelled as such**
+wherever it appears.
+
+This is the class-level fix, not the instance. The two are different
+quantities and conflating them silently halves the power of every design it
+touches: a bare 2σ bar names the effect at which one would *just* reject —
+50 % power — while a design needs the effect it can *find*. The instance here
+cost nothing because it was caught pre-run; the same slip inside a phase
+report would have produced an underpowered null presented as a result.
+
+### PROVISIONAL ON M6.2 — these powers use pre-M6.2 floors
+
+The k values above are computed against **current** floors (Medium, RTX PRO
+6000: completion σ 0.0399, survival σ 0.0130). Those are priors, not the
+bars. After the M6.2 **per-arm** floors land:
+
+- **Recompute.**
+- **If confirmatory completion power at k = 34 falls below 75 % on the
+  measured floors → STOP and re-rule.** More seeds cost $0.07 each; an
+  underpowered confirmatory arm costs the phase.
+- **If the floors come in smaller → record the surplus and proceed.**
+
+This is bars-with-floors applied to the seed count itself: the design is
+registered against a prior and re-graded against a measurement, with the
+re-grading rule fixed in advance so it cannot be chosen after seeing the
+floors.

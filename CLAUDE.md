@@ -294,6 +294,26 @@ and B-vs-B**, not just A-vs-B against one of them. Two deterministic
 artifacts cannot compare intermittently — an intermittent cross-comparison
 is proof that at least one self-floor is nonzero and has not been measured.
 
+## Power statements are 80 %-power MDEs (human-issued 2026-08-02)
+
+**Every design-stage power statement uses the 80 %-power MDE at the
+family-corrected alpha —** `(z_alpha_corrected + z_0.8) * sigma * sqrt(2/k)`
+**— never a bare `2*sigma*sqrt(2/k)`.** The 2-sigma convention survives only
+for *post-hoc floor-grading of an observed effect*, and must be labelled as
+such wherever it appears.
+
+The two are different quantities. A bare 2-sigma bar names the effect at
+which one would *just* reject — **50 % power** — while a design needs the
+effect it can actually *find*. Conflating them silently halves the power of
+every design it touches.
+
+Origin: Phase-6 seeds were ruled at k = 20 on a 2-sigma figure that was also
+missing the Šidák correction the same session's analysis-plan ruling
+mandated. Corrected, completion had **55.6 % power against its own motivating
+effect band**. Caught during registration drafting, before any run; the same
+slip inside a phase report would have produced an underpowered null presented
+as a result. See the dated amendment to Phase-6 remedy ruling 3.
+
 ## Artifact persistence for GPU runs (human-issued 2026-07-28)
 
 **Every GPU run persists metrics + provenance + a checkpoint archive
