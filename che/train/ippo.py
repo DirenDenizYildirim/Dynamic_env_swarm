@@ -28,7 +28,7 @@ import orbax.checkpoint as ocp
 from flax.training.train_state import TrainState
 
 from che.env.comms import MSG_DIM, aggregate
-from che.env.config import Config, load_config
+from che.env.config import MAX_MIXTURE_COMPONENTS, Config, load_config
 from che.env.env import N_ACTIONS, reset
 from che.env.observation import n_planes, plane_scales, quantize_grid
 from che.train.networks import ActorCritic
@@ -83,6 +83,11 @@ EP_METRICS = {
     # change (one channel per component, or a one-hot sum), not a mechanism
     # change. Deliberately out of the spike's 2-component scope fence.
     "mixture_component": "mixture_component",
+    # M6.1: per-component realized weights. Each averages, done-masked over
+    # finished episodes, to the fraction of episodes drawn from that
+    # component — the audit the registered design needs at up to 8
+    # components, where the index mean above stops meaning anything.
+    **{f"mixture_count_{i}": f"mixture_w{i}" for i in range(MAX_MIXTURE_COMPONENTS)},
 }
 
 

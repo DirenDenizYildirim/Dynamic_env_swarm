@@ -455,6 +455,162 @@ configs:
       they are different locked constants with different roles, and a future
       re-siting must be able to move one without the other.
 
+  # -- Phase-6 protocol configs (M6.1, GENERATED). Base theta carries
+  # the locked constants; the mixture components carry the treatment.
+  # test_phase6_configs.py checks every component against the locks and
+  # asserts none carries the held-out beta.
+  che/configs/p6_iso.yaml:
+    role: protocol
+    theta:
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: 'ISO (D2): every element seen ONLY in isolation.'
+  che/configs/p6_joint.yaml:
+    role: protocol
+    theta:
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: 'JOINT-classic: all elements co-active.'
+  che/configs/p6_sweep_c50_p000.yaml:
+    role: protocol
+    theta:
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: 'Dose sweep c=0.5, p=0.0. No-element share 0.000.'
+  che/configs/p6_sweep_c50_p125.yaml:
+    role: protocol
+    theta:
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: 'Dose sweep c=0.5, p=0.125. No-element share 0.125.'
+  che/configs/p6_sweep_c50_p250.yaml:
+    role: protocol
+    theta:
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: 'Dose sweep c=0.5, p=0.25. No-element share 0.250.'
+  che/configs/p6_sweep_c50_p375.yaml:
+    role: protocol
+    theta:
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: 'Dose sweep c=0.5, p=0.375. No-element share 0.375.'
+  che/configs/p6_sweep_c50_p500.yaml:
+    role: protocol
+    theta:
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: 'Dose sweep c=0.5, p=0.5. No-element share 0.500.'
+  che/configs/p6_ident_c40_p000.yaml:
+    role: protocol
+    theta:
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: 'Identification arm c=0.4, p=0.0. No-element share 0.200.'
+  che/configs/p6_ident_c40_p200.yaml:
+    role: protocol
+    theta:
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: 'Identification arm c=0.4, p=0.2. No-element share 0.400.'
+  che/configs/p6_ident_c40_p400.yaml:
+    role: protocol
+    theta:
+      kappa_A: kappa_A
+      lambda_0: lambda_0
+      lambda_load: lambda_load
+      f_weak: f_weak
+      kappa_B: kappa_B
+      delta: delta_element_off
+      r_comm: r_comm
+      death_penalty: death_penalty
+    env:
+      obs_version: obs_version
+    explicit: [beta, kappa_A, kappa_B, delta, r_comm, death_penalty]
+    note: 'Identification arm c=0.4, p=0.4. No-element share 0.600.'
+
+
   # Archival — pre-Phase-2 placeholder theta (beta 0.35, elements off).
   # Registered so their status is machine-readable, enforced only in that
   # they must NOT masquerade as calibrated science configs.

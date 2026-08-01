@@ -126,10 +126,11 @@ che/
     rowb_probe.py   # M5.1j row-B diagnostic
     results/        # phase{0..5} reports, metrics, provenance (large; most
                     #   checkpoints + renders are gitignored)
-  tests/            # 29 files; theory tests are ground truth (invariant #4)
+  tests/            # 30 files; theory tests are ground truth (invariant #4)
     golden/         # committed pre-refactor trajectory digests (M6.0a); the
                     #   cross-tree bitwise baseline for the traced-theta spike
-  configs/          # severity_{low,medium,high}.yaml + gate_pop12.yaml are
+  configs/          # severity_*, joint_*, theta_star_holdout, p6_* (Phase-6
+                    #   protocols, GENERATED) + gate_pop12.yaml are
                     #   live; debug.yaml is the CPU fixture; reference.yaml,
                     #   m06_probe.yaml, phase1_accept.yaml are ARCHIVAL
                     #   (pre-Phase-2 placeholder theta) — see docs/locks.yaml

@@ -55,6 +55,10 @@ ALLOWED_NEW_FIELDS: frozenset[str] = frozenset(
         "state.theta_live.delta",
         "state.mixture_component",
         "info.mixture_component",
+        # M6.1: fixed-width per-component realized-weight channels. Fixed
+        # width is the point — the observable surface must not change with
+        # the mixture, or every config would need its own golden.
+        *(f"info.mixture_count_{i}" for i in range(8)),
     }
 )
 

@@ -25,7 +25,7 @@ import jax
 import jax.numpy as jnp
 
 from che.env.comms import in_range_mask, sample_links
-from che.env.config import EnvConfig, MixtureComponent
+from che.env.config import MAX_MIXTURE_COMPONENTS, EnvConfig, MixtureComponent
 from che.env.hazard import hazard_step, seed_ignitions, smoke_step
 from che.env.observation import masked_fraction, observe, per_agent_masked
 from che.env.structure import (
@@ -475,5 +475,16 @@ def step(
         # may already be a fresh draw, and `info` describes the former.
         # Deterministic, info-only, consumes no PRNG (invariants #3, Def. 2).
         "mixture_component": state.mixture_component,
+        # M6.1: per-component indicators at FIXED width. The index channel
+        # above averages to a usable ratio only for TWO components; past that
+        # a mean over indices is meaningless. These average (done-masked, over
+        # finished episodes) directly to the REALIZED WEIGHT of each
+        # component, which is what a mixture audit actually needs.
+        **{
+            f"mixture_count_{i}": (state.mixture_component == i).astype(
+                jnp.float32
+            )
+            for i in range(MAX_MIXTURE_COMPONENTS)
+        },
     }
     return obs, state_new, reward, done, info

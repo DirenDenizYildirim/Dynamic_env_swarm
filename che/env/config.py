@@ -99,6 +99,15 @@ class MixtureComponent:
             raise ValueError(f"mixture component {self.name!r}: negative weight")
 
 
+# M6.1: the info/metrics schema carries one count channel per component, at
+# a FIXED width, so the observable surface does not change with the mixture.
+# 8 is exactly what the registered Phase-6 design needs (4 element
+# combinations x 2 training severities). Exceeding it is a schema change:
+# it fails loudly here rather than truncating, and raising it means
+# regenerating the M6.0 golden.
+MAX_MIXTURE_COMPONENTS = 8
+
+
 @dataclasses.dataclass(frozen=True)
 class MixtureConfig:
     """The training distribution over theta (M6.0c).
@@ -120,6 +129,13 @@ class MixtureConfig:
             raise ValueError(f"duplicate mixture component names: {names}")
         if self.components and sum(c.weight for c in self.components) <= 0.0:
             raise ValueError("mixture weights sum to zero")
+        if len(self.components) > MAX_MIXTURE_COMPONENTS:
+            raise ValueError(
+                f"{len(self.components)} components exceeds "
+                f"MAX_MIXTURE_COMPONENTS={MAX_MIXTURE_COMPONENTS}. Raising it "
+                "is a schema change: the per-component count channels widen, "
+                "so the M6.0 golden must be regenerated in the same commit."
+            )
 
     @property
     def is_empty(self) -> bool:

@@ -43,7 +43,7 @@ CONFIGS = LOCKS["configs"]
 # Roles whose beta must be a calibrated severity — archival configs still
 # carry the pre-Phase-2 placeholder and are exempt by design, and
 # theta_star_pending carries a sentinel that does not load at all.
-CALIBRATED_ROLES = {"science", "gate", "joint", "theta_star"}
+CALIBRATED_ROLES = {"science", "gate", "joint", "theta_star", "protocol"}
 # Roles whose comms element is ON (delta = 1.0) rather than OFF.
 ELEMENT_ON_ROLES = {"joint", "theta_star", "theta_star_pending"}
 
