@@ -109,7 +109,7 @@ from che.env.e2c import (
 from che.env.env import _OBS_STREAM
 from che.env.hazard import smoke_step
 from che.env.observation import observe, transmittance
-from che.env.types import zeros_state
+from che.env.types import theta_live_from, zeros_state
 
 # The private helpers above are imported deliberately rather than copied.
 # M3.3's lesson is that predicted and empirical must share every constant;
@@ -241,7 +241,7 @@ def _observation_phase(
     never plane 7 (the M4.2 Finding-2 side channel).
     """
     hazard = _hazard_field(z)
-    template = zeros_state(GRID, 2, key)
+    template = zeros_state(GRID, 2, key, theta_live_from(cfg.theta))
     sched = jnp.asarray(schedule, jnp.int32)
 
     def body(carry, xs):

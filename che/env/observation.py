@@ -294,8 +294,11 @@ def observe(
         # and the content planes are bitwise those of the pre-masking env.
         if key is None:
             raise ValueError("obs v3 requires a PRNG key for the reveal draw")
+        # M6.0: kappa_B is traced, per episode, from the state — the mixture
+        # varies it. Everything else observe() reads off cfg is static
+        # (obs_version, window, grid size) and cannot be varied by a mixture.
         tau = transmittance(
-            state.smoke, state.agent_pos, kappa_B=cfg.theta.kappa_B, k=k
+            state.smoke, state.agent_pos, kappa_B=state.theta_live.kappa_B, k=k
         )
         reveal = jax.random.uniform(key, tau.shape) < tau  # P(seen) = tau
         grid = jnp.concatenate(

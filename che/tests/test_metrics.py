@@ -8,7 +8,7 @@ import jax
 import jax.numpy as jnp
 
 from che.env.config import Config, EnvConfig, ThetaConfig, TrainConfig
-from che.env.types import zeros_state
+from che.env.types import theta_live_from, zeros_state
 from che.train.ippo import train
 from che.train.rollout import make_random_policy, rollout_episode, step_autoreset
 
@@ -65,7 +65,12 @@ def test_burnt_fraction_and_masked_frac_channels():
     from che.env.types import BURNING
 
     cfg0 = EnvConfig(grid_size=16, n_agents=4, horizon=8, theta=ThetaConfig(beta=0.0))
-    s = zeros_state(cfg0.grid_size, cfg0.n_agents, jax.random.PRNGKey(0))
+    s = zeros_state(
+        cfg0.grid_size,
+        cfg0.n_agents,
+        jax.random.PRNGKey(0),
+        theta_live_from(cfg0.theta),
+    )
     hazard = (  # zeros_state hazard is all-Fuel; light 3 cells
         s.hazard.at[3, 3].set(BURNING).at[5, 9].set(BURNING).at[12, 2].set(BURNING)
     )
@@ -89,7 +94,9 @@ def test_autoreset_surfaces_ending_episode_and_zeroes_counters():
     cfg = EnvConfig(
         grid_size=8, n_agents=4, horizon=4, n_food=4, theta=ThetaConfig(beta=0.0)
     )
-    s = zeros_state(cfg.grid_size, cfg.n_agents, jax.random.PRNGKey(0))
+    s = zeros_state(
+        cfg.grid_size, cfg.n_agents, jax.random.PRNGKey(0), theta_live_from(cfg.theta)
+    )
     food = s.food.at[5, 5].set(1).at[6, 6].set(1)  # 2 of 4 uncollected
     s = dataclasses.replace(
         s,
@@ -128,7 +135,9 @@ def test_mean_smoke_exposure_exact_and_alive_only():
     theta = ThetaConfig(beta=0.0, iota=0.0, lambda_0=0.0, eta=0.25)
     cfg = EnvConfig(grid_size=8, n_agents=4, horizon=16, n_food=4, theta=theta)
     v = 0.8
-    s = zeros_state(cfg.grid_size, cfg.n_agents, jax.random.PRNGKey(0))
+    s = zeros_state(
+        cfg.grid_size, cfg.n_agents, jax.random.PRNGKey(0), theta_live_from(cfg.theta)
+    )
     s = dataclasses.replace(
         s,
         smoke=jnp.full((8, 8), v, jnp.float32),

@@ -185,8 +185,18 @@ def test_delta_does_not_perturb_any_env_kernel_stream(delta):
     ref, _, _ = _fixed_action_rollout(CFG, key)  # CFG has delta = 0.0
     got, _, _ = _fixed_action_rollout(_with_delta(CFG, delta), key)
     for field in dataclasses.fields(EnvState):
+        # M6.0: theta_live *carries* the knob under test, so comparing it
+        # would assert delta == delta' — false by construction, and not the
+        # invariant. The invariant is that every KERNEL-produced component
+        # is untouched, which is exactly what the remaining fields are.
+        if field.name == "theta_live":
+            continue
         a, b = getattr(ref, field.name), getattr(got, field.name)
         chex.assert_trees_all_equal(a, b)
+    # And the knob really did move — otherwise the loop above is vacuous.
+    # (theta_live is stacked over the rollout's steps, hence the .all().)
+    assert (got.theta_live.delta == delta).all()
+    assert (ref.theta_live.delta == 0.0).all()
 
 
 def test_delta_one_delivers_the_zero_vector_bitwise():

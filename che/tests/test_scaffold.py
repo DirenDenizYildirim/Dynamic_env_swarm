@@ -7,7 +7,7 @@ import jax
 import jax.numpy as jnp
 
 from che.env.config import Config, ThetaConfig, load_config
-from che.env.types import BURNT, FUEL, INTACT, EnvState, zeros_state
+from che.env.types import BURNT, FUEL, INTACT, EnvState, theta_live_from, zeros_state
 
 CONFIG_DIR = Path(__file__).resolve().parent.parent / "configs"
 
@@ -40,7 +40,7 @@ def test_configs_are_hashable_static_args():
 def test_zeros_state_shapes_and_dtypes():
     cfg = load_config(CONFIG_DIR / "debug.yaml")
     ll, n = cfg.env.grid_size, cfg.env.n_agents
-    state = zeros_state(ll, n, jax.random.PRNGKey(0))
+    state = zeros_state(ll, n, jax.random.PRNGKey(0), theta_live_from(cfg.env.theta))
     assert isinstance(state, EnvState)
     chex.assert_shape(state.agent_pos, (n, 2))
     chex.assert_shape(state.agent_alive, (n,))
@@ -63,11 +63,12 @@ def test_zeros_state_shapes_and_dtypes():
 
 
 def test_envstate_is_pytree():
-    state = zeros_state(8, 2, jax.random.PRNGKey(0))
+    state = zeros_state(8, 2, jax.random.PRNGKey(0), theta_live_from(ThetaConfig()))
     leaves = jax.tree_util.tree_leaves(state)
     # M1.4 added the two episode death counters; Phase 2 added ep_smoke_sum;
-    # M3.1 added the weak terrain mask.
-    assert len(leaves) == 12
+    # M3.1 added the weak terrain mask; M6.0 added the traced theta slice
+    # (4 scalars) plus the drawn mixture-component index.
+    assert len(leaves) == 17
     # A mapped identity must preserve structure (chex.dataclass registers
     # EnvState as a pytree; vmap/scan rely on this).
     state2 = jax.tree_util.tree_map(lambda x: x, state)

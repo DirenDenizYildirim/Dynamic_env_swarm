@@ -35,7 +35,15 @@ from che.env.structure import (
     structure_step,
 )
 from che.env.tasks import occupancy_grid, spawn_food, task_step
-from che.env.types import BURNING, COLLAPSED, FUEL, INTACT, EnvState
+from che.env.types import (
+    BURNING,
+    COLLAPSED,
+    FUEL,
+    INTACT,
+    EnvState,
+    ThetaLive,
+    theta_live_from,
+)
 
 # Action set: 5 discrete actions (stay + 4 von-Neumann moves).
 N_ACTIONS = 5
@@ -53,11 +61,37 @@ _OBS_STREAM = 47
 # kernel streams are provably untouched and delta = 0 bitwise-recovers the
 # pre-comms trajectories (invariant #3).
 _COMMS_STREAM = 53
+# M6.0: fold_in tag for the mixture-component draw. Same DECISION as the
+# three streams above — a dedicated derived stream, so the split(key, 3/4)
+# kernel streams are provably untouched and a single-component (degenerate)
+# mixture bitwise-recovers the pre-M6.0 trajectories (invariant #3).
+_MIXTURE_STREAM = 59
 _ACTION_OFFSETS = jnp.array([[0, 0], [-1, 0], [1, 0], [0, -1], [0, 1]], dtype=jnp.int32)
 
 
+def sample_theta_live(
+    key: jax.Array, cfg: EnvConfig
+) -> tuple[ThetaLive, jax.Array]:
+    """Draw this episode's traced theta (M6.0), returning (theta_live, index).
+
+    M6.0b: the degenerate single-component case — theta_live carries exactly
+    the config's locked constants, so the traced path is the only path and no
+    kernel needs an `if mixture is None` branch. The mixture spec arrives at
+    M6.0c and changes only this function.
+
+    `key` is expected to be the caller's reset key; the draw derives its own
+    stream via fold_in, so it can never perturb the reset splits.
+    """
+    del key  # degenerate mixture: nothing to draw yet (M6.0c uses the stream)
+    return theta_live_from(cfg.theta), jnp.zeros((), dtype=jnp.int32)
+
+
 def _comms_obs(
-    key: jax.Array, agent_pos: jax.Array, agent_alive: jax.Array, cfg: EnvConfig
+    key: jax.Array,
+    agent_pos: jax.Array,
+    agent_alive: jax.Array,
+    cfg: EnvConfig,
+    delta: jax.Array,
 ) -> tuple[jax.Array, jax.Array]:
     """T_K (Def. 7) at Prop.-1 position 5: (links, in_range) from x' only.
 
@@ -65,10 +99,14 @@ def _comms_obs(
     thinned from — the mask is the delivery-rate denominator, kept so the
     eval harness can pool exact ratios instead of averaging per-step ones
     (the M4.4 numerator/denominator lesson).
+
+    M6.0: `delta` is traced (per-episode, from the state) while `r_comm`
+    stays static on the config — the range is locked geometry that no
+    mixture varies, and it is also the one comms parameter that would change
+    nothing if traced (the [n, n] mask is built at full shape regardless).
     """
-    th = cfg.theta
-    in_range = in_range_mask(agent_pos, agent_alive, th.r_comm)
-    return sample_links(key, in_range, th.delta), in_range
+    in_range = in_range_mask(agent_pos, agent_alive, cfg.theta.r_comm)
+    return sample_links(key, in_range, delta), in_range
 
 
 def agent_step(
@@ -138,6 +176,12 @@ def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvStat
     """
     ll = cfg.grid_size
     th = cfg.theta
+    # M6.0: this episode's traced theta, drawn before anything that reads it
+    # (the frozen burn-in below uses beta). Its stream is derived by fold_in,
+    # so the four reset splits are untouched.
+    theta_live, mixture_component = sample_theta_live(
+        jax.random.fold_in(key, _MIXTURE_STREAM), cfg
+    )
     # Unconditional 4-way split (invariant #3): dynamic mode discards
     # k_burnin, so dynamic<->frozen resets with the same key place identical
     # food/agents/ignition and differ only through the freeze.
@@ -162,7 +206,7 @@ def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvStat
     if cfg.hazard_mode == "frozen":  # static branch: cfg is a static arg
 
         def burn(h: jax.Array, k: jax.Array):
-            return hazard_step(k, h, beta=th.beta, iota=th.iota), None
+            return hazard_step(k, h, beta=theta_live.beta, iota=th.iota), None
 
         hazard, _ = jax.lax.scan(
             burn, hazard, jax.random.split(k_burnin, cfg.t_gen_resolved)
@@ -180,6 +224,8 @@ def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvStat
         ep_deaths_fire=jnp.zeros((), dtype=jnp.int32),
         ep_deaths_collapse=jnp.zeros((), dtype=jnp.int32),
         ep_smoke_sum=jnp.zeros((), dtype=jnp.float32),
+        theta_live=theta_live,
+        mixture_component=mixture_component,
     )
     obs = observe(state, cfg, jax.random.fold_in(key, _OBS_STREAM))
     # M5.0: the reset obs carries a link graph too, so the obs schema is the
@@ -187,7 +233,11 @@ def reset(key: jax.Array, cfg: EnvConfig) -> tuple[dict[str, jax.Array], EnvStat
     # both branches). No message has been emitted yet, so the aggregate the
     # policy builds from it is the zero vector either way.
     links, _ = _comms_obs(
-        jax.random.fold_in(key, _COMMS_STREAM), agent_pos, state.agent_alive, cfg
+        jax.random.fold_in(key, _COMMS_STREAM),
+        agent_pos,
+        state.agent_alive,
+        cfg,
+        theta_live.delta,
     )
     return {**obs, "links": links}, state
 
@@ -202,6 +252,11 @@ def step(
     explicit `key` argument, split once per stochastic kernel).
     """
     th = cfg.theta
+    # M6.0: beta/kappa_A/kappa_B/delta come from the state (traced, resampled
+    # per episode by the mixture); everything else stays static on the config.
+    # theta_live is constant for the episode's duration, so every kernel in
+    # the Prop.-1 order below reads one consistent theta.
+    tl = state.theta_live
     k_struct, k_seed, k_fire = jax.random.split(key, 3)
 
     # 1. c' ~ T_C(c, x): reads *pre-step* occupancy.
@@ -219,9 +274,9 @@ def step(
     # 2. h' ~ T_H(h, c, c'): CA spread, then the Coupling A impulse from the
     # collapse increment (seeded cells are Burning in h', spread next step).
     seed_mask = coupling_a_seed_mask(
-        k_seed, collapse_increment, kappa_A=th.kappa_A, r_seed=th.r_seed
+        k_seed, collapse_increment, kappa_A=tl.kappa_A, r_seed=th.r_seed
     )
-    hazard_ca = hazard_step(k_fire, state.hazard, beta=th.beta, iota=th.iota)
+    hazard_ca = hazard_step(k_fire, state.hazard, beta=tl.beta, iota=th.iota)
     if cfg.hazard_mode == "frozen":
         # M1.3: h is frozen — the CA/seed draws above still happen and are
         # discarded, so dynamic<->frozen with the same key share every
@@ -261,7 +316,7 @@ def step(
     # positions/aliveness only — never h', rho' or c' — and draws from its
     # own fold_in stream, so delta cannot perturb any kernel above.
     links, links_in_range = _comms_obs(
-        jax.random.fold_in(key, _COMMS_STREAM), pos_new, alive_new, cfg
+        jax.random.fold_in(key, _COMMS_STREAM), pos_new, alive_new, cfg, tl.delta
     )
 
     t_new = state.t + 1
@@ -293,6 +348,10 @@ def step(
         ep_deaths_fire=ep_deaths_fire,
         ep_deaths_collapse=ep_deaths_collapse,
         ep_smoke_sum=ep_smoke_sum,
+        # theta_live is fixed for the episode: the mixture draws it at
+        # reset/autoreset, never mid-episode.
+        theta_live=tl,
+        mixture_component=state.mixture_component,
     )
     # Post-step state, per Prop. 1; the reveal draw (obs v3, Coupling B)
     # uses its own fold_in stream so the kernel streams above are untouched.

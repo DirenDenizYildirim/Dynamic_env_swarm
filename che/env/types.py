@@ -32,6 +32,61 @@ COLLAPSED: int = 1
 
 
 @dataclass
+class ThetaLive:
+    """The per-env TRACED slice of theta (M6.0 spike, decision_log 2026-08-01).
+
+    These four are the composable stressor elements plus the severity axis —
+    the only theta fields a training mixture varies. They live in `EnvState`
+    rather than in `EnvConfig` because a mixture resamples them per episode
+    at reset/autoreset, which makes them data, not configuration.
+
+    WHY EXACTLY THESE FOUR. Each is a probability-like scalar consumed by a
+    comparison against uniforms or by a multiply, so tracing costs one
+    broadcast and changes no array shape:
+      beta     -> hazard_step, compared against per-cell uniforms (Def. 3)
+      kappa_A  -> coupling_a_seed_mask, a Bernoulli probability (Def. 5)
+      kappa_B  -> transmittance, a multiply inside exp (Def. 6)
+      delta    -> sample_links, compared against uniforms (Def. 7)
+
+    WHAT IS DELIBERATELY NOT HERE (M6.0 scope fence):
+      r_seed, obs_window, grid_size — shape/loop parameters; tracing them
+        would change array shapes, not just values.
+      sigma_s, eta — HARD exclusion. They feed observation.rho_max ->
+        plane_scales, i.e. the uint8 quantization scales, whose reciprocal is
+        folded on the HOST precisely because fp32 division is not correctly
+        rounded on the GPU backend (M5.1h). Tracing them would dismantle that
+        fix. Verified: plane_scales does not depend on kappa_B, so the uint8
+        path is untouched by the mixture as scoped.
+      death_penalty, r_comm — locked training-protocol/geometry constants
+        that no mixture varies (docs/locks.yaml).
+
+    float32 scalars, matching the dtype the kernels compare against.
+    """
+
+    beta: jax.Array
+    kappa_A: jax.Array
+    kappa_B: jax.Array
+    delta: jax.Array
+
+
+def theta_live_from(theta) -> ThetaLive:
+    """Build the traced slice from a static `ThetaConfig`.
+
+    This is the degenerate, single-component case: a run with no mixture is a
+    run whose mixture has one component, so the traced path is the ONLY path
+    and there is no `if mixture is None` branch anywhere in the kernels.
+    Bitwise identity with the pre-refactor tree depends on these scalars
+    holding exactly the float32 values the Python constants held.
+    """
+    return ThetaLive(
+        beta=jnp.asarray(theta.beta, dtype=jnp.float32),
+        kappa_A=jnp.asarray(theta.kappa_A, dtype=jnp.float32),
+        kappa_B=jnp.asarray(theta.kappa_B, dtype=jnp.float32),
+        delta=jnp.asarray(theta.delta, dtype=jnp.float32),
+    )
+
+
+@dataclass
 class EnvState:
     """Full environment state s = (x, h, rho, c, t) plus PRNG key.
 
@@ -70,6 +125,14 @@ class EnvState:
     # info is not otherwise aggregable inside jitted collectors.
     ep_deaths_fire: jax.Array
     ep_deaths_collapse: jax.Array
+    # --- M6.0: the traced theta slice for THIS episode ---
+    # Sampled at reset/autoreset from the mixture spec on a dedicated stream
+    # and held constant for the episode's duration, so every kernel in the
+    # Prop.-1 order reads one consistent theta. `mixture_component` is the
+    # index that was drawn; it is surfaced in `info` so a training run can be
+    # audited against its intended mixture weights (spike acceptance 2d).
+    theta_live: ThetaLive
+    mixture_component: jax.Array  # int32 scalar
     # Running sum over steps of the mean smoke density rho'(x'_i) over alive
     # agents (float32 scalar; 0 contribution on steps with no survivors).
     # Surfaced as `mean_smoke_exposure` (divided by t) in `info` — an
@@ -77,13 +140,22 @@ class EnvState:
     ep_smoke_sum: jax.Array
 
 
-def zeros_state(grid_size: int, n_agents: int, key: jax.Array) -> EnvState:
+def zeros_state(
+    grid_size: int, n_agents: int, key: jax.Array, theta_live: ThetaLive
+) -> EnvState:
     """An all-clear state at t=0: all Fuel, no smoke, intact, agents at origin.
 
     Used by tests and as the template `reset` (M0.3) fills in.
+
+    `theta_live` is REQUIRED, deliberately (M6.0). Since the kernels now read
+    theta from the state, a default here would silently substitute some other
+    theta for the caller's config — a wrong answer instead of an error. Build
+    it with `theta_live_from(cfg.theta)`.
     """
     ll = grid_size
     return EnvState(
+        theta_live=theta_live,
+        mixture_component=jnp.zeros((), dtype=jnp.int32),
         agent_pos=jnp.zeros((n_agents, 2), dtype=jnp.int32),
         agent_alive=jnp.ones((n_agents,), dtype=jnp.bool_),
         food=jnp.zeros((ll, ll), dtype=jnp.uint8),

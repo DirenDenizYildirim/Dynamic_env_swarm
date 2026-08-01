@@ -18,7 +18,7 @@ from che.env.config import EnvConfig, ThetaConfig
 from che.env.env import reset, step
 from che.env.hazard import seed_ignitions
 from che.env.structure import coupling_a_seed_mask
-from che.env.types import BURNING, BURNT, COLLAPSED, FUEL, INTACT
+from che.env.types import BURNING, BURNT, COLLAPSED, FUEL, INTACT, theta_live_from
 
 L = 16
 
@@ -120,6 +120,12 @@ def test_seeded_fire_spreads_like_primary():
     stay = jnp.zeros((1,), jnp.int32)
     _, s1, _, _, _ = step(jax.random.PRNGKey(1), s, stay, cfg)
     hot = dataclasses.replace(cfg, theta=dataclasses.replace(cfg.theta, beta=1.0))
+    # M6.0: theta binds at RESET, not at step time — the kernels read
+    # beta/kappa_A/kappa_B/delta from the state so a mixture can give
+    # different envs different theta in one batched step. Swapping the cfg
+    # mid-episode is therefore inert; the episode's theta must be swapped
+    # on the state itself. (Production only overrides theta before reset.)
+    s1 = dataclasses.replace(s1, theta_live=theta_live_from(hot.theta))
     _, s2, _, _, _ = step(jax.random.PRNGKey(2), s1, stay, hot)
     ball = _cheb_ball((8, 8), 1, L)
     ring = _cheb_ball((8, 8), 2, L) & ~ball

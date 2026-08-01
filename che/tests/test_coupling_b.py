@@ -18,7 +18,7 @@ import jax.numpy as jnp
 from che.env.config import EnvConfig, ThetaConfig
 from che.env.env import reset, step
 from che.env.observation import N_PLANES, masked_fraction, observe, transmittance
-from che.env.types import BURNING, zeros_state
+from che.env.types import BURNING, theta_live_from, zeros_state
 from che.tests.test_nesting import _assert_bitwise_equal, _traj
 
 L = 16
@@ -29,10 +29,12 @@ R = K // 2
 _HOT = ThetaConfig(beta=0.6, iota=0.02, sigma_s=1.0, eta=0.5)
 
 
-def _uniform_smoke_state(rho: float, n_agents: int = 4):
+def _uniform_smoke_state(rho: float, n_agents: int = 4, theta=None):
     """All-Fuel state with a uniform smoke field and agents away from the
     border (every quadrature sample stays in-grid => mean_rho == rho)."""
-    s = zeros_state(L, n_agents, jax.random.PRNGKey(0))
+    s = zeros_state(
+        L, n_agents, jax.random.PRNGKey(0), theta_live_from(theta or ThetaConfig())
+    )
     pos = jnp.array([[8, 8], [7, 6], [9, 10], [6, 9]], jnp.int32)[:n_agents]
     return dataclasses.replace(
         s,
@@ -107,7 +109,7 @@ def test_masking_respects_visibility_plane_exactly():
         theta=ThetaConfig(kappa_B=1.0),
     )
     cfg2 = dataclasses.replace(cfg3, obs_version=2)
-    s = _uniform_smoke_state(1.5)
+    s = _uniform_smoke_state(1.5, theta=cfg3.theta)
     # Real content everywhere the probes can land: fire + food + occupancy.
     s = dataclasses.replace(
         s,
@@ -175,7 +177,7 @@ def test_reveal_draw_present_at_kappa_b_zero():
     cfg = EnvConfig(
         grid_size=L, n_agents=4, horizon=32, theta=ThetaConfig(kappa_B=0.0)
     )
-    s = zeros_state(L, 4, jax.random.PRNGKey(0))
+    s = zeros_state(L, 4, jax.random.PRNGKey(0), theta_live_from(cfg.theta))
     jaxpr = jax.make_jaxpr(lambda st, k: observe(st, cfg, k))(
         s, jax.random.PRNGKey(1)
     )
@@ -191,7 +193,7 @@ def test_masked_frac_info_channel():
     cfg = EnvConfig(
         grid_size=L, n_agents=4, horizon=32, theta=ThetaConfig(kappa_B=1.0)
     )
-    s = _uniform_smoke_state(1.5)
+    s = _uniform_smoke_state(1.5, theta=cfg.theta)
     actions = jnp.zeros((4,), jnp.int32)
     obs, _, _, _, info = step(jax.random.PRNGKey(2), s, actions, cfg)
     vis = obs["grid"][..., 7]
@@ -225,7 +227,7 @@ def test_danger_moment_masking_channels():
         hazard_mode="frozen",
         theta=ThetaConfig(kappa_B=1.0),
     )
-    s = _uniform_smoke_state(1.5)
+    s = _uniform_smoke_state(1.5, theta=cfg.theta)
     # Two agents inside the crop radius of the fire, two well outside.
     s = dataclasses.replace(
         s,
@@ -264,14 +266,18 @@ def test_danger_channels_are_zero_without_fire_and_at_kappa_b_zero():
         hazard_mode="frozen",
         theta=ThetaConfig(kappa_B=1.0),
     )
-    s = _uniform_smoke_state(1.5)  # smoke but no fire
+    s = _uniform_smoke_state(1.5, theta=cfg.theta)  # smoke but no fire
     actions = jnp.zeros((4,), jnp.int32)
     _, _, _, _, info = step(jax.random.PRNGKey(2), s, actions, cfg)
     assert float(info["danger_agents"]) == 0.0
     assert float(info["masked_danger_sum"]) == 0.0
 
     cfg0 = dataclasses.replace(cfg, theta=ThetaConfig(kappa_B=0.0))
-    s_fire = dataclasses.replace(s, hazard=s.hazard.at[7, 7].set(BURNING))
+    s_fire = dataclasses.replace(
+        s,
+        hazard=s.hazard.at[7, 7].set(BURNING),
+        theta_live=theta_live_from(cfg0.theta),
+    )
     _, _, _, _, info0 = step(jax.random.PRNGKey(2), s_fire, actions, cfg0)
     assert float(info0["danger_agents"]) > 0.0  # condition fires
     assert float(info0["masked_danger_sum"]) == 0.0  # but tau == 1

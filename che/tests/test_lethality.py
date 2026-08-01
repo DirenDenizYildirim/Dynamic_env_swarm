@@ -17,6 +17,7 @@ from che.env.types import (
     COLLAPSED,
     FUEL,
     INTACT,
+    theta_live_from,
     zeros_state,
 )
 
@@ -109,7 +110,12 @@ def test_dead_agents_are_inert_and_not_recounted():
 
 
 def _state_with(cfg, agent_pos, hazard_cells=(), food_cells=()):
-    s = zeros_state(cfg.grid_size, len(agent_pos), jax.random.PRNGKey(0))
+    s = zeros_state(
+        cfg.grid_size,
+        len(agent_pos),
+        jax.random.PRNGKey(0),
+        theta_live_from(cfg.theta),
+    )
     hz = s.hazard
     for cell, val in hazard_cells:
         hz = hz.at[cell].set(val)

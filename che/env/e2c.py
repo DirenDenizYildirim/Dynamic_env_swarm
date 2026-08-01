@@ -74,7 +74,7 @@ from che.env.config import EnvConfig, ThetaConfig
 from che.env.env import _OBS_STREAM
 from che.env.hazard import smoke_step
 from che.env.observation import observe, transmittance
-from che.env.types import BURNING, FUEL, zeros_state
+from che.env.types import BURNING, FUEL, theta_live_from, zeros_state
 
 # --- Geometry (Option A; every pre-commitment distance <= 4) -------------
 D_PATH = 2  # d: steps from s0 to the branch b
@@ -165,7 +165,7 @@ def _observation_phase(key: jax.Array, z: jax.Array, cfg: EnvConfig) -> dict:
     plane-7 oracle's belief (`oracle_evidence`, `oracle_side`).
     """
     hazard = _hazard_field(z)
-    template = zeros_state(GRID, 1, key)
+    template = zeros_state(GRID, 1, key, theta_live_from(cfg.theta))
 
     def body(carry, xs):
         smoke, informed_l, informed_r, o_side, o_evid = carry

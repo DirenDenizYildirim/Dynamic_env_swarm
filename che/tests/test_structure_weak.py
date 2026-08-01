@@ -16,7 +16,7 @@ from che.env.config import EnvConfig, ThetaConfig
 from che.env.env import reset, step
 from che.env.observation import observe
 from che.env.structure import generate_weak_mask, structure_step
-from che.env.types import COLLAPSED, INTACT, zeros_state
+from che.env.types import COLLAPSED, INTACT, theta_live_from, zeros_state
 from che.tests.test_nesting import _assert_bitwise_equal, _traj
 
 L = 16
@@ -66,7 +66,7 @@ def test_collapsed_is_absorbing_and_increment_only_from_intact():
 
 def test_obs_plane_encoding():
     cfg = EnvConfig(grid_size=L, n_agents=1, horizon=32)
-    s = zeros_state(L, 1, jax.random.PRNGKey(0))
+    s = zeros_state(L, 1, jax.random.PRNGKey(0), theta_live_from(cfg.theta))
     r = cfg.obs_window // 2
     # Agent at center; weak-intact west, collapsed east, sound elsewhere.
     c = L // 2
