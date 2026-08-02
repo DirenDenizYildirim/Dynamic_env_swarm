@@ -39,6 +39,8 @@ def _locks() -> dict:
 LOCKS = _locks()
 CONSTANTS = LOCKS["constants"]
 CONFIGS = LOCKS["configs"]
+ANALYSIS = LOCKS["analysis"]["constants"]
+ANALYSIS_MODULE = LOCKS["analysis"]["module"]
 
 # Roles whose beta must be a calibrated severity — archival configs still
 # carry the pre-Phase-2 placeholder and are exempt by design, and
@@ -307,6 +309,87 @@ def test_r_comm_reachable_without_argv():
     # And the override path still works, unchanged.
     overridden = dataclasses.replace(ThetaConfig(), r_comm=8.0)
     assert overridden.r_comm == pytest.approx(8.0)
+
+
+# ------------------------------------------- analysis constants (2026-08-02)
+#
+# Ruled 2026-08-02: analysis thresholds go in the registry too, but they get
+# their OWN enforcement route. An env constant is enforced by being reachable
+# from a config; a report threshold has no config, so instead the module is
+# imported and its literals are compared. Same guarantee — one source of
+# truth, checked by a test — without pretending an analysis bar is env
+# configuration.
+
+
+def _analysis_module():
+    import importlib
+
+    return importlib.import_module(ANALYSIS_MODULE)
+
+
+def test_analysis_registry_is_well_formed():
+    """Same provenance discipline as `constants:`, plus the owed-value rule."""
+    for name, spec in ANALYSIS.items():
+        assert "value" in spec, f"analysis.{name} has no value"
+        assert spec.get("source"), f"analysis.{name} has no provenance source"
+        assert "locked" in spec, f"analysis.{name} does not say whether it is locked"
+        if spec["value"] is None:
+            assert spec.get("owed_by"), (
+                f"analysis.{name} is null but does not say which milestone "
+                "owes it — a null with no owner is an omission, not a slot."
+            )
+
+
+@pytest.mark.parametrize(
+    "name", sorted(n for n, s in ANALYSIS.items() if s["value"] is not None)
+)
+def test_analysis_module_literal_matches_registry(name):
+    """THE ENFORCEMENT. Change the script or the registry alone -> red."""
+    mod = _analysis_module()
+    assert hasattr(mod, name), (
+        f"{ANALYSIS_MODULE} has no {name}, but docs/locks.yaml registers it "
+        f"as {ANALYSIS[name]['value']} (source: {ANALYSIS[name]['source']})"
+    )
+    got = getattr(mod, name)
+    assert got == pytest.approx(ANALYSIS[name]["value"]), (
+        f"{ANALYSIS_MODULE}.{name} = {got}, docs/locks.yaml registers "
+        f"{ANALYSIS[name]['value']} (source: {ANALYSIS[name]['source']}). "
+        "These are the same constant; update them in one commit."
+    )
+
+
+def test_owed_analysis_constants_have_no_module_literal():
+    """T* is a MEASURED OUTCOME, not a chosen constant.
+
+    Registering it as a literal now would convert the plateau criterion
+    ('T* = 1000 iff both confirmatory arms pass at the T = 1000 re-run')
+    into an assumption. The slot exists so the value cannot arrive
+    unregistered later — the beta_holdout precedent — and this asserts the
+    slot stays empty on BOTH sides until the measurement fills it.
+    """
+    mod = _analysis_module()
+    for name, spec in ANALYSIS.items():
+        if spec["value"] is None:
+            assert not hasattr(mod, name), (
+                f"{ANALYSIS_MODULE}.{name} exists, but docs/locks.yaml still "
+                f"registers it as owed by {spec['owed_by']!r}. Register the "
+                "measured value with its provenance in the same commit."
+            )
+
+
+def test_plateau_review_band_is_above_pass_and_never_verdict_bearing():
+    """The freeze forbids new verdict-bearing bars; 1.5 is a label only.
+
+    Registered 2026-08-02 as reporting-only precisely because a third
+    verdict state would change step (b)/(c) branches already registered as
+    two-way. If someone later wires it into a verdict, this fails.
+    """
+    assert ANALYSIS["PLATEAU_REVIEW"].get("verdict_bearing") is False
+    mod = _analysis_module()
+    assert mod.PLATEAU_REVIEW > mod.PLATEAU_PASS, (
+        "the review band must sit ABOVE the pass threshold — below it, it "
+        "would silently narrow a verdict-bearing bar"
+    )
 
 
 def test_pending_sentinel_mechanism_still_works(tmp_path):

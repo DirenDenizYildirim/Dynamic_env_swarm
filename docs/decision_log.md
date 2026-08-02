@@ -2005,3 +2005,78 @@ M6.2's registered STOP was **75 %** (the *PROVISIONAL ON M6.2* subsection
 above). **This ruling sets 80 % for step (b)**, and the difference is recorded
 here rather than absorbed silently, because the 75 % figure is also a literal
 in `m62_report.py` and the two must not be allowed to disagree.
+
+*(Resolved the same day by the ruling below: `POWER_STOP` is now a registered
+analysis constant at **0.80**, mirrored in `docs/locks.yaml` and asserted
+against the module literal by `test_locks.py`. The 75 % history is kept in the
+registry entry's provenance.)*
+
+---
+
+## ANALYSIS-CONSTANT REGISTRY (human, 2026-08-02)
+
+**Context.** Raised as a flag while transcribing the framing ruling:
+`k = 34 / 20`, the power STOP and the plateau threshold are registered
+constants that lived only in decision-log prose and as Python literals in
+`che/scripts/m62_report.py`. That is the shape of the defect the
+locks-are-enforced-by-test rule was written for after R_comm — with one
+genuine difference, which is why it needed a ruling rather than a mechanical
+application: **an analysis threshold has no config to be reachable from.**
+
+**RULED, in three parts.**
+
+### 1. `docs/locks.yaml` gains an `analysis:` section
+
+Carrying **`K_CONFIRMATORY` = 34, `K_SECONDARY` = 20, `POWER_STOP`,
+`PLATEAU_PASS` = 1.0, `PLATEAU_REVIEW` = 1.5, `SIDAK_M` = 2**, each with
+provenance keys citing the ruling that fixed it.
+
+### 2. `test_locks.py` imports the analysis module and asserts equality
+
+**Single source of truth, enforced by test, with no pretense that analysis
+thresholds are environment configuration.** The env constants are enforced by
+*config reachability*; these are enforced by *module import*. Same guarantee,
+honestly different route — and the section says so in its own header, so a
+future reader does not conclude the config-reachability rule was quietly
+weakened.
+
+### 3. `T*` does **not** enter the registry yet
+
+**T\* is a measured outcome of the plateau procedure, not a chosen constant.**
+Registering 1000 now would convert the criterion registered hours earlier —
+*T\* = 1000 iff both confirmatory arms pass the plateau guard at the T = 1000
+re-run* — into an assumption.
+
+It enters at the step-(b) analysis **with its provenance** (floors file,
+verdict, card, date), exactly as the severity βs did. **A slot pre-created
+with `value: null` and a loud sentinel is the correct form**, and it matches
+the `beta_holdout` precedent, which sat null behind a sentinel that refused to
+load until Phase 2's measurement filled it. `test_locks.py` asserts the slot
+stays empty **on both sides** — registry *and* module — until then.
+
+### Two collisions found while implementing, resolved by the human
+
+**(a) `POWER_STOP` — the ruling named 0.75; the framing ruling sets 80 % for
+step (b).** Had the registry carried 0.75, step 0's required edit would have
+turned the suite red and the decision log would have said 80 % while
+`locks.yaml` said 75 % — precisely the disagreement the registry exists to
+prevent. **Resolved: the registry carries the live value, 0.80**, with the
+superseded 0.75 recorded in that entry's provenance note. M6.2's T = 500
+floors are length-specific artifacts that die with the re-run, so 0.75 grades
+nothing further.
+
+**(b) `PLATEAU_REVIEW` = 1.5 had no counterpart in the instrument.**
+`m62_report.py` tested `abs(drift) > sd_floor` — a single binary bar at an
+implicit ratio of 1.0 — and 1.5 appeared in no document. Making it
+verdict-bearing would add a third state to branches the framing ruling
+registers as two-way, under a statistics freeze that forbids new bars unless a
+registered guard fires. **Resolved: `PLATEAU_REVIEW` is REPORTING-ONLY.** It
+labels an arm whose drift sits in (1.0, 1.5] × its own floor as *marginal*;
+the verdict stays strictly binary at `PLATEAU_PASS`. The registry entry
+carries `verdict_bearing: false` and a test asserts it. Motivating case: ISO
+at 1.06× is climbing, but only just, and a report that says so is more useful
+than one that does not.
+
+`PLATEAU_PASS` = 1.0 was likewise an *implicit* literal until this ruling
+required it be named; naming it is a faithful no-op refactor, not a change of
+bar.

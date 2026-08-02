@@ -28,7 +28,7 @@
 #   4. `uv run pytest che/tests/test_locks.py` goes green in that commit.
 
 version: 1
-updated: 2026-07-31
+updated: 2026-08-02
 
 # ---------------------------------------------------------------- constants
 #
@@ -271,6 +271,118 @@ constants:
     supplied_by: [default, config]
     source: che/env/config.py
     note: Spontaneous ignition disabled in every config to date.
+
+# ------------------------------------------------------------------ analysis
+# Registered ANALYSIS constants: the seed counts and thresholds that GRADE
+# Phase-6 results, as distinct from the environment constants above.
+#
+# WHY A SEPARATE SECTION. The standing lock rule requires a locked value to
+# be reachable from a config, because the defect it was written for
+# (R_comm) was an env constant supplied only by argv. An analysis threshold
+# has no config to live in — it is read by a report script, not by the
+# environment — so that requirement does not apply and this section does
+# not pretend otherwise. What replaces it is the same enforcement by a
+# different route: `module` below names the analysis module, and
+# che/tests/test_locks.py IMPORTS it and asserts its literals equal these
+# values. Single source of truth, enforced by test.
+#
+# Ruled 2026-08-02 (docs/decision_log.md, "ANALYSIS-CONSTANT REGISTRY").
+analysis:
+  module: che.scripts.m62_report
+
+  constants:
+
+    K_CONFIRMATORY:
+      value: 34
+      locked: true
+      source: docs/decision_log.md   # AMENDMENT to PHASE-6 REMEDY RULING 3
+      ruled: 2026-08-02
+      note: >-
+        Seeds on ISO and JOINT-classic, the Gamma-graded verdict-bearing
+        arms. Replaced the earlier uniform k = 20, which gave the founding
+        primary metric 55.6 % power against its own motivating effect band
+        because the ruled figure was a bare 2-sigma (50 %-power) threshold
+        missing the Sidak correction the same session mandated.
+
+    K_SECONDARY:
+      value: 20
+      locked: true
+      source: docs/decision_log.md   # AMENDMENT to PHASE-6 REMEDY RULING 3
+      ruled: 2026-08-02
+      note: >-
+        Seeds on both sweeps and the identification arm — secondary and
+        non-verdict-bearing, so the lower count is a scope statement rather
+        than a power compromise.
+
+    SIDAK_M:
+      value: 2
+      locked: true
+      source: docs/decision_log.md   # PHASE-6 RULINGS, FINAL FIVE, ruling 4
+      ruled: 2026-08-02
+      note: >-
+        Confirmatory family size: {Gamma_completion, Gamma_survival}.
+        Family alpha 0.05 -> per-comparison 0.02532, z_crit 2.2365.
+
+    POWER_STOP:
+      value: 0.80
+      locked: true
+      source: docs/decision_log.md   # PHASE-6 FRAMING + ALLOCATION RULING, step (b)
+      ruled: 2026-08-02
+      note: >-
+        Minimum power@0.03 on the MEASURED per-arm floors at k =
+        K_CONFIRMATORY; below it, step (b) STOPs and a human re-rules k.
+        HISTORY, recorded so the two cannot disagree quietly: M6.2
+        registered this STOP at 0.75 (the PROVISIONAL ON M6.2 subsection of
+        the seed amendment), and the framing ruling moved it to 0.80 for
+        step (b). 0.75 grades nothing further — M6.2's T = 500 floors are
+        length-specific artifacts that die with the T = 1000 re-run — so the
+        registry carries the live value only, with the superseded one here.
+
+    PLATEAU_PASS:
+      value: 1.0
+      locked: true
+      source: docs/decision_log.md   # PHASE-6 RULINGS, FINAL FIVE, ruling 3
+      ruled: 2026-08-02
+      note: >-
+        The plateau guard, as a ratio: an arm passes when its drift over the
+        final 100 updates is at most 1.0x its OWN measured floor sd
+        (per-artifact rule). Verdict-bearing and binary — pass, or STILL
+        CLIMBING and STOP. It was an implicit 1.0 in the comparison
+        `abs(drift) > sd_floor` until this ruling required it be named.
+
+    PLATEAU_REVIEW:
+      value: 1.5
+      locked: true
+      verdict_bearing: false
+      source: docs/decision_log.md   # ANALYSIS-CONSTANT REGISTRY, item 2
+      ruled: 2026-08-02
+      note: >-
+        REPORTING-ONLY annotation, and the distinction is load-bearing. An
+        arm whose ratio falls in (PLATEAU_PASS, PLATEAU_REVIEW] is labelled
+        marginal in the printed report; the verdict and the registered step
+        (b)/(c) branches remain strictly binary at PLATEAU_PASS. Registered
+        this way because the statistics freeze of the same date forbids new
+        verdict-bearing bars unless a registered guard fires, and a third
+        verdict state would change branch logic already registered as
+        two-way. Motivating case: ISO at 1.06x is climbing, but only just,
+        and a report that says so is more useful than one that does not.
+
+    T_STAR:
+      value: null
+      locked: false
+      owed_by: M6.2 re-run at T = 1000 (framing ruling, sequence step b)
+      source: docs/decision_log.md   # PHASE-6 FRAMING + ALLOCATION RULING, item 2
+      ruled: 2026-08-02
+      note: >-
+        DELIBERATELY NULL. T* is a MEASURED OUTCOME of the plateau
+        procedure, not a chosen constant: T* = 1000 iff both confirmatory
+        arms pass the plateau guard at the T = 1000 re-run, and any other
+        outcome STOPs to a human. Registering 1000 now would convert a
+        criterion into an assumption. The slot exists so the value cannot
+        later arrive unregistered — the beta_holdout precedent, which sat
+        null behind a loud sentinel until Phase 2's measurement filled it.
+        Fills at the step-(b) analysis with its provenance: floors file,
+        verdict, card, and date.
 
 # ------------------------------------------------------------------ defaults
 # Locked constants that che/env/config.py must carry as its dataclass
