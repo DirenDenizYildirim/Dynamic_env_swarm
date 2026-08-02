@@ -2080,3 +2080,58 @@ than one that does not.
 `PLATEAU_PASS` = 1.0 was likewise an *implicit* literal until this ruling
 required it be named; naming it is a faithful no-op refactor, not a change of
 bar.
+
+---
+
+## TOOLCHAIN PINNING — the lock bound nothing (human, 2026-08-02)
+
+**Found while provisioning the step-(b) box.** `uv.lock` has pinned
+**jax/jaxlib 0.10.2 since 2026-07-18** (commit `648c2be`, unchanged since).
+It bound **nothing**:
+
+| where | jax actually run |
+|---|---|
+| M6.0 spike (GPU) | **0.11.0** |
+| M6.2 floors (GPU) | **0.11.0** |
+| this machine (local CPU venv) | **0.11.0** |
+| a fresh box, 2026-08-02 | **0.10.2** |
+
+**The interpreter was the real determinant, and no artifact recorded it.**
+`jax 0.11.0` requires Python ≥ 3.12; `pyproject.toml` declared
+`requires-python = ">=3.11"`. A box whose venv landed on 3.11 therefore
+resolved 0.10.2 and would have run the phase's most expensive measurement on
+a toolchain no Phase-6 result was taken under — silently, because
+`provenance.txt` recorded jax but not Python.
+
+**This is the third instance of one defect class**: a value the repo
+*declares* with no mechanism that makes runs *use* it. Tooling rule 3c/3d
+existed only in a chat transcript; `r_comm` was locked at 16 and reachable
+only from two shell scripts; the toolchain was pinned in a lock file that
+resolution ignored. **A declaration is not a mechanism.**
+
+### RULED
+
+**Run jax 0.11.0, and fix the lock to declare it — do not switch the science
+to match a stale lock.** 0.11.0 is the toolchain **M6.0 certified traced-θ
+bitwise on** (1520 digests, 0 changed) and the one **M6.2 measured its floors
+under**. The grid at step (c) must run on it too.
+
+Implemented in the same commit as this entry:
+
+- `pyproject.toml`: `requires-python = ">=3.12"`, `jax>=0.11.0`.
+- `uv.lock` regenerated — jax, jaxlib, `jax-cuda12-plugin` and
+  `jax-cuda12-pjrt` all pin **0.11.0**. The previous lock carried a *forked*
+  resolution (3.11 and 3.12 branches); dropping 3.11 collapses it to the
+  single branch that was always the one actually used.
+- `CLAUDE.md` stack line: Python **3.12+**, with the reason.
+- `provenance.txt` now records **python, jax, jaxlib and devices**
+  (`run_m62b_t1000.sh`, commit `1309ef3`) — appended by the step-(b) wrapper
+  so the M6.2 script stays untouched as the provenance of the T = 500 run.
+
+### Scope
+
+**Phase 6 is unaffected and internally consistent**: M6.0, M6.2 and the
+T = 1000 re-run are all 0.11.0, verified on the box mid-run. This does **not**
+reopen Phase 0–5, whose toolchains were whatever their provenance files
+record. What changes is that a future run cannot drift without the artifact
+saying so.

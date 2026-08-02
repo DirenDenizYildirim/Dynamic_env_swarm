@@ -64,7 +64,11 @@ structure are theorems' hypotheses.
 
 ## Stack
 
-- Python 3.11+, managed with `uv`.
+- **Python 3.12+**, managed with `uv`. Not 3.11: jax 0.11.0 requires 3.12,
+  and 0.11.0 is the toolchain M6.0 certified traced-θ bitwise on. Under the
+  old `>=3.11` bound a fresh GPU box built a 3.11 venv and silently resolved
+  jax **0.10.2** — a different toolchain from the one every Phase-6
+  measurement was taken under (ruled 2026-08-02; `docs/decision_log.md`).
 - `jax` (CUDA on GPU boxes, CPU locally), `flax` (linen), `optax`, `distrax`,
   `chex`, `orbax-checkpoint`.
 - `pytest` (+ `chex` variants where useful), `ruff` for lint/format.
