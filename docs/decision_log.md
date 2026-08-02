@@ -1678,6 +1678,13 @@ The pilot did two other jobs, and both are re-sited, not dropped:
   option was only ever a way to avoid spending money that turns out to cost
   $20.
 
+  > **Cross-reference (added when the framing ruling was transcribed,
+  > 2026-08-02):** the *PHASE-6 FRAMING + ALLOCATION RULING* at the end of
+  > this log registers the **success condition PRE-unblind** (environment-
+  > first; the condition is not Γ's sign). **This clause is unchanged by it**
+  > — the fork stays a **POST-unblind** framing decision at the
+  > results-accepted gate. Both rulings stand and compose.
+
 **Registrar: dated amendment to the D6 gate entry — pilot clause voided by
 the corrected cost basis** (recorded below).
 
@@ -1759,7 +1766,9 @@ run is **257 s ≈ $0.07** and the whole phase is ~$20.
   surprise).
 - **Clause (3) — fork: RE-SITED**, not cancelled. It moves from a pre-sweep
   spend decision to a post-unblind framing decision at the results-accepted
-  gate.
+  gate. **Still post-unblind after the framing ruling of 2026-08-02** (end of
+  this log), which registers the success condition pre-unblind but leaves the
+  fork's siting untouched.
 
 Item (4) of that entry (power analysis against the measured floor, checking
 the registered 4 seeds) is **discharged**: the check was run, the 4 seeds
@@ -1831,3 +1840,168 @@ This is bars-with-floors applied to the seed count itself: the design is
 registered against a prior and re-graded against a measurement, with the
 re-grading rule fixed in advance so it cannot be chosen after seeing the
 floors.
+
+---
+
+## PHASE-6 FRAMING + ALLOCATION RULING (human, owner-approved 2026-08-02)
+
+Source: `phase6_framing_allocation_ruling.txt`, RA-relayed and owner-approved,
+retained at the repo root as the relay of record. Transcribed in the session
+that received it, per the standing meta-rule — **nothing in it bound until
+this entry existed.** Cross-referenced to the pilot/fork re-siting of the same
+date (final-five ruling 1b, above); see *Reconciliation*.
+
+### 1. FRAMING — ENVIRONMENT-FIRST
+
+**RULED: the paper's contribution is the calibrated, theory-certified
+compound-hostility environment and its measurement discipline.** The Γ
+experiment is the demonstration that the environment uniquely enables, and it
+is **reported whichever way it lands**.
+
+**The paper's success condition is NOT Γ's sign.** A null or negative Γ at the
+only severity where both couplings are alive is a publishable finding, not a
+failure.
+
+This is registered **pre-unblind, deliberately**, so that a null Γ cannot
+later be read as post-hoc reframing. (An independent external assessment
+converged on the same conclusion; the authority here is this ruling, not that
+assessment.)
+
+### 2. STATISTICS FREEZE
+
+**RULED: the Phase-6 statistical protocol is complete** — v2 registered, and
+the per-arm floor *instrument* validated by M6.2. M6.2's T = 500 floors are
+**length-specific artifacts that die with the re-run**; the floors that grade
+the grid come from the T\* artifact produced at sequence step (b).
+
+**T\* is the sole open instrument question, and it is resolved by registered
+criterion, not by discretion at run time:**
+
+> **T\* = 1000 iff both confirmatory arms pass the plateau guard at the
+> T = 1000 re-run.** Any other outcome **STOPs to a human ruling** (the
+> else-branches in *The sequence*, below).
+
+**No further protocol elaboration** — no new bars, corrections or power
+machinery — **unless a registered guard fires.**
+
+**Grounds.** An allocation audit found two weeks of near-total protocol work
+protecting a ~3-point effect while environment-native content sat untouched.
+The −8.8 pt Coupling-B survival result needed no power analysis; the machinery
+exists because *this* effect is small, and it is now sufficient.
+
+### 3. NO-PEEKING
+
+**RULED: M6.2 cross-arm outcome comparisons are calibration by-catch.** No
+design, framing or scope decision may cite them, and **any document that
+quotes a cross-arm M6.2 mean gets flagged.** The confirmatory contrast is read
+**once**, at T\*, through the blind pipeline frozen by commit hash (design v2
+§7; the analysis-plan ruling of 2026-08-02).
+
+Per-arm floor computation legitimately uses arm labels. **Comparing arm
+*outcomes* does not happen until unblinding.**
+
+**Operationalization** — sanctioned by this rule, and explicitly *not*
+frozen-protocol elaboration: the regenerated floor report prints **per-arm sd,
+range and drift only, with no per-arm outcome means**, until unblinding.
+`floors.json` retains the raw values, which are needed at unblinding. Make
+no-peeking **mechanical, not behavioral.**
+
+#### The honesty note, corrected: 2 of 3, not 3 of 3
+
+The relayed ruling's honesty note reads *"ALL THREE arms failed the plateau
+guard"*. **That reflects the pre-fix instrument.** It is corrected here rather
+than transliterated, per the standing sub-rule that numerical claims enter
+documents derived or measured in the same session.
+
+`m62_report.py` sliced the **NaN-filtered** completion series by `--tail`.
+Completion is NaN on updates with no finished episode — at horizon 256 and
+`rollout_len` 128 that is every other update, uniformly (measured on the M6.2
+logs: 250 non-NaN rows of 500, inter-point gap exactly 2, no exceptions) — so
+the "final-100-update" window in fact spanned **200 updates** and inflated
+every reported drift ≈ 2×.
+
+Re-measured on the M6.2 artifacts with the corrected window, this session:
+
+| arm | drift over final 100 updates | its own floor sd | ratio | verdict |
+|---|---|---|---|---|
+| ISO | +0.0174 | 0.0165 | **1.06×** | climbing |
+| JOINT-classic | +0.0295 | 0.0093 | **3.17×** | climbing |
+| sweep p = 0.5 | +0.0056 | 0.0157 | **0.36×** | plateaued |
+
+**Two of three, not three of three.** The ruling's operative content is
+unaffected — the plateau STOP fires either way, and the T = 1000 re-run is
+ordered either way. The correction *strengthens* the case for that order
+rather than weakening it: the two arms still climbing are **exactly the two
+arms Γ contrasts**, and they climb at different rates (JOINT ≈ 1.7× ISO's
+per-update slope), so what remains is an **asymmetric convergence confound on
+the headline quantity** — a worse failure than symmetric non-convergence,
+which would at least partially cancel in a difference.
+
+Drift ratios are explicitly reportable at a STOP (step (d)); no cross-arm
+outcome mean appears above.
+
+### 4. ALLOCATION CORRECTION
+
+**RULED: reclaimed protocol effort goes to environment-native content** — the
+behavioral findings family (endogenous exposure, the ash-encoding arc,
+perception self-regulation, information-buying / branch-loitering), the
+co-active-visitation mechanism material (invariant #5's counter has been
+logged since day one), and figure production. **These are paper SECTIONS, not
+garnish.**
+
+### 5. INTRODUCTION MATERIAL (owner-approved)
+
+The **symbiosis argument**, for the introduction skeleton: bitwise ablation
+nesting, unconditional PRNG consumption and traced-θ (0 changed digests of
+1520) are scientifically meaningful **because** the comparison requires ISO
+and JOINT to be literally the same kernel with parameters zeroed. The
+experiment justifies the engineering; the engineering enables the experiment.
+**Neither half of the paper stands without the other.**
+
+### Reconciliation with the pilot/fork re-siting (same date)
+
+**Both rulings stand and they compose.**
+
+- The **success-condition framing** (item 1 here) is registered **PRE-unblind**,
+  on purpose.
+- The **one-paper / two-paper fork** remains a **POST-unblind** decision at the
+  results-accepted gate, **unchanged** — see final-five ruling 1b and its dated
+  amendment, above, which are cross-referenced to this entry.
+
+There is no tension: one fixes what counts as success before the data are
+seen; the other chooses how to write up whatever is found.
+
+### The sequence, as ordered
+
+**0. Clean the instrument before any run.** `che/scripts/m62_report.py` carries
+uncommitted changes on top of `7710bba`; fold in the item-3 mean suppression
+and commit, or revert. The blind protocol freezes the pipeline by commit hash,
+and **a dirty script cannot be a frozen instrument.**
+
+**a. [OWNER-ASSIGNED] render inspection of the 24 M5.5 episodes** — the third
+flag; it precedes the grid.
+
+**b. M6.2 re-run at T = 1000.** Fresh per-arm floors (length-specific
+artifacts, **never carried forward**), plateau verdict per the registered
+criterion, power recompute **on the measured T = 1000 floors**. The outcome is
+not to be presumed: floors are per-artifact facts and may grow with T.
+→ **ELSE:** if power@0.03 (Šidák m = 2, k = 34) falls below **80 %** on either
+confirmatory arm's floor → **STOP, report; k is re-ruled by a human.**
+
+**c. If both confirmatory arms certify** (plateau guard passes; the sweep is
+secondary and **does not gate**) → grid at **T\* = 1000** per the item-2
+criterion, no discretion exercised, k = 34 confirmatory / k = 20 secondary as
+amended → freeze → blind → unblind per protocol.
+→ **ELSE:** if either confirmatory arm is still climbing at T = 1000 →
+**STOP, report drift ratios; T\* escalation is a human ruling — run length is
+not to be self-extended.**
+
+**d. At any STOP:** report drift ratios and floors; **do not report cross-arm
+means.**
+
+#### Registered note — the step-(b) power threshold moved from 75 % to 80 %
+
+M6.2's registered STOP was **75 %** (the *PROVISIONAL ON M6.2* subsection
+above). **This ruling sets 80 % for step (b)**, and the difference is recorded
+here rather than absorbed silently, because the 75 % figure is also a literal
+in `m62_report.py` and the two must not be allowed to disagree.

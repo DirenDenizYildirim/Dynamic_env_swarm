@@ -1,0 +1,98 @@
+FRAMING + ALLOCATION RULING — read fully, transcribe first, then act.
+(RA relay, owner-approved 2026-08-02. Registrar duties first: nothing
+below binds until it is in docs/.)
+
+CONTEXT: This ruling REGISTERS the framing decision: ENVIRONMENT-FIRST.
+(An independent external assessment converged on the same conclusion;
+the authority here is this ruling, not that assessment.) The paper's
+contribution is the calibrated, theory-certified compound-hostility
+environment and its measurement discipline; the Γ experiment is the
+demonstration that environment uniquely enables, reported whichever way
+it lands. The paper's success condition is NOT Γ's sign. A null or
+negative Γ at the only severity where both couplings are alive is a
+publishable finding, not a failure.
+
+RECONCILIATION with the existing 2026-08-02 fork re-siting (decision
+log, pilot/fork entry): both rulings stand and they compose. The
+SUCCESS-CONDITION framing is registered here, PRE-unblind, deliberately
+— so a null Γ cannot be read as post-hoc reframing. The ONE-PAPER/
+TWO-PAPER fork remains a POST-unblind decision at the results-accepted
+gate, unchanged. Transcribe this entry cross-referenced to that one,
+both directions.
+
+TRANSCRIBE INTO docs/decision_log.md (dated, git-derived date):
+
+1. STATISTICS FREEZE: the Phase-6 statistical protocol is complete —
+   v2 registered, the per-arm floor INSTRUMENT validated by M6.2.
+   (Its T=500 floors are length-specific artifacts and die with the
+   re-run; the graded floors come from the T* artifact, step (b).)
+   T* is the sole open instrument question, and it is resolved here
+   by registered criterion, not by discretion at run time:
+   T* = 1000 iff both confirmatory arms pass the plateau guard at the
+   T=1000 re-run; any other outcome STOPs to a human ruling (see the
+   sequence else-branches). No further protocol elaboration (new
+   bars, corrections, power machinery) unless a registered guard
+   fires.
+   Grounds: allocation audit — two weeks of near-total protocol work
+   protecting a ~3-point effect while environment-native content sat
+   untouched. The −8.8pt Coupling-B survival result needed no power
+   analysis; the machinery exists because the effect is small, and it
+   is now sufficient.
+
+2. NO-PEEKING RULE: M6.2 cross-arm outcome comparisons are calibration
+   by-catch. No design, framing, or scope decision may cite them; any
+   document that quotes a cross-arm M6.2 mean gets flagged. The
+   confirmatory contrast is read ONCE, at T*, through the frozen blind
+   pipeline (registered: design v2 §analysis, decision log 2026-08-02).
+   Per-arm floor computation legitimately uses arm labels; comparing
+   arm outcomes does not happen until unblinding.
+   (Note for honesty: the 500-update by-catch is uninterpretable by
+   construction — ALL THREE arms failed the plateau guard, so any
+   cross-arm read at 500 updates is confounded by unconverged drift.
+   The T* criterion exists precisely to remove that confound.)
+   OPERATIONALIZATION (sanctioned by this rule; not frozen-protocol
+   elaboration): the regenerated floor report prints per-arm sd, range,
+   and drift ONLY — no per-arm outcome means — until unblinding. Make
+   no-peeking mechanical, not behavioral.
+
+3. ALLOCATION CORRECTION: reclaimed effort goes to environment-native
+   content — the behavioral findings family (endogenous exposure,
+   ash-encoding arc, perception self-regulation, information-buying;
+   all resolve in HANDOFF.md and the decision log), the co-active-
+   visitation mechanism material, figure production. These are paper
+   SECTIONS, not garnish.
+
+4. INTRODUCTION MATERIAL (owner-approved, for the skeleton): the
+   symbiosis argument — bitwise ablation nesting, unconditional PRNG
+   consumption, and traced-θ (0 changed digests) are only
+   scientifically meaningful BECAUSE the comparison requires ISO and
+   JOINT to be literally the same kernel with parameters zeroed. The
+   experiment justifies the engineering; the engineering enables the
+   experiment. Neither half of the paper stands without the other.
+
+SEQUENCE (order unchanged; step 0 and else-branches added):
+  0. Clean the instrument before any run: che/scripts/m62_report.py
+     carries uncommitted changes on top of 7710bba. Fold in the rule-2
+     mean suppression and commit, or revert. The blind protocol
+     freezes the pipeline by commit hash; a dirty script cannot be a
+     frozen instrument.
+  a. [OWNER, not you] render inspection of the 24 M5.5 episodes —
+     third flag; it precedes the grid.
+  b. M6.2 re-run at T=1000 (~$4, from the measured 288 s/run at
+     T=500): fresh per-arm floors (length-specific artifacts, never
+     carried), plateau verdict per the registered criterion, power
+     recompute ON THE MEASURED T=1000 FLOORS. Do not presume its
+     outcome — floors are per-artifact facts and may grow with T.
+     ELSE: if power@0.03 (Šidák m=2, k=34) falls below 80% on either
+     confirmatory arm's floor → STOP, report; k is re-ruled by human.
+  c. If both confirmatory arms certify (plateau guard passes; sweep
+     is secondary and does not gate) → grid at T*=1000 per the item-1
+     criterion — no discretion exercised — k=34/k=20 as amended, then
+     freeze → blind → unblind per protocol.
+     ELSE: if either confirmatory arm is still climbing at T=1000 →
+     STOP, report drift ratios; T* escalation is a human ruling — do
+     not self-extend run length.
+  d. At any STOP: report drift ratios and floors; do NOT report
+     cross-arm means (rule 2).
+
+Confirm transcription with the commit hash, then start (0), then (b).
