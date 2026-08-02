@@ -103,6 +103,24 @@ OUT="$OUT" UPDATES="$UPDATES" REPS="$REPS" \
     exit 1
   }
 
+# -------------------------------------------------------- toolchain record
+# The inner script records jax/jaxlib but NOT the Python version, and on
+# 2026-08-02 the Python version turned out to be the variable that silently
+# chose the jax version: a box whose venv landed on 3.11 resolved jax 0.10.2
+# (0.11.0 requires >= 3.12) while M6.0 and M6.2 had both run 0.11.0. uv.lock
+# pinned 0.10.2 the whole time and bound neither. Nothing failed, because
+# nothing recorded it. It is recorded now.
+{
+  echo ""
+  echo "--- TOOLCHAIN (appended by run_m62b_t1000.sh) ---"
+  uv run --no-sync python -c \
+    'import sys, jax, jaxlib; print("python:", sys.version.split()[0]); \
+print("jax:", jax.__version__, jaxlib.__version__); print("devices:", jax.devices())' \
+    2>/dev/null || echo "TOOLCHAIN PROBE FAILED"
+  echo "jax pinned to 0.11.0 deliberately, to match the toolchain M6.0"
+  echo "certified traced-theta bitwise on and M6.2 measured its floors under."
+} >> "$OUT/provenance.txt"
+
 # ---------------------------------------------------------------- guard (3)
 echo ""
 echo "########## ARTIFACT-PERSISTENCE ASSERTION"
