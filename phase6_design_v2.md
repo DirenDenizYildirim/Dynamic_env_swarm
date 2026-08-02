@@ -261,6 +261,43 @@ were always wall-clock and statistical power, not money.
 **No pilot** (final-five ruling 1): a pilot cannot protect a spend smaller
 than itself.
 
+### UPDATE 2026-08-02 — the estimate above is discharged by measurement
+
+*This subsection records a measurement against a registered estimate. The
+registered numbers above are left standing so the comparison stays legible;
+they are superseded as a cost basis, not as a design.*
+
+M6.2 measured, over n = 24 runs each on the RTX PRO 6000
+(`results/phase6/m62/timings.txt`):
+
+| quantity | registered estimate | **measured** |
+|---|---|---|
+| train, 500 updates | 257 s | **269 s** |
+| eval, 512 episodes at θ\* | *unmeasured* | **19 s** |
+| per run | — | **288 s** |
+
+**288 s/run**, i.e. **12 % above the registered basis** — the estimate was
+sound and the gap is eval, which it declined to guess at.
+
+**What it costs from here is dominated by run length, not by run count.** The
+plateau guard fired at T = 500, so the remaining plan runs at T = 1000
+(sequence step (b), and step (c) *conditional on both confirmatory arms
+certifying*). Train scales linearly in updates and eval is flat, so
+T = 1000 → 2 × 269 + 19 ≈ **557 s/run**:
+
+| item | runs | GPU-h | ≈ $ at ~$1/h |
+|---|---|---|---|
+| M6.2 re-run at T = 1000 (step b) | 24 | 3.7 | $4 |
+| grid proper at T\* (step c, conditional) | 228 | 35.3 | $35 |
+| **remaining total** | **252** | **39.0** | **$39** |
+
+Against the ~$27-with-margin registered above. **The conclusion is unchanged
+and is worth restating rather than quietly re-deriving: money is not the
+binding constraint on this phase, and never was.** Doubling the run length —
+the single most expensive thing the plateau guard could have asked for —
+moves the phase from ~$20 to ~$40. Wall-clock and statistical power remain
+the constraints, exactly as they have been since Phase 0.
+
 ---
 
 ## 7. Analysis plan (frozen)

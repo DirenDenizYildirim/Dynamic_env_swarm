@@ -1,0 +1,53 @@
+========================================================================
+M6.2 — PER-ARM FLOORS (identical runs, same seed: nondeterminism)
+========================================================================
+NO-PEEKING (ruled 2026-08-02): outcome MEANS are suppressed from
+this report until unblinding — dispersion only. floors.json keeps
+the raw values; they are needed then, not now.
+
+  iso  (n = 8)
+    metric              sd (FLOOR)     range
+    completion              0.0165    0.0510
+    survival_rate           0.0134    0.0347
+    episode_return          0.5002    1.5645
+    deaths_fire             0.1405    0.3477
+
+  joint  (n = 8)
+    metric              sd (FLOOR)     range
+    completion              0.0093    0.0337
+    survival_rate           0.0156    0.0410
+    episode_return          0.3135    1.1006
+    deaths_fire             0.1865    0.4844
+
+  sweep_p500  (n = 8)
+    metric              sd (FLOOR)     range
+    completion              0.0157    0.0453
+    survival_rate           0.0110    0.0345
+    episode_return          0.4784    1.3291
+    deaths_fire             0.1498    0.4551
+
+========================================================================
+PLATEAU GUARD — final-100-update slope vs zero, floor-graded
+========================================================================
+  iso          drift over last 100: +0.0174   floor sd 0.0165   ratio 1.06x   -> STILL CLIMBING (marginal — REVIEW band, not a verdict)
+  joint        drift over last 100: +0.0295   floor sd 0.0093   ratio 3.17x   -> STILL CLIMBING
+  sweep_p500   drift over last 100: +0.0056   floor sd 0.0157   ratio 0.36x   -> plateaued
+
+========================================================================
+POWER RECOMPUTE on measured floors (k = 34, Sidak m = 2)
+========================================================================
+  iso     completion       sigma 0.0165  MDE80 0.0123  power@0.03 100.0%
+  iso     survival_rate    sigma 0.0134  MDE80 0.0100  power@0.03 100.0%
+  joint   completion       sigma 0.0093  MDE80 0.0069  power@0.03 100.0%
+  joint   survival_rate    sigma 0.0156  MDE80 0.0117  power@0.03 100.0%
+
+========================================================================
+MEASURED COST (discharges the v2 section-6 estimate)
+========================================================================
+  train  median 269 s  (n=24)
+  eval   median 19 s  (n=24)
+  per run total 288 s
+
+========================================================================
+VERDICT: STOP — still climbing at 500 updates: ['iso', 'joint']. Run length must be re-ruled.
+========================================================================

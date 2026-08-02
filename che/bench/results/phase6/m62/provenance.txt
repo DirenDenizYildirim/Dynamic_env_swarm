@@ -1,0 +1,23 @@
+run: M6.2 Phase-6 floor milestone (per-arm floors + plateau + eval cost)
+date_utc: 2026-08-02T00:54:44Z
+git_commit: 64a73979364fbfe3e29e90e3c3fce5b94c3e63aa
+git_dirty: 0 file(s)
+arms: iso:che/configs/p6_iso.yaml joint:che/configs/p6_joint.yaml sweep_p500:che/configs/p6_sweep_c50_p500.yaml
+reps: 8 (IDENTICAL runs at seed 0 — nondeterminism, not seed spread)
+updates: 500   eval_episodes: 512   eval_config: che/configs/theta_star_holdout.yaml
+cross-config eval: declared via --allow-hash (training-config hash)
+gpu: NVIDIA RTX PRO 6000 Blackwell Workstation Edition
+jax: 0.11.0 0.11.0
+
+--- REGENERATED OFF-BOX 2026-08-02 (analysis only; no run was repeated) ---
+verdict.txt, floors.json, plateau.json and power.json above were produced by
+re-running che.scripts.m62_report on the artifacts pulled from this box.
+Two reasons, both recorded in docs/decision_log.md:
+  1. INSTRUMENT BUG. The on-box report sliced the NaN-filtered completion
+     series by --tail, so its "final-100-update" window spanned 200 updates
+     and every drift read ~2x high. It flagged 3 arms; corrected, 2.
+  2. NO-PEEKING (ruled 2026-08-02). The printed report now emits per-arm sd,
+     range and drift only. floors.json retains the raw means and values,
+     which are needed at unblinding.
+The training and evaluation artifacts (.jsonl, eval_*.json/.npz, checkpoint
+archives and their sha256) are UNTOUCHED on-box outputs.
