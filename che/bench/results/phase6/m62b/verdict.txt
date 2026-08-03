@@ -1,0 +1,45 @@
+========================================================================
+M6.2 — PER-ARM FLOORS (identical runs, same seed: nondeterminism)
+========================================================================
+NO-PEEKING (ruled 2026-08-02): outcome MEANS are suppressed from
+this report until unblinding — dispersion only. floors.json keeps
+the raw values; they are needed then, not now.
+
+  iso  (n = 8)
+    metric              sd (FLOOR)     range
+    completion              0.0339    0.1069
+    survival_rate           0.0093    0.0269
+    episode_return          1.0757    3.4004
+    deaths_fire             0.1077    0.3223
+
+  joint  (n = 8)
+    metric              sd (FLOOR)     range
+    completion              0.0483    0.1366
+    survival_rate           0.0159    0.0545
+    episode_return          1.6058    4.5928
+    deaths_fire             0.1970    0.6621
+
+========================================================================
+PLATEAU GUARD — final-100-update slope vs zero, floor-graded
+========================================================================
+  iso          drift over last 100: +0.0034   floor sd 0.0339   ratio 0.10x   -> plateaued
+  joint        drift over last 100: +0.0276   floor sd 0.0483   ratio 0.57x   -> plateaued
+
+========================================================================
+POWER RECOMPUTE on measured floors (k = 34, Sidak m = 2)
+========================================================================
+  iso     completion       sigma 0.0339  MDE80 0.0253  power@0.03 92.2%
+  iso     survival_rate    sigma 0.0093  MDE80 0.0069  power@0.03 100.0%
+  joint   completion       sigma 0.0483  MDE80 0.0360  power@0.03 62.8%  <-- BELOW 80% STOP THRESHOLD
+  joint   survival_rate    sigma 0.0159  MDE80 0.0118  power@0.03 100.0%
+
+========================================================================
+MEASURED COST (discharges the v2 section-6 estimate)
+========================================================================
+  train  median 668 s  (n=18)
+  eval   median 18 s  (n=18)
+  per run total 686 s
+
+========================================================================
+VERDICT: STOP — confirmatory completion power below 80% on measured floors: ['joint.completion']. Re-rule the seed count (seeds are $0.07 each).
+========================================================================
