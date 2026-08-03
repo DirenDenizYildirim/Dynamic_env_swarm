@@ -1,0 +1,127 @@
+# E1.0 — co-active visitation inventory (GENERATED)
+
+`che/scripts/e1_inventory.py`. Phase 3-5 only; Phase 6 refused
+structurally (NO-PEEKING, ruled 2026-08-02).
+
+`sev_eval` is the severity the checkpoint was EVALUATED at;
+`sev_train` the one it was trained at. They differ only in m30b,
+the cross-severity matrix. `co-active` and `seeded` are per-episode
+means over the file's episodes.
+
+| milestone | arm | sev_train | sev_eval | seed | obs_v | eps | co-active | seeded | ca<=si |
+|---|---|---|---|---|---|---|---|---|---|
+| phase3/m30 | dp0.5 | high | high | 0 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30 | dp0.5 | high | high | 1 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30 | dp0.5 | high | high | 2 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30 | dp0.5 | low | low | 0 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30 | dp0.5 | low | low | 1 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30 | dp0.5 | low | low | 2 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30 | dp0.5 | medium | medium | 0 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30 | dp0.5 | medium | medium | 1 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30 | dp0.5 | medium | medium | 2 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | high | high | 0 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | high | low | 0 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | high | medium | 0 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | high | high | 1 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | high | low | 1 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | high | medium | 1 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | high | high | 2 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | high | low | 2 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | high | medium | 2 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | low | high | 0 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | low | low | 0 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | low | medium | 0 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | low | high | 1 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | low | low | 1 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | low | medium | 1 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | low | high | 2 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | low | low | 2 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | low | medium | 2 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | medium | high | 0 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | medium | low | 0 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | medium | medium | 0 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | medium | high | 1 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | medium | low | 1 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | medium | medium | 1 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | medium | high | 2 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | medium | low | 2 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m30b | - | medium | medium | 2 | ? | 512 | 0.0000 | - | n/a |
+| phase3/m31b | v2_dp0.5 | high | high | 0 | 2 | 512 | 0.0000 | - | n/a |
+| phase3/m31b | v2_dp0.5 | low | low | 0 | 2 | 512 | 0.0000 | - | n/a |
+| phase3/m31b | v2_dp0.5 | medium | medium | 0 | 2 | 512 | 0.0000 | - | n/a |
+| phase3/m35 | ka0_dp0.5 | high | high | 0 | 2 | 512 | 0.0000 | 0.0000 | OK |
+| phase3/m35 | ka0_dp0.5 | high | high | 1 | 2 | 512 | 0.0000 | 0.0000 | OK |
+| phase3/m35 | kaL_dp0.5 | high | high | 0 | 2 | 512 | 0.1426 | 0.8281 | OK |
+| phase3/m35 | kaL_dp0.5 | high | high | 1 | 2 | 512 | 0.1426 | 0.8281 | OK |
+| phase3/m35 | ka0_dp0.5 | low | low | 0 | 2 | 512 | 0.0000 | 0.0000 | OK |
+| phase3/m35 | ka0_dp0.5 | low | low | 1 | 2 | 512 | 0.0000 | 0.0000 | OK |
+| phase3/m35 | kaL_dp0.5 | low | low | 0 | 2 | 512 | 0.8516 | 4.0938 | OK |
+| phase3/m35 | kaL_dp0.5 | low | low | 1 | 2 | 512 | 0.5625 | 4.0566 | OK |
+| phase3/m35 | ka0_dp0.5 | medium | medium | 0 | 2 | 512 | 0.0000 | 0.0000 | OK |
+| phase3/m35 | ka0_dp0.5 | medium | medium | 1 | 2 | 512 | 0.0000 | 0.0000 | OK |
+| phase3/m35 | kaL_dp0.5 | medium | medium | 0 | 2 | 512 | 0.6934 | 3.4082 | OK |
+| phase3/m35 | kaL_dp0.5 | medium | medium | 1 | 2 | 512 | 0.6953 | 3.4277 | OK |
+| phase4/m44 | kb0_dp0.5 | high | high | 0 | 3 | 512 | 0.1680 | 0.8262 | OK |
+| phase4/m44 | kb0_dp0.5 | high | high | 1 | 3 | 512 | 0.1562 | 0.8379 | OK |
+| phase4/m44 | kbL_dp0.5 | high | high | 0 | 3 | 512 | 0.1406 | 0.8438 | OK |
+| phase4/m44 | kbL_dp0.5 | high | high | 1 | 3 | 512 | 0.1641 | 0.8359 | OK |
+| phase4/m44 | kb0_dp0.5 | low | low | 0 | 3 | 512 | 0.7910 | 4.0859 | OK |
+| phase4/m44 | kb0_dp0.5 | low | low | 1 | 3 | 512 | 0.5977 | 4.0742 | OK |
+| phase4/m44 | kbL_dp0.5 | low | low | 0 | 3 | 512 | 0.6328 | 4.0645 | OK |
+| phase4/m44 | kbL_dp0.5 | low | low | 1 | 3 | 512 | 0.6934 | 4.0410 | OK |
+| phase4/m44 | kb0_dp0.5 | medium | medium | 0 | 3 | 512 | 0.5840 | 3.4238 | OK |
+| phase4/m44 | kb0_dp0.5 | medium | medium | 1 | 3 | 512 | 0.5957 | 3.4023 | OK |
+| phase4/m44 | kb0_dp0.5 | medium | medium | 2 | 3 | 512 | 0.5137 | 3.4258 | OK |
+| phase4/m44 | kbL_dp0.5 | medium | medium | 0 | 3 | 512 | 0.6387 | 3.4238 | OK |
+| phase4/m44 | kbL_dp0.5 | medium | medium | 1 | 3 | 512 | 0.5781 | 3.4043 | OK |
+| phase4/m44 | kbL_dp0.5 | medium | medium | 2 | 3 | 512 | 0.7109 | 3.4121 | OK |
+| phase5/m51e | rep1 | medium | medium | ? | 3 | 512 | 0.5840 | 3.4062 | OK |
+| phase5/m51e | rep2 | medium | medium | ? | 3 | 512 | 0.6113 | 3.4199 | OK |
+| phase5/m51e | rep3 | medium | medium | ? | 3 | 512 | 0.5391 | 3.4121 | OK |
+| phase5/m51e | rep4 | medium | medium | ? | 3 | 512 | 0.5664 | 3.4199 | OK |
+| phase5/m53 | live | medium | medium | 0 | 3 | 512 | 0.5391 | 3.4102 | OK |
+| phase5/m53 | live | medium | medium | 1 | 3 | 512 | 0.5840 | 3.4199 | OK |
+| phase5/m53 | shuffled | medium | medium | 0 | 3 | 512 | 0.5371 | 3.4316 | OK |
+| phase5/m53 | shuffled | medium | medium | 1 | 3 | 512 | 0.5723 | 3.3984 | OK |
+| phase5/m53 | zeroed | medium | medium | 0 | 3 | 512 | 0.5449 | 3.3984 | OK |
+| phase5/m53 | zeroed | medium | medium | 1 | 3 | 512 | 0.5371 | 3.3906 | OK |
+| phase5/m53b | A_live | high | high | 0 | 3 | 512 | 0.1543 | 0.8320 | OK |
+| phase5/m53b | A_live | high | high | 1 | 3 | 512 | 0.1699 | 0.8359 | OK |
+| phase5/m53b | A_live | high | high | 2 | 3 | 512 | 0.1523 | 0.8301 | OK |
+| phase5/m53b | A_shuffled | high | high | 0 | 3 | 512 | 0.1797 | 0.8340 | OK |
+| phase5/m53b | A_shuffled | high | high | 1 | 3 | 512 | 0.1797 | 0.8242 | OK |
+| phase5/m53b | A_shuffled | high | high | 2 | 3 | 512 | 0.1309 | 0.8340 | OK |
+| phase5/m53b | A_zeroed | high | high | 0 | 3 | 512 | 0.1348 | 0.8184 | OK |
+| phase5/m53b | A_zeroed | high | high | 1 | 3 | 512 | 0.1621 | 0.8320 | OK |
+| phase5/m53b | A_zeroed | high | high | 2 | 3 | 512 | 0.1484 | 0.8418 | OK |
+| phase5/m53b | B_live | high | high | 0 | 3 | 512 | 0.1621 | 0.8262 | OK |
+| phase5/m53b | B_live | high | high | 1 | 3 | 512 | 0.1465 | 0.8262 | OK |
+| phase5/m53b | B_live | high | high | 2 | 3 | 512 | 0.1504 | 0.8340 | OK |
+| phase5/m53b | B_shuffled | high | high | 0 | 3 | 512 | 0.1426 | 0.8379 | OK |
+| phase5/m53b | B_shuffled | high | high | 1 | 3 | 512 | 0.1523 | 0.8379 | OK |
+| phase5/m53b | B_shuffled | high | high | 2 | 3 | 512 | 0.1523 | 0.8223 | OK |
+| phase5/m53b | B_zeroed | high | high | 0 | 3 | 512 | 0.1699 | 0.8340 | OK |
+| phase5/m53b | B_zeroed | high | high | 1 | 3 | 512 | 0.1816 | 0.8496 | OK |
+| phase5/m53b | B_zeroed | high | high | 2 | 3 | 512 | 0.1660 | 0.8398 | OK |
+| phase5/m53b | floor_rep1 | high | high | ? | 3 | 512 | 0.1602 | 0.8320 | OK |
+| phase5/m53b | floor_rep2 | high | high | ? | 3 | 512 | 0.1895 | 0.8301 | OK |
+| phase5/m53b | floor_rep3 | high | high | ? | 3 | 512 | 0.1504 | 0.8262 | OK |
+| phase5/m53b | floor_rep4 | high | high | ? | 3 | 512 | 0.1738 | 0.8262 | OK |
+| phase5/m55 | d0.0 | medium | medium | 0 | 3 | 512 | 0.6191 | 3.4023 | OK |
+| phase5/m55 | d0.0 | medium | medium | 1 | 3 | 512 | 0.6270 | 3.4023 | OK |
+| phase5/m55 | d0.0 | medium | medium | 2 | 3 | 512 | 0.5020 | 3.4121 | OK |
+| phase5/m55 | d0.0 | medium | medium | 3 | 3 | 512 | 0.5117 | 3.4375 | OK |
+| phase5/m55 | d1.0 | medium | medium | 0 | 3 | 512 | 0.6172 | 3.4141 | OK |
+| phase5/m55 | d1.0 | medium | medium | 1 | 3 | 512 | 0.5312 | 3.4023 | OK |
+| phase5/m55 | d1.0 | medium | medium | 2 | 3 | 512 | 0.5938 | 3.4023 | OK |
+| phase5/m55 | d1.0 | medium | medium | 3 | 3 | 512 | 0.4961 | 3.4062 | OK |
+| phase5/m55 | floor_rep1 | medium | medium | ? | 3 | 512 | 0.5957 | 3.4297 | OK |
+| phase5/m55 | floor_rep2 | medium | medium | ? | 3 | 512 | 0.6641 | 3.4219 | OK |
+| phase5/m55 | floor_rep3 | medium | medium | ? | 3 | 512 | 0.5332 | 3.4258 | OK |
+| phase5/m55 | floor_rep4 | medium | medium | ? | 3 | 512 | 0.5859 | 3.4121 | OK |
+| phase5/m55 | muted | medium | medium | 0 | 3 | 512 | 0.6094 | 3.4004 | OK |
+| phase5/m55 | muted | medium | medium | 1 | 3 | 512 | 0.5879 | 3.4043 | OK |
+| phase5/m55 | muted | medium | medium | 2 | 3 | 512 | 0.5527 | 3.4102 | OK |
+| phase5/m55 | muted | medium | medium | 3 | 3 | 512 | 0.5410 | 3.4395 | OK |
+| phase5/pretask | kb0_dp0.5 | high | high | 0 | 3 | 512 | 0.1719 | 0.8242 | OK |
+| phase5/pretask | kbL_dp0.5 | high | high | 0 | 3 | 512 | 0.1426 | 0.8301 | OK |
