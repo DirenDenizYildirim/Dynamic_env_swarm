@@ -264,3 +264,50 @@ Spend: ~17 runs ≈ 3.3 GPU-h ≈ **$3.30**.
 plateau branch passed, but step (b) STOPped on power, so the criterion's
 conditions are not jointly met and writing 1000 into the registry now would
 convert a criterion into an assumption.
+
+---
+
+## ADDENDUM 2026-08-03 — the STOP is discharged; this report is not revised
+
+**Everything above stands as measured and is deliberately left unmodified.**
+It records the constants of its own era — `K_CONFIRMATORY` = 34, the per-arm
+power basis — and a report that correctly states what it was computed with
+must not be retro-fitted to a later ruling. What follows is what the human
+ruled *on* these numbers, not a correction *to* them.
+
+Ruling: `docs/decision_log.md`, **M6.2b CLOSE-OUT — CERTIFY** (2026-08-03).
+
+**1. The variance question in §6 is answered: the combined form.** Contrasts
+are graded on the contrast's SE. The per-arm form is superseded for
+contrasts, and `CLAUDE.md`'s power rule carries the amendment.
+
+**2. k = 40** confirmatory (20 secondary). On these floors the combined basis
+gives **83.7 %** power@0.03 — above the registered 80 %, whose bare minimum
+is k = 37 (unrounded 36.60). The extra 3 seeds are margin against the 7-dof floor CIs §2
+flagged.
+
+**3. §6's numbers reproduce exactly under the new instrument**, which is why
+they could be ruled on directly. Re-run on `floors.json` at k = 34: per-arm
+JOINT **62.8 %**, **contrast 76.7 %**, `_k_required` **37** — all three
+identical to §6. (§6's ISO 92.1 % and §4's 92.2 % are one number, 92.15 %,
+rounded two ways.) At k = 40 the per-arm diagnostic reads 95.8 % / 70.7 %.
+
+**4. T\* = 1000 is now registered** in `docs/locks.yaml` with this report's
+plateau provenance. §9's reasoning for withholding it was right at the time —
+the power branch was open. The close-out discharged that branch, so the
+criterion's conditions are jointly met and the value enters *measured*.
+
+**5. The floors above do not grade the grid's confirmatory test.** They were
+measured as 8 identical reps at **one seed**, i.e. run-to-run nondeterminism,
+while the grid averages over k **distinct** seeds. The confirmatory test and
+CIs therefore use the grid's own measured seed dispersion; these floors keep
+two narrower roles — the beat-reproducibility hurdle, and a design-stage
+power basis that is now registered as an **UPPER BOUND**. The 83.7 % above is
+a ceiling, not an estimate.
+
+**6. These floors also do not grade the grid's card.** Per-hardware and
+per-artifact both apply, and no box is running. A launch batch of 8 × ISO +
+8 × JOINT + 8 × sweep (24 runs ≈ $4.57) re-measures them on whatever card the
+grid rents, and a pre-registered ladder resolves the outcome without a human
+round-trip unless survival power also collapses. The sweep reps also close
+§7's missing p = 0.5 floor.

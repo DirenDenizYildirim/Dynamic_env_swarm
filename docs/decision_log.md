@@ -2135,3 +2135,287 @@ T = 1000 re-run are all 0.11.0, verified on the box mid-run. This does **not**
 reopen Phase 0–5, whose toolchains were whatever their provenance files
 record. What changes is that a future run cannot drift without the artifact
 saying so.
+
+---
+
+## M6.2b CLOSE-OUT — CERTIFY (relayed, owner-approved 2026-08-03)
+
+Discharges the STOP that `che/bench/results/phase6/m62b/m62b_report.md` left
+open. Relayed in two rounds (the three headline rulings, then the six-flag
+answers and the branch ladder), owner-approved, transcribed here in the
+session that received them. **Nothing below bound until this entry existed.**
+
+Every number in this entry is derived in-session from the M6.2b measured
+floors (`results/phase6/m62b/floors.json`) at the measured 686 s/run on that
+card, Šidák m = 2 (z_crit = 2.2365), target effect 0.03. Arithmetic is shown
+wherever a figure is load-bearing, per the standing sub-rule.
+
+> **Precision note, so a recompute does not read as a discrepancy.** Every
+> figure below is computed on `floors.json` at **full precision**
+> (σ_iso = 0.033870017, σ_joint = 0.048264641 completion; 0.009284654 /
+> 0.015872252 survival), not on the 4-dp values the M6.2b report *displays*
+> (0.0339 / 0.0483). Recomputing from the displayed table gives answers low
+> by ~0.1 pt — e.g. 83.6 % where the instrument returns 83.7 %. The
+> full-precision path is the one the instrument takes and the one that
+> reproduces the report's own k = 34 figures (92.2 % / 62.8 %) exactly.
+
+### 1. VARIANCE BASIS — the combined form, and the standing rule is amended
+
+**RULED: contrasts are graded on the contrast's standard error.**
+
+    sd(Γ) = √( (σ_iso² + σ_joint²) / k )
+
+The per-arm `σ√(2/k)` form is **superseded for contrasts** and survives only
+for describing a single arm's own dispersion. This is a **guard-fired
+exception** to the statistics freeze, which permits revisiting power
+machinery exactly when a registered guard fires — one did.
+
+Grounds, quoting the defect the report caught in itself: the project adopted
+**per-artifact floors** *because* the two arms differ in stability, then
+retained a power formula that assumes they do not. The per-arm reads bracket
+the truth (92.15 % on ISO's floor, 62.8 % on JOINT's; the report writes this
+as 92.1 % in §6 and 92.2 % in §4 — both are that one number, rounded two
+ways); neither is Γ's power.
+
+**The standing rule in `CLAUDE.md` ("Power statements are 80 %-power MDEs")
+is amended in this commit** to carry the contrast clause. Same class as the
+2σ defect it already records: a formula whose variance assumption does not
+match the quantity it grades.
+
+### 2. SEEDS — k = 40 confirmatory, k = 20 secondary
+
+**RULED: k = 40** on ISO and JOINT-classic; **k = 20** unchanged on the
+sweeps and the identification arm.
+
+Derived at k = 40: σ_iso² + σ_joint² = 3.476654e-3, sd(Γ) = √(3.476654e-3/40)
+= 0.009323, power@0.03 = Φ(0.03/0.009323 − 2.2365) = **83.7 %**.
+
+The registered 80 % minimum is **k = 37** (80.5 %; k = 36 gives 79.3 %; the
+unrounded solution is k = 36.60). **k = 40 is deliberately above it**, as
+margin against the 7-dof floor CIs the report itself flagged — [0.0224,
+0.0690] on ISO, [0.0319, 0.0983] on JOINT at n = 8.
+
+**Recorded because the margin is thinner than it sounds:** k = 40 buys only
+**4.6 % RMS floor growth** before power falls back through 80 %. Derivation:
+the 80 %-power SE is sd₈₀ = 0.03/(z_crit + z₀.₈) = 9.746279e-3, so at k = 40
+the allowed variance sum is 40 × sd₈₀² = 3.799598e-3 against the measured
+3.476654e-3 — ratio 1.0929, **√ = 1.0454**. That thinness is what motivated
+the ladder in item 6.
+
+### 3. BUDGET — registered here for the first time
+
+**The `$40 grid line item` cited in the relay does not exist.** Verified
+against the tree in this session by both the builder and the owner: there is
+no 2026-08-02 budget registration in `docs/` or at the repo root, no $140
+envelope and no $65 GPU allocation. What exists is the entry above at
+*"4. Budget — decomposition DEFERRED INTO the Phase-6 entry gate"*, and that
+deferral never discharged. **It is therefore registered here as new, not
+cited as prior law** — the meta-rule working as designed.
+
+**RULED (owner, 2026-08-03): ~$140 remains for the project**, GPU allocation
+**~$65 reserve-inclusive**. Phase-6 spend to date is ~$5.30 (M6.2 ~$2,
+M6.2b ~$3.30).
+
+#### The delta, decomposed against baselines that are in the tree
+
+The relay attributed the overrun to "power correction + plateau-doubled T".
+**Corrected on derivation: against design v2 §6's step-(c) line the T
+doubling is already inside the baseline, and the largest component is
+neither — it is card throughput.** Registered against both tree baselines:
+
+| basis | runs | s/run | cost |
+|---|---|---|---|
+| design v2 §6, as registered (T = 500, M6.2 card, k = 34) | 228 | 288 | **$18.24** |
+| design v2 §6 UPDATE step (c) (T = 1000, M6.2 card, k = 34) | 228 | 557 | **$35.28** |
+| **grid as now authorized** (T = 1000, M6.2b card, k = 40) | **240** | **686** | **$45.73** |
+
+Three causes, each derived, summing to the total:
+
+| cause | arithmetic | cost |
+|---|---|---|
+| plateau-doubled T (ordered by the plateau guard) | 228 × (557 − 288) s | **$17.04** |
+| card throughput (~60,900 → ~52,000 steps/s) | 228 × (686 − 557) s | **$8.17** |
+| k re-ruling 34 → 40 (power correction) | 12 × 686 s | **$2.29** |
+| | $18.24 + 17.04 + 8.17 + 2.29 | **$45.74** |
+
+**No component is scope growth.** Two are instrument facts the project
+ordered or measured (run length, card); one is the power correction.
+
+### 4. VERDICT — CERTIFY
+
+- **T\* = 1000.** Both confirmatory arms passed the plateau guard at the
+  T = 1000 re-run (ISO 0.10×, JOINT 0.57× of their own floors), which is the
+  registered criterion in full — it was conditioned on the plateau guard
+  alone. The report withheld registration because step (b) STOPped on the
+  power branch; with that branch discharged by item 2, the conditions are
+  jointly met. **Enters `docs/locks.yaml` in this commit with provenance.**
+- **Grid authorized at 240 runs** (40 + 40 confirmatory, 100 sweep, 60
+  identification) ≈ **$45.73**.
+- **Launch gates:** owner render pass of the 24 M5.5 episodes, **and** the
+  launch batch of item 6. `M6.1` engineering is **confirmed shipped** at
+  `64a7397` (per-component logging, the ten `p6_*.yaml` protocol configs, the
+  β = 0.49 trap test) — `HANDOFF.md` listed it as owed and was stale.
+
+### 5. FLAG ① — confirmatory tests use the grid's own seed dispersion
+
+**RULED.** Confirmatory tests and CIs use the **grid's own measured per-arm
+seed dispersion** — the actual sampling variance of the means being
+contrasted. The M6.2b floors keep two other roles and lose the one they were
+wrongly carrying:
+
+1. **Design-stage power basis, now registered as an UPPER BOUND on power**
+   (to be stated in design v2). The floors are 8 identical reps at the *same
+   seed*, i.e. run-to-run nondeterminism; the grid averages over k *distinct*
+   seeds, whose per-run variance is σ²_rerun + σ²_seed-variation ≥ the floor.
+   So 83.7 % is a ceiling, not an estimate.
+2. **The separate beat-reproducibility hurdle** they were always meant to be.
+
+**k = 40 stands as the ex-ante choice under budget. If the measured seed-sd
+yields lower realized power, that is REPORTED, not re-engineered** —
+registered now so it cannot become a post-hoc rescue.
+
+Zero-compute gap-sizing from Phase 3–5 multi-seed artifacts: **approved,
+informational**, not verdict-bearing.
+
+**A consequence worth recording, because it answers an objection nobody has
+raised yet.** Item 6 sets k from measured variance, which is an internal-pilot
+design and normally carries a small Type-I inflation — the sample-size rule
+touches the same data as the test. **Here it does not:** this ruling moves the
+test's variance onto the grid's own seed dispersion, while item 6 sets k from
+an *independent* rerun-floor artifact. Different samples, so the inflation
+term is zero. ① and ⑥ compose to something stronger than either alone.
+
+### 6. FLAG ② — re-floor on the rented card, with a pre-registered ladder
+
+**RULED: the per-hardware rule holds; no transfer assumption.** The launch
+batch includes **8 × ISO + 8 × JOINT floor reps** on whatever card the grid
+rents (prefer the same model, RTX PRO 6000, to minimise drift), plus item 7's
+sweep reps. **Launch batch = 24 runs ≈ $4.57.**
+
+Grounds for refusing the transfer: `CLAUDE.md`'s own per-hardware exhibit
+records the Medium **completion** floor moving **2.75×** across cards
+(0.0145 → 0.0399) while survival held (0.0129 → 0.0130) — the metric that
+moved is the one under test. And the M6.2 and M6.2b cards were **both**
+PRO 6000 and still differed ~15 % in throughput, so within-model drift is not
+negligible. We have **never measured the same artifact's floor on two cards**
+(M6.2 was T = 500, M6.2b T = 1000), so the drift being gated on is unmeasured,
+not assumed small.
+
+#### THE LADDER — supersedes the 75 % STOP clause
+
+On the rented card's fresh floors, compute **k_req = smallest k with combined
+power ≥ 80 % at the 0.03 band**. The ladder replaces a human round-trip with
+pre-registered branches:
+
+| branch | condition | action |
+|---|---|---|
+| **A** | k_req ≤ 40 | proceed at k = 40; surplus recorded |
+| **B** | 40 < k_req ≤ 60 | raise confirmatory k to k_req, **no round-trip**; registrar logs k and delta, derived |
+| **C** | k_req > 60 | run at **k = 60** and **DEGRADE HONESTLY, never chase** |
+| **D** | survival power also < 80 % | **STOP** — broken box, not floor drift; different card |
+
+**Branch B cost cap:** k = 60 is +20 seeds/arm = **+40 runs ≈ $7.62**, inside
+the ~$14.5 headroom.
+
+**Two ladder figures are corrected on derivation** (both relayed
+conservatively; the structural claims are unaffected):
+
+- **B absorbs RMS floor growth up to ~28.0 %**, not ~22 %. At k = 60 the
+  allowed variance sum is 60 × sd₈₀² = 5.699397e-3 against the measured
+  3.476654e-3 — ratio 1.6393, **√ = 1.2804**.
+- **The +10.5 % growth scenario costs ~+$1.91**, not ~+$3.5. (+10.5 % is the
+  growth that would have fired the superseded 75 % clause.) It puts the
+  summed variance at 4.2483e-3, so k_req = 4.2483e-3/9.498995e-5 = 44.7 →
+  **k = 45**, i.e. +5 seeds/arm = **+10 runs**.
+
+**Branch C's justification, and why it is not a rescue.** Survival was
+ratified **co-primary** by final-five ruling 2 — months before this ladder
+needed it — for exactly the coupling and composition claims at issue, and the
+framing ruling already registered that **Γ's sign is not the paper's success
+condition**. Under C, completion-Γ carries a **pre-registered UNDERPOWERED
+flag with realized power stated**, and both metrics are still tested under
+Šidák m = 2. **The family stays 2, so there is no alpha inflation** — what
+shifts is narrative weight, not the test set.
+
+**The branch trigger is OUTCOME-BLIND, and this is the load-bearing property.**
+`k_req` is computed from launch-batch **rerun floors** — 24 fixed-seed reps
+carrying zero cross-arm outcome information — before any grid run exists. The
+ladder cannot see an effect, only a nuisance variance. Recorded explicitly
+because "confirmatory verdict weight shifts to survival" reads, on its face,
+like outcome-dependent metric selection, and it is not.
+
+**Branch D is well-separated, which is what makes C honest.** Survival floors
+would have to grow **3.35× RMS** to drop survival below 80 % at k = 40
+(√(3.799598e-3 / 3.381332e-4) = 3.3522) — a larger move than the worst card
+excursion this project has ever recorded, and in that excursion survival was
+the metric that *held*.
+
+**Worst realistic branch (B at cap):** $4.57 launch batch + $53.36 grid at
+k = 60 = **$57.93**, inside the ~$65 GPU allocation. C costs the same.
+
+### 7. FLAG ③ — sweep floor funded
+
+**RULED:** 8 reps ≈ **$1.52**, in the same launch batch. The M6.2b outage left
+the p = 0.5 arm at 1 of 8 reps and no floor at all. Without it the secondary
+dose analysis (isotonic trend, bootstrap knee CI) would be **auto-flagged
+UNDERPOWERED** under *bars come with floors*; with it, the analysis is
+honestly graded. Floors for the intermediate sweep points remain **assumed
+common, and that assumption stays flagged** (design v2 §4) — the sweep is
+non-verdict-bearing.
+
+### 8. FLAGS ⑤ and ⑥ — housekeeping, ruled
+
+- **⑤ `HANDOFF.md` refresh approved.** Launch gates are the owner render pass
+  plus the launch batch. M6.1 confirmed shipped at `64a7397`.
+- **⑥a Flag numbering.** The relay calls the render pass the *sixth flag*; the
+  framing ruling's sequence step (a) calls it *the third*. Both transcribed;
+  **the registered count in the framing ruling governs**, the relay's informal
+  count is cross-referenced. No substantive difference — same artifact, same
+  gate.
+- **⑥b `K_CONFIRMATORY` 34 → 40 enters as a dated addendum** to the M6.2b
+  report, **never mutating** a report that correctly records the constants of
+  its own era. The report's k = 34 figures stay exactly as measured.
+
+### What this entry changes in the tree, in this commit
+
+1. `CLAUDE.md` — the power standing rule gains the contrast-SE clause.
+2. `docs/locks.yaml` — `K_CONFIRMATORY` 34 → 40; `T_STAR` null → 1000 with
+   provenance; `K_LADDER_CAP` = 60 registered new.
+3. `che/scripts/m62_report.py` — combined-variance power, the `k_req` solver,
+   the three literals; per-arm power demoted to a labelled diagnostic.
+   **Plus a latent defect found while validating the change** (below).
+4. `che/tests/test_locks.py` — green on all three (it imports the module and
+   asserts equality; the T\* owed-slot test flips automatically once the value
+   is non-null).
+5. `results/phase6/m62b/m62b_report.md` — dated addendum.
+6. `HANDOFF.md` — rewritten.
+
+### Defect found while validating this change: a missing floor read as a PASS
+
+Not part of the ruling; found by re-running the instrument on the real M6.2b
+artifacts **with all three arms**, which no prior run of the analysis had
+done — M6.2b's sweep arm has **1 rep and therefore no floor**.
+
+**The plateau guard printed `-> plateaued` for it.** With no floor, `ratio`
+is NaN, and `NaN > PLATEAU_PASS` evaluates False, so the arm fell through the
+not-climbing branch and rendered as having **passed a guard it was never
+graded by**.
+
+This is precisely the class *bars come with floors* was written against — **a
+test finer than its instrument is VOID, and a void test voids a PASS
+identically** — reaching the instrument through a NaN rather than through a
+threshold. It has been latent since M6.2 and was invisible because the
+analysis was only ever run on arms that had floors.
+
+**Fixed:** an ungraded arm now renders `NO FLOOR — UNGRADED (not a pass)` and
+carries `graded: false` in `plateau.json`. **Verdict logic is unchanged and
+still binary at `PLATEAU_PASS`** — the freeze forbids new verdict-bearing
+states, and none is added. An ungraded arm simply never enters
+`stop_plateau`, which is correct for the secondary sweep (it does not gate)
+and is caught for the confirmatory arms by the power section, which resolves
+no branch unless both are present.
+
+**Why it matters going forward rather than backward:** no past verdict
+changes — M6.2b's confirmatory arms both had floors and both genuinely
+passed. But the launch batch of item 6 runs a sweep arm, and any failed rep
+in it would have produced a silent false pass.

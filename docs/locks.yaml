@@ -28,7 +28,7 @@
 #   4. `uv run pytest che/tests/test_locks.py` goes green in that commit.
 
 version: 1
-updated: 2026-08-02
+updated: 2026-08-03
 
 # ---------------------------------------------------------------- constants
 #
@@ -293,16 +293,25 @@ analysis:
   constants:
 
     K_CONFIRMATORY:
-      value: 34
+      value: 40
       locked: true
-      source: docs/decision_log.md   # AMENDMENT to PHASE-6 REMEDY RULING 3
-      ruled: 2026-08-02
+      source: docs/decision_log.md   # M6.2b CLOSE-OUT, item 2
+      ruled: 2026-08-03
+      evidence: che/bench/results/phase6/m62b/floors.json
       note: >-
         Seeds on ISO and JOINT-classic, the Gamma-graded verdict-bearing
-        arms. Replaced the earlier uniform k = 20, which gave the founding
-        primary metric 55.6 % power against its own motivating effect band
-        because the ruled figure was a bare 2-sigma (50 %-power) threshold
-        missing the Sidak correction the same session mandated.
+        arms. HISTORY, kept so the two cannot disagree quietly: k = 20
+        (remedy ruling 3) gave the founding primary 55.6 % power because
+        the ruled figure was a bare 2-sigma (50 %-power) threshold missing
+        the Sidak correction; the 2026-08-02 amendment raised it to 34.
+        RAISED TO 40 on 2026-08-03 when the M6.2b power guard fired: on
+        the measured T = 1000 floors (0.0339 ISO / 0.0483 JOINT) the
+        COMBINED-variance form gives 83.7 % power at the 0.03 band, above
+        the registered 80 %. The 80 % minimum is k = 37; 40 is deliberate
+        margin against the 7-dof floor CIs ([0.0224, 0.0690] and
+        [0.0319, 0.0983] at n = 8). It buys only 4.6 % RMS floor growth
+        before power falls back through 80 %, which is what K_LADDER_CAP
+        exists to absorb.
 
     K_SECONDARY:
       value: 20
@@ -313,6 +322,28 @@ analysis:
         Seeds on both sweeps and the identification arm — secondary and
         non-verdict-bearing, so the lower count is a scope statement rather
         than a power compromise.
+
+    K_LADDER_CAP:
+      value: 60
+      locked: true
+      source: docs/decision_log.md   # M6.2b CLOSE-OUT, item 6 (THE LADDER)
+      ruled: 2026-08-03
+      note: >-
+        Branch B ceiling of the pre-registered re-floor ladder, and the k
+        that branch C runs at. On the rented card's FRESH floors the launch
+        batch computes k_req = smallest k with COMBINED power >= POWER_STOP
+        at the 0.03 band; k_req <= K_CONFIRMATORY proceeds as registered,
+        K_CONFIRMATORY < k_req <= K_LADDER_CAP raises k with no human
+        round-trip, and k_req > K_LADDER_CAP runs at K_LADDER_CAP and
+        DEGRADES HONESTLY (completion-Gamma carries a pre-registered
+        UNDERPOWERED flag with realized power stated; verdict weight shifts
+        to the survival co-primary, ratified for exactly these claims by
+        final-five ruling 2). Derived: 60 absorbs RMS floor growth up to
+        28.0 % (allowed variance sum 60 * sd80^2 = 5.699397e-3 against the
+        measured 3.476654e-3; sqrt(1.6393) = 1.2804) and costs +40 runs
+        ~ $7.62, inside the ~$14.5 headroom. THE TRIGGER IS OUTCOME-BLIND:
+        k_req comes from fixed-seed rerun floors carrying no cross-arm
+        outcome information, computed before any grid run exists.
 
     SIDAK_M:
       value: 2
@@ -368,21 +399,29 @@ analysis:
         and a report that says so is more useful than one that does not.
 
     T_STAR:
-      value: null
-      locked: false
-      owed_by: M6.2 re-run at T = 1000 (framing ruling, sequence step b)
-      source: docs/decision_log.md   # PHASE-6 FRAMING + ALLOCATION RULING, item 2
-      ruled: 2026-08-02
+      value: 1000
+      locked: true
+      source: docs/decision_log.md   # M6.2b CLOSE-OUT, item 4 (VERDICT)
+      ruled: 2026-08-03
+      evidence: che/bench/results/phase6/m62b/plateau.json
       note: >-
-        DELIBERATELY NULL. T* is a MEASURED OUTCOME of the plateau
-        procedure, not a chosen constant: T* = 1000 iff both confirmatory
-        arms pass the plateau guard at the T = 1000 re-run, and any other
-        outcome STOPs to a human. Registering 1000 now would convert a
-        criterion into an assumption. The slot exists so the value cannot
-        later arrive unregistered — the beta_holdout precedent, which sat
-        null behind a loud sentinel until Phase 2's measurement filled it.
-        Fills at the step-(b) analysis with its provenance: floors file,
-        verdict, card, and date.
+        FILLED BY MEASUREMENT 2026-08-03, which is the only way this slot
+        was ever allowed to fill. T* is a MEASURED OUTCOME of the plateau
+        procedure, not a chosen constant: the registered criterion is
+        "T* = 1000 iff both confirmatory arms pass the plateau guard at the
+        T = 1000 re-run", and it is conditioned on the plateau guard ALONE.
+        PROVENANCE: M6.2b, 8 identical reps per arm, RTX PRO 6000
+        Blackwell, Python 3.12.3 / jax 0.11.0, source at 1309ef3, 1000
+        updates, 512-episode evals at theta*. Drift over the final 100
+        updates against each arm's OWN floor: ISO +0.0034 / 0.0339 =
+        0.10x, JOINT +0.0276 / 0.0483 = 0.57x, both under PLATEAU_PASS.
+        WHY IT DID NOT FILL AT THE STEP-(b) REPORT: that report withheld
+        registration because step (b) STOPped on the POWER branch, so it
+        judged the criterion's conditions not jointly met. The close-out
+        ruling discharged the power branch by re-ruling k, so the
+        conditions are now met and the value enters measured rather than
+        assumed — the beta_holdout precedent, which sat null behind a loud
+        sentinel until Phase 2's measurement filled it.
 
 # ------------------------------------------------------------------ defaults
 # Locked constants that che/env/config.py must carry as its dataclass

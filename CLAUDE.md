@@ -319,6 +319,30 @@ effect band**. Caught during registration drafting, before any run; the same
 slip inside a phase report would have produced an underpowered null presented
 as a result. See the dated amendment to Phase-6 remedy ruling 3.
 
+### Amendment: contrasts are graded on the CONTRAST's SE (human-issued 2026-08-03)
+
+**A power or MDE statement about a difference uses the standard error of that
+difference —** `sd(Γ) = sqrt((sigma_A² + sigma_B²)/k)` **— never either arm's
+own `sigma*sqrt(2/k)`.** The per-arm form is correct only for describing one
+arm's dispersion, and is void as a grade on a contrast.
+
+The two per-arm reads **bracket** the truth without ever equalling it, so
+picking one silently picks a bound: at the M6.2b floors, ISO's read gives
+92.1 % and JOINT's gives 62.8 % where Γ's actual power is 76.7 %.
+
+Origin: the project adopted **per-artifact floors** *because* the arms differ
+in stability (M6.0), then kept a power formula that assumes they do not — and
+that formula graded the guard which STOPped M6.2b. Caught by the instrument's
+own report, before the grid. Same class as the 2-sigma defect above: **a
+formula whose variance assumption does not match the quantity it grades.**
+
+Corollary, and the reason this is more than bookkeeping: **the floor and the
+test statistic are different variances.** A reproducibility floor is measured
+from identical reps at one seed; a k-seed arm mean varies by seed *and* by
+nondeterminism. Grade the contrast on the artifact's own seed dispersion; keep
+the floor for the beat-reproducibility hurdle it was built to be, and for
+design-stage power where it is an **upper bound**, labelled as one.
+
 ## Artifact persistence for GPU runs (human-issued 2026-07-28)
 
 **Every GPU run persists metrics + provenance + a checkpoint archive
