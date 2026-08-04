@@ -159,6 +159,25 @@ owed). What remains is the render pass and the launch batch.
 
 ---
 
+## OWED — two things this session left unverified (2026-08-04)
+
+Both are consequences of adding the coupling counters to the training logger
+(`docs/decision_log.md`, *TRAINING LOGGER GAINS THE COUPLING COUNTERS*).
+
+1. **The CPU test chunk `test_ippo test_pbt test_metrics test_locks` was
+   KILLED, not passed** — exit 143 (SIGTERM), stopped mid-run because it was
+   overloading the operator's machine. **It has not been run against this
+   change.** What *did* run green after the change: `test_step_metrics` (new,
+   5 tests), `test_theta_golden`, `test_frozen`, `test_nesting`,
+   `test_reward_independence`, and `ruff`. Static check: `Transition` is
+   constructed only inside `ippo.py` and nothing outside reads `ep_metrics`
+   or `step_metrics`, so the new field is contained — but that is an argument
+   for low risk, not evidence of a pass. **Run the chunk before the grid.**
+2. **The throughput cost of the added channels is UNMEASURED.** A CPU A/B was
+   running and was killed before it flushed, so there is no number at all —
+   not even an indicative one. See the GPU plan below; this is the main
+   reason to want a box.
+
 ## Open threads
 
 - **`m06/` is 47 MB** of pre-M6.0 spike leftovers at the repo root — still

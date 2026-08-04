@@ -58,6 +58,12 @@ class Transition(NamedTuple):
     links_alive: jax.Array  # [n_envs]
     links_in_range: jax.Array  # [n_envs]
     alive_agents: jax.Array  # [n_envs] out-degree denominator
+    # E1 addendum (human-instructed 2026-08-04): the coupling counters,
+    # pooled over the update exactly like the comms pair above and for the
+    # same reason -- they are PER-STEP counts, not episode-end values, so
+    # done-masking them would record only whatever the final step happened
+    # to hold. {name: [n_envs]}.
+    step_metrics: dict
 
 
 # M5.3: dedicated stream id for the shuffled-arm permutation, following the
@@ -88,6 +94,38 @@ EP_METRICS = {
     # component — the audit the registered design needs at up to 8
     # components, where the index mean above stops meaning anything.
     **{f"mixture_count_{i}": f"mixture_w{i}" for i in range(MAX_MIXTURE_COMPONENTS)},
+}
+
+# E1 addendum (human-instructed 2026-08-04): PER-STEP coupling counters,
+# pooled over the update -- info key -> logged metric name.
+#
+# WHY THESE ARE NOT IN EP_METRICS. Everything above is an episode-END value,
+# recorded by masking on `done`. These are per-step COUNTS: the number of
+# collapse-seeded ignitions near an agent on THIS step, etc. Done-masking a
+# count records whatever the last step held, which is not the episode total
+# and not a rate. They are pooled over the whole update instead, exactly like
+# the M5.0 comms pair.
+#
+# WHY THEY ARE LOGGED AT ALL. Invariant #5 required the co-active counter to
+# be logged "from day one" so that retrofitting it into jitted rollouts would
+# never be necessary. The env emitted it and the eval harness consumed it, but
+# the TRAINING logger never picked it up -- so the within-training trajectory
+# of compound hostility was unmeasurable from any committed artifact
+# (E1.2 section 7: 0 of 92 training logs carried it). This closes that gap at
+# the layer where it was actually open.
+#
+# UNITS, stated because two conventions for one name is how this project gets
+# hurt. These log the MEAN PER ENV-STEP. The eval npz reports the same
+# channels SUMMED PER EPISODE. Multiplying by the horizon converts, and is
+# exact only for episodes that run to the horizon -- treat it as an
+# approximation, and prefer comparing training curves to each other.
+STEP_METRICS = {
+    "coupling_co_active": "co_active_per_step",
+    "seeded_ignitions": "seeded_ignitions_per_step",
+    "collapse_events": "collapse_events_per_step",
+    "danger_agents": "danger_agents_per_step",
+    "masked_danger_sum": "masked_danger_sum_per_step",
+    "blocked_moves": "blocked_moves_per_step",
 }
 
 
@@ -256,6 +294,11 @@ def make_train_fns(cfg: Config) -> TrainFns:
             links_alive=info["links_alive"],
             links_in_range=info["links_in_range"],
             alive_agents=info["alive_agents"],
+            # Never done-masked -- see STEP_METRICS.
+            step_metrics={
+                name: info[k].astype(jnp.float32)
+                for k, name in STEP_METRICS.items()
+            },
         )
         ep_ret = jnp.where(done, 0.0, ep_ret)
         # Messages emitted this step are delivered next step. Nothing crosses
@@ -403,6 +446,14 @@ def make_train_fns(cfg: Config) -> TrainFns:
             ),
             "mean_out_degree": traj.links_alive.sum()
             / jnp.maximum(traj.alive_agents.sum(), 1.0),
+            # E1 addendum: coupling counters as a mean per env-step, pooled
+            # over every step of the update. Not done-masked and never NaN --
+            # a step with no co-active event is a real zero, unlike an update
+            # with no finished episode, which is a real absence.
+            **{
+                name: vals.mean()
+                for name, vals in traj.step_metrics.items()
+            },
         }
         return (
             Runner(train_state, hyper, env_states, last_obs, ep_ret, key, messages),

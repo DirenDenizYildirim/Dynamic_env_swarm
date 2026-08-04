@@ -32,6 +32,7 @@ import orbax.checkpoint as ocp
 from che.env.config import Config, load_config
 from che.train.ippo import (
     _SIGTERM,
+    STEP_METRICS,
     Runner,
     _ckpt_manager,
     _sigterm_handler,
@@ -237,6 +238,18 @@ def train_population(
                         "ent_coef": float(metrics["ent_coef"][m, i]),
                         "total_loss": float(metrics["total_loss"][m, i]),
                         "entropy": float(metrics["entropy"][m, i]),
+                        # E1 addendum (human-instructed 2026-08-04): the
+                        # per-step coupling counters. Enumerated from
+                        # STEP_METRICS rather than listed literally, so a
+                        # future channel cannot be added to the training
+                        # metrics and silently miss this writer -- which is
+                        # exactly how the co-active counter went unlogged
+                        # for the whole project (E1.2 section 7).
+                        **{
+                            name: float(metrics[name][m, i])
+                            for name in STEP_METRICS.values()
+                            if name in metrics
+                        },
                     }
                     rows.append(row)
                     if m_file:

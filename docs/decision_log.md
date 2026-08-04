@@ -2390,6 +2390,71 @@ non-verdict-bearing.
 5. `results/phase6/m62b/m62b_report.md` — dated addendum.
 6. `HANDOFF.md` — rewritten.
 
+---
+
+## TRAINING LOGGER GAINS THE COUPLING COUNTERS (human, 2026-08-04)
+
+**RULED: add them.** Issued in response to E1.2's finding that invariant #5 is
+**half-satisfied** — the env emits `coupling_co_active` from day one exactly
+as instructed and the eval harness consumes it into every `.npz`, but the
+**training logger never picked it up**. `0 of 92` Phase 3–5 training logs
+carry it, so the within-training trajectory of compound hostility is
+unmeasurable from any committed artifact. That is the retrofitting problem the
+invariant was written to prevent, surviving one layer down.
+
+### What was added
+
+Six per-step channels, in `che/train/ippo.py` as a new `STEP_METRICS` table:
+`coupling_co_active`, `seeded_ignitions`, `collapse_events`, `danger_agents`,
+`masked_danger_sum`, `blocked_moves`.
+
+**They are pooled over the update, NOT done-masked**, following the M5.0 comms
+pair rather than `EP_METRICS`. The reason is that these are per-step *counts*,
+not episode-end values: done-masking a count records whatever the final step
+happened to hold, which is neither the episode total nor a rate.
+
+**Units, recorded because two conventions under one name is how this project
+gets hurt:** the log carries the **mean per env-step**, suffixed `_per_step`.
+The eval `.npz` carry the same channels **summed per episode**. Multiplying by
+the horizon converts, exactly only for episodes that run to the horizon.
+`test_step_metrics.py` asserts the two naming spaces cannot collide.
+
+### Scope, and what did NOT change
+
+**`che/env/` is untouched.** The channels already existed in the info dict;
+this wires the consumer. No new state, no new PRNG draw, no change to any
+kernel — `test_theta_golden`, `test_frozen`, `test_nesting` and
+`test_reward_independence` are green, so trajectories are bitwise unchanged.
+
+Both writers are covered: `ippo.py`'s row builder is generic, and `pbt.py`'s
+explicit one now **enumerates from `STEP_METRICS`** rather than listing names,
+so a future channel cannot be added to the metrics and silently miss the file
+— which is how this defect happened in the first place.
+
+### THE OPEN COST, and it is a real one
+
+**Adding channels the training loop reads costs throughput, and the size is
+NOT yet measured on the hardware that matters.** Under XLA dead-code
+elimination the compiler deletes whatever the consumer does not read, so this
+change makes the env compute six channels it was previously free to discard.
+The standing throughput rule is explicit that gates bind to **measured
+training throughput of the spending consumer** (`pbt.py --bench`,
+`configs/gate_pop12.yaml`), which needs the RTX PRO 6000 — a 5090 cannot load
+that config.
+
+**Consequence for the grid, stated plainly:** the M6.2b floors and the
+686 s/run cost basis were measured on the **pre-change** training loop. If
+this change is material, both move. The launch batch already re-measures
+floors on the rented card and the ladder already absorbs floor growth, so the
+mechanism to handle it exists — but the **cost basis** is not covered by that
+ladder and would need re-deriving.
+
+**Owed before the grid:** run `pbt.py --bench` on the rented card with and
+without the channels, record the delta, and re-derive the run cost if it is
+material. If the cost is unacceptable, the fallback is to log a subset — the
+co-active counter alone answers E1.2's question — and that is a human call,
+not a builder's.
+
 ### Defect found while validating this change: a missing floor read as a PASS
 
 Not part of the ruling; found by re-running the instrument on the real M6.2b
