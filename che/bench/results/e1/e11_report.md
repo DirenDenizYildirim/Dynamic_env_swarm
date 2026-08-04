@@ -164,3 +164,57 @@ natural starting point.
 
 Nothing in `che/env/`, the protocol, `docs/locks.yaml` or any registered
 constant was touched.
+
+---
+
+## CORRECTION (same day, found while reading into E1.2)
+
+**Two claims above need correcting. Recorded rather than silently edited.**
+
+### 1. The counter had been analysed before. Part of §1 and §3 is a replication, not a discovery.
+
+The E1 work package states the counter has **"never been analysed"**, and
+E1.1 was written on that basis. It is **false**.
+`results/phase4/phase4_report.md`, **Result 4 — "coupling-co-active
+visitation: first data (Prop.-4 diagnostic)"** already analysed it on exactly
+the m44 artifacts used here, and already reported:
+
+- the same six cell means (0.694/0.663 Low, 0.564/0.643 Medium,
+  0.162/0.152 High) — E1.1 re-derived them **independently and identically**,
+  which is a clean reproducibility check but *not* a new result;
+- **"No cross-arm difference at any severity, which is expected: the counter
+  is a Coupling-A observable and κ_B does not enter it"** — i.e. §3's κ_B null
+  and its explanation were already on record;
+- the **inverted severity ordering** and its fuel-exhaustion cause, with the
+  same seeded-ignition figures (0.83 at High vs 4.08 at Low).
+
+**What in E1.1 remains genuinely new:** the `seeded × share` decomposition
+and the flatness of the share; the relative-floor variance result
+(`rel(co_active) ≈ rel(share) ≫ rel(seeded)`); the m35 replication on a
+different milestone, obs version and coupling; and the floor grading with its
+limits. **The severity ordering and the κ_B null are Phase-4 results,
+reproduced.** §1's "refuted" verdict on the pre-registered prediction stands —
+but note the prediction was already answerable from Result 4 before E1 began.
+
+### 2. The mean alone is a weak summary here, and Result 4 said so first
+
+Result 4 flagged the distribution as **zero-inflated and over-dispersed**, and
+warned that "the mean alone would have been actively misleading". **E1.1 uses
+per-file means throughout and did not state this.** Measured now, on the same
+cells:
+
+| cell | episodes | mean | P(zero) | q90 | q99 | max | var/mean |
+|---|---|---|---|---|---|---|---|
+| m44 Low kbL | 1024 | 0.6631 | **0.563** | 2 | 4 | 5 | 1.31 |
+| m44 Medium kbL | 1536 | 0.6426 | **0.578** | 2 | 4 | 7 | 1.34 |
+| m44 High kbL | 1024 | 0.1523 | **0.883** | 1 | 2 | 3 | 1.40 |
+| m55 d0.0 | 2048 | 0.5649 | **0.631** | 2 | 4 | 7 | 1.44 |
+
+**56–88 % of episodes contain no co-active event at all**, and `var/mean` of
+1.31–1.44 confirms over-dispersion against a Poisson reference of 1.0.
+
+This does **not** overturn §1–§3: those contrasts compare *means across files*,
+and a mean is a legitimate statistic of a skewed variable — the dispersions
+they are graded against are dispersions of the same means. But it does mean
+**co-activity is a rare, bursty event rather than a steady background rate**,
+and any figure in E1.3 must show the distribution, not just the mean.
