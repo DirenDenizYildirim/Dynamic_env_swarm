@@ -49,19 +49,36 @@ Each agent's observation is drawn from
 $O_\theta^i(o_i \mid s) = O^i_{\kappa_B}(o_i \mid x, h, c, k)$, where the
 **dependence of the observation kernel on $h$ is Coupling B** (Section 5).
 
-### Definition 2 (Passive survival stressor) — the paper's core reframe, stated formally
+### Definition 2 (Ambient survival stressor) — the paper's core reframe, stated formally
 
-The hazard is a **passive survival stressor** iff:
+> **Amended 2026-08-05 (positioning rulings, decision log).** Two changes.
+> *(1) Terminology:* "passive" is **struck** — at a control venue it asserts
+> a formal energy property that fire, an energy-injecting process, violates,
+> so a reviewer reads the coinage as false. The replacement **"ambient"**
+> (non-adversarial, not-instrumented, no energy claim) is carried here
+> **pending owner ratification of the word**; "stressor" is kept.
+> *(2) Clause 1 strengthened:* the hazard is excluded from auxiliary cost
+> and constraint channels, not only from $R$ — the boundary the old wording
+> left open, which invited the CMDP/safe-RL reader to see themselves.
 
-1. **Reward-independence:** $R(s, a)$ is measurable with respect to task variables
-   only — formally, $R(s,a) = R(\mathrm{task}(x), a)$; no term of $R$ references
-   $h$ or $c$. The hazard influences return *only* through the transition kernel
-   (disabling agents: $\alpha_i \to 0$ when agent $i$ occupies a Burning cell) and
-   the observation kernel (Coupling B). Contrast: the monitoring/suppression
-   literature places the hazard *inside* $R$ (coverage of the fire front, mapping
-   error, suppression progress). This one-line definition is what cleanly separates
-   the project from Haksar & Schwager–style work and the entire
-   monitoring/estimation lineage.
+The hazard is an **ambient survival stressor** iff:
+
+1. **Reward-independence (strengthened 2026-08-05):** $R(s, a)$ is measurable
+   with respect to task variables only — formally,
+   $R(s,a) = R(\mathrm{task}(x), a)$; no term of $R$ references $h$ or $c$ —
+   **and the hazard appears in NEITHER the reward NOR any auxiliary cost or
+   constraint channel**: no shaping term, no CMDP constraint, no Lagrangian
+   penalty, no safety critic. **Survival is learned solely because death
+   truncates future task return.** The hazard influences return *only*
+   through the transition kernel (disabling agents: $\alpha_i \to 0$ when
+   agent $i$ occupies a Burning cell) and the observation kernel
+   (Coupling B). Contrast, two lineages this clause separates us from: the
+   monitoring/suppression literature places the hazard *inside* $R$
+   (coverage of the fire front, mapping error, suppression progress) —
+   Haksar & Schwager–style work and the whole monitoring/estimation
+   lineage; and CMDP/safe-RL places it in a constraint or cost channel —
+   **VULCAN is the nearest domain neighbor on the far side of that
+   boundary** and enters related work as such.
 2. **Non-adversarial:** $T_H$ is a *fixed* stochastic kernel — there is no
    optimizing, learning, or best-responding component in the environment. This
    distinguishes the setting from robust/minimax MARL and pursuit-evasion.
@@ -401,6 +418,15 @@ plot $J^*$ vs. $\kappa_B$ with and without comms.)
 > corrections to one remark in one day, each caught before it reached a
 > measurement — which is the pre-flight working as intended, and why
 > numerical claims now enter these documents derived (CLAUDE.md).
+>
+> **Positioning (2026-08-05, decision log).** In the paper, VoC is
+> presented as a **refinement of Pynadath & Tambe's COM-MTDP
+> observability result (2002)**: that observability gates the value of
+> communication is 24 years old and is *cited*, not claimed. Our
+> contribution is the **second conjunct** — inertness under COLLECTIVE
+> partial observability when views are mutually redundant — plus the
+> measured swarm-scale certification (Phase 5). Remark 2‴'s presentation
+> order flips accordingly: cite first, refine second.
 
 Extend $E_{2C}$ with a second agent.
 
@@ -513,6 +539,15 @@ active, at held-out severity levels). Define:
 
 **The locked hypothesis, restated:** $\Gamma(\theta^*) > 0$, with primary
 metric task completion rate. **[EMPIRICAL — this is Phase 7's job.]**
+
+> **Positioning (2026-08-05, decision log).** The *question* has priority
+> holders (Agrawal 2023; Erdem & Üre 2025 — both cited); the *design* is
+> ours, and **Keysers et al.'s DBCA gives it a name**: matched per-element
+> marginals = atom divergence → 0, varied co-occurrence = compound
+> divergence → max — instantiated in MARL *dynamics* for the first time.
+> This is the accepted compositional-split methodology, applied where it
+> has never been applied; it goes in §1 of the design description AND
+> related work.
 
 ### Proposition 4 (Why the hypothesis is plausible: an irreducible shift term for ISO) [PROVEN, bound-shaped]
 
@@ -651,3 +686,21 @@ calibration measurements.
 - Haksar & Schwager (2018), IROS — distributed MADQN under fire spread with
   restrictive comms (positioned as: hazard in the reward = monitoring/
   suppression framing; our Def. 2 separates the settings).
+- Pynadath & Tambe (2002), *The Communicative Multiagent Team Decision
+  Problem: Analyzing Teamwork Theories and Models*, JAIR — COM-MTDP;
+  observability gates communication value (cited as the prior result VoC
+  refines; see the 2026-08-05 positioning note on Remark 2′).
+- Keysers et al. (2020), *Measuring Compositional Generalization: A
+  Comprehensive Method on Realistic Data*, ICLR — DBCA; names our split
+  design (atom divergence → 0, compound divergence → max; Def. 8 note).
+
+Positioning citations ruled 2026-08-05 (decision log), **bibliographic
+details owed — verify at citation time, never reconstruct from memory**:
+
+- VULCAN — nearest domain neighbor on the far side of the Def. 2 boundary
+  (hazard in a cost/constraint channel); enters related work as such.
+- Agrawal (2023); Erdem & Üre (2025) — priority holders on the
+  compositional-generalization-in-RL question (C4); both cited.
+- SMART (RA-L 2026) — cited and pre-empted in limitations.
+- arXiv:2507.10142 — owner reads before submission; the one place a
+  subsuming memorization-gap theorem could hide.

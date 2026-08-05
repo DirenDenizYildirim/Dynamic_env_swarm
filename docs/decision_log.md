@@ -2484,3 +2484,110 @@ no branch unless both are present.
 changes — M6.2b's confirmatory arms both had floors and both genuinely
 passed. But the launch batch of item 6 runs a sweep arm, and any failed rep
 in it would have produced a silent false pass.
+
+## POSITIONING RULINGS (relayed, 2026-08-05)
+
+Relayed from the positioning review with the instruction "registrar
+transcribes; skeleton amends to v2." Transcribed here in this commit.
+**Neither the paper skeleton nor the DR-defense memo is a file in this
+tree** — their amendments are recorded below as *owed by their holder*,
+not performed. The theory-doc amendments (rulings 2, 3, 5, and a note for
+4) ARE performed in this commit, in `docs/theory_foundations.md`, dated.
+
+### 1. NO-SCOOP FINDING — ACCEPTED, with its stated limits
+
+The four empty claim-spaces are now the paper's **novelty spine**, and C2
+leads with them:
+
+- measured-critical-point severity;
+- hazard-generates-hazard;
+- Beer–Lambert on a POMDP observation kernel;
+- JAX × MARL × hazards.
+
+**Three residual checks are OWNER TASKS before submission:** the IEEE
+Xplore query, the NeurIPS-D&B / ICLR-2026 census, and reading
+**arXiv:2507.10142** — the one place a subsuming memorization-gap theorem
+could hide.
+
+### 2. DEFINITION 2 STRENGTHENED (theory-doc amendment, dated)
+
+New wording: the hazard appears in **neither the reward nor any auxiliary
+cost or constraint channel** — survival is learned solely because death
+truncates future task return. This is what actually separates the setting
+from CMDP/safe-RL and from VULCAN; the old wording invited the CMDP reader
+to see themselves. **VULCAN enters related work as the nearest domain
+neighbor on the far side of that boundary.** Applied to Def. 2 in this
+commit.
+
+### 3. TERMINOLOGY — "passive" is STRUCK; replacement pending ratification
+
+At a control venue "passive" asserts a formal energy property that fire,
+an energy-injecting process, violates — a reviewer reads the coinage as
+false. Proposed replacement: **"ambient survival stressor"**
+(non-adversarial, not-instrumented, no energy claim). **"stressor" and
+"compound" are KEPT** — the ecology multiple-stressors and climate
+compound-events literatures are supportive analogies, not collisions.
+**The strike is ruled; the replacement word awaits owner ratification.**
+The theory doc carries "ambient" as of this commit, flagged pending.
+`docs/architecture_decisions_v1.md` is a pre-Phase-0 archival record and
+retains the struck term as history.
+
+### 4. C4 REFRAMED — the question has priority holders; the DESIGN is ours
+
+Cite **Agrawal 2023** and **Erdem & Üre 2025** as priority holders on the
+question. Our novelty is the design, and **Keysers et al.'s DBCA gives it
+a name**: matched per-element marginals = atom divergence → 0; varied
+co-occurrence = compound divergence → max — **instantiated in MARL
+dynamics for the first time.** The DR-defense memo now closes with DBCA:
+"this is the accepted compositional-split methodology, applied where it
+has never been applied." Best citation of the study; it goes in §1 of the
+design description AND related work. A dated note now sits beside Def. 8
+in the theory doc; the memo's closing is owed by the memo's holder.
+
+### 5. VoC REPOSITIONED — a refinement of Pynadath & Tambe's COM-MTDP result
+
+The 24-year-old part — **observability gates communication value**
+(COM-MTDP, Pynadath & Tambe 2002) — is cited, not claimed. Our
+contribution is the **second conjunct**: inertness under COLLECTIVE
+partial observability when views are mutually redundant, plus the measured
+swarm-scale certification (Phase 5). **Remark 2‴'s presentation order
+flips accordingly** — cite first, refine second. Dated note applied in
+this commit.
+
+### 6. VENUE MECHANICS — three hard consequences
+
+**a. PAGE BUDGET.** 6+2 pages, **appendices INCLUDED**; supplementary
+text = editorial rejection. The skeleton's appendix-manifest strategy is
+**DEAD for the review copy**. Restructure: 8 fully self-contained pages;
+in-line only the short proofs (Prop 1, Prop 2's coupling, Thm 1 compact);
+Props 3–4 as statements + one-line sketches; everything else becomes the
+post-acceptance extended arXiv version, **unreferenced during review**.
+
+**b. ANONYMITY.** No GitHub/OSF/registration links in the review copy —
+pre-registration described in-text (timestamped commit hashes quoted,
+artifacts "released upon publication"). Desk-reject risk eliminated.
+
+**c. ICRA 2027** downgraded from "minority outcome" to **"improbable"**
+on the transfer-window math; **IROS 2027 is THE planned stage.** Owner
+emails EiC.RA.Letters@ieee.org to confirm — the $140 plan's value was
+always finish-early + journal, unchanged.
+
+**d. SMART (RA-L 2026)** is cited and pre-empted in limitations.
+
+### What this entry changes in the tree, in this commit
+
+- `docs/theory_foundations.md`: Def. 2 renamed ("ambient", flagged pending
+  ratification) and clause 1 strengthened, dated; positioning note on the
+  Remark 2′ amendment chain; DBCA note beside Def. 8; references extended.
+- **No constant is ruled here; `docs/locks.yaml` is untouched.**
+
+### Owed, and by whom
+
+- **Owner:** IEEE Xplore query; NeurIPS-D&B / ICLR-2026 census; read
+  arXiv:2507.10142; ratify "ambient"; email EiC.RA.Letters@ieee.org.
+- **Skeleton holder:** amend skeleton to v2 (rulings 3, 6a, 6b); close the
+  DR-defense memo with DBCA (ruling 4). Neither artifact is in this repo.
+- **Bibliography:** full entries for VULCAN, Agrawal 2023, Erdem & Üre
+  2025, and SMART (RA-L 2026). The relay supplied names only; details are
+  deliberately NOT reconstructed here — relayed citations have previously
+  named documents that do not exist, so each is verified at citation time.
