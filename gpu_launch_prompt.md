@@ -6,6 +6,21 @@
 >
 > Written 2026-08-04 at `d513e2f`. If `git log -1` does not show that commit or
 > a descendant, **stop and reconcile before spending money.**
+>
+> **RECONCILED 2026-08-10 at `9ea5629`** (a descendant — the check passes).
+> Three preconditions moved; full entry `docs/decision_log.md`,
+> *RENDER-GATE RULINGS, ROUND 2*:
+>
+> | | was | now |
+> |---|---|---|
+> | **G1.0(a)** test chunk | owed (SIGTERM-killed) | **DISCHARGED** — green locally; keep as a box smoke test |
+> | **G1.0(b)** throughput A/B | owed, 6 channels | **still owed, now 8 channels** |
+> | **G1.1** owner render pass | owed, gates the grid | **DISCHARGED** — inspected and ruled |
+>
+> **The ordering in G1.0(b) is now load-bearing, not hygiene.** Its `> 15 %`
+> branch is *drop channels*, which changes the artifact — and floors are
+> per-artifact. Running G1.2 first would measure floors on an artifact the
+> grid might not use. **A/B before batch. No exceptions.**
 
 ---
 
@@ -39,10 +54,16 @@ wrong, **STOP and say so**; do not quietly act on it.
 
 ### Two things are OWED before any spend
 
-1. **`test_ippo test_pbt test_metrics test_locks` has never been run against
-   the logger change.** It was killed at exit 143 on the operator's machine.
+1. ~~**`test_ippo test_pbt test_metrics test_locks` has never been run against
+   the logger change.**~~ **DISCHARGED 2026-08-10** — green locally, against
+   the coupling counters *and* the render-gate channels on top of them. Still
+   worth running on the box, as a toolchain smoke test rather than a debt.
 2. **The throughput A/B is unmeasured** — the local attempt was killed before
-   it flushed. There is no number, not even indicative.
+   it flushed. There is no number, not even indicative. **Widened 2026-08-10
+   to eight channels**: the render gate added `center_dist_sum`,
+   `boundary_agents` and the `alive_agents` denominator to `STEP_METRICS`.
+   The `.clear()` mechanism below is unaffected and now measures all eight.
+   **This is the only remaining pre-spend debt, and it must run first.**
 
 ---
 
@@ -108,11 +129,20 @@ and the percentage delta in the report.**
 
 ---
 
-## G1.1 — Do not skip: the owner render pass
+## G1.1 — DISCHARGED 2026-08-10 (was: the owner render pass)
 
-The **24 M5.5 renders remain un-inspected** and are owner-assigned. They
-precede the grid. If the owner has not done this, say so in your report and
-**do not treat it as your task to waive**.
+~~The 24 M5.5 renders remain un-inspected.~~ **Inspected and ruled.** The
+bottom-clustering is a per-training-run residual action bias integrated by
+the absorbing boundary; env geometry is symmetric, no invariant is touched,
+and the completion cost is bounded ≈ 0 by the replicate control (same config,
+24-row positional swing, completion 0.781 both). Ruled **not a launch
+blocker**; two diagnostic channels shipped so the grid records it.
+
+Full entries: `docs/decision_log.md`, *RENDER-GATE FINDINGS* and *RENDER-GATE
+RULINGS, ROUND 2*.
+
+**This was closed by a ruling, not waived** — which is what the original
+instruction here asked for.
 
 ---
 

@@ -343,6 +343,42 @@ nondeterminism. Grade the contrast on the artifact's own seed dispersion; keep
 the floor for the beat-reproducibility hurdle it was built to be, and for
 design-stage power where it is an **upper bound**, labelled as one.
 
+## Instruments state what they are blind to (human-issued 2026-08-10)
+
+**Cross-arm tests cannot see arm-symmetric effects; recording a channel is
+not grading it — grading requires a registered family and a floor.**
+
+Both halves are one law because both are the same error: **mistaking an
+instrument's silence for the world's.**
+
+**Clause 1 — differenced tests measure asymmetry, and nothing else.** A
+falsifier of the form "no cross-arm difference in X" is *structurally blind*
+to any X present in both arms, which cancels exactly in the difference. Its
+silence is evidence about asymmetry only, never about presence. Every
+condition-(ii)-style test must therefore state this limit where it is
+reported, not where it is discovered.
+
+Exhibit: M4.4's inertness falsifier condition (ii), "no cross-arm exposure/
+positioning difference", ran green while **every** episode in **both** arms
+drifted to a wall (render gate, 2026-08-10). The verdict it contributed to
+does not move — it rested on conditions (i)–(iii) — but the condition was
+never capable of seeing the effect, and nothing said so for three phases.
+
+**Clause 2 — measuring is not grading.** A channel in the `info` dict, the
+eval `.npz` or the training log is *recorded*. It becomes *evidence* only
+with (a) membership in a registered analysis family, and (b) a measured
+per-artifact floor. A diagnostic is never added to a pre-registered family
+after registration to make it gradeable — that enlarges the family and
+inflates the correction. Floors for out-of-family channels are computed by
+their own post-hoc instrument, and until they exist the channel grades
+nothing.
+
+Exhibit: the render-gate drift channels ship before the Phase-6 grid so the
+240 runs *record* them for free, while `m62_report.py::METRICS` — the
+registered confirmatory family at `SIDAK_M = 2` — is deliberately left
+untouched. "The grid measures it" and "the grid grades it" are one word
+apart, and this project has been hurt by that distance before.
+
 ## Artifact persistence for GPU runs (human-issued 2026-07-28)
 
 **Every GPU run persists metrics + provenance + a checkpoint archive

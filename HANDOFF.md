@@ -182,7 +182,10 @@ Both are consequences of adding the coupling counters to the training logger
    channels, not six — the render-gate diagnostic added `center_dist_sum`,
    `boundary_agents` and the `alive_agents` denominator to `STEP_METRICS`.
    Unchanged in kind, and the fallback (log a subset) still applies and is
-   still a human call.
+   still a human call. **ORDERING, ruled 2026-08-10: the A/B must precede the
+   launch batch.** Its `> 15 %` branch is *drop channels*, which changes the
+   artifact — and floors are per-artifact, so a batch run first would measure
+   floors on an artifact the grid might not use.
 3. **NEW 2026-08-10 — the bench's `training` keep-alive set had drifted, and
    is fixed.** `throughput.py::_training_info_keys()` enumerated `EP_METRICS`
    only, so from 2026-08-04 — when `STEP_METRICS` was added as a *second*
@@ -207,11 +210,11 @@ Both are consequences of adding the coupling counters to the training logger
   them without **grading** them: `m62_report.py::METRICS` is deliberately
   untouched, because that tuple is the registered confirmatory family at
   `SIDAK_M = 2` and no diagnostic is worth enlarging it post-registration, so
-  the floors need their own post-grid instrument); and an **enumeration of the
-  "endogeneity family"** before the paper's limitation sentence cites this as
-  its fifth member — the family is nowhere enumerated in the tree, only its
-  *third* member is labelled, and `kappa_b_lock.md:28` records that one as
-  demoted to **provisional**.
+  the floors need their own post-grid instrument). The **endogeneity family**
+  is now **enumerated and canonical** (`decision_log.md`, *RENDER-GATE
+  RULINGS, ROUND 2*, ruling 3) — five named members, one of them REFUTED and
+  deliberately retained. **The paper cites members by name, never by
+  ordinal.**
 - **Design v2 §5 and §7 owe a text update** to state the upper-bound framing
   and the seed-dispersion test basis. Ruled, not yet written into v2.
 

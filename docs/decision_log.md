@@ -2813,3 +2813,126 @@ two more channels than when it was written.
   by exactly that distance before.
 - **Before the paper sentence:** enumerate the endogeneity family, or drop
   the ordinal (see the transcription note in ruling 5).
+
+## RENDER-GATE RULINGS, ROUND 2 (registrar, 2026-08-10) — pre-launch-batch
+
+Answers the three items the entry above flagged for ratification, closes the
+DCE defect class, enumerates the endogeneity family, and promotes the
+instrument note to standing law.
+
+### 1a. `alive_agents` in `STEP_METRICS` — RATIFIED
+
+Denominators are not scope creep; they are what make the approved channels
+readable as rates. At High the denominator moves more than the effect.
+
+### 1b. Signed direction — DECLINED, with the reason on record
+
+Direction is **per-checkpoint idiosyncrasy** — the replicate pair proved the
+same config drifts in opposite directions — so **any aggregate over signs
+washes toward zero by construction**. Magnitude *is* the phenomenon. The
+render archive preserves direction for any future per-checkpoint question.
+Two channels not bought.
+
+This reason is recorded rather than the decision alone, because the naive
+future move is to "improve" the diagnostic by adding sign, and the aggregate
+it would produce is guaranteed uninformative.
+
+### 2. The DCE fix — RATIFIED, and the CLASS is closed
+
+The registrar annotates env-only rows dated **2026-08-04 → the fix** as
+non-comparable (undercounted keep-alive set).
+
+**The class note matters more than the instance: the defect recurred INSIDE
+the function whose docstring exists to prevent it.** Hand-enumerated
+keep-alive lists rot. The structural fix — **derive the keys from the metric
+tables, and assert completeness** — is the permanent shape. Second
+recurrence closes the class.
+
+**DATE, DERIVED RATHER THAN TRANSLITERATED.** The ruling gives the window as
+2026-08-04 → 08-09. The fix actually landed **2026-08-10** in `9ea5629`; the
+counters landed 2026-08-04 in `d513e2f`. The window is therefore
+`d513e2f .. 9ea5629`, and an 08-09-or-08-10 row taken before the fix would
+escape a window that ends on 08-09. **Commit-bounded, not date-bounded**, is
+the durable form and is what is recorded.
+
+**THE ANNOTATION APPLIES TO ZERO COMMITTED ARTIFACTS.** Verified this
+session: exactly one commit exists between the two (`59c7409`, 2026-08-05,
+positioning docs), and it touched no file under `che/bench/results/`. No GPU
+box ran in the window (`HANDOFF.md`). So there is nothing in the record to
+mark, and the annotation is **forward-looking only** — stated so a later
+reader does not go hunting for rows that were never taken.
+
+### 3. THE ENDOGENEITY FAMILY — ENUMERATED, and this registry is canonical
+
+The registrar records that the ordinals were narrative memory, and that
+declining to harden them was the derived-numbers rule correctly applied to
+**ordinals** — which carry an implied completed enumeration exactly as a
+constant carries an implied derivation.
+
+**The paper cites members BY NAME, never by ordinal.**
+
+| member | status |
+|---|---|
+| **exposure-rises-with-competence** (M1.5) | ESTABLISHED |
+| **survivorship exposure** (dp arms; survivors inhale because they live) | ESTABLISHED |
+| **perception-exposure regulation** (M4.3) | **REFUTED** by its own M4.4 control; retained as the family's corrected entry |
+| **solution diversity under nondeterminism** (High seed spread; floors growing with T; M6.2b) | ESTABLISHED |
+| **boundary drift** (render gate) | ESTABLISHED; cost bounded ≈ 0 by the replicate control |
+
+**Family definition, for the ledger:** *measured quantities that depend on
+the trained policy in ways naive instrument design assumes away.*
+
+Two notes, recorded because the registry is now the citable source:
+
+- The **refuted** entry is deliberately retained rather than deleted. A
+  family whose failed member is erased reads as five-for-five; the corrected
+  entry is what makes the definition falsifiable. `kappa_b_lock.md:28`
+  independently records that member's demotion to provisional, and the two
+  now agree.
+- **Boundary drift is dated 2026-08-10**, matching the entry above and
+  `9ea5629`. The ruling wrote 2026-08-09; the discrepancy is noted rather
+  than propagated.
+
+### 4. The instrument note — PROMOTED to `CLAUDE.md`, both halves as one law
+
+> **Instruments state what they are blind to: cross-arm tests cannot see
+> arm-symmetric effects; recording a channel is not grading it — grading
+> requires a registered family and a floor.**
+
+Landed this commit as a standing rule with both clauses and both exhibits.
+The measure/grade distinction is clause 2 verbatim.
+
+### What this entry changes in the tree, in this commit
+
+- `CLAUDE.md`: new standing rule (above), between the contrast amendment and
+  the artifact-persistence rule.
+- `docs/decision_log.md`: this entry; the endogeneity registry is canonical
+  and supersedes the "third member" label at 2026-07-27 and the ordinal in
+  the previous entry's ruling 5.
+- `gpu_launch_prompt.md`: G1.0(a) and G1.1 marked discharged, G1.0(b) widened
+  to eight channels — see below.
+- `HANDOFF.md`: owed list updated.
+- **No constant is ruled here; `docs/locks.yaml` is untouched.**
+
+### Consequence for G1, and it is an ORDERING consequence
+
+`gpu_launch_prompt.md` was written 2026-08-04 at `d513e2f` and two of its
+preconditions have moved:
+
+- **G1.0(a)** (the SIGTERM-killed test chunk) — **discharged 2026-08-10**,
+  green locally against both the coupling counters and the render-gate
+  channels. Retained on the box as a toolchain smoke test, not as an owed
+  item.
+- **G1.1** (the owner render pass) — **discharged 2026-08-10**, this entry
+  and the one above it. The prompt's instruction not to waive it is
+  satisfied by a ruling, not by a waiver.
+- **G1.0(b)** (the throughput A/B) — **widened from six channels to eight**.
+  Its `STEP_METRICS.clear()` mechanism is unaffected and now measures more.
+
+**G1.0(b) MUST PRECEDE G1.2, and the reason is stronger than sequencing
+hygiene.** The A/B's `> 15 %` branch is *drop channels*, which changes the
+artifact. Floors are **per-artifact**. A launch batch run before the A/B
+would therefore measure floors on an artifact the grid might not use, and
+those floors would grade nothing — the exact defect the per-artifact
+amendment was written against, reached by ordering instead of by
+substitution.
