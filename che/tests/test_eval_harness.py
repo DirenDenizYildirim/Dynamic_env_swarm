@@ -46,6 +46,11 @@ EXPECTED_KEYS = {
     # links_in_range, mean alive out-degree = links_alive / alive_agents.
     "links_alive",
     "links_in_range",
+    # Render-gate diagnostic (registrar 2026-08-10): positional drift, same
+    # poolable discipline (mean_center_dist = center_dist_sum / alive_agents,
+    # boundary_contact_frac = boundary_agents / alive_agents).
+    "center_dist_sum",
+    "boundary_agents",
 }
 
 

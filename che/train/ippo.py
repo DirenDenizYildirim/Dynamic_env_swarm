@@ -126,6 +126,25 @@ STEP_METRICS = {
     "danger_agents": "danger_agents_per_step",
     "masked_danger_sum": "masked_danger_sum_per_step",
     "blocked_moves": "blocked_moves_per_step",
+    # Render-gate diagnostic (registrar 2026-08-10): positional drift, shipped
+    # before the grid so 240 runs measure it for free -- the same
+    # cheap-now-impossible-later window invariant #5 was written to protect,
+    # and the same layer (the training logger) where the co-active counter was
+    # found half-satisfied. Read the pair as rates against alive_agents:
+    # center_dist_sum_per_step / alive_agents_per_step is the mean Chebyshev
+    # distance from the arena centre per surviving agent, and
+    # boundary_agents_per_step / alive_agents_per_step is the boundary-contact
+    # fraction -- the direct wall-pile-up statistic.
+    "center_dist_sum": "center_dist_sum_per_step",
+    "boundary_agents": "boundary_agents_per_step",
+    # THE DENOMINATOR, and why it is here. The two channels above are sums over
+    # ALIVE agents, so undenominated they fall as agents die and confound
+    # positional drift with mortality -- at High, where survival moves 8.8
+    # points between arms, that confound is larger than the effect. This is
+    # already in EVAL_METRICS and already in the Transition below; the training
+    # log is catching up to the eval path. It also retroactively makes
+    # danger_agents_per_step above readable as a rate rather than a count.
+    "alive_agents": "alive_agents_per_step",
 }
 
 

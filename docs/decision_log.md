@@ -2591,3 +2591,225 @@ always finish-early + journal, unchanged.
   2025, and SMART (RA-L 2026). The relay supplied names only; details are
   deliberately NOT reconstructed here — relayed citations have previously
   named documents that do not exist, so each is verified at citation time.
+
+## RENDER-GATE FINDINGS (registrar, 2026-08-10) — the render inspection, closed
+
+Discharges gate 1 of the two that stood before the grid (`HANDOFF.md`:
+"[OWNER] render inspection of the 24 M5.5 episodes — owner-assigned,
+precedes the grid, not delegable"). The inspection asked why agents appear
+to cluster at the bottom of the arena by the end of the Phase-4 and Phase-5
+episodes.
+
+### What the inspection measured
+
+Agents spawn uniformly, so the expected starting centroid is the arena
+centre, row 31.5 of 64. Measured centroid of the alive-agent marker over
+the committed renders:
+
+| render set | start row | end row | episodes drifting down |
+|---|---|---|---|
+| phase3 m30b (obs-v1) | 31.4 | 32.6 | 11/24 |
+| phase3 m31b (obs-v2) | 31.4 | 51.0 | 8/8 |
+| phase4 m44 | 32.3 | 49.2 | 24/24 |
+| phase5 (m55 + pretask) | 32.3 | 44.4 | 20/24 |
+
+**PROVENANCE AND ITS LIMIT, stated because this number will be quoted.**
+These are **rendered-pixel centroids**, not state reads: the cyan alive-agent
+marker was segmented out of each GIF frame and its centroid rescaled by the
+axes bounding box. Marker size, antialiasing and overplotting all enter, and
+the reduction is a centroid over agents, so it cannot separate "all twelve
+drifted a little" from "four parked on the wall". **It is a diagnostic
+instrument, adequate to establish that the effect is real and
+per-checkpoint, and it is NOT the measurement instrument.** The measurement
+instrument is the diagnostic adopted in ruling 3, which reads state.
+
+### 1. DIAGNOSIS ACCEPTED
+
+Per-checkpoint residual action bias, integrated by the absorbing boundary,
+mildly attracted by the OOB-zero half-window. **Not an env bug.**
+
+Env symmetry verified in this session: agents spawn
+`jax.random.randint(minval=0, maxval=ll)`, food scatters uniformly,
+ignition is a single uniform cell (`env.py` `reset`), and the action table
+`_ACTION_OFFSETS = [[0,0],[-1,0],[1,0],[0,-1],[0,1]]` (`env.py:68`) is
+symmetric. The direction is **per-training-run, not per-codebase**: m30b
+drifts right (+8.5 columns) rather than down, and the Phase-5
+`high_kbL_replicate` arm — the same High κ_B = L cell retrained — drifts
+**up**, ending at row 27.6.
+
+Two mechanisms convert a small residual bias into a wall pile-up:
+
+1. **The boundary is absorbing.**
+   `proposed = jnp.clip(agent_pos + _ACTION_OFFSETS[actions], 0, grid_size - 1)`
+   (`env.py:185`) makes a move into the wall a **no-op, not a bounce**, so a
+   directional bias accumulates monotonically over the horizon and does not
+   relax.
+2. **The wall reads as the safest cell on the map.** The egocentric crop
+   pads out-of-bounds with 0 (`observation.py:282`), and 0 on the content
+   planes is no hazard, no smoke, no fire. `observation.py:51` already
+   documents the conflation — an out-of-bounds cell "can read *seen and
+   empty*" — and names the own-position vector as the only disambiguator.
+
+**No invariant is touched.** Reward independence (Def. 2) is untouched: the
+reward reads food and occupancy only. Ablation nesting is untouched: no
+mechanism here consumes PRNG.
+
+### 2. NOT A LAUNCH BLOCKER, on stated grounds
+
+- The confirmatory contrast compares arms whose policies **all** carry
+  idiosyncratic drift, so the effect is common-mode across the comparison.
+- The replicate pair bounds its completion cost at approximately zero:
+  `high_kbL` ends at row 51.7 with completion 0.781, `high_kbL_replicate`
+  at row 27.6 with completion **0.781** — a 24-row positional swing at
+  identical completion.
+- The effect predates every certified result without moving one.
+
+The δ arms make the same point and supply their own floor: δ = 0.0 ends at
+row 42.2 (completion 0.740), δ = 1.0 at row 57.7 (0.734). The 15-row gap is
+well inside the 24-row swing the replicate pair shows a **fixed** config
+producing between training runs, so **nothing is read into it** — the
+replicate pair is the per-artifact floor for this statistic, per the
+2026-08-02 amendment. The pooled correlation between end row and completion
+over the 48 episodes is −0.207 and is **confounded by severity and
+floorless**; it is recorded as not-evidence, and is not used above.
+
+### 3. DIAGNOSTIC ADOPTED — draft approved, one addition
+
+Per episode, log **mean |position − centre|** AND the **boundary-contact
+fraction** (steps spent on edge rows/cols); the second is the direct
+wall-pile-up statistic. Per-artifact floor from the grid's own seeds, per
+the seed-dispersion ruling.
+
+**Ships BEFORE the grid**, so 240 runs measure it for free — the
+cheap-now-impossible-later window, and it converts "probably costless" into
+a measured sentence for the paper.
+
+### 4. INSTRUMENT NOTE — cross-arm falsifiers are blind to arm-symmetric effects
+
+Recorded as a **stated limitation of condition-(ii)-style tests**, with this
+as the exhibit. M4.4's inertness falsifier condition (ii) reads "no cross-arm
+exposure/positioning difference" (`phase4_report.md:495`): an effect present
+in **both** arms cancels exactly and cannot be detected by it. The rule
+generalizes to every differenced falsifier in the project — a differenced
+test measures asymmetry, and its silence is evidence about asymmetry only,
+never about presence.
+
+**The m31b watch item is reopened and closed CORRECTLY this time.** It was
+closed at M4.4 (`phase4_report.md`, Result 6) on completion conditioned by
+`burnt_fraction` — a completion-inferred closure of a positional claim
+("obs-v2 Medium appeared to stall at arena edges", `phase4_report.md:480`).
+The phenomenon was **real, positional, and benign**. Closed measured, not
+inferred. Neither closure was wrong on its own terms; the first simply
+graded the wrong quantity.
+
+### 5. PAPER
+
+One honest limitation sentence, plus the diagnostic cited:
+
+> Boundary absorption combined with zero-padded out-of-bounds observations
+> can park directionally-biased policies against arena walls; we measure the
+> effect and find its cost on task completion to be approximately zero.
+
+Discussion-section family: **the endogeneity family's fifth member** —
+policies acquiring idiosyncratic spatial habits the aggregates never see.
+
+**TRANSCRIPTION NOTE, per the derived-numbers sub-rule.** The ordinal is
+recorded as the registrar issued it and is **not verified by this repo**:
+the family has never been enumerated anywhere in the tree. The only labelled
+member is the third (this log, 2026-07-27, behavioural perception-exposure
+regulation), and `kappa_b_lock.md:28` records **that** member as demoted to
+**provisional** the same day. Members one, two and four exist in no
+document. An enumeration is owed before the sentence enters the paper, or
+the ordinal drops and the member is cited by name.
+
+### What this entry changes in the tree, in this commit
+
+- `che/env/env.py`: two info channels, `center_dist_sum` and
+  `boundary_agents`. Deterministic, info-only, no PRNG (invariant #3), never
+  read by the reward (Def. 2).
+- `che/eval/harness.py`: both added to `EVAL_METRICS` as `_SUM`.
+- `che/train/ippo.py`: both added to `STEP_METRICS`, plus `alive_agents`
+  (see builder decisions).
+- `che/bench/throughput.py`: `_training_info_keys()` corrected — see the
+  defect below.
+- `che/tests/test_positional_drift.py`: new.
+- `che/bench/results/phase4/phase4_report.md`: dated addendum re-closing the
+  m31b watch item. The report body is **not revised**, following the M6.2b
+  precedent.
+- **No constant is ruled here; `docs/locks.yaml` is untouched.**
+
+### Builder decisions, flagged for ratification rather than assumed
+
+1. **The norm is Chebyshev (L∞).** "Distance from centre" was not specified.
+   L∞ is chosen because it makes the two approved channels one statistic
+   rather than two: boundary contact is exactly the event
+   `chebyshev_dist == (L−1)/2`, so the fraction is the tail of the
+   distribution the mean summarizes. It also matches the project's existing
+   Chebyshev convention (the co-active test and the danger-moment test both
+   use the crop radius). Under L2 or L1 the two channels would answer
+   subtly different questions.
+2. **`alive_agents` added to `STEP_METRICS`.** Not an expansion of the
+   diagnostic — a denominator without which it is wrong. Both approved
+   channels are sums over alive agents, so in the training log they fall as
+   agents die; at High, where survival moves 8.8 points between arms, an
+   undenominated numerator would confound drift with mortality. It is
+   already in `EVAL_METRICS` and already in the IPPO `Transition`, so this
+   is the training log catching up to the eval path, and it retroactively
+   makes the existing `danger_agents_per_step` readable as a rate.
+3. **Direction is NOT emitted.** A signed centroid would recover
+   "which wall", and the approved channels cannot — they are magnitude-only,
+   so a top-parked and a bottom-parked policy are indistinguishable in the
+   log. Magnitude is what the paper sentence needs and what the cost
+   question needs. Adding the signed pair is a third and fourth channel and
+   therefore a human call, deliberately not taken here.
+
+### Defect found while implementing: the bench's training keep-alive set had drifted
+
+`che/bench/throughput.py::_training_info_keys()` documents itself as
+"sourced from the collector itself so the bench cannot drift away from what
+training does", and enumerated `EP_METRICS` plus the three comms keys. It
+never enumerated `STEP_METRICS`. So from **2026-08-04**, when the coupling
+counters were added, the `training` probe row measured an env whose six
+newest channels XLA was free to delete — the identical failure mode the
+function's own docstring was written against (M5.1, where enumerating the
+trees replaced a hand-written list precisely so this could not recur; the
+list simply grew a second home).
+
+**Fixed structurally:** the function now enumerates `EP_METRICS` **and**
+`STEP_METRICS`, so a channel added to either table is kept alive
+automatically. `test_positional_drift.py` asserts the keep-alive set is a
+superset of both tables, so a third table would fail rather than drift.
+
+**Consequence, stated plainly:** every `training`-mode env-only throughput
+row taken since 2026-08-04 undercounts the work the real collector does.
+No gate binds to those rows — the standing rule already re-anchored gates
+to measured *training* throughput (`pbt.py --bench`) — so no verdict moves.
+The owed `pbt.py --bench` comparison is unaffected in kind and now covers
+two more channels than when it was written.
+
+### Owed
+
+- **Before the grid:** the `pbt.py --bench` throughput comparison already
+  owed from the 2026-08-04 entry now covers eight channels rather than six.
+  Run it on the rented card with and without, record the delta, re-derive
+  the 686 s/run cost basis if material. Unchanged in kind; the fallback
+  ladder (log a subset) still applies and is still a human call.
+- **After the grid:** the per-artifact floor for both channels, from the
+  grid's own seeds. Until it exists, neither channel grades anything —
+  bars come with floors.
+
+  **RECORDED BUT NOT GRADED, and deliberately so.** The grid writes both
+  channels into every eval `.npz` (that is the free measurement this ships
+  for), but `che/scripts/m62_report.py::METRICS` is
+  `("completion", "survival_rate", "episode_return", "deaths_fire")` and is
+  **left untouched**. That tuple drives the registered confirmatory
+  machinery — the Šidák family at `SIDAK_M = 2`, the contrast power, the
+  plateau guard — so adding a channel to it would enlarge a pre-registered
+  family after registration, which the freeze forbids and which no
+  diagnostic is worth. Computing the drift floors is therefore a **separate
+  post-grid analysis with its own instrument**, not something the grid
+  report will produce on its own. Stated here because "the grid measures it"
+  and "the grid grades it" are one word apart and this project has been hurt
+  by exactly that distance before.
+- **Before the paper sentence:** enumerate the endogeneity family, or drop
+  the ordinal (see the transcription note in ruling 5).

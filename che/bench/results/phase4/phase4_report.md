@@ -487,6 +487,44 @@ stands: the env family changed since
 m31b, so this is a fresh measurement rather than a re-test.
 **Recommend closing the watch item.**
 
+> **DATED ADDENDUM (2026-08-10) — the watch item was reopened and re-closed.**
+> Nothing above is revised; it records its era correctly. Full entry:
+> `docs/decision_log.md`, **RENDER-GATE FINDINGS** (registrar, 2026-08-10).
+>
+> The render inspection that preceded the Phase-6 grid found the m31b
+> phenomenon to be **real and positional after all**. Agents spawn uniformly
+> (expected centroid row 31.5 of 64) and the committed renders end at row
+> 49.2 for m44 — **24 of 24 episodes drifting outward** — and 51.0 for m31b
+> itself. Diagnosis: a **per-training-run residual action bias**, integrated
+> by an **absorbing boundary** (`env.py:185` clips, so a move into the wall
+> is a no-op rather than a bounce), mildly attracted by the **OOB-zero
+> half-window** the crop pads (`observation.py:51`). Not an env bug — env
+> geometry is symmetric, and the direction varies by checkpoint: m30b drifts
+> right, and the Phase-5 `high_kbL_replicate` arm drifts *up*.
+>
+> **The cost is still approximately zero, and now for a stated reason rather
+> than an inferred one.** `high_kbL` and `high_kbL_replicate` are the same
+> config retrained: a 24-row positional swing at completion **0.781 both**.
+>
+> **Why this closure supersedes the one above.** Result 6 grades
+> *completion conditioned on burnt_fraction* — a completion-inferred closure
+> of a positional claim. It was sound on its own terms and it answered the
+> wrong quantity. Result 6's finding is unaffected; only its jurisdiction over
+> the watch item is.
+>
+> **Instrument note, and it applies to this report's own falsifier.** The
+> inertness falsifier's condition (ii) below — "no cross-arm exposure/
+> positioning difference" — is **structurally blind to an effect present in
+> both arms**, which cancels in the difference exactly. A differenced test
+> measures asymmetry; its silence is evidence about asymmetry only, never
+> about presence. **This does not move the NOT INERT verdict**, which rests
+> on conditions (i)–(iii) firing, not on (ii).
+>
+> Two info channels now measure the effect directly (`center_dist_sum`,
+> `boundary_agents`), shipped before the grid so the 240 runs record it.
+> Neither grades anything until its per-artifact floor is measured from the
+> grid's own seeds.
+
 ### Inertness falsifier (amendment 3, logged pre-data)
 
 | condition | holds? | evidence against |

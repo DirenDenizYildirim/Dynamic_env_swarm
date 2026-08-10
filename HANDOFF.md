@@ -8,10 +8,17 @@ runs**. There is **no GPU box running**.
 **Nothing is blocked on a decision any more. Two things gate the grid, and
 both are work:**
 
-1. **[OWNER] render inspection of the 24 M5.5 episodes.** Owner-assigned,
-   precedes the grid. Not delegable.
+1. ~~**[OWNER] render inspection of the 24 M5.5 episodes.**~~ **DISCHARGED
+   2026-08-10** — `docs/decision_log.md`, *RENDER-GATE FINDINGS*. Ruled **not
+   a launch blocker**. The bottom-clustering the inspection asked about is a
+   per-training-run residual action bias integrated by the absorbing
+   boundary; env geometry is symmetric, no invariant is touched, and the
+   completion cost is bounded at ~zero by the replicate pair (same config,
+   24-row positional swing, completion 0.781 both). A two-channel diagnostic
+   shipped in the same commit so the grid measures it.
 2. **The launch batch** — 24 runs (~$4.57) on the rented card, which
    re-measures the floors there and resolves the pre-registered ladder.
+   **This is now the only thing gating the grid.**
 
 If you are here to make progress on *content* rather than protocol, the answer
 is still `env_native_prompt.md` (work package **E1**, co-active visitation,
@@ -164,19 +171,28 @@ owed). What remains is the render pass and the launch batch.
 Both are consequences of adding the coupling counters to the training logger
 (`docs/decision_log.md`, *TRAINING LOGGER GAINS THE COUPLING COUNTERS*).
 
-1. **The CPU test chunk `test_ippo test_pbt test_metrics test_locks` was
-   KILLED, not passed** — exit 143 (SIGTERM), stopped mid-run because it was
-   overloading the operator's machine. **It has not been run against this
-   change.** What *did* run green after the change: `test_step_metrics` (new,
-   5 tests), `test_theta_golden`, `test_frozen`, `test_nesting`,
-   `test_reward_independence`, and `ruff`. Static check: `Transition` is
-   constructed only inside `ippo.py` and nothing outside reads `ep_metrics`
-   or `step_metrics`, so the new field is contained — but that is an argument
-   for low risk, not evidence of a pass. **Run the chunk before the grid.**
+1. ~~**The CPU test chunk `test_ippo test_pbt test_metrics test_locks` was
+   KILLED, not passed**~~ — **DISCHARGED 2026-08-10.** All four files ran
+   green, chunked and thread-capped, against both the coupling counters and
+   the render-gate channels on top of them.
 2. **The throughput cost of the added channels is UNMEASURED.** A CPU A/B was
    running and was killed before it flushed, so there is no number at all —
    not even an indicative one. See the GPU plan below; this is the main
-   reason to want a box.
+   reason to want a box. **Widened 2026-08-10:** the A/B now covers **eight**
+   channels, not six — the render-gate diagnostic added `center_dist_sum`,
+   `boundary_agents` and the `alive_agents` denominator to `STEP_METRICS`.
+   Unchanged in kind, and the fallback (log a subset) still applies and is
+   still a human call.
+3. **NEW 2026-08-10 — the bench's `training` keep-alive set had drifted, and
+   is fixed.** `throughput.py::_training_info_keys()` enumerated `EP_METRICS`
+   only, so from 2026-08-04 — when `STEP_METRICS` was added as a *second*
+   table — every `training`-mode env-only row measured an env whose newest
+   channels XLA was free to delete. Exactly the M5.1 defect, one table later.
+   It now enumerates both tables, and `test_positional_drift.py` asserts the
+   superset so a third table fails loudly. **No verdict moves** (gates were
+   re-anchored to `pbt.py --bench` long ago), but every training-mode row
+   since 2026-08-04 **undercounts** and should not be compared to rows taken
+   before it.
 
 ## Open threads
 
@@ -184,7 +200,18 @@ Both are consequences of adding the coupling counters to the training logger
   undecided whether it belongs in the tree.
 - **`test_prop3`, `test_calibration`, `test_percolation`** are slow MC files;
   isolate them when running the suite.
-- **24 M5.5 renders un-inspected** — owner-assigned, gates the grid.
+- ~~**24 M5.5 renders un-inspected**~~ — inspected and ruled 2026-08-10; no
+  longer gates the grid. **Two things it left owed:** the per-artifact floor
+  for the two new drift channels, measurable only from the grid's own seeds
+  (until then neither channel grades anything — and note the grid **records**
+  them without **grading** them: `m62_report.py::METRICS` is deliberately
+  untouched, because that tuple is the registered confirmatory family at
+  `SIDAK_M = 2` and no diagnostic is worth enlarging it post-registration, so
+  the floors need their own post-grid instrument); and an **enumeration of the
+  "endogeneity family"** before the paper's limitation sentence cites this as
+  its fifth member — the family is nowhere enumerated in the tree, only its
+  *third* member is labelled, and `kappa_b_lock.md:28` records that one as
+  demoted to **provisional**.
 - **Design v2 §5 and §7 owe a text update** to state the upper-bound framing
   and the seed-dispersion test basis. Ruled, not yet written into v2.
 

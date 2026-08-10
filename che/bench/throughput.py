@@ -69,10 +69,28 @@ PROBE_MODES = ("legacy", "comms", "training", "all")
 
 def _training_info_keys() -> tuple[str, ...]:
     """Info keys the IPPO collector reads, sourced from the collector itself
-    so the bench cannot drift away from what training does."""
-    from che.train.ippo import EP_METRICS
+    so the bench cannot drift away from what training does.
 
-    return tuple(EP_METRICS) + ("links_alive", "links_in_range", "alive_agents")
+    IT DRIFTED ANYWAY (found 2026-08-10, fixed here). This enumerated
+    EP_METRICS only. When the coupling counters landed on 2026-08-04 as a
+    second table, STEP_METRICS, they were never added -- so every
+    `training`-mode row taken since measured an env whose six newest channels
+    XLA was free to delete. That is the exact failure M5.1 replaced a
+    hand-written list to prevent; the list had simply grown a second home.
+    No verdict moves (gates re-anchored to `pbt.py --bench` long before), but
+    the rows undercount.
+
+    Enumerating BOTH tables is the structural fix, and
+    `test_positional_drift.py` asserts the keep-alive set covers both, so a
+    third table fails loudly rather than drifting quietly.
+    """
+    from che.train.ippo import EP_METRICS, STEP_METRICS
+
+    return tuple(dict.fromkeys(
+        tuple(EP_METRICS)
+        + tuple(STEP_METRICS)
+        + ("links_alive", "links_in_range", "alive_agents")
+    ))
 
 
 def keepalive_probe(rew, done, obs: dict, info: dict, mode: str = "all"):

@@ -416,6 +416,19 @@ def step(
         state.weak[pos_new[:, 0], pos_new[:, 1]],
         False,
     ).sum(dtype=jnp.float32) / jnp.maximum(alive_new.sum(dtype=jnp.float32), 1.0)
+    # Render-gate positional-drift geometry (see the info dict below).
+    # `arena_center` is a static Python float: (L-1)/2, so 31.5 on L = 64 —
+    # a half-integer the agents straddle rather than a cell they occupy.
+    # Chebyshev distance therefore runs 0.5 .. (L-1)/2, and an agent is on
+    # the boundary exactly when it attains the maximum. Every quantity here
+    # is exactly representable in float32 for any L a config can carry, so
+    # the comparison is exact; `>=` rather than `==` because the maximum is
+    # an upper bound and a tolerance-free reading of "on an edge row/col".
+    arena_center = (cfg.grid_size - 1) / 2.0
+    center_dist = jnp.max(
+        jnp.abs(pos_new.astype(jnp.float32) - arena_center), axis=-1
+    )
+    on_boundary = center_dist >= arena_center
     info = {
         "coupling_co_active": co_active,
         # M3.2: Coupling A output channel — count of Fuel cells ignited by
@@ -458,6 +471,37 @@ def step(
         "masked_danger_sum": jnp.where(danger, agent_masked, 0.0).sum(),
         "danger_agents": danger.sum(dtype=jnp.float32),
         "alive_agents": alive_new.sum(dtype=jnp.float32),
+        # Render-gate diagnostic (registrar-ruled 2026-08-10): positional
+        # drift. The render inspection found trained policies acquiring a
+        # per-training-run residual action bias which the absorbing boundary
+        # (the clip above is a no-op, not a bounce) integrates into a wall
+        # pile-up, mildly attracted by the OOB-zero half-window the crop
+        # pads (observation.py:51). Not an env bug — env geometry is
+        # symmetric and the drift direction varies by checkpoint — but
+        # invisible to every differenced falsifier the project runs, because
+        # an effect present in both arms cancels.
+        #
+        # Same poolable numerator/denominator discipline as the M4.4
+        # danger-moment pair and the M5.0 comms pair: sums over alive
+        # agents, never per-step ratios, so a consumer can pool exactly over
+        # steps and episodes instead of averaging conditional means. Both
+        # denominate by `alive_agents` above — undenominated they fall as
+        # agents die and confound drift with mortality.
+        #
+        # DECISION: the norm is Chebyshev (L_inf), which makes the pair one
+        # statistic rather than two — boundary contact is exactly the event
+        # `dist == (L-1)/2`, the tail of the distribution the mean
+        # summarizes — and matches the crop-radius convention already used
+        # by the co-active and danger-moment tests. DECISION: magnitude
+        # only; a signed centroid would recover *which* wall, and is a
+        # human call (decision_log.md, builder decision 3).
+        #
+        # Deterministic, info-only, consumes no PRNG (invariant #3); the
+        # reward never reads them (Def. 2).
+        "center_dist_sum": jnp.where(alive_new, center_dist, 0.0).sum(),
+        "boundary_agents": jnp.where(alive_new, on_boundary, False).sum(
+            dtype=jnp.float32
+        ),
         # M5.0 comms channels (Def. 7), emitted as poolable numerator /
         # denominator counts rather than per-step ratios — same reason as
         # the M4.4 danger-moment pair: pooling over steps and episodes must

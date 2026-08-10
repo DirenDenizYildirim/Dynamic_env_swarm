@@ -59,6 +59,14 @@ ALLOWED_NEW_FIELDS: frozenset[str] = frozenset(
         # width is the point — the observable surface must not change with
         # the mixture, or every config would need its own golden.
         *(f"info.mixture_count_{i}" for i in range(8)),
+        # Render-gate diagnostic (registrar 2026-08-10): positional drift.
+        # Info-only, deterministic, no PRNG. That this entry is the ONLY
+        # change the golden needed is the acceptance: every trajectory field
+        # and every pre-existing info digest reproduced bitwise across all
+        # four configs, both tracks and both modes, so the channels observe
+        # the env without perturbing it.
+        "info.center_dist_sum",
+        "info.boundary_agents",
     }
 )
 

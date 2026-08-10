@@ -73,6 +73,17 @@ EVAL_METRICS = {
     # equally rather than each episode.
     "links_alive": ("links_alive", _SUM),
     "links_in_range": ("links_in_range", _SUM),
+    # Render-gate diagnostic (registrar 2026-08-10): positional drift, same
+    # poolable numerator/denominator discipline as the two pairs above.
+    # Per-episode readings are mean_center_dist = center_dist_sum /
+    # alive_agents (Chebyshev cells from the arena centre, per surviving
+    # agent-step) and boundary_contact_frac = boundary_agents /
+    # alive_agents (share of surviving agent-steps spent on an edge row or
+    # column). Both denominate by `alive_agents`, already summed above.
+    # NEITHER GRADES ANYTHING until its per-artifact floor is measured from
+    # the grid's own seeds — bars come with floors.
+    "center_dist_sum": ("center_dist_sum", _SUM),
+    "boundary_agents": ("boundary_agents", _SUM),
 }
 
 
