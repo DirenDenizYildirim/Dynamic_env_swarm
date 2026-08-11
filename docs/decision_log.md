@@ -2790,7 +2790,7 @@ two more channels than when it was written.
 ### Owed
 
 - **Before the grid:** the `pbt.py --bench` throughput comparison already
-  owed from the 2026-08-04 entry now covers eight channels rather than six.
+  owed from the 2026-08-04 entry now covers NINE channels rather than six.
   Run it on the rented card with and without, record the delta, re-derive
   the 686 s/run cost basis if material. Unchanged in kind; the fallback
   ladder (log a subset) still applies and is still a human call.
@@ -2910,7 +2910,7 @@ The measure/grade distinction is clause 2 verbatim.
   and supersedes the "third member" label at 2026-07-27 and the ordinal in
   the previous entry's ruling 5.
 - `gpu_launch_prompt.md`: G1.0(a) and G1.1 marked discharged, G1.0(b) widened
-  to eight channels — see below.
+  to nine channels — see below.
 - `HANDOFF.md`: owed list updated.
 - **No constant is ruled here; `docs/locks.yaml` is untouched.**
 
@@ -2926,7 +2926,7 @@ preconditions have moved:
 - **G1.1** (the owner render pass) — **discharged 2026-08-10**, this entry
   and the one above it. The prompt's instruction not to waive it is
   satisfied by a ruling, not by a waiver.
-- **G1.0(b)** (the throughput A/B) — **widened from six channels to eight**.
+- **G1.0(b)** (the throughput A/B) — **widened from six channels to nine**.
   Its `STEP_METRICS.clear()` mechanism is unaffected and now measures more.
 
 **G1.0(b) MUST PRECEDE G1.2, and the reason is stronger than sequencing

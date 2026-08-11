@@ -1,0 +1,44 @@
+{
+  "milestone": "G1.0(b)",
+  "date": "2026-08-10",
+  "tree": "ff92da7c87cb0f6060beb086d1e9551c11de8138",
+  "config": "che/configs/gate_pop12.yaml",
+  "method": "bench_population(windows=5, window_secs=30.0, seed=0), two separate processes",
+  "toolchain": {"python": "3.12.3", "jax": "0.11.0", "jaxlib": "0.11.0"},
+  "box": {
+    "provider": "vast.ai",
+    "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+    "memory_total_mib": 97887,
+    "driver_version": "595.58.03",
+    "power_limit_w": 500.0,
+    "cpu_cores": 128,
+    "ram_gb": 498,
+    "workspace_is_volume": false,
+    "network_download_bytes_per_s": 118265977
+  },
+  "arms": {
+    "on": {
+      "pop_size": 12, "n_envs": 128, "n_agents": 12, "grid": 64,
+      "rollout_len": 128, "k_pbt": 20, "compile_s": 95.51,
+      "rates": [60895, 60751, 60785, 60861, 60979],
+      "median": 60861, "iqr": 169, "peak_bytes": 72209845248,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "arm": "on", "n_step_metrics": 9
+    },
+    "off": {
+      "pop_size": 12, "n_envs": 128, "n_agents": 12, "grid": 64,
+      "rollout_len": 128, "k_pbt": 20, "compile_s": 95.47,
+      "rates": [60874, 60801, 60840, 60915, 60988],
+      "median": 60874, "iqr": 131, "peak_bytes": 72209845248,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "arm": "off", "n_step_metrics": 0
+    }
+  },
+  "delta_steps_per_s": 13,
+  "delta_pct": 0.021,
+  "resolution_limit_pct": 0.25,
+  "resolution_basis": "delta is an order of magnitude inside either arm's own IQR (169, 131); the point estimate is not defensible, the bound is",
+  "branch": "<5% ABSORB",
+  "branch_action": "686 s/run basis stands; no re-derivation required",
+  "caveat_alive_agents": "alive_agents is also read as a standalone Transition field (ippo.py:315) for mean_out_degree, so the OFF arm still computes it; the A/B measures the full cost of 8 channels and the marginal cost of the 9th"
+}

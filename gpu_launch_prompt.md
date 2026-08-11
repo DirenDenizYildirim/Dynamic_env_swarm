@@ -14,7 +14,7 @@
 > | | was | now |
 > |---|---|---|
 > | **G1.0(a)** test chunk | owed (SIGTERM-killed) | **DISCHARGED** — green locally; keep as a box smoke test |
-> | **G1.0(b)** throughput A/B | owed, 6 channels | **still owed, now 8 channels** |
+> | **G1.0(b)** throughput A/B | owed, 6 channels | **still owed, now 9 channels** |
 > | **G1.1** owner render pass | owed, gates the grid | **DISCHARGED** — inspected and ruled |
 >
 > **The ordering in G1.0(b) is now load-bearing, not hygiene.** Its `> 15 %`
@@ -60,9 +60,9 @@ wrong, **STOP and say so**; do not quietly act on it.
    worth running on the box, as a toolchain smoke test rather than a debt.
 2. **The throughput A/B is unmeasured** — the local attempt was killed before
    it flushed. There is no number, not even indicative. **Widened 2026-08-10
-   to eight channels**: the render gate added `center_dist_sum`,
+   to nine channels**: the render gate added `center_dist_sum`,
    `boundary_agents` and the `alive_agents` denominator to `STEP_METRICS`.
-   The `.clear()` mechanism below is unaffected and now measures all eight.
+   The `.clear()` mechanism below is unaffected and now measures all nine.
    **This is the only remaining pre-spend debt, and it must run first.**
 
 ---

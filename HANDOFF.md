@@ -178,7 +178,7 @@ Both are consequences of adding the coupling counters to the training logger
 2. **The throughput cost of the added channels is UNMEASURED.** A CPU A/B was
    running and was killed before it flushed, so there is no number at all —
    not even an indicative one. See the GPU plan below; this is the main
-   reason to want a box. **Widened 2026-08-10:** the A/B now covers **eight**
+   reason to want a box. **Widened 2026-08-10:** the A/B now covers **nine**
    channels, not six — the render-gate diagnostic added `center_dist_sum`,
    `boundary_agents` and the `alive_agents` denominator to `STEP_METRICS`.
    Unchanged in kind, and the fallback (log a subset) still applies and is
