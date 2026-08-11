@@ -1,0 +1,17 @@
+run: M6.2 Phase-6 floor milestone (per-arm floors + plateau + eval cost)
+date_utc: 2026-08-11T13:36:13Z
+git_commit: ff92da7c87cb0f6060beb086d1e9551c11de8138
+git_dirty: 0 file(s)
+arms: iso:che/configs/p6_iso.yaml joint:che/configs/p6_joint.yaml sweep_p500:che/configs/p6_sweep_c50_p500.yaml
+reps: 8 (IDENTICAL runs at seed 0 — nondeterminism, not seed spread)
+updates: 1000   eval_episodes: 512   eval_config: che/configs/theta_star_holdout.yaml
+cross-config eval: declared via --allow-hash (training-config hash)
+gpu: NVIDIA RTX PRO 6000 Blackwell Workstation Edition
+jax: 0.11.0 0.11.0
+
+--- TOOLCHAIN (appended by run_m62b_t1000.sh) ---
+python: 3.12.3
+jax: 0.11.0 0.11.0
+devices: [CudaDevice(id=0)]
+jax pinned to 0.11.0 deliberately, to match the toolchain M6.0
+certified traced-theta bitwise on and M6.2 measured its floors under.

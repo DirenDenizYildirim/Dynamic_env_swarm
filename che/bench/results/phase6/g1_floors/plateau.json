@@ -1,0 +1,29 @@
+{
+ "iso": {
+  "mean_slope_per_update": 0.0001202062856392557,
+  "drift_over_window": 0.01202062856392557,
+  "floor_sd": 0.02141746406261712,
+  "ratio_to_floor": 0.5612535886032766,
+  "graded": true,
+  "still_climbing": false,
+  "review_band": false
+ },
+ "joint": {
+  "mean_slope_per_update": 0.0002411262356505102,
+  "drift_over_window": 0.02411262356505102,
+  "floor_sd": 0.023630965823880006,
+  "ratio_to_floor": 1.0203824822379575,
+  "graded": true,
+  "still_climbing": true,
+  "review_band": true
+ },
+ "sweep_p500": {
+  "mean_slope_per_update": 0.00027946920955882354,
+  "drift_over_window": 0.027946920955882356,
+  "floor_sd": 0.02449203981149454,
+  "ratio_to_floor": 1.1410613885563905,
+  "graded": true,
+  "still_climbing": true,
+  "review_band": true
+ }
+}

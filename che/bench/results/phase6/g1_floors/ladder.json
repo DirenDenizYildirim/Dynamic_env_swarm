@@ -1,0 +1,11 @@
+{
+ "branch": "A",
+ "k_req": {
+  "completion": 11,
+  "survival_rate": 5
+ },
+ "k_cap": 60,
+ "k_confirmatory": 40,
+ "realized_power": 0.9998975038372993,
+ "action": "PROCEED at k = 40. Surplus recorded (k_req = 11)."
+}

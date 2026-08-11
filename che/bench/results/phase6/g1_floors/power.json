@@ -1,0 +1,34 @@
+{
+ "diagnostic.iso.completion": {
+  "sigma": 0.02141746406261712,
+  "power_at_target_per_arm": 0.9999718446957786
+ },
+ "diagnostic.iso.survival_rate": {
+  "sigma": 0.015594210370694177,
+  "power_at_target_per_arm": 0.9999999999036056
+ },
+ "diagnostic.joint.completion": {
+  "sigma": 0.023630965823880006,
+  "power_at_target_per_arm": 0.9997102076706597
+ },
+ "diagnostic.joint.survival_rate": {
+  "sigma": 0.011895017426596792,
+  "power_at_target_per_arm": 1.0
+ },
+ "contrast.completion": {
+  "sigma_iso": 0.02141746406261712,
+  "sigma_joint": 0.023630965823880006,
+  "sd_gamma": 0.005042643931121056,
+  "mde80": 0.015521751584552395,
+  "power_at_target": 0.9998975038372993,
+  "k_required": 11
+ },
+ "contrast.survival_rate": {
+  "sigma_iso": 0.015594210370694177,
+  "sigma_joint": 0.011895017426596792,
+  "sd_gamma": 0.003101091891030106,
+  "mde80": 0.0095454643696681,
+  "power_at_target": 0.9999999999999487,
+  "k_required": 5
+ }
+}
