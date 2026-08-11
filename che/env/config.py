@@ -207,6 +207,20 @@ class TrainConfig:
     pbt_interval: int = 20  # K_pbt: updates between exploit/explore
     # Checkpointing (M0.5).
     ckpt_interval: int = 50  # K: updates between orbax checkpoints
+    # Gamma(t) robustness evidence (T* ruling, 2026-08-11). How many recent
+    # checkpoints orbax retains. Default 3 preserves every pre-existing
+    # config's exact behaviour; the two CONFIRMATORY Phase-6 configs raise it
+    # so the registered Gamma(t) window -- the final HALF of training -- still
+    # exists on disk when the post-unblind analysis stage runs.
+    #
+    # The window is a RELATIONSHIP, not the literal number: retention covers
+    # the final half iff ckpt_max_to_keep >= T / (2 * ckpt_interval) + 1.
+    # At T = 1000, interval 50, that is 11. If T* ever moves, 11 silently
+    # stops meaning "the final half" and every test stays green -- so the
+    # relationship is what docs/locks.yaml locks and test_locks.py asserts,
+    # not the constant. Secondary arms stay at 3: Gamma is defined on the
+    # confirmatory contrast only.
+    ckpt_max_to_keep: int = 3
     # M5.1f: the pre-registered uint8 obs-storage contingency (standing rule
     # 2026-07-21), ACTIVATED. Trajectory crops are stored quantized and
     # normalized back in-network, cutting the PPO batch's dominant tensor 4x.

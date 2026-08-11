@@ -171,7 +171,9 @@ def train_population(
     pop = pfns.init(jax.random.PRNGKey(seed))
     rng = np.random.default_rng(seed + 1)  # host-side selection stream
     start_round = 0
-    mngr = _ckpt_manager(ckpt_dir) if ckpt_dir else None
+    mngr = (
+        _ckpt_manager(ckpt_dir, cfg.train.ckpt_max_to_keep) if ckpt_dir else None
+    )
     if mngr:
         hash_file = Path(ckpt_dir) / "config_hash.txt"
         if resume and mngr.latest_step() is not None:

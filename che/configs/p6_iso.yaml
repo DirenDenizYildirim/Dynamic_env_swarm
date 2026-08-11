@@ -46,3 +46,4 @@ train:
   n_minibatches: 4
   n_epochs: 4
   ckpt_interval: 50
+  ckpt_max_to_keep: 11  # Gamma(t) window: final half of training

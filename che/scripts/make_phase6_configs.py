@@ -87,6 +87,40 @@ def sweep(c: float, p: float) -> list[dict]:
     return _components([(A_ONLY, a), (B_ONLY, b), (AB, p), (PILLAR, pillar)])
 
 
+# The two arms Gamma is defined on. Only these carry the Gamma(t) retention
+# window (T* ruling, 2026-08-11); every secondary arm keeps the default 3.
+CONFIRMATORY: frozenset[str] = frozenset({"p6_iso", "p6_joint"})
+
+# T* and the checkpoint cadence, as the generator sees them. Kept beside the
+# retention derivation so the two cannot drift apart silently.
+T_STAR_UPDATES = 1000
+CKPT_INTERVAL = 50
+
+
+def gamma_t_retention(
+    t_star: int = T_STAR_UPDATES, interval: int = CKPT_INTERVAL
+) -> int:
+    """Checkpoints that must be retained to cover the FINAL HALF of training.
+
+    The registered Gamma(t) reading rule grades sign stability over the final
+    half, so updates [T/2, T] must survive on disk. Orbax keeps the last
+    `max_to_keep` saves at `interval` spacing, so that window needs
+    T/(2*interval) + 1 of them -- 11 at T = 1000, interval 50.
+
+    THIS IS A FUNCTION, NOT A CONSTANT, ON PURPOSE. Writing 11 would couple
+    the registered window to T* by coincidence: if T* ever moved, 11 would
+    silently stop meaning "the final half" and every test would stay green.
+    That is the same provenance rot the T* ruling's item 7 was issued
+    against, one layer down.
+    """
+    if t_star % (2 * interval):
+        raise ValueError(
+            f"T*={t_star} is not a whole number of half-intervals at "
+            f"interval={interval}; the Gamma(t) window would be ragged."
+        )
+    return t_star // (2 * interval) + 1
+
+
 PLAN: tuple[tuple[str, list[dict], str], ...] = (
     ("p6_iso", iso(), "ISO (D2): every element seen ONLY in isolation."),
     ("p6_joint", joint(), "JOINT-classic: all elements co-active."),
@@ -171,8 +205,18 @@ def render(name: str, comps: list[dict], purpose: str) -> str:
         "  n_minibatches: 4",
         "  n_epochs: 4",
         "  ckpt_interval: 50",
-        "",
     ]
+    # Gamma(t) robustness evidence (T* ruling, 2026-08-11). CONFIRMATORY arms
+    # only: Gamma is the ISO-vs-JOINT contrast, so no secondary arm needs the
+    # window and none gets the storage. Retention must cover the final HALF of
+    # training -- see GAMMA_T_RETENTION for the relationship this number is a
+    # solution of, and test_locks.py for its assertion.
+    if name in CONFIRMATORY:
+        lines += [
+            f"  ckpt_max_to_keep: {gamma_t_retention()}"
+            "  # Gamma(t) window: final half of training",
+        ]
+    lines += [""]
     return "\n".join(lines)
 
 

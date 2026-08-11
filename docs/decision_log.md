@@ -2936,3 +2936,167 @@ would therefore measure floors on an artifact the grid might not use, and
 those floors would grade nothing — the exact defect the per-artifact
 amendment was written against, reached by ordering instead of by
 substitution.
+
+## T\* RULING (registrar, 2026-08-11) — guard-fired amendment, pre-grid, pre-unblind
+
+Issued in response to G1.2's STOP. **The amendment window is open and no
+outcome was peeked:** the grid has not run, unblinding has not happened, and
+`m62_report.py` suppresses outcome means mechanically — the STOP was read off
+drift ratios and floors only.
+
+### 1. The plateau criterion is RETIRED as a certification instrument
+
+**Reason: it is detectability-relative, so it diverges on improving
+hardware.** `drift / floor` with `floor → 0` fails for any nonzero residual
+drift, however scientifically negligible. On a perfect instrument nothing
+ever certifies. **RA-authored flaw, logged as such.**
+
+**It survives demoted**: a *reported* sensitivity-scaled drift statistic,
+stated with its blindness, per the standing instruments-state-their-blindness
+law. It grades nothing.
+
+**Why this is not band-shopping, recorded because the shape is identical.**
+A criterion retired after it fired is exactly what tolerance-loosening looks
+like. Two structural facts distinguish this case:
+
+1. **The flaw is identifiable a priori, from the formula alone, with no
+   data.** `floor → 0 ⟹ ratio → ∞` needed no run to notice. The firing
+   *surfaced* the defect; it did not *define* it.
+2. **The amendment adds obligations rather than removing them.** It narrows
+   the claim (convergence → matched budget, ruling 2) *and* introduces a new
+   falsifiable requirement whose failure mode is a reportable finding
+   (ruling 3). A self-serving amendment relaxes; this one trades a claim the
+   design could not support for a test it can fail.
+
+The RA's G1.2 report framed the STOP as "the guard working as designed" and
+stopped one step short: **the detection was real, and wiring detectability to
+a certification gate was the defect.** Both halves are recorded.
+
+### 2. THE ESTIMAND, FIXED EXPLICITLY
+
+**Primary Γ = the confirmatory contrast at MATCHED BUDGET T = 1000, all
+arms — registered as a fixed-budget claim.**
+
+**"At convergence" is explicitly NOT claimed anywhere.** The paper says **"at
+matched compute"** throughout, which is also the practitioner-relevant
+question. This is what the design always measured: ISO and JOINT receive
+identical compute and Γ is their difference; convergence was an assumption
+the design never needed.
+
+### 3. Γ(t) PROMOTED — descriptive → REQUIRED robustness evidence
+
+The per-checkpoint trajectory of the contrast, with the **pre-registered
+reading rule**:
+
+> The fixed-budget conclusion is reported as **budget-robust iff the sign of
+> Γ is stable over the final half of training**. If the sign is still moving
+> at T, **that instability IS the finding** and is reported as such.
+
+**Justification, and it is arithmetic rather than taste:** the measured
+differential drift is ~0.012 per 100 updates, which is **~40 % of the 0.03
+target effect per 100 updates**. That is not small, and it is why this ruling
+is load-bearing rather than decorative.
+
+**MECHANISM — retain-and-eval-after, confirmatory arms only.**
+
+- Checkpoint retention on the two confirmatory arms covers **updates
+  500–1000 at interval 50 (11 points)**. ~44 MB/run, ~3.5 GB total; storage
+  is free at this scale.
+- **Evaluation at θ\* happens POST-UNBLIND**, as an analysis artifact: the
+  frozen pipeline gains a registered Γ(t) stage. **Nobody evaluates
+  checkpoints during the grid.** Γ is a cross-arm quantity, so computing it
+  before unblinding would breach NO-PEEKING; the reading rule is registered
+  now, the computation exists only after the salt is revealed.
+- **11 points, not 6:** the $1.60 difference buys sign-stability resolution
+  at the exact granularity the reading rule needs.
+
+### 4. HONESTY LINES, pre-drafted
+
+- Residual drift at T = 1000, quoted as the **triple**: **ISO 0.56×,
+  JOINT 1.02×, sweep 1.14×** of their own floors. (The earlier "~1.0–1.1×"
+  understated the sweep arm.)
+- The differential drift ~0.012/100u is quoted as a **local sensitivity
+  estimate — a training-surface proxy for the quantity Γ(t) measures
+  directly** — never as a "bound". One linear slope, one budget, one card,
+  and measured on training-log completion rather than on Γ's own
+  eval-at-θ\* surface.
+
+### 5. T = 2000 DECLINED
+
+Reasons above, plus its price (**$80+, outside the authorization**) and its
+**expected hollowness**: floors grow with T (the endogeneity family's
+solution-diversity member), so doubling the budget may not improve the ratio
+it was meant to fix. With the criterion retired, extending buys nothing it
+was meant to buy.
+
+### 6. COST CORRECTIONS RATIFIED
+
+Rate table → **$1.2358/h measured**. Grid re-projection **$40.9**, inside the
+**$45.73** authorization, which **stays as-registered**.
+
+**The +$3.60 Γ(t) eval block is a RESERVE DRAW, not an authorization
+amendment** — logged as its own line item against the ~$65 GPU reserve,
+cause: Γ(t) promotion. **Registrar records trip total ~$48.6 projected.**
+
+Next-trip sequence **CONFIRMED, one rental**: G1.2 re-floor on the rented
+card (~$4.08) → ladder → grid (~$40.9) → post-unblind Γ(t) eval (~$3.60).
+
+### 7. LOCKS PROVENANCE
+
+`T_STAR`'s **value is unchanged at 1000**; its **evidence key is re-pointed
+in the same commit**. Source becomes the fixed-budget estimand ruling above;
+`m62b/plateau.json` is demoted to historical context carrying the
+underpowered-null annotation.
+
+**Green tests are how stale provenance survives** — `test_locks.py` asserts
+the value, which would never have gone red on a justification that had
+quietly expired.
+
+### 8. RESUME STORY — decided before the rental
+
+- The grid script gains **per-run completion manifests**: a run is done iff
+  its archive and hash exist *and verify*.
+- On restart it **skips manifested runs**.
+- The floor script's **refuse-nonempty guard is KEPT** — integrity over
+  convenience there, since 24 runs are cheap to restart.
+- The grid, being **240 independent runs, must cost ≤ 1 run per
+  interruption**.
+
+**A 36-hour spot rental without a resume story is a $45 coin flip.** Builder
+implements before rental.
+
+### Builder hardening, flagged for ratification rather than assumed
+
+Two defects found while implementing ruling 8 and ruling 3. Both are the
+project's recurring shape — *a check that passes for the wrong reason*.
+
+**(a) `sha256sum | tee -a` is APPEND, not IDEMPOTENT — and the count
+assertion can pass with a missing run.** `run_m62_floors.sh:88` appends one
+line per archive, and `run_m62b_t1000.sh:135` asserts
+`wc -l == REPS × arms`. Under the resume design a re-executed run appends a
+**second** line for the same tag. One missing run plus one duplicated line
+yields exactly the expected count and the assertion **passes while a run is
+absent**. Existence is also not integrity: the manifest check must **verify
+the recorded hash against the file**, not merely observe that both exist.
+Implemented as a keyed, rewritten manifest with hash verification.
+
+**(b) The retention ↔ "final half" coupling is implicit and would break
+silently.** `max_to_keep = 11` equals updates 500–1000 *only because*
+T = 1000 and `ckpt_interval = 50`. If `T_STAR` ever moves, 11 stops meaning
+"the final half", the registered Γ(t) window breaks, and **every test stays
+green** — the same rot ruling 7 was issued against, one layer down. Locked as
+the **relationship** (`retention ≥ T/(2·interval) + 1`) and asserted, not as
+the literal 11.
+
+### What this entry changes in the tree, in this commit
+
+- `docs/locks.yaml`: `T_STAR` provenance re-pointed; `CKPT_MAX_TO_KEEP_CONFIRMATORY`
+  added with its derived-window assertion.
+- `che/env/config.py`: `TrainConfig.ckpt_max_to_keep` (default 3 — every
+  pre-existing config keeps its exact behaviour).
+- `che/train/ippo.py`: `_ckpt_manager` reads it instead of hardcoding 3.
+- `che/configs/p6_iso.yaml`, `p6_joint.yaml`: `ckpt_max_to_keep: 11`.
+- `che/scripts/lib_run_manifest.sh`: keyed, verifying completion manifest.
+- `che/tests/test_locks.py`, `che/tests/test_gamma_t_retention.py`: assertions.
+- **No secondary arm gains retention** — Γ is defined on the confirmatory
+  contrast only, and the sweep arms stay at 3.

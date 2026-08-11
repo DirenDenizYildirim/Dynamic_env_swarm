@@ -505,10 +505,18 @@ def config_hash(cfg: Config) -> str:
     return hashlib.sha256(repr(cfg).encode()).hexdigest()[:16]
 
 
-def _ckpt_manager(ckpt_dir: str | Path) -> ocp.CheckpointManager:
+def _ckpt_manager(
+    ckpt_dir: str | Path, max_to_keep: int = 3
+) -> ocp.CheckpointManager:
+    """Orbax manager. `max_to_keep` was hardcoded at 3 until the T* ruling
+    (2026-08-11): the registered Gamma(t) robustness evidence needs the final
+    HALF of training on disk, and at T = 1000 / interval 50 three checkpoints
+    is the final 100 updates. Callers pass `cfg.train.ckpt_max_to_keep`; the
+    default keeps every pre-existing call site's exact behaviour.
+    """
     return ocp.CheckpointManager(
         Path(ckpt_dir).absolute(),
-        options=ocp.CheckpointManagerOptions(max_to_keep=3, create=True),
+        options=ocp.CheckpointManagerOptions(max_to_keep=max_to_keep, create=True),
     )
 
 
@@ -546,7 +554,9 @@ def train(
     fns = make_train_fns(cfg)
     runner = fns.init(jax.random.PRNGKey(seed))
     start = 0
-    mngr = _ckpt_manager(ckpt_dir) if ckpt_dir else None
+    mngr = (
+        _ckpt_manager(ckpt_dir, cfg.train.ckpt_max_to_keep) if ckpt_dir else None
+    )
     if mngr:
         hash_file = Path(ckpt_dir) / "config_hash.txt"
         if resume and mngr.latest_step() is not None:

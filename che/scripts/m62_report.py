@@ -50,7 +50,13 @@ SIDAK_M = 2  # confirmatory family {Gamma_completion, Gamma_survival}
 POWER_STOP = 0.80  # framing ruling, step (b); was 0.75 for M6.2 itself
 PLATEAU_PASS = 1.0  # VERDICT-BEARING: drift/own-floor above this -> STOP
 PLATEAU_REVIEW = 1.5  # REPORTING ONLY: marginal band, never a verdict
-T_STAR = 1000  # MEASURED at M6.2b: both arms passed the plateau guard
+T_STAR = 1000  # REGISTERED fixed-budget estimand (T* ruling 2026-08-11)
+# Gamma(t) robustness window (T* ruling, item 3). Checkpoints retained on the
+# CONFIRMATORY arms so the final HALF of training survives for the post-unblind
+# Gamma(t) stage. A SOLUTION of T_STAR / (2 * ckpt_interval) + 1, not an
+# independent constant -- test_gamma_t_retention.py asserts the relationship
+# against the live T_STAR so a future T* change fails loudly.
+GAMMA_T_RETENTION = 11
 # --------------------------------------------------------------------------
 
 TARGET_EFFECT = 0.03  # historical completion effect band (red team Part 3)

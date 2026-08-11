@@ -313,6 +313,37 @@ analysis:
         before power falls back through 80 %, which is what K_LADDER_CAP
         exists to absorb.
 
+    GAMMA_T_RETENTION:
+      value: 11
+      locked: true
+      source: docs/decision_log.md   # T* RULING 2026-08-11, items 3 and 8(b)
+      ruled: 2026-08-11
+      reachable_from:
+        - che/configs/p6_iso.yaml        # train.ckpt_max_to_keep
+        - che/configs/p6_joint.yaml      # train.ckpt_max_to_keep
+      note: >-
+        Checkpoints retained on the CONFIRMATORY arms so the registered
+        Gamma(t) window survives on disk. The reading rule grades sign
+        stability of Gamma over the FINAL HALF of training, so updates
+        [T/2, T] must exist when the post-unblind analysis stage runs.
+        THE LOCKED FACT IS THE RELATIONSHIP, NOT THE NUMBER:
+        retention >= T_STAR / (2 * ckpt_interval) + 1, which is 11 at
+        T_STAR = 1000 and ckpt_interval = 50, and would be 21 at T = 2000.
+        11 is a SOLUTION of that relationship, not an independent constant.
+        test_locks.py asserts the relationship against the live T_STAR and
+        the configs' own ckpt_interval, so a future T* change fails loudly
+        instead of silently shrinking the registered window while every test
+        stays green -- the rot this ruling's item 7 was issued against, one
+        layer down. The generator derives it in
+        make_phase6_configs.gamma_t_retention(); nothing writes 11 by hand.
+        SECONDARY ARMS ARE DELIBERATELY EXCLUDED: Gamma is the ISO-vs-JOINT
+        contrast, so no sweep or identification arm needs the window, and
+        none carries the storage. Default stays 3 everywhere else, which
+        preserves every pre-existing config's exact behaviour.
+        COST: ~44 MB/run, ~3.5 GB across the 80 confirmatory runs, and a
+        ~$3.60 post-unblind eval block logged as a RESERVE DRAW rather than
+        an amendment to the $45.73 grid authorization.
+
     K_SECONDARY:
       value: 20
       locked: true
@@ -401,10 +432,31 @@ analysis:
     T_STAR:
       value: 1000
       locked: true
-      source: docs/decision_log.md   # M6.2b CLOSE-OUT, item 4 (VERDICT)
-      ruled: 2026-08-03
-      evidence: che/bench/results/phase6/m62b/plateau.json
+      source: docs/decision_log.md   # T* RULING 2026-08-11, item 2 (ESTIMAND)
+      ruled: 2026-08-11              # re-pointed; value unchanged since 08-03
+      evidence: docs/decision_log.md # registered fixed-budget estimand
+      historical_evidence: che/bench/results/phase6/m62b/plateau.json
       note: >-
+        PROVENANCE RE-POINTED 2026-08-11, VALUE UNCHANGED. T* = 1000 is now
+        a REGISTERED FIXED-BUDGET ESTIMAND, not a measured outcome of the
+        plateau procedure. The plateau criterion was RETIRED as a
+        certification instrument on 2026-08-11: it grades drift against the
+        arm's own reproducibility floor, so it is detectability-relative and
+        DIVERGES as hardware improves (floor -> 0 implies ratio -> infinity
+        for any nonzero drift). It survives demoted, as a reported statistic
+        that grades nothing.
+        WHY THE OLD PROVENANCE IS UNSAFE TO KEEP: G1.2 re-measured the same
+        arms on a quieter card and JOINT came back at 1.02x its own floor --
+        STILL CLIMBING -- while its ABSOLUTE drift had FALLEN 12.6%
+        (0.02759 -> 0.02411). Its floor had halved (0.04826 -> 0.02363). The
+        drift was there at M6.2b and the card could not resolve it, so the
+        pass below reads as an UNDERPOWERED NULL: a failure to detect, not a
+        demonstration of absence. The value survives because the estimand is
+        now fixed by registration -- "at matched compute", never "at
+        convergence" -- and a registered budget needs no convergence proof.
+        GREEN TESTS ARE HOW STALE PROVENANCE SURVIVES: test_locks.py asserts
+        the VALUE, which never went red while its justification expired.
+        The superseded measurement record follows, retained as history.
         FILLED BY MEASUREMENT 2026-08-03, which is the only way this slot
         was ever allowed to fill. T* is a MEASURED OUTCOME of the plateau
         procedure, not a chosen constant: the registered criterion is
