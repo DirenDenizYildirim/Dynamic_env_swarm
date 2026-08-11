@@ -106,21 +106,40 @@ gives a misleading picture of what this card did.
 | eval | median **12 s** (n = 24) |
 | **per run** | **497 s** |
 
-Against the **686 s/run** the $45.73 grid authorization was derived on. At the
-~$1.00/h PRO 6000 rate the 240-run grid is **240 × 497 s = 33.1 h ≈ $33.1**,
-about **$12.6 under** the authorized figure. This measurement supersedes the
-686 s basis and the earlier extrapolation in `g1_0b_throughput_ab.md`.
+Against the **686 s/run** the $45.73 grid authorization was derived on. This
+measurement supersedes the 686 s basis and the earlier extrapolation in
+`g1_0b_throughput_ab.md`.
 
-**Caveat that must travel with that number:** it is 497 s/run **on this card**,
-and the card is being released. See below.
+**THE RATE, MEASURED RATHER THAN ASSUMED.** This instance billed at
+**$1.2358/h** (`vastai show instances`, id 47454262), not the **~$1.00/h**
+the decision log carries for a PRO 6000 (2026-07-30 hardware-split entry).
+Using the assumed rate understates every projection by 24 %, so the rented
+rate is what is recorded here:
+
+| | at assumed $1.00/h | **at measured $1.2358/h** |
+|---|---|---|
+| 240-run grid (33.1 h) | $33.1 | **$40.9** |
+| re-run of this batch (3.3 h) | $3.30 | **$4.08** |
+
+**The grid still comes in under the $45.73 authorization — by ~$4.8, not by
+the ~$12.6 that the $1.00/h assumption would suggest.** The saving is real
+but roughly a third the size, and it comes entirely from the faster card
+(497 vs 686 s/run), which the run-length ruling may erase: **any increase in
+`T*` scales the train component (485 s of the 497) linearly.** At T = 2000
+the grid would be ~$80 and outside the authorization entirely.
+
+**Caveat that must travel with the 497 s/run:** it is on **this card**, and
+the card was released the same day. See below.
 
 ## Consequence of releasing the box
 
 Floors are per-hardware. **These floors do not grade a grid run on a
 different card**, and the grid was not run today (owner's call, 2026-08-10).
 The next trip therefore needs G1.2 re-run before G1.3 — at the measured rate
-that is 24 × 497 s ≈ **3.3 h ≈ $3.30**, against ~$1.00/h to hold this box
-idle, so releasing is correct for any resumption gap beyond ~3 hours.
+that is 24 × 497 s ≈ **3.3 h ≈ $4.08**, against **$1.2358/h** to hold this
+box idle. Releasing is correct for any resumption gap beyond ~3.3 hours, and
+the instance was destroyed (id 47454262) once every artifact was retrieved
+and hash-verified.
 
 **What survives the release, card-independent:**
 
