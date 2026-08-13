@@ -144,6 +144,22 @@ def test_run_order_is_seed_major(tags):
     assert len(first_block) == len(set(first_block)) == 10
 
 
+def test_chunks_of_60_land_on_seed_boundaries(tags):
+    """MAX_RUNS=60 runs the grid in quarters. Each quarter must be a whole
+    block of seeds: a chunk that split a seed would leave ISO and JOINT for
+    that seed on different rented cards, and the card effect only cancels in
+    Γ because both arms of a seed share one."""
+    seeds = [int(t.rsplit("_s", 1)[1]) for t in tags]
+    for c in range(4):
+        block = seeds[c * 60 : (c + 1) * 60]
+        assert len(block) == 60
+        before = seeds[: c * 60]
+        after = seeds[(c + 1) * 60 :]
+        # No seed may appear both inside this chunk and outside it.
+        assert not (set(block) & set(before)), f"chunk {c + 1} resumes a prior seed"
+        assert not (set(block) & set(after)), f"chunk {c + 1} splits a seed"
+
+
 def test_configs_referenced_all_exist(tags):
     for t in tags:
         arm = t.rsplit("_s", 1)[0]
@@ -281,6 +297,60 @@ def test_end_to_end_runs_archives_and_resumes(tmp_path):
     assert r2.stdout.count("complete and verified") >= len(tags)
     assert "ran_this_invocation: 0" in (out / "provenance.txt").read_text()
     assert (out / "SHA256_CKPT.txt").read_text().splitlines() == lines
+
+
+@pytest.mark.slow
+def test_max_runs_pauses_at_a_seed_boundary_and_resumes(tmp_path):
+    """A chunked run must (a) stop cleanly with exit 0 — a planned pause is not
+    a failure — (b) overrun MAX_RUNS rather than split a seed, and (c) resume
+    into exactly the remaining runs."""
+    out = tmp_path / "grid"
+    # SMOKE has 2 arms; MAX_RUNS=1 is reached mid-seed 1, so the loop must
+    # finish seed 1 (2 runs) before stopping rather than stopping at 1.
+    r = _smoke(out, MAX_RUNS="1")
+    assert r.returncode == 0, r.stdout[-3000:] + r.stderr[-3000:]
+    assert "CHUNK COMPLETE" in r.stdout
+    assert "SEED BOUNDARY" in r.stdout
+
+    done = sorted(p.name for p in (out / ".manifest").glob("*.done"))
+    assert done == ["iso_s1.done", "sweep_c50_p000_s1.done"], done
+    assert not (out / "eval_iso_s2.json").exists()
+
+    # Resume: the remaining run completes and the grid closes green.
+    r2 = _smoke(out)
+    assert r2.returncode == 0, r2.stdout[-3000:] + r2.stderr[-3000:]
+    assert "G1.3 COMPLETE" in r2.stdout
+    assert "ran_this_invocation: 1" in (out / "provenance.txt").read_text()
+
+
+@pytest.mark.slow
+def test_provenance_accumulates_across_invocations(tmp_path):
+    """`tee` would erase which card ran the earlier chunks the moment a second
+    invocation started, and on a multi-card grid that record IS the audit
+    trail. Latent even without chunking: every resume overwrote it."""
+    out = tmp_path / "grid"
+    assert _smoke(out, MAX_RUNS="1").returncode == 0
+    first = (out / "provenance.txt").read_text()
+    assert first.count("run: G1.3") == 1
+
+    assert _smoke(out).returncode == 0
+    second = (out / "provenance.txt").read_text()
+    assert second.count("run: G1.3") == 2, "provenance was overwritten, not appended"
+    assert second.startswith(first), "the earlier invocation's record was altered"
+
+
+@pytest.mark.slow
+def test_card_block_structure_is_recorded_per_run(tmp_path):
+    """One card per seed is what makes the common-mode cancellation argument
+    checkable rather than assumed, so it is recorded per run and derived."""
+    out = tmp_path / "grid"
+    assert _smoke(out).returncode == 0
+    cards = sorted(p.name for p in (out / ".manifest").glob("*.card"))
+    assert cards == ["iso_s1.card", "iso_s2.card", "sweep_c50_p000_s1.card"]
+    summary = (out / "cards.txt").read_text()
+    assert summary.startswith("# card")
+    # One row per (card, arm); iso ran two seeds on the one card here.
+    assert "\tiso\t2\t" in summary
 
 
 @pytest.mark.slow

@@ -3446,3 +3446,104 @@ write related work from.
 - `phase6_framing_branches.md` §7: the three checks gain their status.
 - **No constant, config, lock or threshold changes.** Nothing here touches
   the grid, the analysis family, or the blind.
+
+## GRID CHUNKING — RATIFIED at 4 × 60 (owner-requested, builder-ruled, 2026-08-14)
+
+Owner asked whether the 240-run grid can run in four chunks of 60 rather than
+one ~33-hour session. **Yes, and it is now supported explicitly** (`MAX_RUNS`,
+`che/scripts/run_p6_grid.sh`). Issued pre-grid, pre-unblind.
+
+### 1. The chunks land on seed boundaries, and that IS the safety argument
+
+Derived this session from the script's own layout: at `MAX_RUNS = 60` the four
+chunks are **seeds 1–6, 7–12, 13–18, and 19–40** (the last being seeds 19–20
+across all ten arms plus the confirmatory tail 21–40). Exact, with no
+remainder.
+
+**Chunks will in general run on different rented cards, and floors are
+per-hardware.** What makes that safe is the seed-major ordering already ruled
+in §1(c) of the pre-rental entry: a chunk contains **every arm at a contiguous
+block of seeds**, so within any seed **ISO and JOINT ran on the same card**. A
+card effect is therefore **common-mode within a seed and cancels in Γ**, which
+is a difference of arm means — the identical argument that justifies the
+common eval draw (§1b).
+
+**This is a property the ordering decision bought before anyone asked for
+chunking**, and it is recorded that way rather than claimed as foresight: the
+ordering was ruled for interruption-robustness, and multi-card safety fell out
+of it.
+
+### 2. The stop OVERRUNS `MAX_RUNS` to reach a seed boundary
+
+**Splitting a seed across two cards breaks the cancellation for that seed** —
+ISO on the old card, JOINT on the new one — and the asymmetry points the same
+way every time, because arms run in a fixed order within a seed. So when
+`MAX_RUNS` is reached mid-seed the loop **finishes that seed before stopping**.
+Overrunning a cap by a few runs is strictly cheaper than hand-auditing a split
+seed. Asserted by `test_p6_grid.py`.
+
+### 3. WHAT IT COSTS — power, not validity
+
+Each arm's variance gains a between-card component, so `sd(Γ)` inflates.
+**Derived from the G1.2 floors at k = 40 against the 0.03 target:** `sd(Γ)` may
+inflate **1.93×** (completion) or **3.14×** (survival) before power falls to
+80 %. The ~1.3× already anticipated for seed dispersion leaves roughly **1.5×**
+for card blocks.
+
+**The registered clause already governs the outcome: realized power is
+REPORTED, not re-engineered** (M6.2b close-out, item 5). Chunking does not
+create a new escape hatch and none is added here.
+
+**Money is roughly unchanged.** The GPU-hours are identical — 240 runs plus one
+re-floor ≈ 36.4 h ≈ **$45.0** at the measured $1.2358/h — plus **four setups
+instead of one** (sync, `uv sync`, pre-flight), ≈ **+$1.5**. Chunk wall-clock
+will vary with the card, since `MAX_RUNS` counts runs and not hours.
+
+### 4. IT DOES NOT REQUIRE RE-FLOORING EACH CARD, and the reason is structural
+
+One re-floor, on the first card, as already budgeted.
+
+The confirmatory test uses the **grid's own per-arm seed dispersion**, and on a
+multi-card grid that dispersion **already contains the card variance**:
+`σ²_arm = σ²_rerun + σ²_seed + σ²_card ≥ σ²_rerun`, which is the floor. So the
+**beat-reproducibility hurdle is SUBSUMED, not bypassed** — an effect clearing
+the grid's own dispersion has cleared reproducibility on every card involved.
+The floor keeps its two other roles unchanged: it set **k** through the ladder
+(a one-time determination, already resolved to branch A), and it is the
+design-stage power basis **registered as an upper bound**.
+
+### 5. REGISTERED OBLIGATION — the block structure is recorded AND reported
+
+The cancellation argument in §1 is only sound if one card really did run both
+arms of every seed. That is now **checkable rather than assumed**: the card is
+recorded **per run** (`.manifest/<tag>.card`, per-tag and overwritten, so it is
+idempotent under retry) and `cards.txt` is **derived** from those records, one
+row per (card, arm) with its seed range.
+
+> **The paper reports the card-block structure whenever the grid ran on more
+> than one card, and states the cancellation argument alongside it.** A split
+> seed, if one ever occurs, is disclosed rather than absorbed.
+
+### Defect found while implementing, and it was latent already
+
+**`provenance.txt` was written with `tee`, which OVERWRITES.** A second
+invocation would erase the record of which card ran the earlier chunks — and on
+a chunked multi-card grid that record *is* the audit trail for §5. **The defect
+did not need chunking to exist: every resume overwrote it**, and the resume
+path shipped in `6bdbbc1`. Now appended, with a per-invocation header carrying
+the seed range covered. Regression test added.
+
+Same shape as the `/m06/` gitignore entry closed yesterday: **a mechanism that
+looked like it was working while quietly discarding what it was meant to
+keep.**
+
+### What this changes in the tree, in this commit
+
+- `che/scripts/run_p6_grid.sh`: `MAX_RUNS` with a seed-boundary stop; per-run
+  card records; derived `cards.txt`; provenance appended not overwritten; a
+  **CHUNK COMPLETE** exit that is **green**, because a planned pause is not a
+  failure and an operator who sees red on a deliberate stop learns to distrust
+  the exit code on the invocation that matters.
+- `che/tests/test_p6_grid.py`: 23 tests — chunk/seed-boundary alignment, the
+  mid-seed overrun, provenance accumulation, card-block recording.
+- **No constant, config, lock or analysis threshold changes.**

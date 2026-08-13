@@ -129,7 +129,30 @@ rulings is that they were made **with no outcome visible**, and each carries
   introduced post-unblind.** Γ(t) measures directly what a threshold would
   only proxy for.
 
-### 2. The rental, one trip
+### 1a. The grid can run in four chunks of 60 — ruled 2026-08-14
+
+`MAX_RUNS=60`, four invocations. The chunks land exactly on seed boundaries
+(seeds 1–6, 7–12, 13–18, then 19–20 plus the confirmatory tail 21–40), and
+**that alignment is the safety argument**: seed-major order puts both arms of
+every seed on the **same card**, so a card effect is common-mode and **cancels
+in Γ**. Chunks may therefore run on different rented cards. When `MAX_RUNS` is
+hit mid-seed the loop **finishes the seed** before stopping.
+
+- **Cost is power, not validity.** `sd(Γ)` may inflate **1.93×** (completion) /
+  **3.14×** (survival) before power falls to 80 %. Realized power is
+  **reported, not re-engineered**.
+- **No extra re-flooring.** The grid's own seed dispersion already contains the
+  card variance, so it is a superset of any single card's floor and the
+  beat-reproducibility hurdle is **subsumed**. One re-floor, first card.
+- **Money ≈ unchanged:** same GPU-hours (~36.4 h ≈ $45.0), plus ~$1.5 for four
+  setups instead of one.
+- **Obligation:** `cards.txt` records the block structure and **the paper
+  reports it** whenever more than one card ran the grid.
+
+A planned chunk pause exits **green** and prints `CHUNK COMPLETE`; only real
+failures exit red.
+
+### 2. The rental — one trip, or four
 
 `G1.2 re-floor (~$4.08) → ladder → G1.3 grid (~$40.9) → post-unblind Γ(t)
 eval (~$3.60)`. Registrar's projected trip total **~$48.6** against a **~$65**

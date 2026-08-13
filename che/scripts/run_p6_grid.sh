@@ -99,6 +99,52 @@
 #     whatever the manifest says, chosen by the failure and not by the analyst.
 #
 # ---------------------------------------------------------------------------
+# CHUNKING — `MAX_RUNS=60` runs the grid in quarters
+#
+# `MAX_RUNS` caps how many runs this INVOCATION executes; skips do not count.
+# Four invocations at 60 complete the grid. The four chunks land exactly on
+# seed boundaries: seeds 1-6, 7-12, 13-18, then 19-20 plus the confirmatory
+# tail 21-40.
+#
+# WHY THE SEED BOUNDARY IS THE WHOLE SAFETY ARGUMENT, and why the stop is
+# allowed to overrun MAX_RUNS to reach one:
+#
+#   Chunks will in general run on DIFFERENT RENTED CARDS, and floors are
+#   per-hardware. What makes that safe is decision (c) above: seed-major order
+#   means a chunk contains EVERY ARM at a contiguous block of seeds, so within
+#   any seed both ISO and JOINT ran on the SAME card. A card effect is
+#   therefore COMMON-MODE within a seed and CANCELS IN Γ, which is a
+#   difference of arm means -- the identical argument that justifies the common
+#   eval draw.
+#
+#   Split a seed across two cards and that cancellation breaks for that seed:
+#   ISO on the old card, JOINT on the new one, with the asymmetry pointing the
+#   same way every time because arms run in a fixed order within a seed. So
+#   when MAX_RUNS is reached mid-seed the loop FINISHES THAT SEED before
+#   stopping. Overrunning the cap by a few runs is strictly cheaper than
+#   hand-auditing a split seed.
+#
+# WHAT CHUNKING COSTS, stated so it is chosen rather than discovered:
+#
+#   Nothing in validity, by the argument above. It costs POWER: each arm's
+#   variance gains a between-card component, so sd(Γ) inflates. Headroom at
+#   k = 40 against the 0.03 target, derived from the G1.2 floors: sd(Γ) may
+#   inflate 1.93x (completion) / 3.14x (survival) before power falls to 80 %.
+#   The ~1.3x already anticipated for seed dispersion leaves roughly 1.5x for
+#   card blocks. Realized power is REPORTED, never re-engineered.
+#
+#   It does NOT require re-flooring each card. The confirmatory test uses the
+#   GRID'S OWN per-arm seed dispersion, and on a multi-card grid that
+#   dispersion already CONTAINS the card variance -- it is a superset of any
+#   single card's reproducibility floor, so the beat-reproducibility hurdle is
+#   subsumed rather than bypassed. One re-floor, on the first card, still buys
+#   the ladder and the design-stage power statement.
+#
+# The card is recorded PER RUN (`.manifest/<tag>.card`) and a `cards.txt`
+# summary is derived at the end, so the block structure is auditable and a
+# split seed, if one ever happens, is visible rather than inferred.
+#
+# ---------------------------------------------------------------------------
 # Run on the GPU box from the repo root:
 #   GIT_COMMIT=$(git rev-parse HEAD) bash che/scripts/run_p6_grid.sh 2>&1 \
 #     | tee p6_grid_console.log
@@ -129,6 +175,7 @@ KEEP_CKPT_DIRS=${KEEP_CKPT_DIRS:-0}
 MIN_FREE_GB=${MIN_FREE_GB:-25}
 MAX_CONSECUTIVE_FAILURES=${MAX_CONSECUTIVE_FAILURES:-3}
 MAX_HOURS=${MAX_HOURS:-0}         # 0 = no wall-clock stop
+MAX_RUNS=${MAX_RUNS:-0}           # 0 = no chunk limit; see CHUNKING below
 
 # arm name -> training config. Order here is the order within a seed.
 CONF_ARMS=${CONF_ARMS:-"\
@@ -288,6 +335,15 @@ sys.exit(0 if s == $UPDATES else print(f'ckpt_step={s}, want $UPDATES') or 1)
   # Archive + hash + manifest entry, entry written last (see the library).
   manifest_record "$OUT" "$tag" || return 1
 
+  # WHICH CARD RAN THIS RUN. Per-tag and overwritten, so it is idempotent
+  # under retry — the same reason the manifest is keyed rather than appended.
+  # On a chunked grid this is the audit trail for the card-block structure,
+  # and the only way a split seed is visible rather than inferred.
+  mkdir -p "$(manifest_dir "$OUT")"
+  nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null | head -1 \
+    > "$(manifest_dir "$OUT")/${tag}.card" || echo unknown \
+    > "$(manifest_dir "$OUT")/${tag}.card"
+
   # The raw checkpoint directory is now redundant with a hash-verified archive,
   # and 240 of them will not fit beside their archives. Verified by LISTING the
   # archive -- which decompresses the zstd frame and walks the tar -- before
@@ -307,8 +363,20 @@ echo "########## G1.3 GRID — ${N_RUNS} runs, seed-major, resumable"
 started=$SECONDS
 done_n=0; ran_n=0; skipped_n=0; failed_n=0; consec_fail=0
 FAILED_TAGS=()
+limit_seed=""; first_seed=""; last_seed=""
 for entry in "${TAGS[@]}"; do
   tag="${entry%%:*}"; rest="${entry#*:}"; cfg="${rest%%:*}"; seed="${rest##*:}"
+
+  # CHUNK STOP, AT A SEED BOUNDARY. `limit_seed` is set the moment MAX_RUNS is
+  # reached; the loop then keeps going until the seed CHANGES. Stopping
+  # mid-seed would leave ISO and JOINT for that seed on different cards, and
+  # the card effect only cancels in Γ because they share one.
+  if [ -n "$limit_seed" ] && [ "$seed" != "$limit_seed" ]; then
+    echo ""
+    echo "MAX_RUNS=${MAX_RUNS} reached — stopped at a SEED BOUNDARY, through seed ${limit_seed}."
+    break
+  fi
+
   done_n=$((done_n + 1))
 
   if manifest_complete "$OUT" "$tag"; then
@@ -321,6 +389,11 @@ for entry in "${TAGS[@]}"; do
   echo "[${done_n}/${N_RUNS}] ${tag}  (elapsed $(( (SECONDS - started) / 60 )) min)"
   if run_one "$tag" "$cfg" "$seed"; then
     ran_n=$((ran_n + 1)); consec_fail=0
+    [ -z "$first_seed" ] && first_seed=$seed
+    last_seed=$seed
+    if [ "$MAX_RUNS" != "0" ] && [ -z "$limit_seed" ] && [ "$ran_n" -ge "$MAX_RUNS" ]; then
+      limit_seed=$seed
+    fi
   else
     failed_n=$((failed_n + 1)); consec_fail=$((consec_fail + 1))
     FAILED_TAGS+=("$tag")
@@ -364,10 +437,30 @@ manifest_write_aggregate "$OUT"
   echo "updates: $UPDATES   eval_episodes: $N_EVAL   eval_seed: $EVAL_SEED   eval_config: $THETA_STAR"
   echo "cross-config eval: declared via --allow-hash (training-config hash)"
   echo "ran_this_invocation: $ran_n   skipped_complete: $skipped_n   failed: $failed_n"
+  echo "seeds_run_this_invocation: ${first_seed:-none}..${last_seed:-none}   max_runs: $MAX_RUNS"
   echo "gpu: $(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null || echo unknown)"
   echo "python: $(uv run --no-sync python -c 'import sys;print(sys.version.split()[0])' 2>/dev/null || echo unknown)"
   echo "jax: $(uv run --no-sync python -c 'import jax,jaxlib;print(jax.__version__,jaxlib.__version__)' 2>/dev/null || echo unknown)"
-} | tee "$OUT/provenance.txt"
+# APPENDED, NEVER OVERWRITTEN. `tee` here would erase the record of which card
+# ran the earlier chunks the moment a second invocation started — and on a
+# chunked, multi-card grid that record IS the card-block audit trail. The
+# defect was latent even without chunking: every resume overwrote it.
+} | tee -a "$OUT/provenance.txt"
+
+# Card-block structure, DERIVED from the per-run records rather than tracked.
+# One line per (card, arm) with the seed range it covered — this is what makes
+# the common-mode cancellation argument checkable instead of assumed.
+{
+  echo "# card <TAB> arm <TAB> n_runs <TAB> seeds"
+  for cf in $(ls -1 "$(manifest_dir "$OUT")"/*.card 2>/dev/null | sort); do
+    ctag=$(basename "$cf" .card)
+    printf '%s\t%s\t%s\n' "$(cat "$cf")" "${ctag%_s*}" "${ctag##*_s}"
+  done | awk -F'\t' '
+    {k=$1 FS $2; n[k]++; s[k]=s[k] (s[k]?",":"") $3}
+    END {for (k in n) printf "%s\t%d\t%s\n", k, n[k], s[k]}' | sort
+} > "$OUT/cards.txt"
+distinct_cards=$(cut -f1 "$OUT/cards.txt" | tail -n +2 | sort -u | grep -c . || echo 0)
+echo "cards used so far: ${distinct_cards} (see $OUT/cards.txt)"
 
 # ------------------------------------------------------- completeness
 # Counts are not trusted; every tag is checked by name and its archive
@@ -416,6 +509,29 @@ if manifest_assert_all "$OUT" "${EXPECTED[@]}"; then
     - verify the transfer archive's sha256 on BOTH sides, and record
       "N OK, 0 mismatched" in the phase report
     - record git_commit from provenance.txt: it is the frozen pipeline hash
+EOF
+elif [ -n "$limit_seed" ] && [ "$failed_n" -eq 0 ]; then
+  # A PLANNED CHUNK PAUSE IS NOT A FAILURE, and must not exit non-zero — an
+  # operator who sees a red exit on a deliberate stop will start debugging a
+  # working script, or worse, stop trusting the exit code on the invocation
+  # that matters.
+  remaining=$((N_RUNS - $(ls -1 "$(manifest_dir "$OUT")"/*.done 2>/dev/null | wc -l)))
+  cat <<EOF
+
+##########  G1.3 CHUNK COMPLETE — paused at a seed boundary, nothing failed.
+
+  This invocation ran ${ran_n} run(s), seeds ${first_seed}..${last_seed}.
+  ${remaining} run(s) remain. Every archive written so far is verified.
+
+  To continue: re-run the IDENTICAL command. It skips what is done.
+  You may release the instance first — chunks are allowed to run on
+  different cards, because seed-major order puts both arms of every seed
+  on the SAME card, so the card effect is common-mode and cancels in Γ.
+  \$OUT/cards.txt records the block structure; check it stays one card per
+  seed.
+
+  Bring back \$OUT/ before releasing, as at the end — an un-archived chunk
+  is as unauditable as an un-archived grid.
 EOF
 else
   cat <<EOF
