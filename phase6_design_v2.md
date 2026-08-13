@@ -227,6 +227,41 @@ each); if the floors come in smaller, **record the surplus and proceed**. The
 re-grading rule is fixed in advance so it cannot be chosen after seeing the
 floors.
 
+### SUPERSEDED — read this before using any number in §5 (2026-08-13)
+
+The table above records the constants of its era **correctly** and is left
+standing as provenance. Three things have since moved, all ruled and all
+transcribed; §5's numbers are **history, not the operative design.**
+
+1. **k = 34 → 40, and the variance basis changed** (M6.2b close-out,
+   2026-08-03). Contrasts are graded on the **contrast's** SE,
+   `sd(Γ) = √((σ_iso² + σ_joint²)/k)` — the combined form. The per-arm
+   `σ√(2/k)` used above is **superseded for contrasts** and survives only as a
+   labelled diagnostic. The two per-arm reads *bracket* the truth without
+   equalling it, so picking one silently picks a bound.
+
+2. **THE FLOOR-BASED POWER FIGURE IS AN UPPER BOUND, and is registered as
+   one.** Floors are measured from **identical reps at one seed** —
+   run-to-run nondeterminism. The grid averages over **k distinct seeds**,
+   whose per-run variance is `σ²_rerun + σ²_seed-variation ≥ the floor`. So
+   any power computed on floors — including the 83.7 % that authorized k = 40,
+   and the branch-A figure from the G1.2 re-floor — is a **ceiling, not an
+   estimate**.
+
+   **If realized power comes in lower, that is REPORTED, not re-engineered.**
+   Registered in advance precisely so it cannot become a post-hoc rescue.
+
+   Informational gap-sizing on Phase-5 multi-seed artifacts
+   (`phase6_framing_branches.md` §5) found 8 of 8 within **≤ 1.3×**, which
+   bounds the gap without closing it — those are T = 500 artifacts and the
+   grid runs T = 1000, where floors are known to grow.
+
+3. **Floors are per-hardware AND per-artifact**, so the M6.2/M6.2b floors do
+   not grade a grid on a different card. The G1.2 launch batch re-measured
+   them on the rented card and resolved the pre-registered ladder to
+   **BRANCH A**; that card was then released, so the **next trip re-floors
+   again before the grid.**
+
 Caveat that applies either way: "historical effects ≤ 0.03" is an upper
 bound on *observed* completion effects in earlier phases, not a prior on the
 true effect at θ\*. It is the best anchor available and it is what the seed
@@ -305,7 +340,18 @@ the constraints, exactly as they have been since Phase 0.
 *(Final-five ruling 4.)*
 
 - **Confirmatory family:** {Γ_completion, Γ_survival} at θ\*, **Šidák
-  m = 2**, bars from the **M6.2 per-arm floors**.
+  m = 2**. ~~bars from the M6.2 per-arm floors~~ — **AMENDED 2026-08-13, and
+  this is the load-bearing correction of the section:**
+
+  > **The confirmatory tests and CIs are computed on the GRID'S OWN measured
+  > per-arm seed dispersion, not on the floors.** The floors are 8 identical
+  > reps at one seed; the grid averages over k distinct seeds, and those are
+  > different variances. The floors keep exactly two narrower roles: the
+  > **beat-reproducibility hurdle**, and a **design-stage power basis
+  > registered as an UPPER BOUND** (§5, superseded note, item 2).
+  >
+  > **The floor and the test statistic are different variances**, and this
+  > project has already shipped one power figure that conflated them.
 - **Secondary, labelled non-verdict-bearing:** isotonic dose-trend on the
   c = 0.5 sweep; bootstrap-over-seeds knee CI with an **automatic
   UNDERPOWERED flag if the CI spans the sweep**; the c = 0.4
@@ -319,6 +365,15 @@ the constraints, exactly as they have been since Phase 0.
 - **Blind protocol governs: the pipeline is frozen by commit hash before
   unblinding.**
 - Every claim carries its floor-grade.
+- **The estimand is a FIXED-BUDGET one** (T\* ruling, 2026-08-11): Γ is the
+  contrast at **matched budget T = 1000**, and *"at convergence" is never
+  claimed*. **Γ(t) over updates 500–1000 is REQUIRED robustness evidence**,
+  with its sign-stability reading rule; it is evaluated **post-unblind**.
+- **Outcome-conditional framing is registered** in
+  `phase6_framing_branches.md` (ratified 2026-08-13): four branches, branch B
+  carrying a registered falsifier and branch D explicitly carrying **no**
+  magnitude threshold. **Reporting rules on this family, not additions to it —
+  m = 2 is unchanged.**
 
 **Post-unblind fork.** The one-paper/two-paper decision is a **framing**
 decision at the results-accepted gate, not a spend decision (final-five

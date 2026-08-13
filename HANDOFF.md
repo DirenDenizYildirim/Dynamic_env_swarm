@@ -102,16 +102,32 @@ with their reasoning, and all three are asserted by tests.
 
 ## What to do next
 
-### 1. Two ratifications, both $0, both pre-rental
+### 1. Everything before the rental is DONE (2026-08-13)
 
-- **`phase6_framing_branches.md`** — outcome-conditional framing, drafted
-  2026-08-11, **still untracked and unratified**. It registers what the paper
-  claims as a function of the confirmatory outcome, decided before the outcome
-  exists. It also asks two questions it cannot answer itself (§6 items 1–2:
-  whether branch B has a refuting completion effect size, and whether branch
-  D's threshold should be a number). **Both must be settled pre-unblind or
-  not at all.**
-- **The three grid-script decisions above.**
+The owner **delegated the pre-rental decisions to the builder**, stating bias
+avoidance as the reason. Recorded in `decision_log.md` with its limits —
+delegation *relocates* bias rather than removing it; what protects these
+rulings is that they were made **with no outcome visible**, and each carries
+**the argument against it** as well as for it.
+
+| item | state |
+|---|---|
+| the three grid-layout decisions | **RATIFIED**, plus two constraints the proposal did not carry: the confirmatory analysis is **UNPAIRED** (shared seed integers create no pairs), and **Γ's CI is conditional on the common eval draw** |
+| `phase6_framing_branches.md` | **RATIFIED**, now tracked. §6 items 1–4 all ruled |
+| design v2 §5 / §7 | **written** — the upper-bound framing and the seed-dispersion test basis, owed since the M6.2b close-out |
+| release hygiene | **done** — README written, `m06/` archived + untracked, `*_console.log` generalized |
+| the three no-scoop checks | **run. No scoop.** One spine item narrowed; one check only partially discharged (below) |
+
+**Two rulings worth knowing before you touch the analysis:**
+
+- **Branch B now has a registered falsifier:** `|z_c| + z_α < |z_s|` in
+  standardized units. It uses the frozen Šidák `z_α = 2.2365` and **invents no
+  constant**. Derived check: a survival effect of 0.010 admits |completion| <
+  0.0050; 0.020 admits < 0.0212. A barely-rejecting survival result therefore
+  **cannot** support the asymmetry claim, which is correct.
+- **Branch D deliberately has NO magnitude threshold, and none may be
+  introduced post-unblind.** Γ(t) measures directly what a threshold would
+  only proxy for.
 
 ### 2. The rental, one trip
 
@@ -126,14 +142,21 @@ discharged history; **its G1.3 section still carries no command block** — use
 
 ### 3. Free work if there is no box
 
-- **Release hygiene** (framing §7): `README.md` is 24 bytes, `m06/` is 47 MB
-  of undecided pre-M6.0 spike leftovers, the repo root carries console logs
-  and phase prompts. This has a deadline attached: **deferring it selects
-  RA-L by default**, because the D&B branch needs a releasable artifact and
-  the window after the grid is thin.
-- **Design v2 §5 and §7** owe a text update stating the upper-bound framing
-  and the seed-dispersion test basis. Ruled, still unwritten.
-- **The three no-scoop checks** (positioning rulings §1, owner tasks, open).
+The pre-rental queue is empty. What remains is **owed before submission, not
+before the rental**:
+
+- **The IEEE Xplore query** — the one no-scoop check that is only *partially*
+  discharged. Xplore needs authenticated access and was **not queried**; what
+  ran was a general-web sweep of the RA-L/IROS swarm literature, which found
+  only single-stressor, task-coupled work. **An owner task.**
+- **Read the JaxWildfire PDF** (arXiv:2512.06102) and arXiv:2604.26150
+  directly. The positioning ruling leans on two rows — single-agent, and a
+  reward that is a penalty proportional to burning cells — obtained from an
+  automated summary, which is strong enough to rule on positioning and **not**
+  strong enough to write related work from.
+- **Phase prompts still sit at the repo root**, and a clone is still 47 MB
+  heavier than it looks: untracking `m06/` does not remove its blobs from
+  history. A rewrite is destructive and is an owner decision.
 
 ---
 

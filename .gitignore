@@ -224,7 +224,18 @@ __marimo__/
 che/bench/results/*.tmp
 
 # GPU-run scratch artifacts (checkpoints rsynced back from the bench box)
+#
+# `/m06/` was listed here while its 41 files stayed TRACKED — gitignore does
+# not untrack what is already in the index, so the rule looked like it was
+# working and was doing nothing. Untracked 2026-08-13; see
+# che/bench/results/phase6/m60/m06_ARCHIVE.md.
 /m06/
+
+# Every run console log, rather than one rule per milestone. The three
+# one-off entries below (m31b, m33, m35) are what this generalizes; they are
+# left in place because deleting them changes nothing and their dates are
+# provenance.
+*_console.log
 /m30.tar.gz
 che/bench/results/phase3/m30/ckpt_*/
 /m31b.tar.gz

@@ -3100,3 +3100,349 @@ the literal 11.
 - `che/tests/test_locks.py`, `che/tests/test_gamma_t_retention.py`: assertions.
 - **No secondary arm gains retention** — Γ is defined on the confirmatory
   contrast only, and the sweep arms stay at 3.
+
+## PRE-RENTAL DELEGATION AND RATIFICATIONS (owner-delegated, 2026-08-13)
+
+Issued **pre-grid, pre-unblind**: the grid has not run, no Phase-6 outcome
+mean has been read, and nothing below is conditioned on one.
+
+### 0. THE DELEGATION, and what it does and does not buy
+
+The owner delegated the pre-rental design decisions to the builder, stating
+bias avoidance as the reason: *"the decisions are yours this time and I am
+making it to save potential bias now."*
+
+**Recorded honestly, because the delegation is itself a design choice.**
+Delegation **relocates** bias; it does not remove it. What actually protects
+these decisions is that they are made **pre-grid and pre-unblind with no
+outcome visible** — true of both parties — and that each one is either
+asserted by a test or stated with its falsifier. What the delegation does buy
+is narrower and real: the owner's priors about Γ's *direction* did not shape
+the seed scheme, the run order, or the branch rules.
+
+What it **costs** is a check: a builder ruling on the builder's own proposals
+is weaker than an independent one. The mitigation adopted here is that **every
+decision below is recorded with the argument AGAINST it**, not only the
+argument for it. A reader who disagrees should be able to find the strongest
+objection already stated.
+
+### 1. THE GRID LAYOUT — RATIFIED, with two constraints the proposal did not carry
+
+`che/scripts/run_p6_grid.sh` (committed `6bdbbc1`). The locks fix **how many**
+seeds; they do not fix which integers, in what order, or against which eval
+draw. Those three are ruled here.
+
+**(a) Seeds 1..k, the SAME integers in every arm — RATIFIED.**
+
+Starting at 1 excludes 0, which is the **floor seed**: a grid run at seed 0 on
+iso, joint or sweep_p500 would be the same config at the same seed for the
+same T as a floor rep — a reproducibility rep wearing a seed's name,
+contributing **zero** seed variance to the arm dispersion the confirmatory
+test divides by.
+
+Sharing integers across arms is the **conservative** direction. `sd(Γ)` is
+registered in the unpaired combined form, while
+`Var(mean_J − mean_I) = (σ_J² + σ_I² − 2·cov)/k`; positive cross-arm
+covariance therefore makes the registered formula an **over**-estimate.
+
+*Argument against:* shared integers create no matched pairs — the arms train
+on different mixture configs, so seed s produces unrelated trajectories — yet
+they **look** like matched pairs, which invites a paired analysis that would
+be spurious and anti-conservative.
+
+> **CONSTRAINT, registered: the confirmatory analysis is UNPAIRED. Seed
+> identity across arms carries no pairing information and must never be used
+> as a blocking factor.** The shared integers exist for the covariance-sign
+> argument above and for nothing else.
+
+**(b) The eval set is a CONSTANT — seed 0, 512 episodes, every run —
+RATIFIED, on a stronger argument than the proposal gave.**
+
+The proposal justified it as variance reduction. The **load-bearing** reason
+is different and better: because both arms are evaluated on the **same
+episode set**, the eval draw is **common-mode and cancels in Γ**, which is a
+difference of arm means. It is also identical to the floor protocol, so floors
+and grid are one instrument.
+
+*Argument against:* Γ's interval then reflects training-seed variance only and
+**does not propagate eval-set sampling**, so the interval is conditional on
+this draw.
+
+> **CONSTRAINT, registered, per the instruments-state-their-blindness law:
+> Γ's confidence interval is CONDITIONAL ON THE COMMON EVAL DRAW and does not
+> propagate eval-set sampling variance. This is stated wherever Γ's interval
+> is reported.** The cancellation argument bounds the damage in the
+> *difference*; it does not licence silence about the *interval*.
+
+**(c) Run order SEED-MAJOR, arm-minor — RATIFIED.**
+
+Arm-major ordering loses the rental to a mid-run failure: a complete ISO arm,
+a partial JOINT arm, and **no Γ at any k**. Seed-major truncation yields a
+smaller **balanced** design, so an interruption costs **power, not validity**.
+
+*Argument against, checked and dismissed:* interleaving ten configs looked
+like it would force a recompile per run instead of per arm. It does not —
+**every run is a separate process** (`uv run python -m che.train.ippo`) and
+pays its own compile either way, which the 497 s/run G1.2 figure already
+includes. Ordering is throughput-neutral. Recorded because the objection is
+the obvious one and its answer is not.
+
+**This is not a licence to stop early and pick k afterwards.** k is locked; a
+short grid is an incident to report, and its realized k is whatever the
+manifest says — chosen by the failure, never by the analyst.
+
+### 2. `phase6_framing_branches.md` — RATIFIED as amended below
+
+The outcome-conditional framing registration, drafted 2026-08-11. Its four
+branches (§3) are ratified **verbatim**. It closes design v2 §10 item 5, open
+since 2026-08-02. No constant, config, test or locked value changes with it,
+and `m62_report.py::METRICS` / `SIDAK_M` / `K_CONFIRMATORY` / `T_STAR` are
+untouched — the confirmatory family is **not** enlarged by any ruling here.
+
+### 3. §6 ITEM 1 — BRANCH B GAINS A FALSIFIER, and it is DERIVED
+
+The question: *"'paid in agents, not task return' is consistent with a wide
+range of outcomes. Is there a completion effect size that would refute it, and
+is it inside the grid's resolution?"*
+
+**Yes to both.** Branch B is a claim about an **asymmetry**, so its failure
+mode is a completion null that is an *absence* rather than an *exclusion* —
+the same distinction the document already demands of branch C, applied one
+level up.
+
+> **REGISTERED FALSIFIER. Branch B is claimable only if the completion
+> contrast EXCLUDES an effect as large, in standardized units, as the observed
+> survival effect:**
+>
+>     |z_c| + z_α  <  |z_s|
+>
+> **where z = Γ/sd(Γ) per metric, sd(Γ) is the grid's own measured per-arm
+> seed dispersion in the combined form, and z_α = 2.2365 is the two-sided
+> Šidák-corrected critical value at m = 2 (α_per = 0.025321). If the
+> inequality fails, the result is reported as BRANCH C with an asymmetry the
+> design could not resolve — never as branch B.**
+
+**No constant is invented.** `z_α` is the analysis plan's own already-frozen
+correction; the comparison is in standardized units precisely so that no
+cross-metric conversion factor has to be chosen. `|z_c| + z_α` is the upper
+limit of |d_c|'s interval, so the rule reads exactly as written: *the
+completion channel excluded an effect the size survival showed*.
+
+**Why the reference is the survival POINT estimate and not its lower limit:**
+the survival effect must separately reject to reach branch B at all, so its
+own uncertainty is already graded there. This rule grades **the completion
+channel's resolution**, and loading survival's uncertainty into it a second
+time would double-count.
+
+**Derived this session — it is inside the grid's resolution, and it has
+bite.** From the G1.2 floors (`g1_floors/floors.json`, full precision) at
+k = 40: `sd(Γ) = 0.00504` completion, `0.00310` survival; MDE80 = 0.01552 and
+0.00955.
+
+| observed survival Γ | max admissible \|completion Γ\| — at the floors | — at ×1.3 inflation |
+|---|---|---|
+| +0.010 | 0.0050 | 0.0016 |
+| +0.015 | 0.0131 | 0.0097 |
+| +0.020 | 0.0212 | 0.0179 |
+| +0.030 | 0.0375 | 0.0341 |
+
+The ×1.3 column carries the §5 seed-dispersion inflation bound. **The rule
+bites exactly where it should:** a marginal survival effect (≈0.010) makes
+branch B essentially unclaimable, which is correct — a barely-rejecting
+survival result cannot support an asymmetry claim — while a solid one
+(≥0.020) admits completion effects up to ~1.8–2.1 points, which is the
+design's actual resolution. Floors are a **lower bound** on `sd(Γ)`, so the
+left column is optimistic and is labelled as such; the grid's own dispersion
+supersedes both.
+
+### 4. §6 ITEM 2 — A MAGNITUDE THRESHOLD FOR BRANCH D IS DECLINED, with reason
+
+The question: *"'magnitude comparable to the differential drift' is not a
+number. Should it be one, and can it be set before unblinding without
+inventing a constant?"*
+
+**It should not be one, and the reason is that the design already measures the
+quantity a number would only proxy for.**
+
+The differential drift (~0.0121/100 updates, JOINT 0.02411 − ISO 0.01202,
+`g1_2_report.md`) is a **training-surface local sensitivity**, and the T\*
+ruling §4 already forbids quoting it as a bound. Converting it into a
+magnitude threshold on Γ would require extrapolating a local slope across an
+**invented horizon** — precisely the constant the numbers-enter-derived
+sub-rule exists to stop.
+
+**Γ(t) is not a proxy: it measures Γ's own trajectory at θ\*, directly, and
+it is already mandated** (T\* ruling §3, 11 retained checkpoints, updates
+500–1000, evaluated post-unblind). A threshold on the proxy would be strictly
+worse than the reading rule on the instrument.
+
+> **RULED. The qualitative phrase is STRUCK from branch D and replaced by the
+> registered Γ(t) reading rule, made explicit: a negative Γ at T whose Γ(t)
+> trends toward zero or positive across the final half is reported as NOT
+> SEPARABLE from the matched-budget asymmetry; a negative Γ whose Γ(t) is flat
+> or stably negative is reported as a REAL REVERSAL. No magnitude threshold is
+> registered, and none may be introduced post-unblind.**
+
+The last clause is the point: declining a threshold now is only honest if it
+also forecloses inventing one later.
+
+### 5. §6 ITEM 3 — §2's BRANCH-INVARIANCE, CHECKED RATHER THAN ASSERTED
+
+The question: whether §2's ten items are contributions or lab notes, and
+whether "a paper exists on every branch" is optimistic.
+
+**Partitioned and counted this session.** Eight of the ten are environment or
+measurement contributions that stand alone (measured critical point; bitwise
+nested ablations; the three theory handshakes; Coupling A's 4.83× self-limit;
+rare-and-bursty compound hostility; the flat near-agent share; comms inert
+with bounds; perception decay not suppressible). **Two are protocol
+observations** whose contribution status is venue-dependent: floor growth with
+run length, and detectability-relative gates diverging on improving hardware.
+
+> **RULED. §2 is NOT overclaiming — the claim "a paper exists on every branch"
+> survives on the eight alone, so the two protocol observations are ADDITIVE
+> rather than load-bearing. §2 is partitioned into those two tiers so a
+> reviewer is never asked to accept a lab note as a contribution, and the
+> venue decision (deliberately deferred, §7) places the second tier.**
+
+### 6. §6 ITEM 4 — THE MEDIUM-SITING LIMITATION IS REQUIRED ON EVERY BRANCH
+
+θ\* is sited at Medium, where Coupling B's own measured survival effect was
+−0.0003 (within noise); its 8.8-point effect is at High, which is not θ\*.
+The draft stated this on branch B only.
+
+> **RULED. The limitation is REQUIRED on branches A, B and C alike.** It is a
+> property of **θ\***, not of the outcome, so stating it only where the
+> outcome makes it awkward is **outcome-dependent disclosure** — the exact
+> defect this document exists to prevent, committed inside the document
+> itself. Branch D inherits it through whichever co-primary it is negative on.
+
+### What this entry changes in the tree, in this commit
+
+- `phase6_framing_branches.md`: status DRAFT → **RATIFIED**; §3 branch B gains
+  the registered falsifier; §3 branch D's qualitative phrase struck and
+  replaced; §2 partitioned into two tiers; the Medium-siting limitation moved
+  to a branch-invariant §4a. **The file enters the tree** — it was untracked.
+- `phase6_design_v2.md`: §5 gains the upper-bound framing and the k = 34 → 40
+  history; §7 gains the seed-dispersion test basis. Both were **ruled at the
+  M6.2b close-out and never written into v2** — the owed text update.
+- **No constant, config, lock or test threshold changes.** `SIDAK_M`,
+  `K_CONFIRMATORY`, `K_SECONDARY`, `T_STAR`, `m62_report.py::METRICS`
+  untouched. The two rules registered in §3 and §4 are **reporting rules on an
+  existing family**, not new family members.
+
+## NO-SCOOP CHECKS — RUN, and one spine item NARROWS (builder, 2026-08-13)
+
+The three residual checks from *POSITIONING RULINGS* §1 (2026-08-05), run
+under the same delegation as the entry above. **Verdict: NO SCOOP — the
+rental proceeds.** One of the four novelty-spine claims must be **reworded**,
+and one check is **only partially discharged** and stays owed.
+
+### Check 3 — arXiv:2507.10142 — DISCHARGED, and its premise was wrong
+
+Recorded as *"the one place a subsuming memorization-gap theorem could
+hide."* It is not that. **arXiv:2507.10142 is a SURVEY** — *"Adaptability in
+Multi-Agent Reinforcement Learning: A Framework and Unified Review"* (v2
+retitled *"Toward Adaptable Multi-Agent Reinforcement Learning: An
+Assumption-Aware Review"*), Hu et al., **cs.AI, 14 July 2025**. Identity
+confirmed against two independent routes because the whole check hinged on
+it. It organizes MARL adaptability into learning / policy / scenario-driven
+dimensions and **contains no theorem of any kind**, let alone one subsuming
+Thm. 1.
+
+**The check is discharged, and the file that recorded it was wrong about what
+it was.** Recorded as such rather than quietly closed: a check whose target
+was misidentified would have been reported as "cleared" either way, and the
+distinction matters for how much assurance the clearance carries.
+
+**Re-aimed, since the designated hiding place was empty.** A broader search
+for a subsuming result — a value-gap theorem for joint-versus-isolated
+training over task variations — returned generic generalization-gap bounds
+(Rademacher / PAC-Bayes for reparameterizable RL) and compositional
+benchmarks (CompoSuite and successors). **None has a theorem of E2C's form.**
+Thm. 1 stands unsubsumed on the evidence available.
+
+### Check 2 — the D&B / ICLR census — DISCHARGED, no collision
+
+The JAX-MARL benchmark neighbourhood is **JaxMARL** (NeurIPS 2024 D&B),
+**Multi-Agent Craftax**, **Assistax**, **POBAX**, **BenchMARL**. All are
+task/coordination benchmarks; **none is a hazard-survival environment, and
+none carries a hazard-independent reward.** No collision.
+
+### Check 1 — the IEEE Xplore query — **PARTIALLY discharged, still OWED**
+
+**Stated plainly: IEEE Xplore was not queried.** It requires authenticated
+access. What was run is a general-web search of the RA-L / IROS swarm
+robotics literature, which surfaced the collective-perception-under-degraded-
+sensing line (**BayesCPF**, adaptive self-calibration for imperfect swarms,
+decentralised resilience to malicious influence). All of it is
+**single-stressor and task-coupled** — no compound-stressor benchmark.
+
+**That is evidence, not the check.** The Xplore query remains an owner task.
+It does not gate the rental: the grid measures Γ in this environment
+regardless of what the venue search returns, and a collision would change the
+paper's framing, not its data.
+
+### THE MATERIAL FINDING — spine item 4 NARROWS
+
+**`JaxWildfire`, arXiv:2512.06102** — *"A GPU-Accelerated Wildfire Simulator
+for Reinforcement Learning"*, December 2025 — occupies part of the claim
+space the spine recorded as empty. It postdates the 2026-08-05 positioning
+review, which is why that review did not see it.
+
+**It is not a scoop, and the reasons are structural rather than
+convenient.** On the characterization obtained:
+
+| | JaxWildfire | CHE |
+|---|---|---|
+| agents | **single** (multi-agent named as future work) | swarm, 12 agents, shared-parameter IPPO |
+| reward | **penalty ∝ burning cells, +10 for extinguishing** | **hazard-independent (Def. 2)** — no hazard term in reward or any auxiliary channel |
+| task | fight the fire | unrelated task **while surviving** the fire |
+| perception | egocentric, **unattenuated** | Beer–Lambert smoke attenuation of the observation kernel |
+| hazard→hazard | none | Coupling A: collapse seeds ignition |
+| severity | fitted to historical burns | **measured critical point** (β̂_c = 0.500, 512 seeds) |
+
+**The reward row is the whole argument.** JaxWildfire's reward is a penalty
+proportional to burning cells — precisely the CMDP / safe-RL shape Def. 2
+excludes. It is therefore **the nearest neighbour on the far side of Def. 2's
+boundary, and a better foil than VULCAN** (positioning ruling 2), because the
+boundary is visible in one line of its reward function rather than argued
+from domain.
+
+> **RULED. Spine item 4 is reworded from "JAX × MARL × hazards" to
+> "JAX × MARL × hazard survival under a HAZARD-INDEPENDENT reward."**
+> The unqualified form is no longer true and must not be written. JaxWildfire
+> enters related work beside VULCAN, as the nearest neighbour across Def. 2.
+
+**Spine items 1–3 return no collision:** measured-critical-point severity;
+hazard-generates-hazard (see the caveat below); Beer–Lambert on a POMDP
+observation kernel — the last returned **no hits at all** in the RL
+literature.
+
+**One neighbour for item 2 that must be cited rather than missed:**
+*Reinforcement Learning for Public Safety Power Shutoffs Under
+Decision-Dependent Uncertainty and Nonlinear Wildfire Ignition Models*
+(arXiv:2604.26150) makes ignition probability **endogenous to the operator's
+decisions**. That is **agent-mediated** endogeneity; **Coupling A is not** —
+collapse seeds fire with no action in the path. The claim survives as
+*"hazard generates hazard without agent mediation"*, and the paper cites this
+one rather than letting a reviewer find it.
+
+### CONFIDENCE, stated because it bounds every row above
+
+The JaxWildfire characterization comes from an **automated summary of the
+paper's HTML**, not from a reading of the PDF by the author. It is strong
+enough to rule on positioning **pre-rental** and is **not** strong enough to
+write related work from.
+
+> **OWED before submission (not before the rental): read the JaxWildfire PDF
+> and the arXiv:2604.26150 PDF directly, and confirm the two rows this entry
+> leans on — single-agent, and the burning-cell reward.** If either is wrong,
+> the spine rewording above stands anyway (it only narrows a claim), but the
+> foil argument would need rebuilding.
+
+### What this changes in the tree, in this commit
+
+- `phase6_framing_branches.md` §7: the three checks gain their status.
+- **No constant, config, lock or threshold changes.** Nothing here touches
+  the grid, the analysis family, or the blind.
