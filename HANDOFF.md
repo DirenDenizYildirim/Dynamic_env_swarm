@@ -1,240 +1,193 @@
-# HANDOFF — session state for the next model (written 2026-08-03)
+# HANDOFF — session state for the next model (written 2026-08-13)
 
-You are picking up **mid-Phase-6, immediately after the M6.2b close-out**. The
-STOP that blocked everything is **discharged**: `k` and the variance basis are
-ruled, **T\* = 1000 is registered**, and the grid is **authorized at 240
-runs**. There is **no GPU box running**.
+You are picking up **mid-Phase-6, pre-grid, pre-unblind.** There is **no GPU
+box running**. Every gate that blocked the grid on a *decision* is discharged;
+what remains is a rental and two owner ratifications.
 
-**Nothing is blocked on a decision any more. Two things gate the grid, and
-both are work:**
-
-1. ~~**[OWNER] render inspection of the 24 M5.5 episodes.**~~ **DISCHARGED
-   2026-08-10** — `docs/decision_log.md`, *RENDER-GATE FINDINGS*. Ruled **not
-   a launch blocker**. The bottom-clustering the inspection asked about is a
-   per-training-run residual action bias integrated by the absorbing
-   boundary; env geometry is symmetric, no invariant is touched, and the
-   completion cost is bounded at ~zero by the replicate pair (same config,
-   24-row positional swing, completion 0.781 both). A two-channel diagnostic
-   shipped in the same commit so the grid measures it.
-2. **The launch batch** — 24 runs (~$4.57) on the rented card, which
-   re-measures the floors there and resolves the pre-registered ladder.
-   **This is now the only thing gating the grid.**
-
-If you are here to make progress on *content* rather than protocol, the answer
-is still `env_native_prompt.md` (work package **E1**, co-active visitation,
-zero compute). See *What to do next*.
+**The grid is now runnable.** `che/scripts/run_p6_grid.sh` exists as of this
+session — it did not before, which was the real pre-rental gap and was found
+by the previous session's own T\* commit.
 
 ---
 
-## What was ruled, and what it changed
+## What has happened since the last HANDOFF (which was written 2026-08-03)
 
-Full entry: `docs/decision_log.md`, **M6.2b CLOSE-OUT — CERTIFY**
-(2026-08-03). Relayed in two rounds, owner-approved, transcribed before
-anything was built.
+That HANDOFF said "the launch batch is the only thing gating the grid." That
+is **wrong now, on two counts**: the launch batch ran, and a missing script
+gated the grid behind it.
 
-| | ruling |
+| | state |
 |---|---|
-| **variance basis** | **combined form.** `sd(Γ) = √((σ_iso² + σ_joint²)/k)`. Per-arm `σ√(2/k)` is **superseded for contrasts** and survives as a labelled diagnostic. Guard-fired exception to the freeze. |
-| **seeds** | **k = 40** confirmatory (**83.7 %** power@0.03 on the measured floors; the 80 % minimum is k = 37), **k = 20** secondary. |
-| **T\*** | **1000**, registered in `locks.yaml` with M6.2b plateau provenance. |
-| **grid** | **240 runs ≈ $45.73** at 686 s/run. |
-| **budget** | **~$140 remains** for the project, **~$65 GPU** reserve-inclusive (owner, 2026-08-03). |
+| **G1.0(a)** owed test chunk | discharged 2026-08-10 |
+| **G1.0(b)** throughput A/B | **discharged** 2026-08-11 — nine added channels cost **< ~0.25 %**. No channel dropped, so the artifact the floors grade is final. `g1/g1_0b_throughput_ab.md` |
+| **G1.1** render pass | discharged by ruling 2026-08-10 |
+| **G1.2** launch batch | **RAN** 2026-08-10, 24 runs, 3h27m, ~$4.6. **BRANCH A**: k_req = 11 completion / 5 survival against k = 40, realized power 0.9999. `g1/g1_2_report.md`, `g1_floors/ladder.json` |
+| **plateau guard** | **STOPped** — and the STOP is **discharged** by the T\* ruling (2026-08-11), which **retired the criterion** |
+| **the card** | **RELEASED.** Floors are per-hardware; the next trip **must re-run G1.2 before G1.3** (~$4.08) |
 
-`CLAUDE.md`'s power standing rule now carries the contrast clause. Two new
-registered analysis constants: `K_CONFIRMATORY` 34 → **40**, `K_LADDER_CAP` =
-**60**. `T_STAR` moved null → 1000. All three enforced by `test_locks.py`,
-which imports the module and asserts equality.
+### The T\* ruling, in one paragraph
 
-**The M6.2b report was NOT revised.** It records the constants of its era
-(k = 34, per-arm basis) correctly; the ruling landed as a dated addendum.
-
----
-
-## The two things that changed how the grid is graded
-
-Both are easy to lose, and losing either would quietly invalidate a result.
-
-### 1. The floors do not grade the confirmatory test
-
-M6.2b's floors are **8 identical reps at one seed** — run-to-run
-nondeterminism. The grid averages over **k distinct seeds**, whose per-run
-variance is `σ²_rerun + σ²_seed-variation` ≥ the floor.
-
-- **Confirmatory tests and CIs use the grid's OWN measured per-arm seed
-  dispersion.**
-- The floors keep two narrower roles: the **beat-reproducibility hurdle**, and
-  a **design-stage power basis registered as an UPPER BOUND**. 83.7 % is a
-  ceiling, not an estimate.
-- **If realized power comes in lower, that is REPORTED, not re-engineered.**
-  Registered in advance so it cannot become a post-hoc rescue.
-
-### 2. The floors do not grade the grid's card either
-
-Per-hardware **and** per-artifact both apply, and the M6.2b card is gone. No
-transfer assumption was granted. The **launch batch** re-measures on the
-rented card (prefer RTX PRO 6000; the two PRO 6000s used so far still differed
-~15 % in throughput), then the **ladder** resolves it:
-
-| branch | condition | action |
-|---|---|---|
-| **A** | k_req ≤ 40 | proceed at k = 40, surplus recorded |
-| **B** | 40 < k_req ≤ 60 | raise k to k_req, **no round-trip** (+40 runs max ≈ $7.62) |
-| **C** | k_req > 60 | run at k = 60, **degrade honestly** — UNDERPOWERED flag with realized power stated, verdict weight to the survival co-primary |
-| **D** | survival power < 80 % too | **STOP** — broken box, not floor drift |
-
-`m62_report.py` computes the branch and writes `ladder.json`. Derived
-absorption: **B covers RMS floor growth to ~28.0 %**; k = 40 alone covers only
-**4.6 %** before power falls back through 80 %. **D needs a 3.35× survival
-floor move** — larger than any card excursion this project has recorded, and
-in the worst one (completion 2.75×) survival was the metric that held.
-
-**The ladder trigger is outcome-blind by construction** — `k_req` reads
-fixed-seed rerun floors, which carry no cross-arm outcome information. Say
-this out loud in the paper; "verdict weight shifts to survival" reads like
-outcome-dependent metric selection on its face, and it is not.
-
-**Worst realistic cost (B at cap):** $4.57 + $53.36 = **$57.93**, inside ~$65.
+The plateau criterion was retired as a certification instrument because it is
+**detectability-relative**: `drift / floor` with `floor → 0` fails for any
+nonzero drift, so it cannot certify on a perfect instrument. It survives
+demoted, grading nothing. In its place the **estimand is fixed explicitly** —
+primary Γ is the confirmatory contrast at **matched budget T = 1000**, and
+*"at convergence" is never claimed anywhere*. **Γ(t) was promoted from
+descriptive to REQUIRED robustness evidence** with a pre-registered reading
+rule (sign stability over the final half; instability **is** the finding),
+mechanised as 11 retained checkpoints on the confirmatory arms only,
+**evaluated post-unblind**. T = 2000 was declined. Full entry:
+`docs/decision_log.md`, *T\* RULING*.
 
 ---
 
-## Instrument state
+## The grid script — what it is and the three decisions it flags
 
-`che/scripts/m62_report.py` — combined-variance power (`_sd_contrast`,
-`_power_contrast`, `_mde80_contrast`), the `_k_required` solver, ladder branch
-resolution, and `_power_per_arm` retained as a **diagnostic that must never
-feed a verdict**. Prior fixes still in place: rule-2 mean suppression, the
-`--tail` window bug fixed and hardened against the update number.
+`che/scripts/run_p6_grid.sh`, asserted by `che/tests/test_p6_grid.py`
+(18 tests, including two that drive the whole script end-to-end on
+`debug.yaml` in about a minute).
 
-**One latent defect was found and fixed while validating the change.** An arm
-with **no floor** (M6.2b's 1-rep sweep) printed `-> plateaued`: with no floor
-the ratio is NaN, `NaN > PLATEAU_PASS` is False, and the arm rendered as
-having passed a guard it was never graded by — *bars come with floors*
-reaching the instrument through a NaN. It now prints
-`NO FLOOR — UNGRADED (not a pass)` and carries `graded: false` in
-`plateau.json`. **No verdict logic changed** and no past verdict moves; but
-the launch batch runs a sweep arm, and a failed rep in it would have produced
-a silent false pass.
+240 runs: confirmatory ISO + JOINT at k = 40, dose sweep c = 0.5 at five p
+points and identification c = 0.4 at three, k = 20 each. Resumable via
+`lib_run_manifest.sh`, which was written last session and until now was wired
+into nothing.
 
-**Verified this session by re-running the instrument on the real M6.2b
-artifacts** (branch A, verdict PROCEED): power@k=40 = **83.7 %**, k_req = 37,
-80.5 % at k = 37 and 79.3 % at k = 36, +4.6 % RMS → 80.0 %, +28.0 % → k_req
-60, survival rail 3.35×. All figures use `floors.json` at full precision —
-recomputing from the report's 4-dp display table runs ~0.1 pt low.
+**It computes no cross-arm quantity and there is no analysis call in it.** A
+test asserts that. Unblinding is a separate, human-gated step on a frozen tree.
+
+### Three builder decisions, OWED RATIFICATION
+
+The locks fix **how many** seeds; they do not fix which integers, in what
+order, or against which eval draw. All three are stated in the script header
+with their reasoning, and all three are asserted by tests.
+
+1. **Seeds are 1..k, the same integers in every arm.** Starting at 1 is
+   load-bearing: **the floor runs are seed 0**, so a grid run at seed 0 on
+   iso/joint/sweep_p500 would be a reproducibility rep wearing a seed's name,
+   contributing zero seed variance to the dispersion the confirmatory test
+   divides by. Sharing integers across arms is the **conservative** direction:
+   the registered `sd(Γ)` is the unpaired combined form, so any positive
+   cross-arm covariance makes it an over-estimate.
+2. **The eval set is a constant** — seed 0, 512 episodes, every run. Identical
+   to the floor protocol, so floors and grid are one instrument, and cross-run
+   variance is training-seed variance rather than training-seed plus
+   eval-sampling noise.
+3. **Run order is seed-major, arm-minor.** Arm-major ordering loses the whole
+   rental to a mid-run box failure (a complete ISO arm, a partial JOINT arm,
+   no Γ at any k). Seed-major truncation instead yields a smaller **balanced**
+   design, so an interruption costs **power, not validity**. This is not a
+   licence to stop early and pick k afterwards.
+
+### Guards worth knowing before you run it
+
+- **Parameter-identity stamp** replaces the floor script's refuse-nonempty
+  guard, which resume makes unusable. T\*, k, arm set, eval config and eval
+  seed are stamped on first run and re-checked on resume; a mismatch is
+  refused. Without it the per-artifact protection is simply absent from the
+  larger run.
+- **`ckpt_step == T*` asserted per run.** The harness defaults to
+  `latest_step()`, which is correct and *silently correct-looking* if the
+  step-1000 save never landed. It also makes the retention change auditable:
+  the confirmatory arms now keep 11 checkpoints while the G1.2 floors were
+  measured on 3-checkpoint artifacts, and **the floors transfer only because
+  both evaluate the final step**.
+- **Raw checkpoint dirs are reclaimed** after the archive lists successfully
+  (`tar -tf`, not merely a hash of a file nobody read back). 240 of them do
+  not fit beside their archives.
+- **3 consecutive failures aborts**; isolated failures are tolerated and
+  retried by re-running the identical command. The final assertion checks
+  every tag **by name** and re-hashes its archive — counts are not trusted.
 
 ---
 
 ## What to do next
 
-**Content, available now, zero compute:** `env_native_prompt.md` — work
-package **E1, co-active visitation**. 156 eval `.npz` carry
-`coupling_co_active` per-episode; it has been logged since day one on explicit
-instruction (invariant #5) and **never analysed**. It is the direct observable
-of the paper's central compound-hostility claim.
+### 1. Two ratifications, both $0, both pre-rental
 
-⚠ **The prompt's trap is live:** M6.2/M6.2b eval artifacts are Phase-6
-confirmatory runs, so comparing co-active visitation between ISO and JOINT is
-a **cross-arm outcome comparison, forbidden until unblinding**. E1 uses
-Phase 3–5 artifacts only (115 files). The arm labels sit in the filenames and
-the comparison looks scientific rather than procedural.
+- **`phase6_framing_branches.md`** — outcome-conditional framing, drafted
+  2026-08-11, **still untracked and unratified**. It registers what the paper
+  claims as a function of the confirmatory outcome, decided before the outcome
+  exists. It also asks two questions it cannot answer itself (§6 items 1–2:
+  whether branch B has a refuting completion effect size, and whether branch
+  D's threshold should be a number). **Both must be settled pre-unblind or
+  not at all.**
+- **The three grid-script decisions above.**
 
-**Also approved, informational and non-verdict-bearing:** zero-compute
-gap-sizing of seed dispersion vs the rerun floor, from Phase 3–5 multi-seed
-artifacts. It sharpens what "83.7 % is an upper bound" means before the grid
-runs.
+### 2. The rental, one trip
 
-**Before the grid, when a box exists:** design v2 §9's M6.1 engineering is
-**confirmed shipped** at `64a7397` (a previous HANDOFF wrongly listed it as
-owed). What remains is the render pass and the launch batch.
+`G1.2 re-floor (~$4.08) → ladder → G1.3 grid (~$40.9) → post-unblind Γ(t)
+eval (~$3.60)`. Registrar's projected trip total **~$48.6** against a **~$65**
+GPU reserve. The $45.73 grid authorization stands as-registered; the Γ(t)
+block is a **reserve draw**, not an authorization amendment.
+
+Read `gpu_launch_prompt.md` before renting. Its G1.0/G1.1 sections are
+discharged history; **its G1.3 section still carries no command block** — use
+`run_p6_grid.sh`.
+
+### 3. Free work if there is no box
+
+- **Release hygiene** (framing §7): `README.md` is 24 bytes, `m06/` is 47 MB
+  of undecided pre-M6.0 spike leftovers, the repo root carries console logs
+  and phase prompts. This has a deadline attached: **deferring it selects
+  RA-L by default**, because the D&B branch needs a releasable artifact and
+  the window after the grid is thin.
+- **Design v2 §5 and §7** owe a text update stating the upper-bound framing
+  and the seed-dispersion test basis. Ruled, still unwritten.
+- **The three no-scoop checks** (positioning rulings §1, owner tasks, open).
+
+---
+
+## Still owed, carried forward
+
+- **Per-artifact floors for the two render-gate drift channels**, measurable
+  only from the grid's own seeds. Until they exist **neither channel grades
+  anything** — and note the grid **records** them without **grading** them:
+  `m62_report.py::METRICS` is deliberately untouched, because that tuple is
+  the registered confirmatory family at `SIDAK_M = 2` and no diagnostic is
+  worth enlarging it post-registration. The floors need their own post-grid
+  instrument.
+- **The endogeneity family is enumerated and canonical** (`decision_log.md`,
+  *RENDER-GATE RULINGS, ROUND 2*, ruling 3) — five named members, one REFUTED
+  and deliberately retained. **The paper cites members by name, never by
+  ordinal.**
+- **Training-mode env-only bench rows taken between 2026-08-04 and
+  2026-08-10 undercount** (the keep-alive set had drifted to enumerate
+  `EP_METRICS` only). Fixed; no verdict moves; do not compare across that
+  boundary.
+- **`test_prop3`, `test_calibration`, `test_percolation`** are slow MC files —
+  isolate them when running the suite.
 
 ---
 
 ## Hardware / cost facts
 
-- **RTX PRO 6000 Blackwell required.** A 31.8 GiB 5090 cannot run the gate
-  config (~61.6 GiB at compile). **Never** set `--xla_gpu_autotune_level=0`.
-- **686 s/run at T = 1000** on the M6.2b card (~52,000 env-steps/s); M6.2's
-  card implied ~60,900 → 557 s/run. **Boxes differ ~15 % within the same
-  model**, which is why the launch batch exists.
+- **RTX PRO 6000 Blackwell required.** A 31.8 GiB 5090 cannot compile the gate
+  config (~61.6 GiB at autotune). **Never** set `--xla_gpu_autotune_level=0`.
+- **Measured rate $1.2358/h** (`vastai show instances`, id 47454262) — not the
+  ~$1.00/h the earlier projections assumed, which understated everything 24 %.
+- **497 s/run at T = 1000** on the G1.2 card (686 s on M6.2b's). **Boxes differ
+  ~15 % within the same model**, which is why the re-floor is not optional.
 - **Gate a new box on network before shipping**: `curl` a PyPI file; 1.4 MB/s
-  is too slow (~3–4 GB CUDA sync), 46 MB/s is fine. Ship **454 KB**
-  (`che docs pyproject.toml uv.lock`) — not the 49 MB that includes `m06/`.
-  Set `UV_HTTP_TIMEOUT=600`; the 30 s default fails on the 762 MB cudnn wheel.
+  is too slow, 46 MB/s is fine. Ship **454 KB** (`che docs pyproject.toml
+  uv.lock`), not the 49 MB that includes `m06/`. Set `UV_HTTP_TIMEOUT=600`.
 - **Toolchain is pinned and the science depends on it:** Python 3.12+, jax /
-  jaxlib **0.11.0**. M6.0 certified traced-θ bitwise on it; M6.2 and M6.2b
-  measured under it.
-- Phase-6 spend to date: ~$5.30 (M6.2 ~$2, M6.2b ~$3.30).
-
----
-
-## OWED — two things this session left unverified (2026-08-04)
-
-Both are consequences of adding the coupling counters to the training logger
-(`docs/decision_log.md`, *TRAINING LOGGER GAINS THE COUPLING COUNTERS*).
-
-1. ~~**The CPU test chunk `test_ippo test_pbt test_metrics test_locks` was
-   KILLED, not passed**~~ — **DISCHARGED 2026-08-10.** All four files ran
-   green, chunked and thread-capped, against both the coupling counters and
-   the render-gate channels on top of them.
-2. **The throughput cost of the added channels is UNMEASURED.** A CPU A/B was
-   running and was killed before it flushed, so there is no number at all —
-   not even an indicative one. See the GPU plan below; this is the main
-   reason to want a box. **Widened 2026-08-10:** the A/B now covers **nine**
-   channels, not six — the render-gate diagnostic added `center_dist_sum`,
-   `boundary_agents` and the `alive_agents` denominator to `STEP_METRICS`.
-   Unchanged in kind, and the fallback (log a subset) still applies and is
-   still a human call. **ORDERING, ruled 2026-08-10: the A/B must precede the
-   launch batch.** Its `> 15 %` branch is *drop channels*, which changes the
-   artifact — and floors are per-artifact, so a batch run first would measure
-   floors on an artifact the grid might not use.
-3. **NEW 2026-08-10 — the bench's `training` keep-alive set had drifted, and
-   is fixed.** `throughput.py::_training_info_keys()` enumerated `EP_METRICS`
-   only, so from 2026-08-04 — when `STEP_METRICS` was added as a *second*
-   table — every `training`-mode env-only row measured an env whose newest
-   channels XLA was free to delete. Exactly the M5.1 defect, one table later.
-   It now enumerates both tables, and `test_positional_drift.py` asserts the
-   superset so a third table fails loudly. **No verdict moves** (gates were
-   re-anchored to `pbt.py --bench` long ago), but every training-mode row
-   since 2026-08-04 **undercounts** and should not be compared to rows taken
-   before it.
-
-## Open threads
-
-- **`m06/` is 47 MB** of pre-M6.0 spike leftovers at the repo root — still
-  undecided whether it belongs in the tree.
-- **`test_prop3`, `test_calibration`, `test_percolation`** are slow MC files;
-  isolate them when running the suite.
-- ~~**24 M5.5 renders un-inspected**~~ — inspected and ruled 2026-08-10; no
-  longer gates the grid. **Two things it left owed:** the per-artifact floor
-  for the two new drift channels, measurable only from the grid's own seeds
-  (until then neither channel grades anything — and note the grid **records**
-  them without **grading** them: `m62_report.py::METRICS` is deliberately
-  untouched, because that tuple is the registered confirmatory family at
-  `SIDAK_M = 2` and no diagnostic is worth enlarging it post-registration, so
-  the floors need their own post-grid instrument). The **endogeneity family**
-  is now **enumerated and canonical** (`decision_log.md`, *RENDER-GATE
-  RULINGS, ROUND 2*, ruling 3) — five named members, one of them REFUTED and
-  deliberately retained. **The paper cites members by name, never by
-  ordinal.**
-- **Design v2 §5 and §7 owe a text update** to state the upper-bound framing
-  and the seed-dispersion test basis. Ruled, not yet written into v2.
+  jaxlib **0.11.0**.
+- Phase-6 spend to date: **~$9.9** (M6.2 ~$2, M6.2b ~$3.30, G1.0b+G1.2 ~$4.6).
 
 ---
 
 ## Working agreements
 
 - **Rulings bind only once transcribed** into `decision_log.md` or `CLAUDE.md`
-  **in the same session**. This session verified a relayed ruling cited a
-  budget document that **does not exist**; it was registered as new rather
-  than cited as prior law.
-- **Numbers enter documents derived or measured in the same session.** Two
-  relayed ladder figures (~22 % absorption, ~$3.5) were corrected on
-  derivation to **28.0 %** and **$1.91**, and a relayed cost attribution was
-  corrected — against the tree's own baseline the largest component is **card
-  throughput**, not plateau-doubled T.
+  **in the same session**. Relays in this project have twice cited documents
+  that **do not exist** — verify before transcribing.
+- **Numbers enter documents derived or measured in the same session.**
 - **Bars come with floors** — per-metric, per-hardware **and** per-artifact.
-- **Contrasts are graded on the contrast's SE** (new, 2026-08-03).
+- **Contrasts are graded on the contrast's SE**, not either arm's.
 - **Design-stage power statements are 80 %-power MDEs** at the family-corrected
   α, never bare 2σ√(2/k).
+- **Instruments state what they are blind to**, and **recording a channel is
+  not grading it**.
 - Run the CPU suite **chunked and thread-capped**; an unbounded run once
   crashed the machine.
 - **Milestones marked STOP end the turn: report and wait for the human.**

@@ -130,7 +130,7 @@ che/
     rowb_probe.py   # M5.1j row-B diagnostic
     results/        # phase{0..5} reports, metrics, provenance (large; most
                     #   checkpoints + renders are gitignored)
-  tests/            # 30 files; theory tests are ground truth (invariant #4)
+  tests/            # 35 files; theory tests are ground truth (invariant #4)
     golden/         # committed pre-refactor trajectory digests (M6.0a); the
                     #   cross-tree bitwise baseline for the traced-theta spike
   configs/          # severity_*, joint_*, theta_star_holdout, p6_* (Phase-6
@@ -138,7 +138,11 @@ che/
                     #   live; debug.yaml is the CPU fixture; reference.yaml,
                     #   m06_probe.yaml, phase1_accept.yaml are ARCHIVAL
                     #   (pre-Phase-2 placeholder theta) — see docs/locks.yaml
-  scripts/          # run_m*.sh GPU job scripts + plotting/report .py
+  scripts/          # run_*.sh GPU job scripts + plotting/report .py.
+                    #   run_p6_grid.sh is the Phase-6 grid (G1.3): 240 runs,
+                    #   resumable via lib_run_manifest.sh, layout asserted by
+                    #   tests/test_p6_grid.py. It computes NO cross-arm
+                    #   quantity — unblinding is a separate human-gated step.
 ```
 
 ## Coding conventions
