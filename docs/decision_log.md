@@ -3547,3 +3547,138 @@ keep.**
 - `che/tests/test_p6_grid.py`: 23 tests — chunk/seed-boundary alignment, the
   mid-seed overrun, provenance accumulation, card-block recording.
 - **No constant, config, lock or analysis threshold changes.**
+
+## VENUE RULING — NeurIPS D&B is the primary target (owner, 2026-08-16)
+
+Transcribed in the same session it was issued, per the meta-rule (2026-07-28).
+**Pre-grid and pre-unblind:** no Phase-6 outcome mean exists, so this decision
+is provably not outcome-selected — which is the property that makes it worth
+more than the deferral it replaces.
+
+Issued in response to `docs/venue_review_2026-08-16.md`, an assessment written
+this session from the repository. **That review is not a ruling and rules
+nothing**; it binds only what this entry transcribes.
+
+### THE RULING
+
+> **The primary venue is NeurIPS Datasets & Benchmarks.** TMLR is the
+> registered fallback. **RA-L / IROS is demoted to a branch-A-conditional
+> stretch** and is not written for by default.
+
+### What it supersedes
+
+1. **`phase6_framing_branches.md` §7 — "venue is deliberately NOT decided
+   here."** That deferral was ruled on the grounds that venue is legitimately
+   outcome-conditional. **Deciding it now strengthens the blind rather than
+   weakening it:** an outcome-conditional venue choice is one more thing that
+   could be selected after seeing Γ, and this removes it. §7's companion claim
+   — that the *claim* is what cannot wait — is unaffected; the four branches
+   stand ratified verbatim and no branch table is edited.
+2. **POSITIONING RULING 6c (2026-08-05) — "IROS 2027 is THE planned stage."**
+   Reversed. The owner-owed email to `EiC.RA.Letters@ieee.org` is **struck
+   from the owed list**, not deferred.
+3. **POSITIONING RULING 6a — the 6+2-page, appendices-included budget.** No
+   longer the binding constraint, so the appendix-manifest strategy that 6a
+   declared **DEAD** is **provisionally revived**. *No page count is recorded
+   here:* the derived-numbers sub-rule forbids transliterating a CfP figure
+   from memory, and the current call has not been read. Revival is conditional
+   on the verification below.
+
+**POSITIONING RULING 6b (anonymity) is NOT superseded and needs re-checking in
+the opposite direction.** 6b forbade repository links in the review copy to
+eliminate desk-reject risk. A benchmark track may instead *require* reviewer
+access to the artifact. These two pull opposite ways and the conflict is
+unresolved until the CfP is read.
+
+### Grounds, in the order they carry weight
+
+1. **The artifact is not a robotics artifact.** 64² discrete grid, 12 agents,
+   5 discrete actions, food collection, CA fire; no robot, no continuous
+   control, no hardware, no sim-to-real. The only embodiment argument in the
+   tree is one clause of Def. 2's note.
+2. **The novelty spine is four ML-methods claims**, none of them a robotics
+   claim (positioning ruling 1, as narrowed 2026-08-13).
+3. **The tier-1 contribution set is a benchmark contribution verbatim** and was
+   already **checked** to carry a paper on its own
+   (`phase6_framing_branches.md` §2, eight items). The paper does not depend
+   on Γ, which is what makes retargeting safe rather than hopeful.
+4. **The modal branch is C**, and branch C is the branch §3 itself records as
+   *"not RA-L-shaped"*. Design v2 §5 reached the same conclusion from the
+   statistics and called it *"scientifically good and strategically
+   uncomfortable"*. **The discomfort was an artifact of the venue target.** It
+   is now retired: at a benchmark venue a calibrated instrument plus a
+   well-powered exclusion is the scored object.
+
+### What this ruling does NOT do
+
+- **It does not edit the branch table.** The four branches of
+  `phase6_framing_branches.md` §3 stand ratified verbatim. What changes is
+  which branch the paper is *written for by default*, which §7 left open.
+- **It changes no constant.** `SIDAK_M`, `K_CONFIRMATORY`, `K_SECONDARY`,
+  `T_STAR`, `m62_report.py::METRICS` and every entry in `docs/locks.yaml` are
+  untouched. No config, script or test changes in this commit.
+- **It does not authorize spend.** The §7 proposals below are unruled.
+
+### OWED — owner tasks created or changed by this ruling
+
+1. **Read the current NeurIPS D&B call for papers** and record, derived from
+   the call itself: page limit and whether appendices count; anonymity and
+   artifact-access handling (resolves the 6a/6b conflict above); submission
+   dates. **No figure from this class enters any document until it is read
+   from the call** — the same sub-rule that has already stopped one plausible
+   constant in this project.
+2. **Benchmark-track deliverables not yet owed under an RA-L target**, to be
+   scoped once (1) is read: artifact documentation of datasheet shape,
+   hosting/accessibility for reviewers, licensing (MIT is in tree),
+   reproduction instructions beyond the current `README.md`, and a limitations
+   section that carries §4a and the frozen-random-projection caveat.
+3. **Unchanged and still owed:** the IEEE Xplore query (partially discharged,
+   2026-08-13) — **retained despite the demotion**, because it checks for a
+   colliding *benchmark*, and a collision would move framing at any venue;
+   reading the JaxWildfire and arXiv:2604.26150 PDFs; verifying VULCAN,
+   Agrawal 2023, Erdem & Üre 2025 and SMART (RA-L 2026), which are relayed
+   names only in a project whose log records relays naming documents that do
+   not exist.
+
+### The review's proposals are OWED RULING, and none is taken here
+
+`docs/venue_review_2026-08-16.md` §7 raises four items. They are recorded as
+**proposals awaiting an owner ruling**, and each may be adopted **only
+pre-unblind** — their entire value is in having been chosen with no outcome
+visible.
+
+| # | proposal | derived cost | status |
+|---|---|---|---|
+| 0 | Register in writing, pre-unblind, that ISO spends 1/3 of its training budget on a **certified-inert** element, and that the resulting bias **inflates Γ** | $0 | **AWAITING RULING** — the review argues it is non-optional under the standing discipline |
+| 1 | `ISO-4` secondary arm, {A-only, B-only} × {0.43, 0.70}, k = 20 | $3.41 | AWAITING RULING |
+| 2 | T = 2000 subsample, confirmatory arms only, 4 seeds each | $2.68 | AWAITING RULING |
+| 3 | High-severity secondary point, 2 arms × k = 20, UNDERPOWERED-flagged | $6.82 | AWAITING RULING |
+
+Costs are derived in the review from the measured 497 s/run and $1.2358/h;
+the three run-bearing proposals total **$12.91** against a **~$16.4** free
+reserve, so they are **ranked, not bundled** (recommended order 0, 1, 2, 3).
+
+**The finding behind proposal 0, recorded here because it is the substantive
+one and it is only sayable pre-unblind:** `p6_iso.yaml` carries 6 uniform
+components, of which `d_low` and `d_high` are δ-only
+(`kappa_A: 0.0, kappa_B: 0.0`), and Phase 5 certified δ inert. So 2/6 = 0.3333
+of ISO's training episodes carry **no behaviourally active element**, against
+100 % of JOINT's carrying both live couplings. The generated header's
+`no-element 0.0000` is true **nominally** and false **behaviourally** under the
+project's own certification. Design v2 §2 registers the *marginal* imbalance
+and defends it as definitional — that defence holds — but the *inert*-share
+accounting is unregistered, and it is the same confound §2 polices for the
+sweeps ("at p = 0.5 half of all training episodes contain no stressor at all")
+reappearing inside the confirmatory arm at p = 1/3. Design v2 §10 item 4's
+symmetry defence covers test time and not train time: in JOINT δ rides free
+inside an all-on component, in ISO it costs a third of the budget.
+**Note the internal precedent — the sweeps already exclude δ on exactly this
+reasoning.**
+
+### What this entry changes in the tree, in this commit
+
+- `docs/venue_review_2026-08-16.md`: new, the assessment this ruling responds
+  to. It states its own blindnesses (§9) and rules nothing.
+- `docs/decision_log.md`: this entry.
+- `HANDOFF.md`: venue pointer for the next session.
+- **No constant, config, lock, test or analysis threshold changes.**

@@ -1,6 +1,9 @@
 # Formal Foundations — Compound Hostile Environment Swarm Project
 
-**Status:** working draft v0.1 — theory backbone for the RA-L/IROS 2027 submission.
+**Status:** working draft v0.1 — theory backbone for the submission. *(Venue
+retargeted to NeurIPS D&B 2026-08-16, TMLR fallback; `docs/decision_log.md`,
+**VENUE RULING**. The theory is venue-independent; only the page budget it is
+written against moved.)*
 **Scope:** formalizes the environment (augmented Dec-POMDP), the hazard kernel and
 its phase structure, Couplings A and B, the comms axis, and the compositional
 generalization hypothesis. Every claim is tagged **[PROVEN]**, **[CITED]** (standard

@@ -1,8 +1,11 @@
 # CLAUDE.md — Compound Hostile Environment (CHE) Swarm Project
 
-You are the implementation engineer for a solo-researcher RA-L/IROS 2027 paper.
-Deadline pressure is real (~7 months); compute budget is real (~$150–215 total
-GPU spend). Your job is disciplined, verifiable increments — never speculative
+You are the implementation engineer for a solo-researcher paper targeting
+**NeurIPS Datasets & Benchmarks**, with TMLR as the registered fallback and
+RA-L/IROS demoted to a branch-A-conditional stretch (ruled 2026-08-16,
+pre-grid and pre-unblind; `docs/decision_log.md`, *VENUE RULING*). Deadline
+pressure is real (~7 months); compute budget is real (~$150–215 total GPU
+spend). Your job is disciplined, verifiable increments — never speculative
 rewrites.
 
 ## What this project is

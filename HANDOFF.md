@@ -163,6 +163,32 @@ Read `gpu_launch_prompt.md` before renting. Its G1.0/G1.1 sections are
 discharged history; **its G1.3 section still carries no command block** — use
 `run_p6_grid.sh`.
 
+### 2a. VENUE IS NOW RULED — NeurIPS D&B (2026-08-16)
+
+**The primary venue is NeurIPS Datasets & Benchmarks; TMLR is the fallback;
+RA-L / IROS is demoted to a branch-A-conditional stretch.** Ruled pre-grid and
+pre-unblind, which is what makes it provably not outcome-selected. Full entry:
+`docs/decision_log.md`, *VENUE RULING*; the assessment behind it is
+`docs/venue_review_2026-08-16.md` (an assessment — it rules nothing).
+
+It **supersedes** `phase6_framing_branches.md` §7 (venue deferred) and
+positioning rulings 6c (IROS as the stage) and 6a (the 6+2-page budget). It
+**does not** edit the branch table, change any constant, or authorize spend.
+Ruling 6b (anonymity, no repo links) is **not** superseded and now conflicts
+with a benchmark track's likely artifact-access requirement — unresolved until
+the CfP is read. **No page count or date is recorded anywhere in the tree**:
+the derived-numbers sub-rule forbids transliterating them from memory, so
+reading the call is an owner task.
+
+**Four proposals are OWED RULING and may be adopted only pre-unblind**
+(review §7; ranked, not bundled — $12.91 total against a ~$16.4 free reserve):
+**(0) $0** — register in writing that ISO spends 1/3 of its training budget on
+the **certified-inert** δ element, a bias that **inflates Γ**;
+**(1) $3.41** — an `ISO-4` control arm; **(2) $2.68** — a T = 2000 subsample on
+the confirmatory arms; **(3) $6.82** — an UNDERPOWERED-flagged High point.
+Proposal 0's finding is the substantive one and is transcribed in full in the
+log entry.
+
 ### 3. Free work if there is no box
 
 The pre-rental queue is empty. What remains is **owed before submission, not
