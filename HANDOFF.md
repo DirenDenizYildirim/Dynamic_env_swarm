@@ -1,4 +1,5 @@
-# HANDOFF — session state for the next model (written 2026-08-13)
+# HANDOFF — session state for the next model (written 2026-08-13,
+venue amended 2026-08-24 — see §2a)
 
 You are picking up **mid-Phase-6, pre-grid, pre-unblind.** There is **no GPU
 box running**. Every gate that blocked the grid on a *decision* is discharged;
@@ -163,22 +164,41 @@ Read `gpu_launch_prompt.md` before renting. Its G1.0/G1.1 sections are
 discharged history; **its G1.3 section still carries no command block** — use
 `run_p6_grid.sh`.
 
-### 2a. VENUE IS NOW RULED — NeurIPS D&B (2026-08-16)
+### 2a. VENUE IS RULED — TMLR primary, DMLR fallback (2026-08-24)
 
-**The primary venue is NeurIPS Datasets & Benchmarks; TMLR is the fallback;
-RA-L / IROS is demoted to a branch-A-conditional stretch.** Ruled pre-grid and
+**The primary venue is TMLR; DMLR is the registered fallback; both are
+rolling and they are attempted SEQUENTIALLY** — TMLR's originality policy
+forbids parallel submission at another archival peer-reviewed venue. RA-L /
+IROS remains demoted to a branch-A-conditional stretch. Ruled pre-grid and
 pre-unblind, which is what makes it provably not outcome-selected. Full entry:
-`docs/decision_log.md`, *VENUE RULING*; the assessment behind it is
-`docs/venue_review_2026-08-16.md` (an assessment — it rules nothing).
+`docs/decision_log.md`, *VENUE RULING II*; the assessment behind it is
+`docs/venue_review_2026-08-24.md` (an assessment — it rules nothing).
 
-It **supersedes** `phase6_framing_branches.md` §7 (venue deferred) and
-positioning rulings 6c (IROS as the stage) and 6a (the 6+2-page budget). It
-**does not** edit the branch table, change any constant, or authorize spend.
-Ruling 6b (anonymity, no repo links) is **not** superseded and now conflicts
-with a benchmark track's likely artifact-access requirement — unresolved until
-the CfP is read. **No page count or date is recorded anywhere in the tree**:
-the derived-numbers sub-rule forbids transliterating them from memory, so
-reading the call is an owner task.
+It **supersedes** the 2026-08-16 *VENUE RULING* on the primary/fallback pair
+only: **NeurIPS D&B is no longer registered anywhere in the ladder**, and its
+CfP-reading task is **struck**. The 2026-08-16 grounds for demoting RA-L/IROS
+stand untouched, as do `phase6_framing_branches.md` §7's supersession and
+ruling 6c. It **does not** edit the branch table, change any constant, or
+authorize spend.
+
+**Two positioning rulings move, both by verification rather than by waiver:**
+
+- **6b (anonymity, no repo links) STANDS and its conflict is CLOSED under the
+  primary** — TMLR is double-blind, requires anonymized submissions and
+  anonymized supplementary code (≤100 MB), and forbids linkage to a
+  non-anonymous preprint. **The conflict RETURNS if the DMLR fallback is
+  exercised** (single-blind, requires availability/maintenance docs) and is
+  re-ruled then, not pre-emptively.
+- **6a's page budget is DISCHARGED** — TMLR states no strict page limit, so
+  the appendix-manifest strategy is unconditional under the primary.
+
+**One venue mechanic is UNVERIFIED and it is the only one left: TMLR publishes
+NO total time to decision** (stage deadlines only). A "~2–3 months" figure was
+asserted in chat, is **retracted**, and enters no document. **No runway
+arithmetic involving TMLR may be written until that check is discharged.**
+The Journal-to-Conference track is **not** a ground for the ruling: it needs a
+J2C/Featured/Outstanding certification, is a poster, and is explicitly not
+published in the conference proceedings.
 
 **Four proposals are OWED RULING and may be adopted only pre-unblind**
 (review §7; ranked, not bundled — $12.91 total against a ~$16.4 free reserve):

@@ -1,12 +1,13 @@
 # CLAUDE.md — Compound Hostile Environment (CHE) Swarm Project
 
 You are the implementation engineer for a solo-researcher paper targeting
-**NeurIPS Datasets & Benchmarks**, with TMLR as the registered fallback and
-RA-L/IROS demoted to a branch-A-conditional stretch (ruled 2026-08-16,
-pre-grid and pre-unblind; `docs/decision_log.md`, *VENUE RULING*). Deadline
-pressure is real (~7 months); compute budget is real (~$150–215 total GPU
-spend). Your job is disciplined, verifiable increments — never speculative
-rewrites.
+**TMLR**, with **DMLR** as the registered fallback — both rolling, attempted
+sequentially (TMLR forbids parallel submission), and RA-L/IROS still demoted
+to a branch-A-conditional stretch (ruled 2026-08-24, pre-grid and pre-unblind;
+`docs/decision_log.md`, *VENUE RULING II*, superseding the 2026-08-16 NeurIPS
+D&B target). Deadline pressure is real (~7 months); compute budget is real
+(~$150–215 total GPU spend). Your job is disciplined, verifiable increments —
+never speculative rewrites.
 
 ## What this project is
 

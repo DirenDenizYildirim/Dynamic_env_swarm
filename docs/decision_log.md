@@ -3682,3 +3682,156 @@ reasoning.**
 - `docs/decision_log.md`: this entry.
 - `HANDOFF.md`: venue pointer for the next session.
 - **No constant, config, lock, test or analysis threshold changes.**
+
+## VENUE RULING II — TMLR primary, DMLR fallback (owner, 2026-08-24)
+
+Transcribed in the same session it was issued, per the meta-rule (2026-07-28).
+**Pre-grid and pre-unblind:** `run_p6_grid.sh` has not run, there is no box,
+and no Phase-6 outcome mean exists — so this decision retains the property
+that made the 2026-08-16 ruling worth more than the deferral it replaced.
+
+Issued in response to `docs/venue_review_2026-08-24.md`, an assessment written
+this session from the repository and from the venues' own published pages.
+**That review is not a ruling and rules nothing**; it binds only what this
+entry transcribes.
+
+### THE RULING
+
+> **The primary venue is TMLR.** **DMLR** (Journal of Data-centric Machine
+> Learning Research) is the registered fallback. **Both are rolling**, and
+> they are attempted **sequentially**, never in parallel.
+
+### What it supersedes
+
+1. **VENUE RULING (2026-08-16) — "the primary venue is NeurIPS Datasets &
+   Benchmarks; TMLR is the registered fallback."** Superseded on the
+   primary/fallback pair only. NeurIPS D&B is **not** registered anywhere in
+   the ladder; a deadline venue is declined as primary for the reason in §2
+   below.
+2. **That ruling's owed item 1** — "read the current NeurIPS D&B call for
+   papers and record page limit, anonymity handling, submission dates."
+   **Struck**, not deferred. It is replaced by the single unverified item in
+   §5.
+
+**What it does NOT supersede.** The 2026-08-16 grounds for demoting RA-L/IROS
+(§1 items 1–2: the artifact is not a robotics artifact; the novelty spine is
+four ML-methods claims) are structural and independent of which ML venue is
+primary. **RA-L/IROS remains demoted to a branch-A-conditional stretch and is
+not written for by default.** The struck email to `EiC.RA.Letters@ieee.org`
+stays struck.
+
+### Grounds, in the order they carry weight
+
+1. **Rolling, because a rejection must not cost the calendar.** Runway is
+   ~7 months (`CLAUDE.md`) and the project has one grid's worth of results. A
+   deadline primary charges a full cycle for a rejection; a rolling primary
+   charges a review. This is the reason the pair is rolling at all, and it is
+   the owner's stated motivation for reopening.
+2. **TMLR's criteria eliminate this paper's dominant rejection risk.** Read
+   from the criteria page 2026-08-24: two criteria, evidence and audience
+   interest; "significant", "impactful" and "novel" explicitly declined as
+   rejection grounds; state-of-the-art not required; and the one subjective
+   criterion carries an **assume-satisfied-when-uncertain** instruction to
+   reviewers. The modal branch is **C** — a well-powered null
+   (`venue_review_2026-08-16.md` §5). A venue that refuses novelty as a
+   rejection ground is the correct first attempt for a null.
+3. **Parallel submission is forbidden, so the ladder is sequential by rule and
+   not by preference.** TMLR's originality policy bars reuse of text, figures
+   or results from any paper submitted in parallel at another archival
+   peer-reviewed venue. Ordering is therefore the only free variable, and
+   ground 2 fixes it.
+4. **DMLR is the fallback because it grades the artifact and TMLR does not.**
+   DMLR's stated scope names "Data generators and reinforcement learning
+   environments" and "Benchmarking tools and methods"; its acceptance criteria
+   are close to a transcription of the benchmark deliverables already owed.
+   Neither TMLR criterion asks anyone to evaluate the environment *as* a
+   benchmark. The fallback is where the tier-1 artifact payload is scored.
+
+### The ordering's second support DID NOT SURVIVE VERIFICATION, and the ruling is issued anyway
+
+Recorded here rather than in the review alone, because it qualifies the
+ruling's own reasoning.
+
+The proposal that produced this ruling argued TMLR-first on two legs:
+acceptance probability, and speed — "a TMLR rejection at ~2–3 months still
+leaves room for DMLR inside the runway." **The speed leg is unsupported.**
+TMLR publishes stage deadlines only (action editor within a week; final
+recommendation once at least two weeks have elapsed after all 3 reviews became
+public) and **no total time to decision**. DMLR publishes an expected **4–6
+months**, up to 10 in exceptional cases. No comparison follows from those two.
+
+The "~2–3 months" figure was asserted from memory in chat, is retracted in
+`venue_review_2026-08-24.md` §5, and **enters no document**. Per the
+derived-numbers sub-rule, **no runway arithmetic involving TMLR may be written
+anywhere until §5's check is discharged.**
+
+**The ruling stands on ground 2 alone**, which is the stronger leg and does not
+depend on timing. The sequencing *benefit* is unquantified and is not claimed.
+
+### The Journal-to-Conference track is NOT a ground
+
+Verified from the track's own page 2026-08-24 and recorded so it is not later
+mistaken for a reason: eligibility requires a TMLR paper to hold **a J2C,
+Featured or Outstanding certification** — not an ordinary acceptance — within a
+rolling two-year publication window opening 2025-01-01; the format is typically
+a **poster**; and the paper "shall not be considered as being published in the
+proceedings of the chosen conference." It is a conditional visibility bonus
+whose condition no design decision can secure in advance. An earlier
+characterization of it as materially changing TMLR's standing is corrected in
+`venue_review_2026-08-24.md` §6.
+
+### Consequences for the standing positioning rulings
+
+- **POSITIONING RULING 6b (anonymity, no repo links) STANDS, and the conflict
+  the 2026-08-16 ruling left open is CLOSED under the primary.** TMLR is
+  double-blind, requires anonymized submissions, forbids linkage to a
+  non-anonymous preprint, and requires supplementary code to be anonymized
+  (≤100 MB). No benchmark-track artifact-access requirement arises.
+  **The conflict RETURNS if the DMLR fallback is exercised** — DMLR is
+  single-blind and requires availability and maintenance documentation — and
+  is to be re-ruled at that point, not pre-emptively.
+- **POSITIONING RULING 6a's page budget is DISCHARGED as a constraint.** TMLR
+  states no strict page limit ("may be any length, but a paper's length should
+  be justified by its content"). The appendix-manifest strategy, revived
+  *provisionally* on 2026-08-16 pending a CfP reading, is now **unconditional
+  under the primary**. The conditionality is discharged by verification, not
+  waived.
+- **Benchmark-track deliverables (2026-08-16 owed item 2) are OPTIONAL under
+  the primary and REQUIRED under the fallback.** They remain worth doing: they
+  are the artifact's adoption path, which a claims venue does not supply.
+
+### What this ruling does NOT do
+
+- **It does not edit the branch table.** The four branches of
+  `phase6_framing_branches.md` §3 stand ratified verbatim, exactly as the
+  2026-08-16 ruling left them. The `venue lean` column is descriptive and is
+  not a registration; branches C and D already lean TMLR.
+- **It changes no constant.** `SIDAK_M`, `K_CONFIRMATORY`, `K_SECONDARY`,
+  `T_STAR`, `m62_report.py::METRICS` and every entry in `docs/locks.yaml` are
+  untouched. No config, script or test changes in this commit.
+- **It does not authorize spend**, and it does not rule on the four §7
+  proposals of `venue_review_2026-08-16.md` (0, 1, 2, 3), which remain
+  **AWAITING RULING** and adoptable **only pre-unblind**.
+- **It does not reopen the RA-L/IROS demotion.**
+
+### OWED — the owner task list after this ruling
+
+1. **Obtain TMLR's total time to decision** from its published statistics or
+   the OpenReview record — not from an estimate. This is the *only* venue
+   mechanic left unverified, and until it is discharged no runway arithmetic
+   involving TMLR may be written. (Replaces the struck D&B CfP task.)
+2. **Unchanged and still owed:** the IEEE Xplore query (partially discharged
+   2026-08-13); reading the JaxWildfire (arXiv:2512.06102) and
+   arXiv:2604.26150 PDFs; verifying VULCAN, Agrawal 2023, Erdem & Üre 2025 and
+   SMART (RA-L 2026). **The bibliography remains the highest-severity
+   non-technical risk in the project and no venue decision touches it.**
+
+### What this entry changes in the tree, in this commit
+
+- `docs/venue_review_2026-08-24.md`: new, the assessment this ruling responds
+  to. It states its own blindnesses (§5), carries a retraction, and rules
+  nothing.
+- `docs/decision_log.md`: this entry.
+- `CLAUDE.md`, `HANDOFF.md`, `docs/theory_foundations.md`: venue pointers
+  updated to match.
+- **No constant, config, lock, test or analysis threshold changes.**
