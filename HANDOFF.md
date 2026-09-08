@@ -231,6 +231,13 @@ before the rental**:
 
 ## Still owed, carried forward
 
+- **An unrecorded partial re-floor exists: `che/bench/results/phase6/
+  g1_floors_card2/`** (8 ISO + 4 JOINT G1.2-protocol reps, 2026-08-14, a
+  second card, one archive truncated). Found and recorded 2026-09-08; it
+  **grades nothing** and does not replace the grid card's own re-floor. The
+  statement earlier in this file that no box has run since G1.2 was wrong.
+  **Owner owes a decision-log entry** (card, reason for the stop, keep or
+  discard). See its `README.md`.
 - **Per-artifact floors for the two render-gate drift channels**, measurable
   only from the grid's own seeds. Until they exist **neither channel grades
   anything** — and note the grid **records** them without **grading** them:
@@ -264,7 +271,7 @@ before the rental**:
   uv.lock`), not the 49 MB that includes `m06/`. Set `UV_HTTP_TIMEOUT=600`.
 - **Toolchain is pinned and the science depends on it:** Python 3.12+, jax /
   jaxlib **0.11.0**.
-- Phase-6 spend to date: **~$9.9** (M6.2 ~$2, M6.2b ~$3.30, G1.0b+G1.2 ~$4.6).
+- Phase-6 spend to date: **~$9.9** (M6.2 ~$2, M6.2b ~$3.30, G1.0b+G1.2 ~$4.6). **Plus** the unrecorded 2026-08-14 card-2 partial re-floor, roughly $2 by run count, not in any ledger.
 
 ---
 
