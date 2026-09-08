@@ -1,0 +1,11 @@
+{
+ "branch": "B",
+ "k_req": {
+  "completion": 46,
+  "survival_rate": 3
+ },
+ "k_cap": 60,
+ "k_confirmatory": 40,
+ "realized_power": 0.8010433049120944,
+ "action": "PROCEED at k = 46, no human round-trip. Registrar logs k and the derived cost delta (+12 runs)."
+}

@@ -3835,3 +3835,65 @@ characterization of it as materially changing TMLR's standing is corrected in
 - `CLAUDE.md`, `HANDOFF.md`, `docs/theory_foundations.md`: venue pointers
   updated to match.
 - **No constant, config, lock, test or analysis threshold changes.**
+
+
+## G1.2 RE-FLOOR ON THE GRID CARD — LADDER BRANCH B, k = 46 (registrar transcription, 2026-09-09)
+
+Not a ruling. The re-floor's verdict is pre-registered (`gpu_launch_prompt.md`
+G1.2; `run_m62b_t1000.sh` header) and this entry logs its outcome and the
+derived cost delta, which the verdict line itself instructs the registrar to
+do. **Pre-grid and pre-unblind: no grid run has started.**
+
+**Rental.** vast.ai, RTX PRO 6000 Blackwell Workstation (97,887 MiB), 32 GB
+disk, ~50 MB/s network, rented 2026-09-08. Repo shipped by `git archive` of
+commit `51e489a` (no `.git`); toolchain verified Python 3.12.3, jax/jaxlib
+0.11.0, one CudaDevice. Re-floor launched 17:55 UTC 2026-09-08 in tmux,
+`OUT=che/bench/results/phase6/g1_floors UPDATES=1000 REPS=8`, exit 0 at
+~21:30 UTC. 501 s/run train, 15 s eval — the G1.2 card's 497 s.
+
+**Measured per-arm floors (same seed, identical runs), completion / survival:**
+
+| arm | completion sd | survival sd |
+|---|---|---|
+| ISO | 0.0281 | 0.0070 |
+| JOINT | 0.0598 | 0.0129 |
+| sweep_p500 | 0.0383 | — |
+
+Against the 2026-08-10 card (ISO 0.0214 / JOINT 0.0236 completion): this
+card's JOINT completion floor is **2.5×** larger. Floors are per-hardware;
+this is the exhibit.
+
+**Plateau (descriptive only — criterion retired by the T\* ruling):** drift
+over the final 100 updates / own floor: ISO 0.80×, JOINT 0.68×, sweep 0.26×.
+All three below 1.0×.
+
+**Power on the contrast basis, Šidák m = 2, k = 40:** sd(Γ) completion
+0.01044, survival 0.00232; MDE80 0.0321 / 0.0071; power@0.03 **73.8 %** /
+100 %; **k_req 46 / 3.**
+
+**LADDER: BRANCH B** (40 < k_req ≤ 60). Registered action executed as written:
+**the grid runs at K_CONF = 46**, no human round-trip. Realized power@0.03
+at k = 46: **80.1 %**.
+
+**Derived cost delta:** +12 confirmatory runs (6 seeds × 2 arms) → 252 runs.
+At the measured 8.8 min/run including archiving, +1.8 GPU-h ≈ **+$2.2** at
+$1.2358/h; grid total ≈ 37 GPU-h ≈ **$45.7**. Chunks at `MAX_RUNS=60` land on
+seed boundaries as before, then a fifth invocation covers seeds 41–46
+(12 runs).
+
+**Box disk guard:** the box has 32 GB; the grid will run with
+`MIN_FREE_GB=10` (an env var the script header invites when measured):
+chunked operation holds ≤ ~4 GB of archives at a time and the archives are
+pulled and verified off-box after every chunk.
+
+**Artifacts.** The new floors are at
+`che/bench/results/phase6/g1_floors_2026-09-08/` (24 archives, pulled and
+hash-verified 2026-09-09; small files tracked). **Incident:** the first pull
+went into `g1_floors/`, the 2026-08-10 batch's directory, and overwrote or
+removed its 24 gitignored archives. Tracked files were restored from git;
+raw checkpoint directories were untouched; the archives were rebuilt from
+them and hashed to `SHA256_CKPT_rebuilt_2026-09-09.txt`. No number moves.
+Full record: `g1_floors/README_ARCHIVES_REBUILT.md`. The pull script now
+refuses a directory holding foreign archives.
+
+**Owner is shown the branch before the grid starts**, per the G1.2 STOP.

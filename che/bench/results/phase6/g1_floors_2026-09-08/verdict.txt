@@ -1,0 +1,62 @@
+========================================================================
+M6.2 — PER-ARM FLOORS (identical runs, same seed: nondeterminism)
+========================================================================
+NO-PEEKING (ruled 2026-08-02): outcome MEANS are suppressed from
+this report until unblinding — dispersion only. floors.json keeps
+the raw values; they are needed then, not now.
+
+  iso  (n = 8)
+    metric              sd (FLOOR)     range
+    completion              0.0281    0.0782
+    survival_rate           0.0070    0.0195
+    episode_return          0.8775    2.4775
+    deaths_fire             0.0791    0.2383
+
+  joint  (n = 8)
+    metric              sd (FLOOR)     range
+    completion              0.0598    0.1798
+    survival_rate           0.0129    0.0409
+    episode_return          1.9241    5.7520
+    deaths_fire             0.1573    0.4551
+
+  sweep_p500  (n = 8)
+    metric              sd (FLOOR)     range
+    completion              0.0383    0.1390
+    survival_rate           0.0128    0.0379
+    episode_return          1.2620    4.5957
+    deaths_fire             0.1444    0.4219
+
+========================================================================
+PLATEAU GUARD — final-100-update slope vs zero, floor-graded
+========================================================================
+  iso          drift over last 100: +0.0226   floor sd 0.0281   ratio 0.80x   -> plateaued
+  joint        drift over last 100: +0.0405   floor sd 0.0598   ratio 0.68x   -> plateaued
+  sweep_p500   drift over last 100: +0.0101   floor sd 0.0383   ratio 0.26x   -> plateaued
+
+========================================================================
+POWER on measured floors — CONTRAST basis (k = 40, Sidak m = 2)
+========================================================================
+  [diag] iso    completion       sigma 0.0281  per-arm power@0.03 99.4%
+  [diag] iso    survival_rate    sigma 0.0070  per-arm power@0.03 100.0%
+  [diag] joint  completion       sigma 0.0598  per-arm power@0.03 50.3%
+  [diag] joint  survival_rate    sigma 0.0129  per-arm power@0.03 100.0%
+  --------------------------------------------------------------------
+  GAMMA  completion       sd(G) 0.01044  MDE80 0.0321  power@0.03 73.8%  k_req 46
+  GAMMA  survival_rate    sd(G) 0.00232  MDE80 0.0071  power@0.03 100.0%  k_req 3
+
+========================================================================
+RE-FLOOR LADDER: BRANCH B
+========================================================================
+  k_req(completion) = 46   cap = 60   realized power@0.03 = 80.1%
+  PROCEED at k = 46, no human round-trip. Registrar logs k and the derived cost delta (+12 runs).
+
+========================================================================
+MEASURED COST (discharges the v2 section-6 estimate)
+========================================================================
+  train  median 501 s  (n=24)
+  eval   median 15 s  (n=24)
+  per run total 516 s
+
+========================================================================
+VERDICT: PROCEED — plateaued, ladder branch B. PROCEED at k = 46, no human round-trip. Registrar logs k and the derived cost delta (+12 runs). Bars for the grid come from floors.json; the confirmatory TEST uses the grid's own seed dispersion.
+========================================================================

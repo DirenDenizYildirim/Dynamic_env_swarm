@@ -103,6 +103,23 @@ with their reasoning, and all three are asserted by tests.
 
 ## What to do next
 
+### 0. 2026-09-09 — THE RE-FLOOR IS DONE, LADDER BRANCH B, GRID NOT STARTED
+
+Box rented 2026-09-08 (`ssh -p 56871 root@84.238.141.57`, RTX PRO 6000,
+32 GB disk), repo at `~/che_repo` (commit `51e489a`), toolchain verified.
+G1.2 re-floor exit 0; **ladder BRANCH B: K_CONF = 46**, +12 runs, ≈ +$2.2.
+Floors and power in `docs/decision_log.md` (2026-09-09 entry) and
+`che/bench/results/phase6/g1_floors_2026-09-08/`. **The 2026-08-10 batch's
+archives were overwritten by a mis-targeted pull and rebuilt from raw
+checkpoint dirs** — `g1_floors/README_ARCHIVES_REBUILT.md`. Grid command,
+in tmux on the box, from `~/che_repo`:
+
+    MAX_RUNS=60 MIN_FREE_GB=10 K_CONF=46 GIT_COMMIT=51e489a031b0e213d18644dbae19fc92052ede82 \
+      bash che/scripts/run_p6_grid.sh 2>&1 | tee p6_grid_console.log
+
+Pull after each `CHUNK COMPLETE` with `che/scripts/pull_box_artifacts.sh`
+into a **fresh dated local directory**, never into an existing one.
+
 ### 1. Everything before the rental is DONE (2026-08-13)
 
 The owner **delegated the pre-rental decisions to the builder**, stating bias
