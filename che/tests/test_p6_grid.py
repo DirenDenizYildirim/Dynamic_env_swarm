@@ -54,8 +54,44 @@ def _script_default(name: str) -> str:
     return m.group(1)
 
 
+# Every operator knob the script reads from its environment. The tests assert
+# the script's REGISTERED layout, so they must not inherit whatever the
+# operator exported for the real run: on 2026-09-08 the grid was launched
+# under ladder branch B with K_CONF=46, the script's own pre-flight ran this
+# file in that environment, the `tags` fixture therefore enumerated 252 runs
+# instead of 240, and three layout tests went red on a correct tree. A
+# pre-flight that fails because of the very variable the ladder told the
+# operator to set is a test of the operator's shell, not of the script.
+_SCRIPT_KNOBS = (
+    "OUT",
+    "UPDATES",
+    "K_CONF",
+    "K_SEC",
+    "N_EVAL",
+    "EVAL_SEED",
+    "THETA_STAR",
+    "DRY_RUN",
+    "KEEP_CKPT_DIRS",
+    "MIN_FREE_GB",
+    "MAX_CONSECUTIVE_FAILURES",
+    "MAX_HOURS",
+    "MAX_RUNS",
+    "CONF_ARMS",
+    "SEC_ARMS",
+    "OWED_TESTS",
+    "GIT_COMMIT",
+)
+
+
+def _clean_env(**env) -> dict[str, str]:
+    """os.environ minus the script's knobs, plus exactly what the test sets."""
+    e = {k: v for k, v in os.environ.items() if k not in _SCRIPT_KNOBS}
+    e.update(env)
+    return e
+
+
 def _dry_run(**env) -> subprocess.CompletedProcess:
-    e = dict(os.environ, DRY_RUN="1", **env)
+    e = _clean_env(DRY_RUN="1", **env)
     return subprocess.run(
         ["bash", str(SCRIPT)], cwd=REPO_ROOT, capture_output=True, text=True, env=e
     )
@@ -69,6 +105,7 @@ def tags() -> list[str]:
 
 
 # --------------------------------------------------------------- the locks
+
 
 def test_seed_counts_come_from_the_locks_not_from_the_script():
     """k is locked. The script may parameterize it; its default must be it."""
@@ -90,6 +127,7 @@ def test_k_conf_may_be_raised_to_the_ladder_cap(tags):
 
 
 # -------------------------------------------------------------- the layout
+
 
 def test_grid_is_240_runs(tags):
     assert len(tags) == 240
@@ -168,6 +206,7 @@ def test_configs_referenced_all_exist(tags):
 
 # --------------------------------------------------------------- no peeking
 
+
 def test_script_computes_no_cross_arm_quantity():
     # Executable lines only. The script's header DISCUSSES m62_report, at
     # length, in order to say it must never be called here -- a comment cannot
@@ -192,13 +231,12 @@ def test_eval_set_is_a_common_constant():
 
 # ------------------------------------------------- the resume-safety guard
 
+
 def _run_until_stamp_check(out: Path, **env) -> subprocess.CompletedProcess:
     """Invoke the real script far enough to hit the stamp guard, then stop at
     the pre-flight -- pointed at a nonexistent file so it fails immediately and
     no GPU-shaped work is attempted."""
-    e = dict(
-        os.environ, OUT=str(out), OWED_TESTS="che/tests/__no_such_file__.py", **env
-    )
+    e = _clean_env(OUT=str(out), OWED_TESTS="che/tests/__no_such_file__.py", **env)
     return subprocess.run(
         ["bash", str(SCRIPT)], cwd=REPO_ROOT, capture_output=True, text=True, env=e
     )
@@ -260,7 +298,7 @@ SMOKE = dict(
 
 
 def _smoke(out: Path, **over) -> subprocess.CompletedProcess:
-    e = dict(os.environ, OUT=str(out), **SMOKE, **over)
+    e = _clean_env(OUT=str(out), **SMOKE, **over)
     return subprocess.run(
         ["bash", str(SCRIPT)], cwd=REPO_ROOT, capture_output=True, text=True, env=e
     )
