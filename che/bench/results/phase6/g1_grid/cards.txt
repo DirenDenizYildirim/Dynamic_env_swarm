@@ -1,0 +1,11 @@
+# card <TAB> arm <TAB> n_runs <TAB> seeds
+NVIDIA RTX PRO 6000 Blackwell Workstation Edition	ident_c40_p000	6	1,2,3,4,5,6
+NVIDIA RTX PRO 6000 Blackwell Workstation Edition	ident_c40_p200	6	1,2,3,4,5,6
+NVIDIA RTX PRO 6000 Blackwell Workstation Edition	ident_c40_p400	6	1,2,3,4,5,6
+NVIDIA RTX PRO 6000 Blackwell Workstation Edition	iso	6	1,2,3,4,5,6
+NVIDIA RTX PRO 6000 Blackwell Workstation Edition	joint	6	1,2,3,4,5,6
+NVIDIA RTX PRO 6000 Blackwell Workstation Edition	sweep_c50_p000	6	1,2,3,4,5,6
+NVIDIA RTX PRO 6000 Blackwell Workstation Edition	sweep_c50_p125	6	1,2,3,4,5,6
+NVIDIA RTX PRO 6000 Blackwell Workstation Edition	sweep_c50_p250	6	1,2,3,4,5,6
+NVIDIA RTX PRO 6000 Blackwell Workstation Edition	sweep_c50_p375	6	1,2,3,4,5,6
+NVIDIA RTX PRO 6000 Blackwell Workstation Edition	sweep_c50_p500	6	1,2,3,4,5,6

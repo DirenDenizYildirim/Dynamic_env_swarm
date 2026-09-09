@@ -1,0 +1,8 @@
+updates: 1000
+k_conf: 46
+k_sec: 20
+n_eval: 512
+eval_seed: 0
+eval_config: che/configs/theta_star_holdout.yaml
+conf_arms: iso:che/configs/p6_iso.yaml joint:che/configs/p6_joint.yaml 
+sec_arms: ident_c40_p000:che/configs/p6_ident_c40_p000.yaml ident_c40_p200:che/configs/p6_ident_c40_p200.yaml ident_c40_p400:che/configs/p6_ident_c40_p400.yaml sweep_c50_p000:che/configs/p6_sweep_c50_p000.yaml sweep_c50_p125:che/configs/p6_sweep_c50_p125.yaml sweep_c50_p250:che/configs/p6_sweep_c50_p250.yaml sweep_c50_p375:che/configs/p6_sweep_c50_p375.yaml sweep_c50_p500:che/configs/p6_sweep_c50_p500.yaml 
