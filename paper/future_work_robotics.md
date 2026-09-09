@@ -1,5 +1,10 @@
 # Future work — the embodied successor, made outcome-robust and staged
 
+> **DECIDED 2026-09-09 (owner):** build Stage 0 (Coupling C on the grid) and
+> the expendability-economics paper (robotics plan §4.4). Ideas 4.1, 4.2,
+> 4.3, 4.5 and 4.6 are dropped and are not to be reopened. Stages 1–3 below
+> remain conditional on Stage 0's go criterion.
+
 Companion to `chaos_robotics_research_plan.md` §3. That document describes
 the full paper. This one describes how to start it without betting a year
 on a CHE result that does not exist yet, and what each stage must show
