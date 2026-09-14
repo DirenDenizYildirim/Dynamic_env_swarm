@@ -1,3 +1,11 @@
+> **SUPERSEDED IN PART 2026-09-14.** The two ruled follow-ups (Stage 0
+> Coupling C, and expendability economics) are now ONE paper in a separate
+> repository, `/home/diren/A_Research/Expendable_swarm` (its own theory doc,
+> decision log and novelty audit). The compositional-gap successor framing
+> below (Stages 1–3 as "does the gap survive embodiment") is retained as the
+> record but is no longer the plan of record for RA-L; see that repository's
+> `README.md` and `docs/theory_foundations.md`.
+
 # Future work — the embodied successor, made outcome-robust and staged
 
 > **DECIDED 2026-09-09 (owner):** build Stage 0 (Coupling C on the grid) and
