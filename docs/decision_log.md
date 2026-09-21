@@ -4233,3 +4233,135 @@ The grid script is not modified.
 - `HANDOFF.md`: §2a pointer updated.
 - **No constant, config, lock, test, script or analysis threshold changes.**
   Every implementation item above lands in its own later commit.
+
+
+## CARD RULING — the Phase-6 grid remainder runs on an RTX 5090 (owner, 2026-09-21)
+
+**Ruled:** G1.3 chunks 3–5 (seeds 13–46, 132 runs) and the post-unblind /
+§7 blocks run on an **RTX GeForce 5090 (32,607 MiB)**, not an RTX PRO 6000.
+Seeds 1–12 (120 runs) stay as-run on the PRO 6000. Issued pre-unblind, with
+no cross-arm quantity computed.
+
+### 1. This does not need a new authorization — the chunking ruling already covers it
+
+The 2026-08-14 chunking ruling states chunks "may therefore run on different
+rented cards", and gives the safety argument: seed-major order puts **both
+arms of every seed on the same card**, so a card effect is common-mode within
+a seed and **cancels in Γ**. The grid is stopped at **seed 12 — a seed
+boundary**, which is exactly the condition that argument requires. Validity is
+untouched; the cost is power, and realized power is **reported, not
+re-engineered**.
+
+What is new here is that the switch crosses a card *model*, not just a box.
+That is a larger block effect than the one the chunking ruling costed. It
+remains inside the same argument, and the stated headroom (sd(Γ) may inflate
+1.93× completion / 3.14× survival before power falls to 80 %) is the budget it
+spends against.
+
+### 2. What is being corrected: a conflation, not a waiver
+
+`decision_log.md:1570` reads: *"62,084 steps/s for the gate config or 257 s/run
+single-policy, and the 5090 is out."* That sentence bundles two workloads and
+the exclusion has since been read as global.
+
+**The exclusion was measured on `gate_pop12.yaml`** — a **population** config
+(12 members × 128 envs) needing ~61.6 GiB at autotune. Its own header calls
+itself "the Phase-6/7 spending configuration", but **the Phase-6 grid does not
+run it.** The grid runs `p6_iso.yaml` and its siblings: **single learner, 256
+envs, no `pop_size`.**
+
+This entry does not reopen the gate-config exclusion. **If Phase 7 runs the
+PBT population path, the 5090 remains out on 31.8 GiB.**
+
+### 3. Evidence for the single-learner path (verified this session)
+
+- `p6_iso.yaml`'s `env:` and `train:` blocks are **identical** to
+  `severity_medium.yaml` — 64², 12 agents, horizon 256, obs_window 9,
+  obs_version 3, 32 food; 256 envs, rollout 128, 4 minibatches, 4 epochs.
+  The only additions are `ckpt_max_to_keep: 11` (disk, not VRAM) and the
+  `mixture:` block.
+- **`severity_medium.yaml` / `severity_high.yaml` ran on an RTX 5090** in
+  M5.1, M5.1b, M5.1c, M5.1e, M5.3 and the Phase-5 pre-task. Each
+  `provenance.txt` records `gpu: NVIDIA GeForce RTX 5090`.
+- The mixture machinery is not a memory risk: M6.0 measured traced-θ at
+  **+30,720 B peak (+0.00004 %)** and ≤ 0.6 % throughput.
+
+### 4. What is NOT measured — stated so it is chosen, not discovered
+
+**No peak-memory figure exists for any single-learner config.** `memprobe.py`
+was written for the population path and only ever ran on `gate_pop12.yaml`.
+The Phase-5 5090 runs prove the config *fit* 31.8 GiB at their commits; they
+do not say with how much headroom. G1.0b's nine added diagnostic channels were
+measured at **< 0.25 % throughput** but their **memory cost was not reported**.
+
+The footprint claim is therefore an **inference**, and it is discharged by a
+**compile go/no-go on the first run**, not by advance measurement. If it OOMs
+at autotune the fallback is a PRO 6000. **`--xla_gpu_autotune_level=0` is not
+available** (2026-07-30: it bought a fit at 16.4× the cost).
+
+### 5. Throughput expectation — an estimate, not a trigger
+
+| card | config | updates | s/run | n |
+|---|---|---|---|---|
+| RTX 5090 | `severity_medium.yaml` | 500 | **283.9** (282–286) | 11 |
+| RTX PRO 6000 | `p6_iso.yaml` | 1000 | **501.2** (sd 1.3) | 120 |
+
+Attributing the 1000-update run's fixed overhead two ways (naive halving vs.
+subtracting 42.6 s of non-steady time, derived from 32,768 env-steps/update at
+the measured 71,450 steps/s) brackets the 5090 at **1.05×–1.13× slower**.
+
+Per the throughput-gate rule this is an **estimate and gates nothing**.
+Realized per-run time is read from `timings.txt` on the artifact itself.
+
+### 6. Cost — at the rate measured this session
+
+**Rate: $0.549/h** (owner-reported, this box, 2026-09-21).
+
+Remaining work is **28.49 GPU-bound hours + 0.56 h CPU/disk**, derived this
+session from the 120-run `timings.txt` (132 grid runs at 516.4 s GPU + 12 s
+archive; ISO-4 k = 20; T = 2000 k = 4 × 2; High readout 128 evals; Γ(t)
+920 evals).
+
+| card | hours | cost |
+|---|---|---|
+| 5090 @ 1.05× | 30.47 | **$16.73** |
+| 5090 @ 1.13× | 32.75 | **$17.98** |
+| PRO 6000 @ $1.2358/h (projected) | 29.05 | $35.90 |
+| PRO 6000 @ ~$1.50/h (billed precedent) | 29.05 | $43.57 |
+
+**Saving: $17.92–$26.84** depending on which PRO 6000 rate is the counterfactual
+and where in the bracket the 5090 lands.
+
+**Derived consequence, recorded not acted on:** the §7 blocks were authorized
+at **$7.15** on PRO 6000 pricing ($0.1813/run). Re-derived at $0.549/h they cost
+**$3.33–$3.58** (ISO-4 $1.69–1.82 + T=2000 $1.33–1.43 + High readout
+$0.31–0.34). The **$7.15 authorization stands as-registered** — an under-spend
+needs no amendment — and the difference returns to the ~$12.2 working reserve.
+
+### 7. Obligations carried
+
+1. **`cards.txt` records the block structure** — mechanized: `run_p6_grid.sh`
+   writes `.manifest/<tag>.card` per run and aggregates. **The paper reports
+   the two-card structure**, per the chunking ruling.
+2. **No seed may be split across the two cards.** The stop at seed 12 satisfies
+   this; `MAX_RUNS` finishes a seed before stopping.
+3. **Realized power is reported, never re-engineered.**
+
+### 8. Γ₄ is a cross-card contrast — PROVISIONALLY ACCEPTED with disclosure
+
+ISO-4 (§7 proposal 1, k = 20, seeds 1–20) would run **entirely on the 5090**,
+while its comparator ISO has seeds 1–12 on the PRO 6000. **Γ₄ therefore
+lacks the within-seed cancellation** that protects the primary Γ. ISO-4 is
+**out of family**, so no confirmatory quantity moves and its registered reading
+rule is unaffected.
+
+**Owner ruled 2026-09-21: ACCEPT the cross-card Γ₄ with disclosure --
+explicitly PROVISIONAL ("for now").** The disclosure is branch-invariant, on the
+§4a precedent: it is a property of the design, not of the outcome.
+
+**The reversal window closes when ISO-4 runs.** Until then the alternative --
+ISO-4 seeds 1–12 on a PRO 6000 — costs only the rental. After ISO-4 has run on
+the 5090, reversing means re-running it. ISO-4 is **not** on the critical path
+for the grid, so this decision can be revisited at any point before that block
+is launched, and is flagged here so that it is revisited deliberately rather
+than by default.
