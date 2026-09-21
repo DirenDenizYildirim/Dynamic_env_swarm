@@ -217,14 +217,20 @@ The Journal-to-Conference track is **not** a ground for the ruling: it needs a
 J2C/Featured/Outstanding certification, is a poster, and is explicitly not
 published in the conference proceedings.
 
-**Four proposals are OWED RULING and may be adopted only pre-unblind**
-(review §7; ranked, not bundled — $12.91 total against a ~$16.4 free reserve):
-**(0) $0** — register in writing that ISO spends 1/3 of its training budget on
-the **certified-inert** δ element, a bias that **inflates Γ**;
-**(1) $3.41** — an `ISO-4` control arm; **(2) $2.68** — a T = 2000 subsample on
-the confirmatory arms; **(3) $6.82** — an UNDERPOWERED-flagged High point.
-Proposal 0's finding is the substantive one and is transcribed in full in the
-log entry.
+**The four §7 proposals are RULED (2026-09-18, mid-grid, pre-unblind)** —
+`docs/decision_log.md`, *§7 PROPOSALS RULING*. **(0) ADOPTED:** ISO spends 1/3
+of its training budget on the **certified-inert** δ element, a bias that
+**inflates Γ**; disclosure is branch-invariant. **(1) ADOPTED, $3.63:** an
+`ISO-4` sensitivity arm, k = 20, **out of family**, with a registered reading
+rule for Γ₄. **(2) ADOPTED, $2.86:** a T = 2000 subsample, 4 seeds per
+confirmatory arm, **descriptive only**. **(3) DECLINED as written** and
+replaced by a **$0.66 eval-only High readout** of the existing checkpoints
+under `joint_high.yaml`, unconditional, post-unblind, out of family — **not a
+held-out test**, and its reading rule is asymmetric for that reason. $7.15
+authorized as a reserve draw against ~$12.2. **No lock, config, script or
+test changed in that commit; every implementation item is owed** (the entry's
+OWED list), and **`p6_iso.yaml` must not be regenerated while the grid is
+open.** Unblinding now also waits on the ISO-4 and T = 2000 runs.
 
 ### 3. Free work if there is no box
 

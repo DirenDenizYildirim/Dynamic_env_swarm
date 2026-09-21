@@ -3897,3 +3897,339 @@ Full record: `g1_floors/README_ARCHIVES_REBUILT.md`. The pull script now
 refuses a directory holding foreign archives.
 
 **Owner is shown the branch before the grid starts**, per the G1.2 STOP.
+
+
+## §7 PROPOSALS RULING — 0, 1, 2 adopted; 3 declined and replaced by an eval-only High readout (owner, 2026-09-18)
+
+Transcribed in the same session it was issued, per the meta-rule (2026-07-28).
+**Mid-grid and pre-unblind:** G1.3 chunks 1–2 are run, pulled and verified
+(seeds 1–12, 10 arms, 120 of 252 runs; commits `f658bd3`, `17389cc`); the box
+is paused; `run_p6_grid.sh` computes no cross-arm quantity and no analysis
+stage has been invoked. **Owner attestation (2026-09-18, this session): no Phase-6
+outcome mean, per-arm or cross-arm, has been computed or viewed by anyone.**
+The builder's own check is weaker and is stated as such: no analysis output
+exists under `che/bench/results/phase6/`, which shows the absence of an
+artifact, not the absence of a look. The attestation is the owner's, and
+proposals 1 and 2 rest on it.
+
+Rules on the four proposals of `docs/venue_review_2026-08-16.md` §7, carried
+AWAITING RULING by the 2026-08-16 and 2026-08-24 venue rulings. **That review
+is not a ruling**; it binds only what this entry transcribes.
+
+### THE RULING
+
+> **Proposal 0 is ADOPTED.** The inert-share bias in the confirmatory contrast,
+> and its direction, are registered below.
+>
+> **Proposal 1 (`ISO-4`) is ADOPTED** as a **sensitivity arm outside the
+> confirmatory family**, k = 20, with the reading rule below.
+>
+> **Proposal 2 (T = 2000 subsample) is ADOPTED** as **DESCRIPTIVE ONLY**,
+> 4 seeds per confirmatory arm, flagged **UNDERPOWERED**, graded by no test.
+>
+> **Proposal 3 (High-severity point) is DECLINED as written** (40 new training
+> runs). It is **replaced by an eval-only High readout** of the checkpoints the
+> grid already produces — **unconditional, run on every branch**, out of
+> family, executed in the post-unblind evaluation stage beside Γ(t).
+
+### Cost basis — re-derived this session, because the review's is stale
+
+The review priced runs at 497 s and a ~$16.4 free reserve. Both have moved.
+
+Per run, from the 2026-09-09 entry's measured **8.8 min/run including
+archiving** at the measured **$1.2358/h**:
+
+    8.8 / 60 × 1.2358 = $0.1813 per run          (review: $0.1706)
+
+T = 2000 run length, from the same entry's 501 s train / 15 s eval, with
+archiving taken as the remainder 528 − 501 − 15 = 12 s and **doubled** because
+retention doubles (below):
+
+    2 × 501 + 15 + 24 = 1041 s  →  1041 / 3600 × 1.2358 = $0.3574 per run
+
+| # | runs | cost |
+|---|---|---|
+| 1 | 20 | 20 × 0.1813 = **$3.63** |
+| 2 | 8 | 8 × 0.3574 = **$2.86** |
+| 3 as written | 40 | 40 × 0.1813 = **$7.25** |
+| 3 as replaced (eval-only) | 0 train, 128 evals | 128 × 15 s = 1920 s → **$0.66** |
+
+Free reserve: $65 − $48.6 = $16.4 (`HANDOFF.md` §2), less **$2.2** (ladder
+branch B, 2026-09-09), less **~$2** (the card-2 partial re-floor, estimated by
+run count and **in no ledger** — `HANDOFF.md`, hardware facts) → **~$12.2**.
+**Owner confirmed (2026-09-18) that ~$12.2 stands as the working reserve.**
+Not itemised and so not deducted: the paused box's storage charges and the
+~$1.5 of per-chunk setup (`HANDOFF.md` §1a). Both can only shrink the figure;
+the adopted spend below leaves ~$5 of margin against them.
+
+Adopted spend: $3.63 + $2.86 + $0.66 = **$7.15** against ~$12.2. All three as
+written would be **$13.74** and do not fit. **This entry authorizes $7.15 as a reserve draw**, on the same
+footing as the Γ(t) block (not an amendment to the $45.73 grid
+authorization).
+
+### Proposal 0 — what is registered
+
+Transcribed from the review §4 and re-checked against `che/configs/p6_iso.yaml`
+this session: 6 uniform components at weight 0.166667, of which `d_low` and
+`d_high` are `kappa_A: 0.0, kappa_B: 0.0, delta: 1.0`. Phase 5 certified δ
+inert (`phase5_report.md`, M5.5 final verdict).
+
+1. **2/6 = 0.3333 of ISO's training episodes carry no behaviourally active
+   element; 100 % of JOINT's carry both live couplings.** ISO's effective
+   composition under the project's own certification is
+   `{A 1/3, B 1/3, nothing 1/3}`.
+2. **Direction: the bias inflates Γ.** A positive Γ is partly purchasable by
+   JOINT's 1.5× larger share of behaviourally active training episodes.
+3. **The generated header's `no-element 0.0000` is true nominally and false
+   behaviourally.** Design v2 §2's defence of the *marginal* imbalance stands;
+   design v2 §10 item 4's symmetry defence covers **test time only**.
+4. **Disclosure is branch-invariant**, on the §4a precedent
+   (`phase6_framing_branches.md`): it is a property of the design, not of the
+   outcome, and is required on A, B, C and D alike.
+
+**`p6_iso.yaml` is NOT edited or regenerated while the grid is open.** The
+grid resumes against a stamped parameter identity and a pinned commit
+(`51e489a`); a header-only regeneration changes the file the box hashes. The
+registration lives in this entry and in a dated amendment to design v2 §2;
+the config header is corrected **after** the last chunk is pulled.
+
+### Proposal 1 — `ISO-4`, as adopted
+
+**Arm.** One policy trained on the uniform 4-component mixture
+{`a_low`, `b_low`, `a_high`, `b_high`} at weight 0.25 — `p6_iso.yaml` with the
+two δ-only components removed and nothing else changed. Same architecture,
+T\* = 1000, same eval config (`theta_star_holdout.yaml`), eval seed 0, 512
+episodes. **Seeds 1..20**, the same integers as every other arm. k = 20 =
+`K_SECONDARY`; no lock changes.
+
+**Status: sensitivity arm. It is NOT a member of the confirmatory family.**
+`SIDAK_M = 2`, `K_CONFIRMATORY`, and `m62_report.py::METRICS` are untouched
+(instruments law, clause 2: a diagnostic is never added to a registered
+family after registration). Γ remains JOINT − ISO as registered and remains
+the only quantity that decides the branch.
+
+**Estimand.** Γ₄ = JOINT − ISO-4 at θ\*, matched budget T = 1000, on both
+co-primaries; and the bias estimate B̂ = ISO-4 − ISO. Unpaired, graded on the
+contrast's own seed-dispersion SE (2026-08-03 amendment), CI conditional on
+the common eval draw (§4b).
+
+**Reading rule, registered now and not revisable post-unblind:**
+
+- Γ and Γ₄ are reported **side by side on every branch**, with B̂ and its CI.
+- If Γ rejects on a co-primary and **Γ₄'s CI on that co-primary includes 0 or
+  its sign is opposite**, the paper states that the effect **does not survive
+  the inert-share correction**, in the abstract-level summary and not only in
+  an appendix. **The branch label does not change** — it is fixed by Γ — but
+  branch A/B text may not describe the effect as a composition effect without
+  that qualifier.
+- If Γ is null and Γ₄ is null, Γ₄ is quoted as a second exclusion bound.
+- If Γ is null and Γ₄ rejects **negative**, it is reported under branch D's
+  framing (matched-budget asymmetry) as a secondary observation, never as a
+  confirmatory finding.
+- **No magnitude threshold on B̂ is introduced**, now or later.
+
+**Design-stage power (an UPPER bound, labelled as one).** No floor exists for
+ISO-4; this uses ISO's 2026-09-08 floors as a stand-in, which the
+per-artifact rule says is an assumption and not a measurement.
+
+    completion: sqrt(0.0281²/20 + 0.0598²/46)
+              = sqrt(0.00003948 + 0.00007774) = 0.01083
+    survival:   sqrt(0.0070²/20 + 0.0129²/46)
+              = sqrt(0.00000245 + 0.00000362) = 0.00246
+
+    MDE80 at the Šidák z-sum 3.0781 (conservative for an out-of-family arm):
+    completion 0.0333, survival 0.0076
+
+against the confirmatory contrast's own 0.0300 / 0.0067 at k = 46
+(`sqrt((0.0281² + 0.0598²)/46) = 0.00974`,
+`sqrt((0.0070² + 0.0129²)/46) = 0.00216`, each × 3.0781). JOINT's dispersion dominates both,
+which is why k = 20 on the quiet arm costs almost nothing in resolution.
+**Realized power is reported, not re-engineered.**
+
+**Execution constraints.**
+
+- **Its own invocation and its own `$OUT`.** `run_p6_grid.sh` stamps the arm
+  set and refuses a mismatched resume; the open grid's stamp is not touched.
+- **Same card as the seeds it is compared against, where possible.** Seeds
+  1–12 already ran; ISO-4's seeds 1–12 are a backfill. If the paused box is
+  resumed, the card is common and the §1a common-mode argument holds. If it
+  is not, the card goes in `cards.txt` and **the paper reports the block
+  structure**; the cost is power, not validity, on the §1a reasoning.
+- **The science tree must be identical to `51e489a`.** The ISO-4 commit adds
+  a generated config and its test only. The job script asserts
+  `git diff 51e489a..HEAD -- che/env che/train che/eval` is empty and records
+  both hashes in provenance.
+- `make_phase6_configs.py` emits `p6_iso4.yaml`; `test_phase6_configs.py`
+  re-derives its weights. **No existing generated file changes.**
+- Blinding is unchanged: the ISO-4 invocation computes no cross-arm quantity.
+
+### Proposal 2 — T = 2000 subsample, as adopted
+
+**What runs.** Fresh runs of ISO and JOINT at **T = 2000, seeds 1–4** (8
+runs), same eval protocol, own `$OUT`. `T_STAR` stays 1000 and the primary
+estimand is unchanged: Γ at matched budget T = 1000, *"at convergence" is
+never claimed anywhere* (T\* ruling). Checkpoint retention follows the locked
+**relationship**, not the number: `T / (2 × ckpt_interval) + 1` = **21** at
+T = 2000 (`docs/locks.yaml`), supplied by a generated `_t2000` config variant
+and asserted by test, never by a command-line flag.
+
+Verified this session: `che/train/ippo.py` and `che/train/pbt.py` carry no
+learning-rate schedule (no anneal/warmup), so updates 1–1000 of a T = 2000
+run are the same procedure as a T = 1000 run and the curves are comparable.
+
+**Why it is descriptive only.** At 4 seeds per arm, on the 2026-09-08 floors:
+
+    sd(Γ) = sqrt((0.0281² + 0.0598²)/4) = 0.0330  →  MDE80 = 3.0781 × 0.0330 = 0.1017
+
+against a 0.03 target band. **It cannot test anything and is flagged
+UNDERPOWERED under the bars-come-with-floors rule.**
+
+**What is reported:** per-arm learning curves to T = 2000 with seed spread,
+and Γ(2000) with its CI, labelled descriptive. **What it may be cited for:**
+whether the differential drift measured at T = 1000 (review §6 item 1: 0.01209
+per 100 updates) visibly persists, closes or reverses. **What it may not be
+cited for:** any claim that Γ "holds" or "vanishes" at T = 2000. It does not
+replace the registered Γ(t) sign-stability rule and enters no branch decision.
+
+Distinct from the T = 2000 the T\* ruling **declined**: that was the whole
+grid; this is an 8-run robustness figure.
+
+### Proposal 3 — declined as written, replaced by an eval-only High readout
+
+**Why the 40-run version is declined.** Closing its design showed that the
+review's "2 arms × k = 20" names no design that is both held out and clean:
+
+- **β = 0.70 is a training severity in both arms** (`p6_iso.yaml`,
+  `p6_joint.yaml`; design v2 §1), so new runs of the *registered* mixtures
+  buy nothing a re-evaluation of the existing checkpoints does not.
+- **Making High genuinely held out** means retraining on {0.43, 0.49} and
+  testing at 0.70: that puts θ\*'s severity into a training set (the trap
+  design v2 §1 names), and turns the test from interpolation into
+  **extrapolation beyond the training range**, which confounds composition
+  with severity extrapolation. A result there could not be read either way.
+- It costs $7.25 of a ~$12.2 reserve for ~4.9 pt / ~7.7 pt resolution.
+
+**What replaces it — the High readout.** Every T\* = 1000 checkpoint of ISO,
+JOINT (k = 46 each) and ISO-4 (k = 20) is evaluated once more under
+`che/configs/joint_high.yaml`, eval seed 0, 512 episodes. Verified this
+session: comments stripped, `joint_high.yaml` differs from
+`theta_star_holdout.yaml` in **exactly one line, `beta: 0.49 → 0.70`** — it
+*is* θ\* moved to High — and the harness already supports declared
+cross-config evaluation (`--allow-hash`, as `run_p6_grid.sh` uses for θ\*).
+
+**Estimand.** Γ_H = J_High(π_joint) − J_High(π_iso), all-on at β = 0.70,
+matched budget T = 1000, both co-primaries, unpaired, graded on the contrast's
+own seed-dispersion SE, CI conditional on the common eval draw. Γ_H,4 =
+JOINT − ISO-4 is reported beside it with no reading rule of its own.
+
+**Status.** Secondary, **out of family** — `SIDAK_M = 2` and
+`m62_report.py::METRICS` untouched. **It never decides or relabels a branch.**
+
+**It is unconditional, and that is deliberate.** At $0.66 there is no budget
+case for running it on branch C only, and §4a's own principle applies:
+running or reporting it only when the outcome makes it useful would be
+**outcome-dependent disclosure**. It runs and is reported on A, B, C and D.
+
+**It is NOT a held-out test, and the entry says so before a reviewer does.**
+JOINT trained on *this exact configuration* at weight 1/2. ISO trained at
+β = 0.70 on A-only, B-only and δ-only at weight 1/6 each and **never on any
+all-on configuration**. Every known asymmetry favours JOINT: in-distribution
+evaluation, a 3× larger budget share on the evaluated configuration than ISO
+gives any one High component, and the proposal-0 inert share. **That
+one-sidedness is what makes the reading rule asymmetric:**
+
+- **Γ_H null → an *a fortiori* exclusion**, and the only outcome this
+  readout can establish: *"no gap larger than X at High even where JOINT
+  trained on the evaluated configuration and ISO never saw a composed one."*
+  Quoted as an exclusion with X from the grid's own seed dispersion, never as
+  an absence.
+- **Γ_H positive → NOT separable from in-distribution advantage.** Reported
+  in those words. It may **not** be cited as compositional generalization, on
+  any branch, and it may not be used to soften a θ\* null.
+- **Γ_H negative → exploratory**, reported under branch D's
+  matched-budget-asymmetry framing, never as a finding.
+- **No magnitude threshold is introduced**, now or post-unblind.
+
+**What it is blind to (instruments law).** Coupling A is **"marginal by
+construction" at High** — the supercritical fire consumes the fuel collapse
+would ignite (`coupling_a_lock.md`; design v2 §1) — while Coupling B's
+8.8-point survival effect lives there (`phase4_report.md` Result 1). So High
+is the **mirror image** of the Medium siting, not its remedy: at Medium B is
+quiet and A is live; at High A is marginal and B is live. **By the project's
+own locks there is no severity at which both couplings are strongly
+behaviourally live**, and the paper states that once, beside §4a, on every
+branch. The High readout adds **breadth in severity**; it does not supply a
+test of composition where both elements bite.
+
+**Floors, per-artifact and per-hardware, at no training cost.** The
+2026-09-08 re-floor left 8 ISO + 8 JOINT same-seed rep checkpoints
+(`g1_floors_2026-09-08/`, 16 of its 24 archives). They are evaluated under
+`joint_high.yaml` **in the same session and on the same card** as the High
+readout, giving the reproducibility floor of the artifact actually graded.
+ISO-4 has no rep set; its High numbers ship **UNDERPOWERED-flagged for the
+beat-reproducibility hurdle** and are graded on seed dispersion only.
+
+**Design-stage resolution (an assumption, labelled as one).** No High
+dispersion exists for these artifacts. Using the single-element High cells
+quoted in the review §5 — completion 0.0485 / 0.0517, survival 0.0794 /
+0.0783, **n = 3, T = 500, transfer to T = 1000 and to mixture-trained
+policies assumed** — at the k = 46 the readout inherits for free:
+
+    completion: sqrt((0.0485² + 0.0517²)/46) = sqrt(0.00502514/46) = 0.01045
+    survival:   sqrt((0.0794² + 0.0783²)/46) = sqrt(0.01243525/46) = 0.01644
+
+    MDE80 at z-sum 3.0781:  completion 0.0322,  survival 0.0506
+
+against 0.0488 / 0.0768 for the declined k = 20 version: **better resolution
+than the proposal it replaces, at a tenth of the cost.** κ_B's own 8.8-point
+survival effect is resolvable on this basis; realized power is reported, not
+re-engineered.
+
+**Cost.** 92 + 20 + 16 = 128 evals × 15 s (measured, 2026-09-09 entry) =
+1920 s → 1920 / 3600 × 1.2358 = **$0.66**. It rides the rental that runs the
+registered post-unblind Γ(t) block.
+
+**Execution constraints.** Post-unblind evaluation stage only, on the frozen
+tree, from the hash-verified archives; `ckpt_step == T*` asserted per
+checkpoint exactly as the grid asserts it; outputs to their own directory;
+the cross-config evaluation is **declared** (`--allow-hash`), never smuggled.
+The grid script is not modified.
+
+### What this ruling does NOT do
+
+- **It changes no lock.** `SIDAK_M`, `K_CONFIRMATORY` (46 by ladder branch B),
+  `K_SECONDARY`, `T_STAR`, `METRICS` and every entry in `docs/locks.yaml` are
+  untouched.
+- **It does not edit the branch table.** The four branches stand verbatim;
+  Γ₄ and Γ_H qualify branch text, they never relabel a branch.
+- **It does not touch the open grid** — not its stamp, its commit, its
+  configs or its run order. Chunks 3–5 proceed exactly as registered.
+- **It does not authorize unblinding**, which stays a separate human-gated
+  step on a frozen tree, and now waits on the ISO-4 and T = 2000 runs too.
+
+### OWED — created or changed by this ruling
+
+1. **Builder:** `p6_iso4.yaml` + the `_t2000` variants via
+   `make_phase6_configs.py`, with tests; separate invocations with their own
+   `$OUT` and stamps; the science-tree identity assertion against `51e489a`.
+2. **Builder:** dated amendment to design v2 §2 carrying proposal 0's four
+   points; the same text into `paper/00_common_spine.md` as branch-invariant.
+3. **Builder:** a post-unblind High-readout script (128 declared
+   cross-config evals under `joint_high.yaml`, own output directory,
+   `ckpt_step == T*` asserted), with a test that it cannot run before the
+   unblind step and that it touches neither `METRICS` nor the grid script.
+   The "no severity with both couplings strongly live" statement into
+   `paper/00_common_spine.md` beside §4a, branch-invariant.
+4. **Owner confirmations: DISCHARGED in this entry** — the no-outcome-seen
+   attestation and the reserve figure, both above.
+5. **After the last chunk is pulled:** correct the `no-element` header line
+   in the generated ISO config (proposal 0, last paragraph).
+6. **`HANDOFF.md` §2a:** strike "Four proposals are OWED RULING" and point
+   here.
+
+### What this entry changes in the tree, in this commit
+
+- `docs/decision_log.md`: this entry.
+- `HANDOFF.md`: §2a pointer updated.
+- **No constant, config, lock, test, script or analysis threshold changes.**
+  Every implementation item above lands in its own later commit.
