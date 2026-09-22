@@ -4486,3 +4486,61 @@ marks these tags done:
 - **`cards.txt` obligation persists** — the paper still reports the grid's card
   structure, which after this is single-card confirmatory and two-card
   secondary.
+
+
+### AMENDMENT — extended to a FULL single-card conversion (owner, 2026-09-22)
+
+The SINGLE-CARD CONFIRMATORY RULING above is **extended**. Instead of 24
+confirmatory runs, the re-card covers **all 120 runs at seeds 1–12 (all ten
+arms)**, plus a **G1.2-protocol re-floor on the 5090 (24 runs)**. On
+completion every run and every floor in Phase 6 sits on one card.
+
+**Why the floor is included — the conf-only option relocated the problem.**
+Design v2 states floors are **per-hardware AND per-artifact**, and that a
+released card means "the next trip re-floors". The G1.2 re-floor ran on the
+PRO 6000 (2026-09-08), and `m62_report.py` feeds those floors into the per-arm
+power diagnostics, `sd(Γ)`, MDE₈₀ and `k_required` — every power statement the
+paper reports. A single-card 5090 grid whose power analysis is calibrated on a
+PRO 6000 moves the inconsistency from the runs into the methods section; it
+does not remove it.
+
+**Owner's reasoning, recorded because it is the operative one:** the risk is
+asymmetric. The increment over the conf-only option is **$9.68, ~2 % of the
+GPU budget**; the downside insured against is a rejection cycle whose calendar
+cost is **unmeasured** — `HANDOFF.md` records that TMLR publishes no total time
+to decision, marks it UNVERIFIED, and forbids runway arithmetic until it is
+checked. Against a ~7-month deadline the unpriceable resource is calendar, not
+money. Owner added **$20 to the reserve** as margin.
+
+**The builder's prior recommendation (conf-only, on value-for-money) is
+RETRACTED**, and recorded rather than quietly dropped because the error is
+instructive: it optimised the measurable variable ($9.68) against a risk it
+had not priced, which is the same class of error as grading a bar without a
+floor.
+
+**Cost:** base **$21.88 (39.9 GPU-h)**, worst case **$24.13 (44.0 h)** with the
+ladder tail. The tail is **bounded** — `ladder.json` carries `k_cap: 60`, so at
+most 14 extra seeds (28 runs, $2.26). Even at worst case this leaves **$21.60
+of the $45.73 grid authorization unspent**.
+
+**Order — chunks 4 and 5 run FIRST, deliberately.** It is the fail-safe
+ordering: a complete 252-run artifact exists on disk at every moment, so a box
+failure during the re-card degrades to a publishable two-card grid rather than
+to a partial one. Nothing in the re-floor or re-card depends on chunk order.
+
+**Known operational consequence, stated so it is handled rather than
+discovered.** `grid_params.txt` records `k_conf: 46`, stamped 2026-09-08, and a
+resume under a different k is refused by design. So **if the 5090 floors raise
+k above 46, the extra seeds land in their own `$OUT`** — reordering would not
+have avoided this, because the stamp was fixed two weeks ago. The re-card is
+likewise its own `$OUT`. **The confirmatory arm may therefore span more than
+one output directory, and the analysis must merge them deliberately.**
+
+**Ladder outcomes, both already pre-registered** (design v2): floors smaller →
+record the surplus and proceed, nothing to run; floors larger → top up to
+k_req, capped at 60. No run already completed is invalidated either way — k
+governs how many seeds exist, not whether each is sound.
+
+**Scope unchanged:** no constant, threshold, lock, config or analysis family
+moves. `METRICS` and `SIDAK_M = 2` untouched. The PRO 6000 runs are **retained**
+and become a free 12-seed, 10-arm card-effect diagnostic.
