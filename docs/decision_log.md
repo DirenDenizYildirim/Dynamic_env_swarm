@@ -4410,3 +4410,79 @@ that comparison needs **its own floor, measured on the artifact being graded**
 — A-vs-A and B-vs-B, not a single cross-comparison. A 1.6× timing difference
 is not evidence of a numerical difference, and is not evidence against one
 either. **Flagged pre-unblind; owed before Γ(t) is read.**
+
+
+## SINGLE-CARD CONFIRMATORY RULING — ISO/JOINT seeds 1–12 re-run on the 5090 (owner, 2026-09-22)
+
+**Ruled:** the 24 confirmatory runs at seeds 1–12 (ISO and JOINT) are **re-run
+on the RTX 5090**. Those runs **supersede** their PRO 6000 counterparts for the
+confirmatory contrast Γ. The PRO 6000 versions are **retained, not deleted**,
+and remain committed. **Γ becomes single-card at k = 46.**
+
+Issued **pre-unblind, with nothing seen** — the §7 attestation (no Phase-6
+outcome mean, per-arm or cross-arm, computed or viewed) still holds and is what
+makes this **provably not outcome-selected**. That timing is the load-bearing
+fact: the identical decision taken after unblinding would be indefensible.
+
+### Why — the chunking ruling's argument covers less than it appears to
+
+The 2026-08-14 argument is that a card effect is common-mode within a seed and
+cancels in Γ. Checked properly this session, it is **exact rather than
+approximate, for additive effects only**:
+
+ISO and JOINT both run seeds 1–46 with an **identical card split** (12 on the
+PRO 6000, 34 on the 5090), so an additive per-card offset δ enters both arm
+means as the same `(12·δ_P + 34·δ_5)/46` and cancels exactly in the difference.
+The eight secondary arms are likewise mutually balanced (all seeds 1–20, split
+12/8), and **no registered contrast crosses the two families** —
+`m62_report.py` sets `conf = ("iso", "joint")` at `SIDAK_M = 2`, and the sweep
+analyses are within-family.
+
+**What balance does NOT cover is a card × arm INTERACTION.** If the 5090 moved
+JOINT differently from ISO, Γ absorbs
+`(34/46)(δ_5^J − δ_5^I) + (12/46)(δ_P^J − δ_P^I)` and no balance removes it.
+The chunking ruling never addressed this term.
+
+**The mechanism argument against an interaction is strong but is not a
+measurement.** After M6.0, θ is **traced, not a compile-time constant**
+(`config.py`: only the four traced fields may be patched, everything else is
+static; the observable surface has fixed width regardless of mixture). ISO and
+JOINT therefore compile to the **same executable with the same kernel
+selection**, differing only in runtime values, and XLA autotuning selects on
+shape rather than on data. An interaction would require a card's numerics to
+depend on the values flowing through an identical kernel.
+
+This ruling buys the measurement instead of relying on the argument.
+
+### Why it could not simply be checked
+
+The direct diagnostic — ISO's mean over seeds 1–12 against its mean over 13–18
+— is **embargoed**: the attestation covers per-arm means, not merely cross-arm
+ones, and a within-arm card comparison is still a per-arm mean. It is
+computable only post-unblind. Spending $1.94 now is cheaper than pre-registering
+a diagnostic whose result could only ever arrive too late to act on.
+
+### Cost and layout
+
+**24 runs × 528.8 s = 3.53 h ≈ $1.94** at the measured $0.549/h, against the
+~$12.2 reserve. Runs **after chunk 5** — two grid jobs cannot share the card,
+because JAX preallocates 75 % of it.
+
+Own output directory and own stamp, since the main grid's manifest already
+marks these tags done:
+
+    OUT=che/bench/results/phase6/g1_conf_s1_12_5090 K_CONF=12 K_SEC=0 \
+      MIN_FREE_GB=10 GIT_COMMIT=c3ae125... bash che/scripts/run_p6_grid.sh
+
+### Scope — what this does NOT change
+
+- **No constant, threshold, lock, config or analysis family moves.** k stays
+  46/20, T\* stays 1000, the eval draw stays seed 0 / 512 episodes, `METRICS`
+  and `SIDAK_M = 2` are untouched.
+- **The secondary arms stay two-card** and stay non-verdict-bearing; their
+  balance argument is unaffected and still carries.
+- **The chunking ruling is not reopened.** It remains correct for what it
+  claimed; this entry records the interaction term it did not cover.
+- **`cards.txt` obligation persists** — the paper still reports the grid's card
+  structure, which after this is single-card confirmatory and two-card
+  secondary.
