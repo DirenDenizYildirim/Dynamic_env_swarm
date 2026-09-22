@@ -4365,3 +4365,48 @@ the 5090, reversing means re-running it. ISO-4 is **not** on the critical path
 for the grid, so this decision can be revisited at any point before that block
 is launched, and is flagged here so that it is revisited deliberately rather
 than by default.
+
+
+### AMENDMENT to the CARD RULING — realized timing, measured (2026-09-22)
+
+§5 registered the 1.05×–1.13× bracket as an **estimate that gates nothing**
+and said realized per-run time is read from `timings.txt` on the artifact.
+Chunk 3 is complete (seeds 13–18, 60 runs, all verified), so it is read here.
+**This records a measurement the ruling anticipated; it changes no decision,
+no constant and no threshold.**
+
+| | PRO 6000 (n=120) | RTX 5090 (n=60) | ratio |
+|---|---|---|---|
+| train, T = 1000 | 501.23 s (sd 1.26) | **519.35 s** (sd 0.57) | 1.0361× |
+| eval, 512 eps | 15.17 s (sd 0.52) | **9.40 s** (sd 0.49) | **0.6198×** |
+| per-run marginal | 516.4 s | **528.8 s** | **1.0239×** |
+
+**The registered bracket was pessimistic, and the reason is worth keeping.**
+It was derived by scaling the whole GPU portion by the steady-state throughput
+ratio (71,450 → 66,400 steps/s = 1.076×). But a run is not all steady-state
+compute: compile, checkpoint I/O and setup do not scale with steps/s, so the
+throughput ratio is an **upper bound** on the run-time ratio, not an estimate
+of it. Realized train is 1.036×, per-run 1.024×.
+
+**The eval figure is FASTER on the slower card and is UNEXPLAINED.** 9.40 s
+against 15.17 s, consistent across 60 runs at sd 0.49. No mechanism is
+asserted here; candidates (checkpoint-load I/O, host CPU) are untested. It is
+recorded as measured and unexplained rather than rationalised.
+
+**Cost, re-derived:** 72 grid runs + the §7 and post-unblind blocks =
+**18.99 h → $10.43** at the measured $0.549/h. Phase-6 grid spend stays far
+inside the $45.73 authorization.
+
+#### OWED — a cross-card eval floor, raised by the eval anomaly
+
+Within the grid this does not arise: **each run's eval executes on the same
+card that trained it**, so no cross-card eval comparison exists in the
+confirmatory data. But **Γ(t) and the High readout evaluate retained
+checkpoints post-unblind**, on whatever card is rented then — which will in
+general differ from the card that trained seeds 1–12 (PRO 6000) or 13–46
+(5090). Whether evaluating one checkpoint on two cards yields identical
+metrics is **unmeasured**. Per the per-artifact floor amendment (2026-08-02),
+that comparison needs **its own floor, measured on the artifact being graded**
+— A-vs-A and B-vs-B, not a single cross-comparison. A 1.6× timing difference
+is not evidence of a numerical difference, and is not evidence against one
+either. **Flagged pre-unblind; owed before Γ(t) is read.**
