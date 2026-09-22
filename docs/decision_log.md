@@ -4611,3 +4611,97 @@ alike. Positioning leads with **matched-marginal composition variation under
 causally coupled stressors**, not with "joint vs isolated" — the latter
 claim-space is crowded and the former is the one the no-scoop checks found
 empty.
+
+
+## LADDER BRANCH C, AND THE CAP RAISED 60 → 72 (owner, 2026-09-22)
+
+The 5090 re-floor (24 runs, G1.2 protocol, `g1_floors_5090`) returned
+**BRANCH C**: `k_req` completion **72**, survival **3**, against
+`k_cap: 60`. Registered action: *"PROCEED at k = 60 and DEGRADE HONESTLY,
+never chase."* Realized completion power at k = 60 is **72.2 %**.
+
+**RULED: the cap is raised to 72 and the confirmatory arms run at k = 72.**
+This is a **deviation from a registered rule**, recorded as one, issued
+**pre-unblind with no outcome seen**.
+
+### Measured floors — 5090, sd only (means deliberately not read)
+
+| arm | completion | survival |
+|---|---|---|
+| iso | 0.05867 | 0.01004 |
+| joint | 0.05769 | 0.01116 |
+| sweep_p500 | 0.01958 | 0.01301 |
+
+Against the PRO 6000 floors: iso completion **2.09×**, joint completion
+0.96×, iso survival 1.44×, joint survival 0.87×.
+
+Completion power at the 0.03 target effect:
+
+| floors | k = 46 | k = 60 | k = 72 |
+|---|---|---|---|
+| PRO 6000 | 80.1 % | 90.0 % | 94.7 % |
+| **5090** | 59.3 % | **72.2 %** | **80.4 %** |
+
+### The floor shift is NOT distinguishable from sampling noise
+
+Each floor is estimated from **8 reps**. The 95 % CIs for sd all overlap —
+iso completion PRO 6000 [0.0186, 0.0571] against 5090 [0.0388, 0.1194]. The
+2.09× shift is within what an n = 8 variance estimate produces by chance.
+**No claim is made that the 5090 is less reproducible.** The ladder acts on
+point estimates, which is correct for a ladder and insufficient for a claim.
+
+### Why raising the cap is not "chasing"
+
+1. **`k_cap = 60` is a COST cap, not a statistical one.** Its own basis
+   (`decision_log.md:2317`): *"k = 60 is +20 seeds/arm = +40 runs ≈ $7.62"*,
+   i.e. ~$0.19/run on a PRO 6000. **On the 5090 a run costs $0.081** — the
+   budget constraint that set the ceiling has fallen 2.3×. Honouring a budget
+   cap whose budget no longer binds is not rigour.
+2. **`k_req` is computed from FLOORS, not outcomes.** Floors are
+   reproducibility reps at seed 0, which is excluded from the grid. No Γ, no
+   per-arm grid mean, has been computed or viewed.
+3. **Adding seeds raises power SYMMETRICALLY.** It cannot move Γ's sign or
+   magnitude in any preferred direction. This is a *conservative* deviation,
+   which is a different object from a self-serving one.
+
+### Both analyses are reported
+
+Seeds 1–60 are a **prefix** of seeds 1–72, so **the registered branch-C
+analysis at k = 60 remains exactly computable** and is reported in full
+alongside k = 72. Nothing is swapped after the fact.
+
+**Primary is designated NOW, pre-unblind: k = 72.** The k = 60 registered-
+ladder result is reported beside it with its UNDERPOWERED flag and realized
+power stated, per branch C as written. **Owner may reverse this designation;
+it must be reversed before unblinding or not at all.**
+
+### Why returning to a PRO 6000 was REJECTED
+
+It would mean **selecting hardware because its floor estimate was more
+favourable**, when the CIs cannot distinguish the two. That is selection on a
+measured quantity — the family of error the project's rules exist to prevent.
+Note also that the 5090 gives iso 0.0587 and joint 0.0577, nearly identical,
+which is what two configs differing only in mixture weights should produce;
+the PRO 6000's 0.0281 / 0.0598 asymmetry has no mechanism and is **more
+likely the outlier**. At ~$29 it may buy nothing.
+
+### Cost and layout
+
+**172 runs ≈ 25.3 GPU-h ≈ $13.87** at $0.549/h. Owner waived the budget
+constraint for this decision ("I don't mind about the budget anymore"),
+stating rigour as the operative criterion.
+
+1. **Confirmatory, one directory, one stamp:** `g1_conf_5090`, seeded by
+   copying conf seeds 13–46 (already 5090) from `g1_grid`, then run at
+   `K_CONF=72 K_SEC=0`. Resume skips the copied seeds — **`manifest_complete`
+   re-hashes every archive, so a bad copy fails loudly** — and runs seeds
+   1–12 and 47–72. **76 runs.** Result: all 72 confirmatory seeds, one card,
+   one stamp, no cross-directory merge for the primary contrast.
+2. **Secondary re-card:** seeds 1–12, the 8 secondary arms, own directory.
+   **96 runs.** `K_SECONDARY` stays **20**; secondaries are not extended.
+
+### Scope — unchanged
+
+`m62_report.py::METRICS`, `SIDAK_M = 2`, the 0.03 target effect, T\* = 1000,
+the eval draw (seed 0, 512 episodes) and `K_SECONDARY = 20` are all
+untouched. No lock, no config regenerated.
