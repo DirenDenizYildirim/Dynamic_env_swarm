@@ -26,3 +26,17 @@ seeds_run_this_invocation: 7..12   max_runs: 60
 gpu: NVIDIA RTX PRO 6000 Blackwell Workstation Edition
 python: 3.12.3
 jax: 0.11.0 0.11.0
+run: G1.3 Phase-6 grid (252 runs: confirmatory k=46, secondary k=20)
+date_utc: 2026-09-22T01:04:41Z
+git_commit: c3ae12522046b50e7b25394197519b5b19e539e9
+git_dirty: 0 file(s)
+conf_arms: iso:che/configs/p6_iso.yaml joint:che/configs/p6_joint.yaml
+sec_arms: sweep_c50_p000:che/configs/p6_sweep_c50_p000.yaml sweep_c50_p125:che/configs/p6_sweep_c50_p125.yaml sweep_c50_p250:che/configs/p6_sweep_c50_p250.yaml sweep_c50_p375:che/configs/p6_sweep_c50_p375.yaml sweep_c50_p500:che/configs/p6_sweep_c50_p500.yaml ident_c40_p000:che/configs/p6_ident_c40_p000.yaml ident_c40_p200:che/configs/p6_ident_c40_p200.yaml ident_c40_p400:che/configs/p6_ident_c40_p400.yaml
+seeds: 1..46 confirmatory, 1..20 secondary (SAME integers across arms; 0 excluded — it is the floor seed)
+updates: 1000   eval_episodes: 512   eval_seed: 0   eval_config: che/configs/theta_star_holdout.yaml
+cross-config eval: declared via --allow-hash (training-config hash)
+ran_this_invocation: 60   skipped_complete: 120   failed: 0
+seeds_run_this_invocation: 13..18   max_runs: 60
+gpu: NVIDIA GeForce RTX 5090
+python: 3.12.3
+jax: 0.11.0 0.11.0

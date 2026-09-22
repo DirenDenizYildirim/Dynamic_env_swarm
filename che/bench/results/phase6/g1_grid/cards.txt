@@ -1,4 +1,14 @@
 # card <TAB> arm <TAB> n_runs <TAB> seeds
+NVIDIA GeForce RTX 5090	ident_c40_p000	6	13,14,15,16,17,18
+NVIDIA GeForce RTX 5090	ident_c40_p200	6	13,14,15,16,17,18
+NVIDIA GeForce RTX 5090	ident_c40_p400	6	13,14,15,16,17,18
+NVIDIA GeForce RTX 5090	iso	6	13,14,15,16,17,18
+NVIDIA GeForce RTX 5090	joint	6	13,14,15,16,17,18
+NVIDIA GeForce RTX 5090	sweep_c50_p000	6	13,14,15,16,17,18
+NVIDIA GeForce RTX 5090	sweep_c50_p125	6	13,14,15,16,17,18
+NVIDIA GeForce RTX 5090	sweep_c50_p250	6	13,14,15,16,17,18
+NVIDIA GeForce RTX 5090	sweep_c50_p375	6	13,14,15,16,17,18
+NVIDIA GeForce RTX 5090	sweep_c50_p500	6	13,14,15,16,17,18
 NVIDIA RTX PRO 6000 Blackwell Workstation Edition	ident_c40_p000	12	1,10,11,12,2,3,4,5,6,7,8,9
 NVIDIA RTX PRO 6000 Blackwell Workstation Edition	ident_c40_p200	12	1,10,11,12,2,3,4,5,6,7,8,9
 NVIDIA RTX PRO 6000 Blackwell Workstation Edition	ident_c40_p400	12	1,10,11,12,2,3,4,5,6,7,8,9
