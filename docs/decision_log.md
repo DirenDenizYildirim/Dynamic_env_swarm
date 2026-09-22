@@ -4544,3 +4544,70 @@ governs how many seeds exist, not whether each is sound.
 **Scope unchanged:** no constant, threshold, lock, config or analysis family
 moves. `METRICS` and `SIDAK_M = 2` untouched. The PRO 6000 runs are **retained**
 and become a free 12-seed, 10-arm card-effect diagnostic.
+
+
+## ENDPOINT CONFOUND — Γ mixes dose with composition; the SWEEP is the matched instrument (builder finding, 2026-09-22)
+
+Raised by the owner while the grid ran ("mostly there is joint vs iso"), i.e.
+the observation that joint-vs-isolated training comparisons are common in
+multi-task RL, domain randomization and curriculum learning, so the ISO/JOINT
+contrast does not by itself separate this work from that literature. Checked
+against the generated configs this session. **The owner is right, and the
+separation lives somewhere other than where the spine currently puts it.**
+
+### Measured marginals — read off the generated configs, this session
+
+| arm | A | B | co-occurrence | no-element |
+|---|---|---|---|---|
+| `p6_iso` | 0.3333 | 0.3333 | 0.0000 | 0.0000 |
+| `p6_joint` | **1.0000** | **1.0000** | 1.0000 | 0.0000 |
+| `p6_sweep_c50_p000` | 0.5000 | 0.5000 | 0.0000 | 0.0000 |
+| `p6_sweep_c50_p250` | 0.5000 | 0.5000 | 0.2500 | 0.2500 |
+| `p6_sweep_c50_p500` | 0.5000 | 0.5000 | 0.5000 | 0.5000 |
+
+**Γ confounds dose with composition.** JOINT sees each element **3× more
+often** than ISO *and* sees them co-occur. Design v2 §10 item 3 already
+flagged this ("the confirmatory contrast differs in per-element marginal
+**and** in co-occurrence"); this entry records the magnitude and its
+consequence for positioning.
+
+**The sweep is the matched instrument.** A and B are held at exactly 0.5
+across all five points while co-occurrence moves 0 → 0.5. That is the
+comparison standard joint-vs-iso work does **not** run: multi-task and
+domain-randomization baselines almost always confound "saw more" with "saw it
+combined". This is the real separation from that literature.
+
+### Correction to the spine's DBCA framing
+
+`paper/00_common_spine.md` §1 names the contribution via DBCA (Keysers et al.
+2020) as "atom divergence → 0, compound divergence → max". **Measured, that
+describes the SWEEP, not the endpoints.** At the endpoints atom frequencies
+differ 3×, so atom divergence is substantial. The DBCA sentence must either
+move to the sweep or be qualified where it stands. **Not corrected in this
+commit** — `p6_iso.yaml` must not be regenerated while the grid is open, and
+this is a prose change owed to the writing pass.
+
+### The sweep is not perfectly clean either, and cannot be
+
+Holding A and B at 0.5 while raising co-occurrence **forces the no-element
+share up with it** (p = 0.5 → 50 % empty episodes). Per-element marginal,
+co-occurrence and active-episode share cannot all be held fixed — the simplex
+forbids it. The c = 0.4 identification family probes the same trade at a
+different coverage. **State this rather than let a reviewer find it.**
+
+### What this does NOT change
+
+- **The sweep stays non-verdict-bearing.** It is not promoted, now or
+  post-unblind; that would enlarge the registered family and inflate the
+  correction. `m62_report.py::METRICS` and `SIDAK_M = 2` are untouched.
+- No constant, threshold, lock or config changes. Nothing is regenerated.
+- Γ remains the registered confirmatory contrast at matched budget T = 1000.
+
+### Obligation — disclosure, branch-invariant
+
+**§2 states the endpoint confound explicitly**, on the §4a precedent: it is a
+property of the design, not of the outcome, and is owed on branches A–D
+alike. Positioning leads with **matched-marginal composition variation under
+causally coupled stressors**, not with "joint vs isolated" — the latter
+claim-space is crowded and the former is the one the no-scoop checks found
+empty.
