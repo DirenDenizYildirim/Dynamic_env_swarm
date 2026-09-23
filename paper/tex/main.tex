@@ -1,0 +1,82 @@
+\documentclass[10pt]{article}
+\usepackage{tmlr}
+% Submission build is ANONYMOUS by default (no [accepted]/[preprint]).
+% TMLR rejects non-anonymous submissions without review.
+
+\input{math_commands.tex}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+% ---- placeholders ------------------------------------------------------
+% Every grid-dependent quantity is a \gap{...} until the unblind step writes
+% it. The build fails loudly if any survive into the submission build.
+\newcommand{\gap}[1]{\textcolor{red}{$\langle$#1$\rangle$}}
+\newcommand{\todo}[1]{\textcolor{orange}{[TODO: #1]}}
+
+% ---- notation ------------------------------------------------------------
+\newcommand{\Gam}{\Gamma}
+\newcommand{\thetastar}{\theta^{\ast}}
+\newcommand{\Tstar}{T^{\ast}}
+\newcommand{\betac}{\beta_c}
+\newcommand{\betahat}{\hat\beta_c}
+\newcommand{\kA}{\kappa_A}
+\newcommand{\kB}{\kappa_B}
+\newcommand{\Pspan}{P_{\mathrm{span}}}
+\newcommand{\ISO}{\textsc{iso}}
+\newcommand{\JOINT}{\textsc{joint}}
+\newcommand{\ISOfour}{\textsc{iso-4}}
+\newcommand{\CHE}{\textsc{che}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+
+\title{Compound Hostility: a Calibrated Multi-Agent RL Environment Where the
+Hazard Makes Its Own Danger, and a Pre-Registered Test of Compositional
+Generalization}
+
+% Anonymous for submission.
+\author{\name Anonymous authors \email anonymous@example.org \\
+      \addr Anonymous institution}
+
+\def\month{MM}
+\def\year{YYYY}
+\def\openreview{\url{https://openreview.net/forum?id=XXXX}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/00_abstract}
+\end{abstract}
+
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_environment}
+\input{sections/04_severity_calibration}
+\input{sections/05_coupling_a}
+\input{sections/06_coupling_b}
+\input{sections/07_comms}
+\input{sections/08_methodology}
+\input{sections/09_compositional_test}
+\input{sections/10_limitations}
+\input{sections/11_reproducibility}
+
+\bibliographystyle{tmlr}
+\bibliography{references}
+
+\newpage
+\appendix
+\input{sections/appendix}
+
+\end{document}

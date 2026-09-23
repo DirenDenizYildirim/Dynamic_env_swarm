@@ -1,0 +1,111 @@
+\section{The compositional test}
+\label{sec:test}
+
+\subsection{Design, registered before any run}
+
+\paragraph{Protocols.} Training severities are Low ($\beta = 0.43$) and High
+($\beta = 0.70$); the held-out test point $\thetastar$ is the all-on
+configuration at Medium ($\beta = 0.49$), which neither protocol ever trains
+on (a test asserts it). \ISO{} is a uniform six-component mixture,
+$\{\text{A-only}, \text{B-only}, \delta\text{-only}\} \times \{\text{Low},
+\text{High}\}$. \JOINT{} is the two-component mixture $\{\text{all-on}\}
+\times \{\text{Low}, \text{High}\}$. Both use the same architecture, the same
+optimizer, the same number of environment steps, and are evaluated on the
+same 512-episode set at $\thetastar$.
+
+\paragraph{Estimand.} $\Gam = J_{\thetastar}(\JOINT) - J_{\thetastar}(\ISO)$
+at \emph{matched budget} $\Tstar = 1000$ updates. We never claim a value at
+convergence. Two co-primaries, task completion and survival, form the
+confirmatory family with \v{S}id\'ak $m = 2$ ($z_\alpha = 2.2365$). The test
+statistic uses the grid's own per-arm seed dispersion in the unpaired
+combined form; the interval is conditional on the common evaluation draw and
+reflects training-seed variance only. Survival was ruled in as a co-primary
+before any confirmatory run, on the calibration-phase observation that both
+couplings move survival while completion effects sit at or below the
+reproducibility floor (\S\ref{sec:coupB}).
+
+\paragraph{Seeds, and how $k$ was set.} A pre-registered ladder set the seed
+count from measured floors, not outcomes: on the card that ran the grid,
+fresh floors gave a required $k$ of $72$ for 80\% power against the
+motivating completion effect of $0.03$, above the registered cost cap of
+$60$. The cap was raised to $72$ before unblinding; raising $k$ moves power
+symmetrically and cannot bias the sign. The registered analysis at $k = 60$ is
+a prefix of the same seeds and is reported beside the primary with its
+realized power. Seeds are the integers $1$ to $72$ in every arm (seed $0$ is
+the floor seed and is excluded), and every confirmatory run trained and
+evaluated on one card.
+
+\paragraph{Registered outcome branches.} Four framings were registered before
+the grid: both co-primaries positive; completion null and survival positive,
+claimable only if the registered falsifier $|z_c| + z_\alpha < |z_s|$ holds
+(the completion exclusion must be tighter, in standardized units, than the
+survival effect); both null, quoted as exclusions with bounds from the
+realized dispersion; and a rejecting negative contrast on either co-primary,
+which carries no magnitude threshold and is discriminated only by the
+contrast's trajectory over the final half of training. The cell ``completion
+positive, survival null'' was not registered; had it occurred, the paper
+would say so.
+
+\paragraph{Budget robustness.} Eleven checkpoints per confirmatory run
+(updates $500$ to $1000$) are retained. $\Gam(t)$ is evaluated at $\thetastar$
+over that window after unblinding and read for sign stability. A sign that is
+still moving at $\Tstar$ is itself the finding and is reported as one.
+
+\paragraph{Blinding.} The grid runner trains, evaluates, archives and
+verifies; it computes no cross-arm quantity, and a test asserts that the
+script contains no analysis call. The analysis instrument was written and
+tested on synthetic artifacts, committed, and only then run once on the real
+artifact with the pipeline frozen at a recorded commit; each real invocation
+is logged. The branches, the falsifier, the estimand and the venue were all
+fixed before the grid ran.
+
+\paragraph{Registered biases, stated before the result.}
+\emph{(a)} One third of \ISO's training episodes carry the $\delta$-only
+element, which \S\ref{sec:comms} shows to be inert under our encoder. \ISO{}
+therefore effectively trains on $\{A, B, \text{nothing}\}$ while every
+\JOINT{} episode carries both live couplings. The bias inflates $\Gam$. A
+sensitivity arm \ISOfour{} (the same mixture without the two inert
+components, $k = 20$, outside the confirmatory family) is reported beside
+$\Gam$ with a registered reading rule: if $\Gam$ rejects on a co-primary and
+$\Gam_4 = \JOINT - \ISOfour$ does not, the effect is reported as not
+surviving the inert-share correction.
+\emph{(b)} The endpoint contrast confounds \emph{dose} with
+\emph{composition}: \JOINT{} sees each element with marginal frequency $1$
+and \ISO{} with $1/3$. The matched-marginal sweep below is the instrument
+that separates them.
+\emph{(c)} At $\Tstar$ the arms sit at different points on their learning
+curves; the differential drift measured in the launch batch was roughly
+$0.012$ per $100$ updates, a local sensitivity estimate and never a bound.
+
+\paragraph{Secondary: the matched-marginal dose sweep.} Five mixtures hold
+each element's marginal frequency at exactly $c = 0.5$ while the
+co-occurrence fraction takes $p \in \{0, 0.125, 0.25, 0.375, 0.5\}$; a
+second family at $c = 0.4$ with $p \in \{0, 0.2, 0.4\}$ makes marginal and
+co-occurrence separately identifiable. Fixing both marginals forces the
+no-element share to $1 - 2c + p$, so at $p = 0.5$ half of all episodes
+contain no stressor; the simplex forbids holding marginal, co-occurrence and
+active-episode share fixed at once, and we report the gradient rather than
+hide it. Both families use $k = 20$, are labelled non-verdict-bearing, and
+carry an underpowered flag wherever their minimum detectable effect exceeds
+the effect band.
+
+\paragraph{Two further registered readouts.} A descriptive $T = 2000$
+subsample, four seeds per confirmatory arm, shows whether the differential
+drift persists; it is flagged underpowered and enters no decision. An
+eval-only readout of every trained checkpoint at High severity is
+unconditional and out of family; it is \emph{not} a held-out test, since
+\JOINT{} trained on that exact configuration, and its reading rule is
+asymmetric for that reason: a null there is an a fortiori exclusion, a
+positive is not separable from in-distribution advantage.
+
+\subsection{Results}
+\label{sec:results}
+
+\gap{The results subsection is spliced from the registered branch file after
+unblinding: the contrast table (arm means, seed sd, $\Gam$, $\mathrm{sd}(\Gam)$,
+$z$, corrected $p$, \v{S}id\'ak interval, exclusion bound, realized power),
+the branch and its falsifier, $\Gam(t)$ over the final half, $\Gam_4$ and
+$\hat B = \ISOfour - \ISO$, the $k = 60$ prefix, the dose sweep and
+identification family, the $T = 2000$ subsample, the High readout, and the
+mechanism figure (co-active visitation and failure inside the co-active
+region, \ISO{} vs \JOINT).}

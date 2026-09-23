@@ -1,0 +1,25 @@
+We introduce the Compound Hostile Environment (\CHE), a pure-JAX multi-agent
+reinforcement learning environment in which a cellular-automaton fire is
+causally coupled to structural collapse (collapse seeds fire) and to
+perception (smoke attenuates observation by Beer--Lambert transmittance),
+alongside an independent communication-denial axis. The hazard is an
+\emph{ambient survival stressor}: it enters neither the reward nor any cost
+or constraint channel, so the only path from hazard to return is through the
+transition and observation kernels. Three properties make \CHE{} an
+instrument rather than a demonstration. Severity is defined by a
+\emph{measured} percolation critical point ($\betahat = 0.500 \pm 0.005$,
+reproducing Kesten's exact value for the idealized kernel); every stressor is
+a parameter of one kernel, so ablations are \emph{bitwise exact} nested
+models; and every acceptance bar in the paper is graded against a measured
+reproducibility floor. Calibration yields four findings that stand without
+any training comparison: collapse-seeded fire self-limits where the hazard is
+worst; compound hostility is rare and bursty; perception decay cannot be
+behaviourally suppressed; and inter-agent communication is inert under a
+frozen encoder at this scale. We then run a pre-registered, mechanically
+blinded test of compositional generalization---whether training on co-active
+stressors beats training on the same stressors in isolation at a held-out
+severity and matched compute, with $k = 72$ seeds per arm on one card---and
+a matched-marginal dose sweep that varies co-occurrence while holding each
+stressor's frequency fixed. \gap{one sentence on the outcome, from the branch
+file}. All code, configurations, locked constants and the frozen analysis
+plan are released.

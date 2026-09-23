@@ -1,0 +1,81 @@
+\section{Methodology: bars come with floors}
+\label{sec:method}
+
+Every acceptance threshold in this paper is graded against a measured
+reproducibility floor, and several of our own early thresholds failed that
+test. We state the rules we ended up with as a methods contribution, each
+with the exhibit that forced it.
+
+\paragraph{Floors are per-metric, per-hardware and per-artifact.}
+A \emph{floor} is the standard deviation of a metric across identical reruns
+of one training run at one seed: the noise the pipeline produces with nothing
+varied. A threshold set below the floor cannot pass under the null, so it is
+not a test; its output is void, and a void test voids a pass identically.
+Floors do not transfer. Re-measuring the Medium-severity floors on a second
+card moved the completion floor $2.75\times$ (\todo{verify 0.0145}
+$\to$ \todo{verify 0.0399}) while leaving the survival floor unchanged
+(\todo{verify 0.0129} vs \todo{verify 0.0130}); neither ``it will be the
+same'' nor ``it will differ'' was safe to assume. And a floor must be measured
+on the artifact being graded, never on its reference. When we compared a
+refactored pipeline against the original, the reference's rerun floor read
+zero, and two diagnostic channels that differed between the trees were
+promoted to a semantic difference. Direct localization found identical bit
+patterns; the refactored tree simply differed from \emph{itself} one time in
+four on those channels, inside a floor nobody had measured. An equivalence
+claim between $A$ and $B$ needs $A$-vs-$A$ and $B$-vs-$B$.
+
+\paragraph{Contrasts are graded on the contrast's standard error.}
+A difference of arm means has $\mathrm{sd}(\Gam) = \sqrt{(\sigma_A^2 +
+\sigma_B^2)/k}$; either arm's own $\sigma\sqrt{2/k}$ is a bound, not an
+estimate. The two per-arm reads bracket the truth: at our floors they gave
+\todo{verify 92.1\%} and \todo{verify 62.8\%} power where the contrast's
+power was \todo{verify 76.7\%}. A project that adopts per-artifact floors
+\emph{because} arms differ in stability cannot keep a power formula that
+assumes they do not.
+
+\paragraph{Design-stage power is an 80\%-power minimum detectable effect at
+the family-corrected level.} A bare $2\sigma\sqrt{2/k}$ names the effect at
+which one would \emph{just} reject, which is 50\% power. Our seed count was
+first ruled on such a figure, without the \v{S}id\'ak correction the same
+analysis plan mandated; corrected, the design had \todo{verify 55.6\%} power
+against its own motivating effect band. It was caught during registration.
+The same slip inside a results section would have produced an underpowered
+null presented as a finding.
+
+\paragraph{The floor and the test statistic are different variances.} A floor
+is measured from identical reps at one seed; a $k$-seed arm mean varies by
+seed and by nondeterminism. The confirmatory test uses the grid's own seed
+dispersion. Floors keep two narrower roles: the \emph{beat-reproducibility}
+hurdle (does the effect exceed what reruns alone produce) and a design-stage
+power basis registered as an upper bound.
+
+\paragraph{Measuring is not grading.} A channel logged in the environment's
+info dictionary is \emph{recorded}. It becomes evidence only with membership
+in a registered analysis family and a measured floor. No diagnostic is added
+to a pre-registered family after registration: that enlarges the family and
+inflates the correction. The grid in \S\ref{sec:test} records two
+positional-drift channels for free and grades neither, and the paper says
+which is which.
+
+\paragraph{Differenced tests are blind to arm-symmetric effects.} A falsifier
+of the form ``no cross-arm difference in $X$'' cannot see any $X$ present in
+both arms. One such falsifier ran green for three phases while every episode
+in both arms drifted to a boundary wall (\S\ref{sec:limits}). Its silence was
+evidence about asymmetry only, and we now state that limit wherever such a
+test is reported.
+
+\paragraph{Detectability-relative gates diverge on better hardware.} A plateau
+criterion of the form $\mathrm{drift}/\mathrm{floor} \le 1$ cannot certify on
+a perfect instrument: as the floor shrinks, any nonzero drift fails. On a
+quieter card the jointly trained arm's absolute drift \emph{fell} by 12.6\%
+and the criterion \emph{failed}, because the floor had halved. We retired the
+criterion and replaced it with an explicit fixed-budget estimand plus a
+required robustness reading of the contrast's trajectory over the final half
+of training (\S\ref{sec:test}). The retired gate's earlier pass is reported as
+what it was: an underpowered null.
+
+\paragraph{Reproducibility floors grow with run length, ordered by curriculum
+difficulty.} From $T = 500$ to $T = 1000$ updates the isolated-training arm's
+completion floor grew \todo{verify 2.1$\times$} and the joint arm's
+\todo{verify 5.2$\times$}. Floors measured at one budget do not grade runs at
+another.

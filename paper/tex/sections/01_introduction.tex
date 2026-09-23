@@ -1,0 +1,88 @@
+\section{Introduction}
+\label{sec:intro}
+
+Most reinforcement-learning environments that contain a hazard put the hazard
+somewhere the learner can see it directly. Monitoring and suppression tasks
+put it \emph{in the reward}: coverage of a fire front, mapping error,
+suppression progress. Safe-RL formulations put it \emph{in a constraint}: a
+cost channel, a Lagrangian penalty, a safety critic. In both lineages the
+hazard is an object the agent is asked to reason about. This paper studies
+the remaining case, which we argue is the common one for robots in damaged
+structures: the hazard is neither target nor constraint but \emph{weather}. It
+evolves under its own dynamics, it kills, and nothing in the objective names
+it.
+
+The Compound Hostile Environment (\CHE) makes that case precise. A
+cellular-automaton fire spreads over a grid while a team of agents performs a
+task whose reward reads task variables only. The fire is coupled to the rest
+of the world in two directions. Structural collapse events seed new ignitions
+(Coupling A), so the environment manufactures its own danger; and the smoke
+field attenuates what agents can observe by Beer--Lambert transmittance
+(Coupling B), so perception fails exactly where and when the hazard is
+active. A third axis, communication denial, degrades the inter-agent link
+graph independently of the hazard. From a single agent's point of view the
+hazard looks like nonstationarity. Proposition~\ref{prop:markov} says it is
+not: it is state under a stationary kernel, and every standard multi-agent
+training tool applies unmodified.
+
+\paragraph{The compound question.}
+Stressors that co-occur in the world interact causally: collapse ignites
+fire, fire makes smoke, smoke blinds. Does a policy need to \emph{see} them
+co-occur during training to survive their co-occurrence at test time? The
+question is not new; it has priority holders in the compositional-generalization
+literature (\S\ref{sec:related}). What has been missing is an instrument clean
+enough to answer it. The obvious comparison---one policy trained on the
+stressors jointly against one trained on them separately---confounds two
+things: whether the policy saw the stressors \emph{together}, and how
+\emph{often} it saw each. In our own confirmatory contrast the jointly trained
+arm sees each element three times as often as the isolated arm. We therefore
+run that contrast as registered, and beside it a \emph{matched-marginal dose
+sweep} in which each element's frequency is held at exactly one half while
+the co-occurrence fraction moves from zero to one half. The sweep is the
+comparison that standard joint-versus-isolated training studies do not run,
+and it is what distinguishes this work from the multi-task and
+domain-randomization literature that asks joint-versus-isolated questions
+routinely. In the vocabulary of distribution-based compositionality
+assessment~\citep{keysers2020}, the sweep drives compound divergence while
+holding atom divergence at zero; the endpoint contrast does not, and we say
+so.
+
+\paragraph{Why an instrument first.}
+A single pre-registered experiment has four registered outcomes, and three of
+them are not the founding hypothesis. We designed the paper so that a paper
+exists on every branch: the environment, its calibration, and a measurement
+methodology for empirical RL are the contributions that do not depend on the
+sign of one contrast. Stating this before the result is what makes the
+pre-registration credible rather than decorative.
+
+\paragraph{Contributions.}
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+  \item \textbf{The environment as an instrument} (\S\ref{sec:env}). A
+  factored Dec-POMDP whose reward is provably hazard-independent
+  (Definition~\ref{def:ambient}), whose step order is a theorem's hypothesis
+  (Proposition~\ref{prop:markov}), whose ablations are bitwise-exact nested
+  models, and whose severity levels are defined by a measured dynamical phase
+  rather than by knob settings.
+  \item \textbf{Four calibration findings} (\S\ref{sec:severity}--%
+  \S\ref{sec:comms}) that stand without any training comparison: the
+  collapse-to-fire channel self-limits where the fire is worst; compound
+  hostility is rare and bursty; perception decay concentrates on danger
+  moments and cannot be behaviourally suppressed; and communication is inert
+  under a frozen encoder at swarm scale.
+  \item \textbf{A measurement methodology} (\S\ref{sec:method}): per-metric,
+  per-hardware, per-artifact reproducibility floors; contrasts graded on the
+  contrast's own standard error; design-stage power stated as an 80\%-power
+  minimum detectable effect at the family-corrected level; and the
+  distinction between recording a channel and grading it.
+  \item \textbf{A pre-registered, mechanically blinded test of compositional
+  generalization} (\S\ref{sec:test}), with $k = 72$ seeds per arm on a single
+  card, a matched-marginal dose sweep, and its result. \gap{one clause from
+  the branch file}.
+\end{enumerate}
+
+\paragraph{What we do not claim.}
+No convergence guarantee for the training loop; no theorem that joint
+training wins (Proposition~\ref{prop:shift} bounds what can be guaranteed,
+not what happens); and no exact critical value for the implemented kernel,
+whose phase structure is measured rather than assumed. The confirmatory
+estimand is a contrast at \emph{matched budget}, never at convergence.

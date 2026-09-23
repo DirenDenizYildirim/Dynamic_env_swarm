@@ -1,0 +1,286 @@
+\section{The environment}
+\label{sec:env}
+
+We state the formal objects compactly; proofs that are short enough to be
+read inline are given inline, the rest in Appendix~\ref{app:proofs}.
+Throughout, $G \subset \mathbb{Z}^2$ is a grid of $m$ cells with von Neumann
+neighbourhood $N(\cdot)$, $I = \{1,\dots,n\}$ indexes agents, and a
+\emph{stressor configuration} is $\theta = (\beta, \kA, \kB, \delta)$:
+hazard transmissibility, Coupling-A strength, Coupling-B strength and
+communication-denial level.
+
+\subsection{A factored Dec-POMDP with a fixed step order}
+
+\begin{definition}[Compound Hostile Environment]
+\label{def:che}
+A \CHE{} is a Dec-POMDP $\mathcal{M}_\theta = \langle I, \mathcal{S},
+\{\mathcal{A}_i\}, T_\theta, R, \{\Omega_i\}, O_\theta, \gamma\rangle$ whose
+state factors as $\mathcal{S} = \mathcal{X} \times \mathcal{H} \times
+\mathcal{C} \times \mathcal{K}$: joint agent state (positions, alive flags,
+carried task state); the hazard field $\mathcal{H} = \{\mathrm{Fuel},
+\mathrm{Burning}, \mathrm{Burnt}\}^{G}$ together with a smoke density
+$\rho \in [0,\infty)^G$; the structural state $\mathcal{C} =
+\{\mathrm{intact}, \mathrm{collapsed}\}^{G}$; and the realized communication
+graph $\mathcal{K}$. The transition kernel factorizes as
+\begin{equation}
+  T_\theta(s' \mid s, a) = T_C(c' \mid c, x)\;
+  T_H^{\beta,\kA}(h' \mid h, c, c')\;
+  T_X(x' \mid x, a, h, c)\;
+  T_K^{\delta}(k' \mid x'),
+  \label{eq:factor}
+\end{equation}
+and each agent's observation is drawn from the \emph{post-step} state,
+$O^i_{\kB}(o_i \mid x', h', \rho', c', k')$.
+\end{definition}
+
+\begin{proposition}[Markov closure]
+\label{prop:markov}
+For every $\theta$ the process $s_t$ under any joint policy is a Markov chain
+and $\mathcal{M}_\theta$ is a well-defined finite Dec-POMDP.
+\end{proposition}
+\begin{proof}
+Each factor in \eqref{eq:factor} is a Markov kernel conditioned on components
+of $(s,a)$ or on components of $s'$ already sampled earlier in the same step:
+$c'$ first, then $h'$ given $(h, c, c')$, then $x'$, then $k'$ given $x'$. A
+sequential composition of Markov kernels is a Markov kernel on the product
+space. All spaces are finite, so finite-horizon optimal joint policies exist.
+\end{proof}
+
+The order in \eqref{eq:factor} is not an implementation detail. Coupling A
+reads the collapse \emph{increment} $c' - c$, so structure must be sampled
+before hazard; the smoke update $\rho' = e^{-\eta}\rho + \sigma_s
+\mathbf{1}[\text{burning}]$ follows the hazard; agents move under the
+pre-step hazard and structure; and the link graph is drawn from post-step
+positions. The implementation performs exactly this sequence inside one
+jitted step, and a unit test asserts it. Finite-horizon Dec-POMDPs are
+NEXP-complete~\citep{bernstein2002}, and with $\delta > 0$ the \CHE{} does not
+collapse to a multi-agent POMDP, which is the standard justification for
+learning rather than planning.
+
+\subsection{The hazard is ambient}
+
+\begin{definition}[Ambient survival stressor]
+\label{def:ambient}
+The hazard is an \emph{ambient survival stressor} iff
+\begin{enumerate}[leftmargin=*,itemsep=1pt]
+  \item \emph{Reward independence.} $R$ is a function of task variables and
+  of the agent-state transition only: $R(s,a,s') = R(\mathrm{task}(x), a,
+  \alpha \to \alpha')$, where $\alpha$ are the alive flags. No term of $R$
+  references $h$, $\rho$ or $c$, and the hazard appears in no auxiliary cost
+  or constraint channel: no shaping term, no CMDP constraint, no Lagrangian
+  penalty, no safety critic.
+  \item \emph{Non-adversarial.} $T_H$ is a fixed stochastic kernel with no
+  optimizing, learning or best-responding component.
+\end{enumerate}
+\end{definition}
+
+Clause~1 is the paper's boundary with two literatures. Monitoring and
+suppression work places the hazard inside $R$; safe RL places it in a cost or
+constraint channel. Here the hazard reaches the return only through the
+transition kernel (it disables agents standing on burning cells) and the
+observation kernel (Coupling B). We state one thing plainly that the phrase
+``hazard-independent reward'' can hide: the training reward \emph{does}
+include a penalty of $0.5$ per newly disabled agent. That term reads the
+alive transition, an $\mathcal{X}$ variable, and never the hazard; it is
+permitted by Clause~1 and it matters. In the calibration phase, removing it
+moved survival at the highest severity from \todo{verify 0.575} to
+\todo{verify 0.866} with the task metric intact. The reader should therefore
+understand ``the reward cannot see the hazard'' literally: it sees deaths, not
+fire. A test enforces Clause~1 mechanically by constructing two states that
+differ only in hazard, smoke and structure and asserting identical rewards.
+Clause~2 admits one honest subtlety: through $T_C(c' \mid c, x)$ agent load
+can trigger collapse and hence, via Coupling A, fire. The environment is
+non-adversarial in the formal sense (fixed kernel, no objective) but not
+agent-independent, which is also realistic.
+
+\subsection{The fire and its exact phase structure}
+
+\begin{definition}[Fire-CA kernel]
+\label{def:fire}
+Per cell, states $\{\mathrm{Fuel}, \mathrm{Burning}, \mathrm{Burnt}\}$. At each
+step, independently for each ordered pair (Burning cell $g$, Fuel neighbour
+$g' \in N(g)$), $g'$ ignites with probability $\beta$. A Burning cell becomes
+Burnt after exactly one step; Burnt is absorbing. Spontaneous ignition
+$\iota \ge 0$ per Fuel cell per step is a knob, set to $0$ in every result
+reported here; each episode starts from a single ignition.
+\end{definition}
+
+\begin{proposition}[Exact bond-percolation equivalence]
+\label{prop:perc}
+Under Definition~\ref{def:fire} with $\iota = 0$ and a single ignition at the
+origin, the set of eventually-Burnt cells is equal in distribution to the open
+cluster of the origin in i.i.d.\ bond percolation on $(G,E)$ with edge-open
+probability $\beta$.
+\end{proposition}
+\begin{proof}
+Attach to each unordered edge $e$ an independent $B_e \sim
+\mathrm{Bernoulli}(\beta)$ and let a transmission attempt across $e$ succeed
+iff $B_e = 1$. Each edge is attempted at most once: when one endpoint first
+burns while the other is Fuel, one attempt occurs; afterwards the burning
+endpoint is Burnt, and if the other endpoint later burns by another path its
+neighbour across $e$ is already Burnt. The fire run with $\{B_e\}$ burns
+exactly the connected component of the origin in the open subgraph.
+\end{proof}
+
+\begin{corollary}[Phase structure]
+\label{cor:phase}
+On $\mathbb{Z}^2$ with von Neumann neighbourhood: $\betac = 1/2$ exactly
+\citep{kesten1980}; for $\beta < \betac$ the burnt cluster is almost surely
+finite with mean size $\chi(\beta) < \infty$; $\chi(\beta) \sim
+|\beta-\betac|^{-43/18}$ as $\beta \uparrow \betac$; for $\beta > \betac$ the
+fire spreads indefinitely with positive probability, with a linear front.
+\end{corollary}
+
+This is the SIR-with-constant-infectious-period mapping of
+\citet{grassberger1983}; the short proof is worth carrying because it imports
+percolation theory wholesale. Exactness is specific to the idealized kernel.
+The implemented kernel's critical point is \emph{measured}
+(\S\ref{sec:severity}); the design relies only on the existence of the
+transition and the divergence of $\chi$ near it, which are universal.
+
+\begin{definition}[Severity by dynamical phase]
+\label{def:severity}
+Fix arena side $L$. \emph{Low} is subcritical ($\xi(\beta) \ll L$): clusters
+are local and survival is local avoidance. \emph{Medium} is near-critical
+($\xi(\beta) \sim L$): cluster sizes are finite-size scale-free and a single
+ignition can cascade to arena scale. \emph{High} is supercritical: fronts
+propagate at a speed comparable to agent speed and survival is a race.
+\end{definition}
+
+The three severities are three qualitatively different phases of one kernel,
+which answers ``why these levels'' a priori and makes severity transfer a
+statement about generalization across phases rather than interpolation
+between knob values.
+
+\subsection{Coupling A: structural failure seeds the hazard}
+
+\begin{definition}[Coupling A]
+\label{def:coupA}
+Cell $g$ collapses with probability $\lambda(g, x_t, c_t) = \lambda_0 +
+\lambda_{\mathrm{load}}\,\mathbf{1}[\text{agent on } g]$ if it is one of a
+fraction $f_{\mathrm{weak}}$ of weak cells; collapse is absorbing. Each
+collapse event at $g$ ignites each Fuel cell within radius $r_A$ of $g$
+independently with probability $\kA$.
+\end{definition}
+
+\begin{proposition}[Collapse events dominate exposure; divergence near criticality]
+\label{prop:coupA}
+In the subcritical regime with $\iota = 0$, collapse events arriving at rate
+$\lambda_A$ per step and seeded clusters pairwise disjoint, the expected
+burnt area by time $T$ is $\mathbb{E}[B_T] = \lambda_A T \chi(\beta)(1+o(1))$,
+and in general $\mathbb{E}[B_T] \le \lambda_A T \chi(\beta)$. Hence
+$\partial\,\mathbb{E}[B_T]/\partial \lambda_A = T\chi(\beta)$ diverges as
+$\beta \uparrow \betac$ like $|\beta - \betac|^{-43/18}$.
+\end{proposition}
+
+In calm conditions with no spontaneous ignition, structural failure is the
+hazard's only birth channel, and near criticality a single collapse has
+divergent expected consequences. Four finite-protocol corrections (an
+unconditional cluster-mass reference, matched seed location, matched seed age,
+and sparsity) separate the equality from what a finite experiment measures;
+\S\ref{sec:coupA} reports the handshake.
+
+\subsection{Coupling B: the hazard degrades perception}
+
+\begin{definition}[Coupling B, Beer--Lambert observation]
+\label{def:coupB}
+Agent $i$ observes a feature at $y$ from $x_i$ with probability equal to the
+transmittance along the line of sight, $\tau_i(y) = \exp(-\kB \int_{x_i \to y}
+\rho\, d\ell)$, where $\rho$ is the smoke field with emission $\sigma_s$ on
+burning cells and decay $\eta$ per step. $\kB = 0$ recovers
+hazard-independent observation.
+\end{definition}
+
+Smoke outlives flame by construction, so degradation persists after the front
+has passed. The structural point is that $O^i$ depends on the hazard's own
+state: perception fails exactly where and when the hazard is active, which is
+what separates Coupling B from an always-on noise axis and what makes the
+following possible.
+
+\begin{theorem}[Memorization gap, and its erosion by Coupling B]
+\label{thm:e2c}
+In the two-corridor environment $E_{2C}(\kB)$ of Appendix~\ref{app:proofs}
+(a $d$-step approach to a branch, two corridors of length $\ell$, zero slack,
+one corridor burning at depth $\ell_f$, an informative signal at each approach
+step with probability $e^{-\kB(d - t + \ell_f)}$), let $q(\kB) = 1 -
+\prod_{j=\ell_f}^{d+\ell_f}(1 - e^{-\kB j})$. Then the optimal value is
+$J^\ast(\kB) = \tfrac12 + \tfrac12 q(\kB)$; every policy optimal for the
+fixed-map variant has value $\tfrac12$ for all $\kB$; and $q$ is continuous
+and strictly decreasing with $q \to 1$ as $\kB \to 0^+$ and $q \to 0$ as
+$\kB \to \infty$.
+\end{theorem}
+
+The gap between the adaptive and the memorizing policy is exactly half the
+information probability, and Coupling B continuously destroys the channel
+that makes adaptivity valuable. The theorem is implemented as a unit test:
+a trained policy on $E_{2C}$ must trace $J^\ast(\kB)$.
+
+\subsection{Communication denial}
+
+\begin{definition}[Comms denial]
+\label{def:comms}
+Link $(i,j)$ is alive at $t$ with probability $p_{\mathrm{link}}(\|x_i -
+x_j\|)(1-\delta)$, with $p_{\mathrm{link}}$ a range cutoff at $R_{\mathrm{comm}}$.
+Messages pass over the realized graph.
+\end{definition}
+
+$T_K$ does not depend on $h$: denial is mechanistically independent of the
+hazard, even though their values interact (Remark~\ref{rem:voc},
+Appendix~\ref{app:proofs}).
+
+\subsection{Protocols, the compositional gap, and nested ablations}
+
+\begin{definition}[Training protocols and the compositional gap]
+\label{def:gap}
+Let $J_\theta(\pi)$ be the expected episodic return of $\pi$ in
+$\mathcal{M}_\theta$ and $\thetastar$ the test configuration (all elements
+active at a held-out severity). $\Theta_{\ISO}$ is the set of configurations
+with at most one of $\kA, \kB, \delta$ nonzero. The \ISO{} protocol trains one
+policy on a uniform mixture over single-element configurations; the \JOINT{}
+protocol trains one policy on a mixture whose support includes the all-on
+configuration at training severities. The compositional gap is
+$\Gam(\thetastar) = J_{\thetastar}(\pi_{\JOINT}) - J_{\thetastar}(\pi_{\ISO})$.
+\end{definition}
+
+\begin{proposition}[An irreducible shift term for \ISO]
+\label{prop:shift}
+For any policy and configurations $\theta, \theta'$ sharing $R$ with $|R| \le
+R_{\max}$, $|J_\theta(\pi) - J_{\theta'}(\pi)| \le \frac{\gamma
+R_{\max}}{(1-\gamma)^2}\,\varepsilon(\theta,\theta')$ with $\varepsilon$ the
+supremum over states of the $L_1$ distance between the transition kernels
+plus the maximal $L_1$ distance between observation kernels. For every
+$\theta \in \Theta_{\ISO}$, $\varepsilon(\theta, \thetastar) \ge
+\varepsilon_{\min} > 0$, attained on states where a collapse-seeded fire is
+within attenuation range of an agent.
+\end{proposition}
+
+The proposition bounds what can be guaranteed, not what happens; compositional
+generalization can and sometimes does emerge from isolated training. Its role
+is to locate where \ISO's guarantee breaks---the \emph{coupling-co-active}
+region---and thereby what to measure: visitation of that region and failure
+inside it, which the environment logs from the first step.
+
+\paragraph{Nested ablations are exact.} Every element is a parameter of one
+kernel: $\beta$ in $T_H$; $\kA$ in $T_H$ through its dependence on $c'-c$;
+$\kB$ in $O^i$; $\delta$ in $T_K$. Setting one to zero recovers the nested
+model \emph{bitwise}: every stochastic branch consumes its random stream
+unconditionally, comparing against a probability that may be zero, so
+trajectories under $\kA = 0$ are identical to the uncoupled model's under the
+same keys. A test asserts this, and committed trajectory digests fix it
+across refactors. Ablations therefore carry no confound from
+re-implementation or re-tuning.
+
+\paragraph{The concrete instance.} A $64 \times 64$ grid, $12$ agents,
+horizon $256$, five actions, a foraging task with $32$ items and $+1$ team
+reward per item collected. Each agent observes a $9 \times 9$ egocentric crop
+with seven indicator planes plus smoke, attenuated per Definition~\ref{def:coupB},
+and an own-state vector with absolute position and time. The policy is a
+shared-parameter actor-critic (two convolutions, one dense layer, two heads)
+trained with independent PPO; the environment, rollouts and training are all
+jitted JAX with time as a scan and agents as a vmap. Locked constants:
+$\kA = 0.06$, $r_A = 1$, $f_{\mathrm{weak}} = 0.15$, $\lambda_0 = 5\times
+10^{-5}$, $\lambda_{\mathrm{load}} = 4 \times 10^{-4}$, $\kB = 1.0$,
+$\sigma_s = 1.0$, $\eta = 0.5$, $\delta = 1.0$ when on, $R_{\mathrm{comm}} =
+16$. Every locked constant lives in a machine-readable registry that a test
+asserts against the configurations, so a constant reachable only from a
+command-line flag fails the suite.

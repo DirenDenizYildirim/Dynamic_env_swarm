@@ -1,0 +1,55 @@
+\section{Limitations}
+\label{sec:limits}
+
+These apply on every outcome branch and are stated in the same order on each,
+so that none is disclosed only where the result makes it convenient.
+
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+  \item \textbf{Medium siting.} $\thetastar$ is at the severity where
+  Coupling B's own measured survival effect was $-0.0003$; its eight-point
+  effect is at High. Medium was chosen because both couplings clear their lock
+  criteria there and floors are smallest. That trades effect existence for
+  measurability. By the project's own locks there is no severity at which both
+  couplings are strongly behaviourally live: at Medium B is quiet and A is
+  live, at High A is marginal (the supercritical fire consumes the fuel
+  collapse would ignite) and B is live. The High readout adds breadth in
+  severity; it does not supply a test where both elements bite.
+  \item \textbf{One held-out severity}, interpolated in one scalar between the
+  training severities. The near-critical regime is the test point and no
+  training data lies near criticality.
+  \item \textbf{The task requires no coordination.} Foraging with a team
+  reward on twelve shared-parameter agents. Swarm-scale effects are a design
+  choice, not a requirement of the task, and we do not use ``swarm'' as a
+  claim.
+  \item \textbf{The death penalty.} The reward carries a penalty on the alive
+  transition (\S\ref{sec:env}). Survival is therefore a penalized quantity
+  and completion a rewarded one; claims about asymmetry between them are
+  scoped in those terms, and the no-penalty ablation is reported.
+  \item \textbf{The communication encoder is frozen.} The message head
+  receives no gradient; the encoder is a random projection. ``Inert'' is
+  scoped to this encoder and this scale (\S\ref{sec:comms}).
+  \item \textbf{Observations contain absolute position and time.}
+  Theorem~\ref{thm:e2c} addresses memorization, but the confound is real. Its
+  visible form is a positional drift: in every episode of every arm the team
+  ends near a boundary. The drift channels are recorded, ungraded, and their
+  floors are owed.
+  \item \textbf{$\Gam$'s interval is conditional on the common evaluation
+  draw} (512 episodes, one seed) and reflects training-seed variance only.
+  \item \textbf{Card structure.} Every confirmatory run trained and evaluated
+  on one card. The secondary sweeps ran on two cards with seed-major order,
+  so both arms of any seed share a card and an additive card effect cancels
+  within a seed; the block structure is reported in
+  Appendix~\ref{app:provenance}. A card-by-arm interaction is not removed by
+  balance, which is why the confirmatory arms were re-run on one card before
+  unblinding.
+  \item \textbf{The endpoint contrast confounds dose with composition.}
+  \JOINT{} sees each element three times as often as \ISO{}. The matched-marginal
+  sweep separates the two but is secondary and non-verdict-bearing, and it
+  cannot hold the no-element share fixed at the same time.
+  \item \textbf{No external baseline.} No domain-randomization schedule, no
+  curriculum method. The paper compares training distributions on one
+  environment.
+  \item \textbf{Hazard simplicity.} Burn time one step, single ignition, no
+  wind, no fuel heterogeneity; the fire is a percolation front by
+  construction, which is what makes its phase measurable.
+\end{enumerate}
