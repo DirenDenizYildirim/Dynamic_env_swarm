@@ -214,7 +214,7 @@ def test_script_computes_no_cross_arm_quantity():
     body = "\n".join(
         ln for ln in SCRIPT.read_text().splitlines() if not ln.lstrip().startswith("#")
     )
-    for forbidden in ("m62_report", "--unblind", "floors.json"):
+    for forbidden in ("m62_report", "p6_unblind", "--unblind", "floors.json"):
         assert forbidden not in body, (
             f"{forbidden!r} in the grid script: Gamma is a cross-arm quantity "
             "and NO-PEEKING binds until unblinding"

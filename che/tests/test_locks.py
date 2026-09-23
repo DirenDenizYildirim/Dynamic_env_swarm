@@ -321,10 +321,14 @@ def test_r_comm_reachable_without_argv():
 # configuration.
 
 
-def _analysis_module():
+def _analysis_module(spec: dict | None = None):
+    """The module a constant's literal lives in. `analysis.module` is the
+    default; a constant may name its own (`module:`) when it belongs to a
+    different instrument -- K_CONFIRMATORY_REALIZED lives in the unblind
+    instrument, not in the floors script whose ladder computed against 40."""
     import importlib
 
-    return importlib.import_module(ANALYSIS_MODULE)
+    return importlib.import_module((spec or {}).get("module", ANALYSIS_MODULE))
 
 
 def test_analysis_registry_is_well_formed():
@@ -345,14 +349,14 @@ def test_analysis_registry_is_well_formed():
 )
 def test_analysis_module_literal_matches_registry(name):
     """THE ENFORCEMENT. Change the script or the registry alone -> red."""
-    mod = _analysis_module()
+    mod = _analysis_module(ANALYSIS[name])
     assert hasattr(mod, name), (
-        f"{ANALYSIS_MODULE} has no {name}, but docs/locks.yaml registers it "
+        f"{mod.__name__} has no {name}, but docs/locks.yaml registers it "
         f"as {ANALYSIS[name]['value']} (source: {ANALYSIS[name]['source']})"
     )
     got = getattr(mod, name)
     assert got == pytest.approx(ANALYSIS[name]["value"]), (
-        f"{ANALYSIS_MODULE}.{name} = {got}, docs/locks.yaml registers "
+        f"{mod.__name__}.{name} = {got}, docs/locks.yaml registers "
         f"{ANALYSIS[name]['value']} (source: {ANALYSIS[name]['source']}). "
         "These are the same constant; update them in one commit."
     )
@@ -367,11 +371,11 @@ def test_owed_analysis_constants_have_no_module_literal():
     unregistered later — the beta_holdout precedent — and this asserts the
     slot stays empty on BOTH sides until the measurement fills it.
     """
-    mod = _analysis_module()
     for name, spec in ANALYSIS.items():
+        mod = _analysis_module(spec)
         if spec["value"] is None:
             assert not hasattr(mod, name), (
-                f"{ANALYSIS_MODULE}.{name} exists, but docs/locks.yaml still "
+                f"{mod.__name__}.{name} exists, but docs/locks.yaml still "
                 f"registers it as owed by {spec['owed_by']!r}. Register the "
                 "measured value with its provenance in the same commit."
             )

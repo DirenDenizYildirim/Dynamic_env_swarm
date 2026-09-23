@@ -312,6 +312,32 @@ analysis:
         [0.0319, 0.0983] at n = 8). It buys only 4.6 % RMS floor growth
         before power falls back through 80 %, which is what K_LADDER_CAP
         exists to absorb.
+        SUPERSEDED IN PRACTICE BY THE LADDER, twice, both pre-unblind:
+        2026-09-09 (G1.2 re-floor on the grid card, BRANCH B, k = 46) and
+        2026-09-22 (5090 re-floor, BRANCH C, cap raised, k = 72). The value
+        40 stays here because it is the DESIGN constant the ladder computes
+        against and the m62_report outputs that produced both branches were
+        computed with it; the k the confirmatory analysis actually uses is
+        K_CONFIRMATORY_REALIZED below.
+
+    K_CONFIRMATORY_REALIZED:
+      value: 72
+      locked: true
+      module: che.scripts.p6_unblind
+      source: docs/decision_log.md   # LADDER BRANCH C, AND THE CAP RAISED 60 -> 72 (owner, 2026-09-22)
+      ruled: 2026-09-22
+      evidence: che/bench/results/phase6/g1_conf_5090/grid_params.txt   # k_conf: 72
+      note: >-
+        The k at which the PRIMARY confirmatory contrast is read, designated
+        pre-unblind. Seeds 1..72 on ISO and JOINT, one card (RTX 5090), one
+        stamp. Reached by the pre-registered re-floor ladder: k_req
+        completion 72 against k_cap 60 -> branch C; owner raised the cap to
+        72 as a recorded DEVIATION (cost cap, not statistical; k_req derives
+        from floors, not outcomes; more seeds move power symmetrically).
+        The registered-ladder analysis at k = K_LADDER_CAP = 60 is a PREFIX
+        of the same seeds and is reported beside it with its UNDERPOWERED
+        flag. The unblind instrument refuses any artifact whose stamp does
+        not carry this k.
 
     GAMMA_T_RETENTION:
       value: 11

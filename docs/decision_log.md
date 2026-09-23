@@ -4705,3 +4705,75 @@ stating rigour as the operative criterion.
 `m62_report.py::METRICS`, `SIDAK_M = 2`, the 0.03 target effect, T\* = 1000,
 the eval draw (seed 0, 512 episodes) and `K_SECONDARY = 20` are all
 untouched. No lock, no config regenerated.
+
+
+## UNBLIND INSTRUMENT BUILT PRE-UNBLIND, and the §7 blocks confirmed (builder, owner-confirmed, 2026-09-23)
+
+Transcribed in the session it was issued. **Pre-unblind:** the confirmatory
+artifact `g1_conf_5090` (k = 72, one card, one stamp) is complete and pulled;
+the secondary re-card (`g1_sec_s1_12_5090`, 96 runs) is running on the same
+5090; **no per-arm or cross-arm Phase-6 mean has been computed or viewed.**
+
+### Owner confirmations, this session
+
+1. **Proceed to submission** at TMLR (2026-09-23: "you shall proceed"), with
+   the owner's stated expectation of an eventual accept rather than a
+   first-round one.
+2. **ISO-4 and the T = 2000 subsample RUN**, behind the secondary re-card on
+   the same card. Both were already authorized on 2026-09-18 ($7.15 reserve
+   draw); at the 5090's measured $0.549/h the three §7 blocks together cost
+   ~$3.5. No amendment to the authorization is needed and none is made.
+   Unblinding therefore waits on them, exactly as the §7 ruling registered.
+
+### What was built — `che/scripts/p6_unblind.py`, `che/tests/test_p6_unblind.py`
+
+The frozen analysis plan (design v2 §7) says the pipeline is frozen by commit
+hash before unblinding. Until this commit **no instrument computed Γ at
+all**: `m62_report.py` is the floors-and-ladder script and suppresses means
+by design. The instrument was therefore written and tested on **synthetic
+artifacts only** (temporary directories with per-seed values chosen so every
+registered formula has a known answer) and is committed before any real eval
+JSON is read. It applies only registered rules — the family, Šidák m = 2,
+the unpaired combined-variance sd(Γ) from the grid's own seed dispersion, the
+branch table, the branch-B falsifier, the exclusion-not-absence reading, and
+the k = 72 primary with the k = 60 registered-ladder prefix beside it — and
+refuses any artifact whose stamp is not the registered design, any eval not
+at `ckpt_step == T*`, any orphaned eval, any real artifact without
+`--unblind`, and a dirty tree. Every real invocation is appended to
+`UNBLIND_LOG.txt`.
+
+### Three builder interpretations — OWED OWNER RATIFICATION before the real run
+
+The registered text left these unspecified. Each is implemented one way and
+tested; each must be ratified or reversed **before** the instrument touches
+the real artifact, because reversing after the look is outcome selection.
+
+- **(i) "−" in the branch table means REJECTION with negative sign.** §3 of
+  the framing registration defines "+" and "null" as rejection and
+  non-rejection in the family; "−" is read the same way. A negative point
+  estimate that does not reject is a **null** and routes to branch C.
+- **(ii) The cell (completion +, survival null) is NOT in the registered
+  table.** The instrument labels it `UNREGISTERED` and stops. It does not
+  choose a branch. If this cell arrives, the owner rules on framing with the
+  numbers visible, and the paper says so.
+- **(iii) The statistic is the normal z the frozen plan wrote, not a t.** At
+  k = 72 the two-sided t critical value at 142 dof and the Šidák α is ≈ 2.262
+  against z_α = 2.2365; the report states both and applies z.
+
+### Registry
+
+`K_CONFIRMATORY` (40) and `K_LADDER_CAP` (60) stay as registered: they are
+the design constants the ladder computed against, and the two ladder outputs
+(branch B 2026-09-09, branch C 2026-09-22) were produced with them. The k the
+primary analysis reads is registered separately as
+**`K_CONFIRMATORY_REALIZED = 72`** (`docs/locks.yaml`, `module:
+che.scripts.p6_unblind`), sourced to the LADDER BRANCH C ruling and asserted
+by `test_locks.py`. `run_p6_grid.sh` gains `p6_unblind` in its forbidden-
+string list.
+
+### What this entry does NOT do
+
+No constant, config, threshold or family moves. `METRICS`, `SIDAK_M = 2`,
+T\* = 1000, the eval draw and `K_SECONDARY = 20` are untouched. It does not
+authorize the unblind run; that remains a human-gated step after ISO-4 and
+T = 2000 complete and after the three interpretations above are ratified.
