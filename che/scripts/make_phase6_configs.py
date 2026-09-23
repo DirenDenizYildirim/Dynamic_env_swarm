@@ -76,6 +76,16 @@ def joint() -> list[dict]:
     return _components([(ALL_ON, 1.0)])
 
 
+def iso4() -> list[dict]:
+    """ISO-4 (§7 proposal 1, ruled 2026-09-18): `p6_iso` with the two
+    delta-only components removed and nothing else changed. Phase 5 certified
+    delta inert, so 1/3 of ISO's episodes carry no behaviourally active
+    element; this arm spends that third on A and B instead. SENSITIVITY ARM,
+    out of the confirmatory family — Gamma_4 = JOINT − ISO-4 qualifies branch
+    text and never relabels a branch."""
+    return _components([(A_ONLY, 0.5), (B_ONLY, 0.5)])
+
+
 def sweep(c: float, p: float) -> list[dict]:
     """Marginal-matched family: per-element marginal fixed at c, only
     co-occurrence varies. The no-element share is 1 - 2c + p and therefore
@@ -121,9 +131,46 @@ def gamma_t_retention(
     return t_star // (2 * interval) + 1
 
 
+# §7 proposal 2 (ruled 2026-09-18): a DESCRIPTIVE T = 2000 subsample, 4 seeds
+# per confirmatory arm. The variants are byte-for-byte the confirmatory
+# configs except that retention covers the final half of 2000 updates. T
+# itself is a run parameter (UPDATES=2000, stamped by the grid script); the
+# retention is the config's, per the locks standing rule.
+T2000_UPDATES = 2000
+T2000_VARIANTS: frozenset[str] = frozenset({"p6_iso_t2000", "p6_joint_t2000"})
+
+
+def retention_for(name: str) -> int | None:
+    """Which Gamma(t) window a config carries, if any. None = default 3."""
+    if name in T2000_VARIANTS:
+        return gamma_t_retention(T2000_UPDATES)
+    if name in CONFIRMATORY:
+        return gamma_t_retention()
+    return None
+
+
 PLAN: tuple[tuple[str, list[dict], str], ...] = (
     ("p6_iso", iso(), "ISO (D2): every element seen ONLY in isolation."),
     ("p6_joint", joint(), "JOINT-classic: all elements co-active."),
+    (
+        "p6_iso4",
+        iso4(),
+        "ISO-4 (S7 proposal 1, 2026-09-18): ISO minus the two inert delta-only "
+        "components. SENSITIVITY ARM, out of the confirmatory family, k = 20.",
+    ),
+    (
+        "p6_iso_t2000",
+        iso(),
+        "ISO at T = 2000 (S7 proposal 2, 2026-09-18): p6_iso with retention "
+        "covering the final half of 2000 updates. DESCRIPTIVE ONLY, 4 seeds.",
+    ),
+    (
+        "p6_joint_t2000",
+        joint(),
+        "JOINT-classic at T = 2000 (S7 proposal 2, 2026-09-18): p6_joint with "
+        "retention covering the final half of 2000 updates. DESCRIPTIVE ONLY, "
+        "4 seeds.",
+    ),
     *(
         (
             f"p6_sweep_c50_p{int(p * 1000):03d}",
@@ -211,9 +258,10 @@ def render(name: str, comps: list[dict], purpose: str) -> str:
     # window and none gets the storage. Retention must cover the final HALF of
     # training -- see GAMMA_T_RETENTION for the relationship this number is a
     # solution of, and test_locks.py for its assertion.
-    if name in CONFIRMATORY:
+    keep = retention_for(name)
+    if keep is not None:
         lines += [
-            f"  ckpt_max_to_keep: {gamma_t_retention()}"
+            f"  ckpt_max_to_keep: {keep}"
             "  # Gamma(t) window: final half of training",
         ]
     lines += [""]

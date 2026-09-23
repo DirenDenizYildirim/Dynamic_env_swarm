@@ -18,10 +18,17 @@ from pathlib import Path
 import jax
 import jax.numpy as jnp
 import pytest
+import yaml
 
 from che.env.config import MAX_MIXTURE_COMPONENTS, load_config
 from che.env.env import reset
-from che.scripts.make_phase6_configs import PLAN, render
+from che.scripts.make_phase6_configs import (
+    PLAN,
+    T2000_UPDATES,
+    T2000_VARIANTS,
+    gamma_t_retention,
+    render,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 HELD_OUT_BETA = 0.49
@@ -178,3 +185,50 @@ def test_zero_weight_components_are_kept_and_never_drawn():
     drawn = jax.vmap(lambda k: reset(k, cfg)[1].mixture_component)(keys)
     for i in zeros:
         assert not bool(jnp.any(drawn == i)), f"component {i} has weight 0"
+
+
+# ------------------------------------------------- the S7 blocks (2026-09-18)
+
+
+def test_iso4_is_iso_minus_the_inert_third_and_nothing_else():
+    """S7 proposal 1: the two delta-only components removed, weights 0.25,
+    every surviving component identical to its ISO counterpart."""
+    iso = {c.name: c for c in _cfg("p6_iso").mixture.components}
+    iso4 = {c.name: c for c in _cfg("p6_iso4").mixture.components}
+    assert set(iso4) == {"a_low", "b_low", "a_high", "b_high"}
+    for name, c in iso4.items():
+        assert c.weight == pytest.approx(0.25)
+        ref = iso[name]
+        assert (c.beta, c.kappa_A, c.kappa_B, c.delta) == (
+            ref.beta, ref.kappa_A, ref.kappa_B, ref.delta)
+    assert not any(c.delta > 0 for c in iso4.values()), "ISO-4 carries no delta element"
+    m = _marginals("p6_iso4")
+    assert m["A"] == pytest.approx(0.5) and m["B"] == pytest.approx(0.5)
+    assert m["co"] == pytest.approx(0.0) and m["none"] == pytest.approx(0.0)
+
+
+def test_iso4_shares_iso_base_theta_env_and_train_blocks():
+    a = yaml.safe_load((REPO_ROOT / "che/configs/p6_iso.yaml").read_text())
+    b = yaml.safe_load((REPO_ROOT / "che/configs/p6_iso4.yaml").read_text())
+    assert a["theta"] == b["theta"] and a["env"] == b["env"]
+    # ISO-4 is NOT a confirmatory arm: no Gamma(t) window, default retention.
+    a_train = dict(a["train"])
+    a_train.pop("ckpt_max_to_keep")
+    assert b["train"] == a_train
+
+
+@pytest.mark.parametrize("variant,base", [("p6_iso_t2000", "p6_iso"),
+                                          ("p6_joint_t2000", "p6_joint")])
+def test_t2000_variant_differs_from_its_base_only_in_retention(variant, base):
+    """S7 proposal 2: same procedure, longer window. Updates 1..1000 of the
+    T = 2000 run are the T = 1000 run (no LR schedule), so the only thing
+    the config may change is how much of the longer run survives on disk."""
+    assert variant in T2000_VARIANTS
+    a = yaml.safe_load((REPO_ROOT / f"che/configs/{base}.yaml").read_text())
+    b = yaml.safe_load((REPO_ROOT / f"che/configs/{variant}.yaml").read_text())
+    assert a["theta"] == b["theta"] and a["env"] == b["env"]
+    assert a["mixture"] == b["mixture"]
+    keep = b["train"].pop("ckpt_max_to_keep")
+    a["train"].pop("ckpt_max_to_keep")
+    assert a["train"] == b["train"]
+    assert keep == gamma_t_retention(T2000_UPDATES) == 21

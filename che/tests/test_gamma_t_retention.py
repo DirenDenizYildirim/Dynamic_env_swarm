@@ -130,3 +130,27 @@ def test_default_retention_is_unchanged_for_every_other_config():
 
     assert TrainConfig().ckpt_max_to_keep == 3
     assert load_config("che/configs/debug.yaml").train.ckpt_max_to_keep == 3
+
+
+# ------------------------------------------------- the S7 blocks (2026-09-18)
+
+
+def test_t2000_variants_carry_the_final_half_of_2000_in_the_config():
+    """The locked fact is the relationship; at T = 2000 its solution is 21,
+    supplied by the generated config and never by a flag."""
+    from che.scripts.make_phase6_configs import T2000_UPDATES, T2000_VARIANTS
+
+    for name in sorted(T2000_VARIANTS):
+        path = f"che/configs/{name}.yaml"
+        raw = _raw(path)
+        assert raw["train"]["ckpt_max_to_keep"] == gamma_t_retention(T2000_UPDATES)
+        cfg = load_config(path)
+        keep, step = cfg.train.ckpt_max_to_keep, cfg.train.ckpt_interval
+        oldest = T2000_UPDATES - (keep - 1) * step
+        assert oldest <= T2000_UPDATES // 2
+
+
+def test_iso4_is_not_confirmatory_and_carries_no_window():
+    raw = _raw("che/configs/p6_iso4.yaml")
+    assert "ckpt_max_to_keep" not in raw["train"]
+    assert load_config("che/configs/p6_iso4.yaml").train.ckpt_max_to_keep == 3
