@@ -12,20 +12,29 @@ last seven entries are the current law and this file only points at them.
 | **Confirmatory, k = 72, one card (RTX 5090), one stamp** | `g1_conf_5090` | COMPLETE, pulled, verified. **NOT UNBLINDED.** |
 | Two-card grid, 252 runs | `g1_grid` | complete; secondary seeds 13–20 live; conf seeds 1–12 SUPERSEDED (card diagnostic only) |
 | 5090 floors (G1.2 protocol, ladder BRANCH C) | `g1_floors_5090` | pulled 2026-09-24, 24/24 verified. `floors.json` is the `--floors` input to the unblind instrument |
-| Secondary re-card, seeds 1–12, 8 arms, 96 runs | `g1_sec_s1_12_5090` | was on run 96/96 on the box at 00:15 UTC 2026-09-24; a detached local launcher pulls it when it exits |
-| ISO-4 (k = 20) and T = 2000 (4 seeds × 2 arms) | `g1_iso4_5090`, `g1_t2000_5090` | queued: launched by the detached launcher in tmux `s7` on the box when the re-card exits; a second detached watcher pulls both when `s7` ends |
+| Secondary re-card, seeds 1–12, 8 arms, 96 runs | `g1_sec_s1_12_5090` | COMPLETE on the box (96/96, "G1.3 COMPLETE", all archives verified). Pull was in progress at session end — **re-run the pull command; it resumes and verifies**; confirm "96 verified locally, 0 FAILED" |
+| ISO-4 (k = 20) and T = 2000 (4 seeds × 2 arms) | `g1_iso4_5090`, `g1_t2000_5090` | **NOT RUN.** Owner deferred them to the next session (2026-09-24, session-limit risk). Launch by hand: `GIT_COMMIT=<hash> bash che/scripts/run_p6_s7_blocks.sh` in tmux on the box, after shipping the tree correctly (below) |
 
-**The box:** `ssh -p 13768 root@180.189.55.43`, repo at `~/che_repo`,
-tree shipped at commit `0438f7f` (only `che/configs che/scripts che/tests
-docs` were rsynced; the science tree is identical to `51e489a`, asserted by
+**The box:** `ssh -p 13768 root@180.189.55.43`, repo at `~/che_repo`.
+**The §7 files are NOT on the box.** The 2026-09-24 ship used
+`rsync che/configs che/scripts che/tests docs box:~/che_repo/`, which lands
+`che/scripts` at `~/che_repo/scripts` (wrong level); the auto-launch then
+failed with "run_p6_s7_blocks.sh: No such file", so **nothing ran** and the
+misplaced copies were removed. Ship correctly next time, from the repo root:
+
+    rsync -az --exclude __pycache__ --exclude 'che/bench/results' \
+      che/ root@180.189.55.43:~/che_repo/che/   # and docs/ likewise
+
+then verify `ls ~/che_repo/che/scripts/run_p6_s7_blocks.sh` before launching.
+The science tree is identical to `51e489a` (asserted by
 `test_p6_s7_blocks.py`). Rate $0.549/h. **Keep this box through the
 post-unblind eval stage if possible**: every confirmatory run trained and
 evaluated on this card, so running Γ(t) and the High readout here removes the
 cross-card eval-floor question (CARD RULING amendment) instead of measuring
 it.
 
-Detached watchers on the laptop (plain bash under `setsid`, logs in the
-session scratchpad `/tmp/claude-1000/-home-diren-A-Research-Dynamic-env-swarm/9b7f430f-*/scratchpad/`:
+The auto-launch watchers were killed at the owner's request. Only the
+re-card pull may still be running (logs in the session scratchpad `/tmp/claude-1000/-home-diren-A-Research-Dynamic-env-swarm/9b7f430f-*/scratchpad/`:
 `launch_s7.log`, `watch_s7_and_pull.log`, `pull_sec.log`). If the scratchpad
 is gone, check the box directly: `tmux ls`, `ls */.manifest/*.done | wc -l`,
 and pull with `che/scripts/pull_box_artifacts.sh` into the **same-named local
