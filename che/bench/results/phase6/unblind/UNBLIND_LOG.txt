@@ -1,0 +1,1 @@
+2026-09-26T17:49:13+00:00  git 41b11cd774eb469f05f7b4c40e5bc23c905ccc00  dirty=0  artifact=che/bench/results/phase6/g1_conf_5090  branch=B
