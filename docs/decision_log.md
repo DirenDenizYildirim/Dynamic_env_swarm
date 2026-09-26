@@ -5054,3 +5054,14 @@ instrument reads the real sweep**:
   with Γ₄.
 
 No constant, lock, config, threshold or family moves.
+
+**RATIFIED by the owner, 2026-09-26, before the sweep was read:** (S1) PAVA +
+OLS slope CI; (S2) single-hinge breakpoint, UNDERPOWERED iff the CI spans
+{0.125 … 0.375}; (S3) plane fit, bound = 95 % CI of 0.5·γ_n; (S4) training
+co-activity over updates 1…1000, VOID iff the first-stage CI contains 0;
+(S5) the same-card replicate is ADDED, beside Γ₄, unable to change its
+qualifier; (S6) 95 % intervals, Γ₄′ at z_α. All as built at `021b971`.
+Options declined are recorded in the session: a rank trend test or curve-only
+(S1); largest isotonic step or ED50 (S2); the model-free p = 0 pair alone or
+beside (S3); final-half or eval-time co-activity (S4); not adding S5; z_α or
+95 % everywhere (S6).
