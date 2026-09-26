@@ -1,126 +1,97 @@
-# HANDOFF — session state for the next model (rewritten 2026-09-24)
+# HANDOFF — session state for the next model (rewritten 2026-09-26)
 
-You are picking up **post-grid, PRE-UNBLIND**, mid-way through the §7 blocks,
-with the paper's LaTeX scaffold started. Read `docs/decision_log.md` from the
-**§7 PROPOSALS RULING (2026-09-18)** to the end before anything else; the
-last seven entries are the current law and this file only points at them.
+You are picking up **post-grid, PRE-UNBLIND**, with the §7 blocks running on a
+new box. Read `docs/decision_log.md` from the **§7 PROPOSALS RULING
+(2026-09-18)** to the end before anything else; the last entry (*BOX CHANGE …
+and the POST-UNBLIND ANALYSIS INSTRUMENT*, 2026-09-26) is the newest law and
+this file only points at it.
 
 ## Where the artifacts are
 
 | artifact | dir under `che/bench/results/phase6/` | state |
 |---|---|---|
-| **Confirmatory, k = 72, one card (RTX 5090), one stamp** | `g1_conf_5090` | COMPLETE, pulled, verified. **NOT UNBLINDED.** |
-| Two-card grid, 252 runs | `g1_grid` | complete; secondary seeds 13–20 live; conf seeds 1–12 SUPERSEDED (card diagnostic only) |
-| 5090 floors (G1.2 protocol, ladder BRANCH C) | `g1_floors_5090` | pulled 2026-09-24, 24/24 verified. `floors.json` is the `--floors` input to the unblind instrument |
-| Secondary re-card, seeds 1–12, 8 arms, 96 runs | `g1_sec_s1_12_5090` | COMPLETE on the box (96/96, "G1.3 COMPLETE", all archives verified). Pull was in progress at session end — **re-run the pull command; it resumes and verifies**; confirm "96 verified locally, 0 FAILED" |
-| ISO-4 (k = 20) and T = 2000 (4 seeds × 2 arms) | `g1_iso4_5090`, `g1_t2000_5090` | **NOT RUN.** Owner deferred them to the next session (2026-09-24, session-limit risk). Launch by hand: `GIT_COMMIT=<hash> bash che/scripts/run_p6_s7_blocks.sh` in tmux on the box, after shipping the tree correctly (below) |
+| **Confirmatory, k = 72, one card (RTX 5090 unit 1), one stamp** | `g1_conf_5090` | COMPLETE, verified, committed. **NOT UNBLINDED.** |
+| Two-card grid, 252 runs | `g1_grid` | secondary seeds 13–20 live; conf seeds 1–12 SUPERSEDED (card diagnostic only) |
+| 5090 floors (ladder BRANCH C) | `g1_floors_5090` | committed `e88e5fd`, 24/24 verified. `floors.json` = the `--floors` input |
+| Secondary re-card, seeds 1–12, 8 arms, 96 runs | `g1_sec_s1_12_5090` | committed `e88e5fd`, **96/96 verified locally** against the box-written `SHA256_CKPT.txt` (the old pull never reached its own verification pass) |
+| ISO-4 (k = 20), T = 2000 (4 seeds × 2 arms) | `g1_iso4_5090`, `g1_t2000_5090` | **RUNNING on unit 2** since 2026-09-26 10:59 UTC, tmux `s7`, ~5.3 h expected (20 × ~530 s + 8 × ~1050 s) |
 
-**The box:** `ssh -p 13768 root@180.189.55.43`, repo at `~/che_repo`.
-**The §7 files are NOT on the box.** The 2026-09-24 ship used
-`rsync che/configs che/scripts che/tests docs box:~/che_repo/`, which lands
-`che/scripts` at `~/che_repo/scripts` (wrong level); the auto-launch then
-failed with "run_p6_s7_blocks.sh: No such file", so **nothing ran** and the
-misplaced copies were removed. Ship correctly next time, from the repo root:
+**Old box (unit 1, `180.189.55.43:13768`) is GONE** — vast.ai rented its GPU
+to someone else after it was stopped. Nothing lived only there.
 
-    rsync -az --exclude __pycache__ --exclude 'che/bench/results' \
-      che/ root@180.189.55.43:~/che_repo/che/   # and docs/ likewise
+**New box (unit 2):** `ssh -p 36005 root@179.255.106.231`, repo `~/che_repo`
+(shipped as `git archive e88e5fd`, no `.git`), identity in
+`~/che_repo/UNIT.txt` (RTX 5090 `GPU-cc0a5b55-…`, driver 580.173.02, CUDA
+13.0). Venv verified 3.12.3 / jax 0.11.0 / CudaDevice. 311 GB free.
+Download speed measured 2.6–14.9 MB/s. **Keep this box through the
+post-unblind eval stage** — ISO-4, T = 2000, Γ(t), High readout and the eval
+floor all then run on one unit.
 
-then verify `ls ~/che_repo/che/scripts/run_p6_s7_blocks.sh` before launching.
-The science tree is identical to `51e489a` (asserted by
-`test_p6_s7_blocks.py`). Rate $0.549/h. **Keep this box through the
-post-unblind eval stage if possible**: every confirmatory run trained and
-evaluated on this card, so running Γ(t) and the High readout here removes the
-cross-card eval-floor question (CARD RULING amendment) instead of measuring
-it.
+**Uploads to unit 2 (for the post-unblind stage):** `g1_conf_5090` (6.0 GB)
+and `g1_floors_5090` (0.8 GB) archives + `SHA256_CKPT.txt`, rsync over the
+~1 MB/s home uplink, then `sha256sum -c` on the box. If interrupted, re-run
+the same rsync (it resumes with `--partial`), then re-verify on the box.
 
-The auto-launch watchers were killed at the owner's request. Only the
-re-card pull may still be running (logs in the session scratchpad `/tmp/claude-1000/-home-diren-A-Research-Dynamic-env-swarm/9b7f430f-*/scratchpad/`:
-`launch_s7.log`, `watch_s7_and_pull.log`, `pull_sec.log`). If the scratchpad
-is gone, check the box directly: `tmux ls`, `ls */.manifest/*.done | wc -l`,
-and pull with `che/scripts/pull_box_artifacts.sh` into the **same-named local
-dir only if empty**, else a fresh dated one.
+**Pull the §7 blocks when `s7` exits green:**
 
-## What was built this session (all committed, all green)
+    BOX=root@179.255.106.231 PORT=36005 bash che/scripts/pull_box_artifacts.sh \
+      che/bench/results/phase6/g1_iso4_5090
+    # and likewise g1_t2000_5090 — both local dirs are new, so the guard passes
 
-- **`che/scripts/p6_unblind.py`** — THE confirmatory instrument. Did not exist
-  before; `m62_report.py` is floors/ladder only. Built and tested on synthetic
-  artifacts (`test_p6_unblind.py`, 30 tests); refuses real artifacts without
-  `--unblind`, refuses a dirty tree, logs every real look to
-  `<out>/UNBLIND_LOG.txt`. Primary k = 72; k = 60 ladder prefix reported
-  beside it; branch table + branch-B falsifier; exclusion-not-absence;
-  optional `--card-diag g1_grid` (seeds 1–12 PRO 6000 vs 5090, paired).
-- **`K_CONFIRMATORY_REALIZED = 72`** registered in `docs/locks.yaml`
-  (`module: che.scripts.p6_unblind`); `K_CONFIRMATORY` stays 40 as the design
-  constant the ladder computed against. `test_locks.py` supports per-constant
-  modules.
-- **`p6_iso4.yaml`, `p6_iso_t2000.yaml`, `p6_joint_t2000.yaml`** generated by
-  `make_phase6_configs.py`; the ten existing configs are byte-identical.
-  `run_p6_s7_blocks.sh` runs both blocks with their own `OUT` and stamps.
-- **`run_p6_post_unblind_evals.sh`** — Γ(t) (1440 evals, updates 500–950),
-  High readout (180), same-card eval floor (8). **Refuses unless
-  `che/bench/results/phase6/unblind/UNBLIND_LOG.txt` exists** — ship that file
-  to the box after the unblind run.
-- Decision-log entry *UNBLIND INSTRUMENT BUILT PRE-UNBLIND* (2026-09-23).
+Confirm "N verified locally, 0 FAILED" for each (20 and 8), then commit.
+
+## Built this session (pre-unblind, synthetic data only)
+
+- **`che/scripts/p6_post_analysis.py`** + `test_p6_post_analysis.py`: the
+  reading instrument for EVALFLOOR, Γ(t), Γ₄/B̂, Γ_H and T = 2000. Refuses
+  without a non-empty `unblind/UNBLIND_LOG.txt`; refuses Γ(t) without the eval
+  floor; re-derives Γ and refuses if it moved since `unblind.json`; logs every
+  real run to `POST_UNBLIND_LOG.txt`. Computes no branch.
 
 ## THE UNBLIND — sequence, and what the owner must rule first
 
-1. Wait for `g1_iso4_5090` and `g1_t2000_5090` to be pulled (the §7 ruling
-   makes unblinding wait on them).
-2. **Owner ratifies, BEFORE the run, the three builder interpretations** in
-   the 2026-09-23 decision-log entry: (i) "−" = rejection with negative sign;
-   (ii) the cell (completion +, survival null) is UNREGISTERED → STOP for a
-   ruling; (iii) normal z as registered, t stated not applied. Reversing any
-   of them after the look is outcome selection.
-3. On a **clean tree** (commit first), with the owner present:
+1. Wait for `g1_iso4_5090` and `g1_t2000_5090` to be pulled and committed.
+2. **Owner ratifies, BEFORE the run, SIX builder interpretations**: (i)–(iii)
+   in the 2026-09-23 entry, (iv)–(vi) in the 2026-09-26 entry. Also decides
+   the optional §5 of the 2026-09-26 entry (re-evaluate the 144 T\* = 1000
+   checkpoints on unit 2 too) — **before the unblind or not at all**, and the
+   k = 72 primary designation stands unless reversed now.
+3. On a **clean tree**, with the owner present:
 
        uv run python -m che.scripts.p6_unblind \
          --artifact che/bench/results/phase6/g1_conf_5090 \
          --floors   che/bench/results/phase6/g1_floors_5090/floors.json \
          --card-diag che/bench/results/phase6/g1_grid \
          --out      che/bench/results/phase6/unblind --unblind
+       uv run python -m che.scripts.p6_post_analysis --sections gamma4 t2000
 
-   Read the branch from `report.md`. Open the matching `paper/branch_*.md`.
-4. Ship `unblind/UNBLIND_LOG.txt` + the post-unblind script to the box, run
-   `run_p6_post_unblind_evals.sh` in tmux, pull `post_gamma_t/`, `post_high/`,
-   `post_evalfloor/`. The Γ(t) reading rule (sign stability over the final
-   half) and Γ₄ / Γ_H / T = 2000 readings still need a small analysis script;
-   it does not exist yet. Write it before reading them, on synthetic data.
-5. Correct the `no-element` header line of `p6_iso.yaml` (§7 ruling OWED
-   item 5) — now allowed, the grid is closed. Keep the ten configs otherwise
-   byte-identical or `test_phase6_configs` goes red.
+   Read the branch from `unblind/report.md`; open the matching
+   `paper/branch_*.md`.
+4. Ship `unblind/UNBLIND_LOG.txt` to the box (same relative path), run
+   `run_p6_post_unblind_evals.sh` in tmux (set `GAMMA_T_STEPS` per the §5
+   decision), pull `post_gamma_t/`, `post_high/`, `post_evalfloor/`, then
+   `p6_post_analysis --sections evalfloor gamma_t high`.
+5. Archive, then release the box. Correct the `no-element` header line of
+   `p6_iso.yaml` (§7 OWED item 5); keep the ten configs otherwise identical.
 
-## The paper
+## The paper (unchanged since 2026-09-24)
 
-`paper/tex/` holds the TMLR style files (`tmlr.sty/.bst`, fetched from the
-official repo) and drafted sections: abstract, introduction, environment
-(full, from the theory doc), methodology, compositional test (design), limitations,
-reproducibility, appendix skeleton, plus stubs for related work and §4–§7.
-**Not yet compiled** — `~/.local/bin/tectonic` (0.17.0) is installed; the
-first compile downloads packages. `\todo{verify …}` marks every number that
-must be checked against a phase report; `\gap{…}` marks grid-dependent text.
-
-Two verification passes were started as subagents and **stopped before
-finishing**; neither wrote its output file. Both are still owed:
-- **Numbers ledger** (`paper/numbers_ledger.md`): every number in the spine
-  §3–§8 verified against the phase reports with file:line.
-- **Bibliography verification** (`paper/related_work_verification.md`): every
-  `[VERIFY]` citation found or declared NOT FOUND; the UED/DR paragraph
-  search. A fabricated citation is a desk reject.
-
-Also owed (unchanged): Def. 2 reword transcribed to the theory doc; read the
-two arXiv PDFs; TMLR time-to-decision; the word "ambient"; the card-2 partial
-re-floor owner entry.
-
-## Owner's stated position (2026-09-23/24)
-
-Proceed to TMLR; an eventual accept is the goal, not a first-round one.
-ISO-4 and T = 2000 run (already authorized). "Bring the files back when the
-run ends" — the watchers do that; verify they did.
+`paper/tex/` — TMLR style + drafted sections, **not yet compiled**
+(`~/.local/bin/tectonic`). Still owed: **numbers ledger**
+(`paper/numbers_ledger.md`), **bibliography verification**
+(`paper/related_work_verification.md`; a fabricated citation is a desk
+reject), Def. 2 reword into the theory doc, the two arXiv PDFs, TMLR
+time-to-decision, "ambient", the card-2 partial re-floor owner entry. §7 OWED
+items 2 and 3 look undone: no 2026-09-18 amendment in `phase6_design_v2.md`
+§2, and no "no severity has both couplings strongly live" line in
+`paper/00_common_spine.md` beside §4a.
 
 ## Working agreements (unchanged)
 
 Rulings bind only once transcribed. Numbers enter documents derived or
 measured. Bars come with floors — per-metric, per-hardware, per-artifact.
 Contrasts graded on the contrast's SE. Instruments state what they are blind
-to. Run the CPU suite chunked and thread-capped. Do not tail training logs on
-the box beyond progress lines; the attestation covers per-arm means.
+to. Run the CPU suite chunked and thread-capped (and never `pkill -f pytest`
+from a shell whose own command line contains "pytest" — it kills itself and
+leaves the old run alive). Do not tail training logs on the box beyond
+progress lines; never compute a cross-arm mean on the box.

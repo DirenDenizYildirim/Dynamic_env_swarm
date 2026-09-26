@@ -4777,3 +4777,115 @@ No constant, config, threshold or family moves. `METRICS`, `SIDAK_M = 2`,
 T\* = 1000, the eval draw and `K_SECONDARY = 20` are untouched. It does not
 authorize the unblind run; that remains a human-gated step after ISO-4 and
 T = 2000 complete and after the three interpretations above are ratified.
+
+
+## BOX CHANGE to a second RTX 5090 unit, and the POST-UNBLIND ANALYSIS INSTRUMENT built pre-unblind (owner box; builder, 2026-09-26)
+
+Transcribed in the session it was issued. **Pre-unblind:** no per-arm or
+cross-arm Phase-6 mean has been computed or viewed; `unblind/` does not exist.
+
+### 1. The grid box is gone; nothing was on it alone
+
+The owner reports the 5090 at `180.189.55.43:13768` was stopped and vast.ai
+rented its GPU to another user, so it cannot be restarted. **Nothing lived
+only there:**
+
+| artifact | verification |
+|---|---|
+| `g1_conf_5090` | 144/144 against box hashes at pull (`c21cc62`) |
+| `g1_floors_5090` | 24/24 at pull (`.remote_sha256.txt`); re-checked 2026-09-26 with `sha256sum -c SHA256_CKPT.txt`, 24/24 |
+| `g1_sec_s1_12_5090` | the 2026-09-24 pull **never reached its verification pass** (no `.remote_sha256.txt`). Verified 2026-09-26 against the hashes the box wrote at archive time, `sha256sum -c SHA256_CKPT.txt`: **96/96 OK** (`e88e5fd`) |
+| ISO-4, T = 2000 | never ran on that box |
+
+**The owner provides a second RTX 5090 unit** for the §7 blocks and the
+post-unblind stage. `HANDOFF.md`'s "keep this box through the post-unblind
+eval stage" can no longer be honoured, and what that costs is stated here so
+it is chosen, not discovered.
+
+### 2. What a new UNIT of the same card changes
+
+The project records the card by **model name** (`nvidia-smi --query-gpu=name`
+into `.card`), so `cards.txt` will read identically on both units. The unit
+change is therefore recorded **here** and in `~/che_repo/UNIT.txt` on the box,
+not by the card column. **Unit 2:** `179.255.106.231:36005`, RTX 5090
+`GPU-cc0a5b55-d219-48e4-d43c-c873935434f4`, driver 580.173.02, CUDA 13.0;
+venv verified Python 3.12.3 / jax + jaxlib 0.11.0 / `CudaDevice`; shipped as
+`git archive e88e5fd` (science tree `git diff 51e489a e88e5fd -- che/env
+che/train che/eval` empty). Unit 1's driver was never recorded, so a driver
+difference can be neither asserted nor excluded. §7 blocks launched
+2026-09-26 10:59 UTC in tmux `s7`.
+
+- **Γ is untouched.** All 144 confirmatory runs trained and were evaluated on
+  unit 1.
+- **Γ₄ = JOINT (unit 1) − ISO-4 (unit 2).** Same model, different unit. An
+  additive unit effect does not cancel in Γ₄ the way a card effect cancels in
+  Γ (§1a common-mode argument). Γ₄ is out of family, so no confirmatory
+  quantity moves; the paper discloses the block structure, as §7 proposal 1's
+  execution constraints already require whenever the card is not common.
+- **CARD RULING §8** (cross-card Γ₄, provisionally accepted, reversal window
+  closing when ISO-4 runs) was about ISO seeds 1–12 on the **PRO 6000**. The
+  single-card conversion removed that premise: every ISO seed is now on a
+  5090. **Builder reading: §8's PRO-6000 question is moot, replaced by the
+  weaker same-model cross-unit question above.** Reported to the owner in this
+  session; the owner directed the §7 blocks to run on unit 2.
+- **Γ(t) and the High readout** evaluate on unit 2. Every Γ(t) point and Γ_H
+  is **within-unit** (both arms evaluated there), **except Γ(t)'s t = 1000
+  point, which is the grid's own eval on unit 1.** The EVALFLOOR block of
+  `run_p6_post_unblind_evals.sh` measures unit 2's A-vs-A eval floor and, read
+  against the grid's evals of the same two checkpoints, the cross-unit
+  difference. **Unit 1's own eval self-floor can no longer be measured**
+  (per-artifact amendment, 2026-08-02), so a nonzero cross-unit difference
+  cannot be assigned to either unit; the instrument says so.
+
+### 3. Built: `che/scripts/p6_post_analysis.py`, `che/tests/test_p6_post_analysis.py`
+
+`HANDOFF.md` required the Γ(t) / Γ₄ / Γ_H / T = 2000 reading script to be
+written "before reading them". It is written **before the unblind itself**,
+which is strictly stronger: its rules are fixed by commit hash before any
+number they read exists in anyone's view. Tested on **synthetic artifacts
+only** (36 tests). It applies only registered rules — T\* ruling item 3
+(Γ(t) sign stability), §7 proposal 1 (Γ₄, B̂ and the inert-share qualifier),
+proposal 2 (T = 2000, descriptive, UNDERPOWERED), proposal 3 as replaced
+(Γ_H's asymmetric reading, Γ_H,4 beside it), and the CARD RULING amendment
+(eval floor, **mechanically required before Γ(t)**: the Γ(t) section refuses
+without it). It refuses without a non-empty `unblind/UNBLIND_LOG.txt`,
+refuses a dirty tree for real artifacts, re-derives Γ from the artifact and
+refuses if it differs from the recorded `unblind.json` by more than 1e-12,
+and appends every real invocation to `POST_UNBLIND_LOG.txt`.
+
+### 4. Three further builder interpretations — OWED OWNER RATIFICATION before the unblind
+
+Same standing as (i)–(iii) of the 2026-09-23 entry: reversing any of them
+after the look is outcome selection.
+
+- **(iv) Γ(t) "sign stable"** = the **point estimate** of Γ(t) has one nonzero
+  sign at all 11 retained points t = 500, 550, …, 1000, per co-primary, with
+  t = 1000 the grid's own eval (the primary Γ itself). No CI criterion, no
+  fraction threshold. The count of points whose Šidák CI excludes 0 is
+  printed beside it as description. *Consequence stated now:* on a null Γ the
+  point-estimate sign can flip within noise, and under this reading that is
+  reported as "UNSTABLE — the instability is the finding", as registered.
+- **(v) Γ₄** uses JOINT at the realized primary **k = 72** against ISO-4 at
+  k = 20, SE `sqrt(s_J²/72 + s_4²/20)`. "Rejects" and "CI includes 0" are read
+  at the family's Šidák z_α = 2.2365, as the ruling's own power calculation
+  did. The cell **(Γ null, Γ₄ rejects positive)** is not in the registered
+  rule: labelled UNREGISTERED and reported without framing.
+- **(vi) Γ_H "null / positive / negative"** is read as in (i): rejection at
+  the same z_α, with its sign; a non-rejecting negative estimate is a null.
+
+### 5. OWED OWNER DECISION, pre-unblind — optional, not adopted
+
+Re-evaluate the 144 T\* = 1000 checkpoints on unit 2 as well
+(`GAMMA_T_STEPS` with `1000` appended; 144 × 9.40 s, the measured 5090 eval
+time of the CARD RULING amendment, = 1354 s ≈ 23 min at unit 2's rate). It
+would make the whole Γ(t) curve single-unit and give a 144-checkpoint
+**paired** cross-unit check instead of two. **It must be decided before the
+unblind or not at all** — adding it after seeing Γ(t) would be
+outcome-dependent. Until ruled, the instrument uses the grid's own t = 1000
+eval, which is the registered primary Γ.
+
+### What this entry does NOT do
+
+No constant, config, lock, threshold or family moves. `METRICS`, `SIDAK_M = 2`,
+T\* = 1000, the eval draw, `K_SECONDARY = 20` and `K_CONFIRMATORY_REALIZED =
+72` are untouched. It does not authorize the unblind run.
