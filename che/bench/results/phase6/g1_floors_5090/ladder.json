@@ -1,0 +1,11 @@
+{
+ "branch": "C",
+ "k_req": {
+  "completion": 72,
+  "survival_rate": 3
+ },
+ "k_cap": 60,
+ "k_confirmatory": 40,
+ "realized_power": 0.7216788818745483,
+ "action": "PROCEED at k = 60 and DEGRADE HONESTLY, never chase (k_req = 72). completion-Gamma carries the pre-registered UNDERPOWERED flag with realized power stated; verdict weight shifts to the survival co-primary."
+}

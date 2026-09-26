@@ -1,0 +1,62 @@
+========================================================================
+M6.2 — PER-ARM FLOORS (identical runs, same seed: nondeterminism)
+========================================================================
+NO-PEEKING (ruled 2026-08-02): outcome MEANS are suppressed from
+this report until unblinding — dispersion only. floors.json keeps
+the raw values; they are needed then, not now.
+
+  iso  (n = 8)
+    metric              sd (FLOOR)     range
+    completion              0.0587    0.1677
+    survival_rate           0.0100    0.0269
+    episode_return          1.8847    5.3955
+    deaths_fire             0.1282    0.3301
+
+  joint  (n = 8)
+    metric              sd (FLOOR)     range
+    completion              0.0577    0.1678
+    survival_rate           0.0112    0.0340
+    episode_return          1.8586    5.3203
+    deaths_fire             0.1454    0.4609
+
+  sweep_p500  (n = 8)
+    metric              sd (FLOOR)     range
+    completion              0.0196    0.0573
+    survival_rate           0.0130    0.0397
+    episode_return          0.6212    1.7764
+    deaths_fire             0.1375    0.4023
+
+========================================================================
+PLATEAU GUARD — final-100-update slope vs zero, floor-graded
+========================================================================
+  iso          drift over last 100: +0.0192   floor sd 0.0587   ratio 0.33x   -> plateaued
+  joint        drift over last 100: +0.0109   floor sd 0.0577   ratio 0.19x   -> plateaued
+  sweep_p500   drift over last 100: +0.0239   floor sd 0.0196   ratio 1.22x   -> STILL CLIMBING (marginal — REVIEW band, not a verdict)
+
+========================================================================
+POWER on measured floors — CONTRAST basis (k = 40, Sidak m = 2)
+========================================================================
+  [diag] iso    completion       sigma 0.0587  per-arm power@0.03 52.0%
+  [diag] iso    survival_rate    sigma 0.0100  per-arm power@0.03 100.0%
+  [diag] joint  completion       sigma 0.0577  per-arm power@0.03 53.6%
+  [diag] joint  survival_rate    sigma 0.0112  per-arm power@0.03 100.0%
+  --------------------------------------------------------------------
+  GAMMA  completion       sd(G) 0.01301  MDE80 0.0400  power@0.03 52.8%  k_req 72
+  GAMMA  survival_rate    sd(G) 0.00237  MDE80 0.0073  power@0.03 100.0%  k_req 3
+
+========================================================================
+RE-FLOOR LADDER: BRANCH C
+========================================================================
+  k_req(completion) = 72   cap = 60   realized power@0.03 = 72.2%
+  PROCEED at k = 60 and DEGRADE HONESTLY, never chase (k_req = 72). completion-Gamma carries the pre-registered UNDERPOWERED flag with realized power stated; verdict weight shifts to the survival co-primary.
+
+========================================================================
+MEASURED COST (discharges the v2 section-6 estimate)
+========================================================================
+  train  median 519 s  (n=24)
+  eval   median 9 s  (n=24)
+  per run total 528 s
+
+========================================================================
+VERDICT: STOP — still climbing at 1000 updates: ['sweep_p500']. Run length must be re-ruled.
+========================================================================
