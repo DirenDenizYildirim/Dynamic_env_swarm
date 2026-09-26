@@ -1,0 +1,17 @@
+run: G1.3 Phase-6 grid (20 runs: confirmatory k=20, secondary k=0)
+date_utc: 2026-09-26T14:11:37Z
+git_commit: e88e5fd0a9ba684fe1ba31654c44753253dfbacb
+git_dirty: 0 file(s)
+conf_arms: iso4:che/configs/p6_iso4.yaml
+sec_arms: sweep_c50_p000:che/configs/p6_sweep_c50_p000.yaml sweep_c50_p125:che/configs/p6_sweep_c50_p125.yaml sweep_c50_p250:che/configs/p6_sweep_c50_p250.yaml sweep_c50_p375:che/configs/p6_sweep_c50_p375.yaml sweep_c50_p500:che/configs/p6_sweep_c50_p500.yaml ident_c40_p000:che/configs/p6_ident_c40_p000.yaml ident_c40_p200:che/configs/p6_ident_c40_p200.yaml ident_c40_p400:che/configs/p6_ident_c40_p400.yaml
+seeds: 1..20 confirmatory, 1..0 secondary (SAME integers across arms; 0 excluded — it is the floor seed)
+updates: 1000   eval_episodes: 512   eval_seed: 0   eval_config: che/configs/theta_star_holdout.yaml
+cross-config eval: declared via --allow-hash (training-config hash)
+ran_this_invocation: 20   skipped_complete: 0   failed: 0
+seeds_run_this_invocation: 1..20   max_runs: 0
+gpu: NVIDIA GeForce RTX 5090
+python: 3.12.3
+jax: 0.11.0 0.11.0
+science_tree_base: 51e489a031b0e213d18644dbae19fc92052ede82
+science_tree_identity: asserted locally by che/tests/test_p6_s7_blocks.py before shipping (box has no .git)
+block: iso4
