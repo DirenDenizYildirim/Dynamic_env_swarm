@@ -5000,3 +5000,57 @@ PRE-UNBLIND RULINGS). One look, frozen tree `41b11cd`, `UNBLIND_LOG.txt`.
 - **Still owed before any branch text is final:** the Γ(t) budget-robustness
   suffix, the High readout, the eval floor and the (viii) cross-card check —
   the post-unblind GPU stage.
+
+
+## SECONDARY INSTRUMENT BUILT BEFORE THE SWEEP IS READ — six interpretations OWED ratification (builder, 2026-09-26)
+
+`che/scripts/p6_secondary.py` + `che/tests/test_p6_secondary.py` (17 tests,
+synthetic only). Post-unblind for Γ, **pre-look for the sweep**: no sweep or
+identification-arm eval, and no secondary training log, has been read. It
+implements the registered secondary family (design v2 §7: isotonic dose
+trend, bootstrap knee CI with the automatic UNDERPOWERED flag, the c = 0.4
+identification-arm confound bound, mediation with its void rule, floor
+grades), all **non-verdict-bearing**. Seeds 1–12 are read only from the
+single-card re-card and 13–20 from `g1_grid`; g1_grid's superseded PRO 6000
+seeds 1–12 are never opened (asserted by test). Every analysed secondary run
+is on the confirmatory card (unit 1). Bootstrap B = 2000, seed 20260926.
+
+The registration names these analyses without specifying them. Each choice
+below is implemented and tested, and is **OWED OWNER RATIFICATION before the
+instrument reads the real sweep**:
+
+- **(S1) Dose trend:** PAVA on the five arm means in the direction of the
+  seed-level OLS slope; that slope and its bootstrap 95 % CI are the trend
+  statistic; the endpoint difference y(0.5) − y(0) is floor-graded on the
+  sweep_p500 floor, ASSUMED COMMON at p = 0 (flagged).
+- **(S2) Knee:** the breakpoint κ ∈ {0.125, 0.25, 0.375} of the best
+  single-hinge fit; bootstrap over seeds within arm; UNDERPOWERED iff the
+  95 % percentile interval contains both 0.125 and 0.375.
+- **(S3) Confound bound:** seed-level OLS y = γ0 + γ_p·p + γ_n·n over all
+  eight arms (n = 1 − 2m + p). The c = 0.5 sweep slope decomposes as
+  γ_p + γ_n; **the bound is the 95 % CI of 0.5·γ_n**, the no-element
+  confound's share of the sweep's endpoint change. Linearity is assumed and
+  checked coarsely (arm-mean residuals in SE units). *Correction to the
+  registered wording:* the two sweeps are **parallel** lines in the simplex
+  (both move mass as (−2, +1, +1) in (single, both, none)), offset by 0.2 in
+  the no-element direction; distinct-and-offset, not non-parallel, is what
+  identifies the plane.
+- **(S4) Mediation:** realized dose = the run's training-log
+  `co_active_per_step` mean over updates 1…1000; first stage = its OLS slope
+  on p over the c = 0.5 sweep; **VOID iff the slope's 95 % CI contains 0**;
+  if not void, only the per-arm table for the figure, no second-stage
+  coefficient.
+- **(S5) NEW — same-card replicate of the inert-share check.**
+  `p6_sweep_c50_p000` and `p6_iso4` carry the **identical** training mixture
+  ({A-only, B-only} × {0.43, 0.70}, 0.25 each), the sweep's trained on
+  unit 1. Γ₄′ = JOINT − sweep_c50_p000 (k 72 vs 20, at z_α, as ruling v) is
+  reported **beside** Γ₄; sweep_c50_p000 − ISO-4 is the cross-card replicate
+  difference (95 %). **Neither may change the registered Γ₄ qualifier**
+  (UNBLIND RESULT entry); a disagreement is reported, not resolved. Proposed
+  after Γ₄ was seen and **before** sweep_c50_p000 was read, and the paper says
+  so.
+- **(S6) Levels:** every secondary interval is a two-sided 95 % interval
+  (nothing here is in the family), except Γ₄′ at z_α for comparability
+  with Γ₄.
+
+No constant, lock, config, threshold or family moves.
