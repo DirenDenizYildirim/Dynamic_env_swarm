@@ -5065,3 +5065,44 @@ Options declined are recorded in the session: a rank trend test or curve-only
 (S1); largest isotonic step or ED50 (S2); the model-free p = 0 pair alone or
 beside (S3); final-half or eval-time co-activity (S4); not adding S5; z_α or
 95 % everywhere (S6).
+
+
+## SECONDARY RESULT — sweep, identification arm, mediation, same-card replicate (recorded, 2026-09-26)
+
+One run of `p6_secondary` on the frozen tree `742c74c`, owner present,
+`secondary/SECONDARY_LOG.txt`. **Non-verdict-bearing throughout**; 95 %
+intervals are not family-corrected and there are many of them.
+
+- **(S5) Same-card replicate — the Γ₄ qualifier replicates on the
+  confirmatory card.** Γ₄′ = JOINT − sweep_c50_p000: survival +0.0013 (z
+  +0.41, null), completion −0.0247 (null). sweep_c50_p000 − ISO-4 (same
+  mixture, other card): survival −0.0015 [−0.0086, +0.0056], completion
+  +0.0121 [−0.0279, +0.0520]. The disclosed cross-card caveat on Γ₄ finds no
+  support.
+- **Survival, confound plane (S3):** γ_n = −0.0237 [−0.0419, −0.0057] (empty
+  training episodes cost survival); γ_p = +0.0326 [+0.0137, +0.0502]
+  (at fixed empty share, moving single- into both-element episodes raises
+  survival — **and per-element exposure with it; the simplex does not
+  separate them**). Bound: the no-element confound's share of the sweep's
+  endpoint change is −0.0119 [−0.0210, −0.0028] — the confound is bounded
+  away from zero, as the identification arm was designed to do. Plane fit
+  residuals ≤ 0.4 SE. γ_n predicts ISO-4 − ISO = +0.0079 at ISO's
+  behavioural empty share 1/3; B̂ observed +0.0098 [+0.0033, +0.0163].
+  γ_p does **not** extrapolate: the plane predicts JOINT − ISO-4 ≈ +0.033 at
+  p = 1, observed Γ₄ −0.0003 and Γ₄′ +0.0013. Reported, not resolved.
+- **Survival, sweep (S1, S2):** monotone nondecreasing (PAVA exact), slope
+  +0.0089 per unit p [−0.0033, +0.0211], endpoint +0.0048
+  [−0.0021, +0.0117] (1.17× floor-basis SE, floor assumed common); knee
+  UNDERPOWERED.
+- **Completion:** nothing resolvable — slope, endpoint, γ_p and γ_n
+  intervals all contain 0; knee UNDERPOWERED.
+- **Mediation (S4): VOID — and structurally so.** Realized training dose is
+  flat, 0.000809–0.000817 per step across p (slope −1.0e−5,
+  [−2.9e−5, +0.9e−5]). Diagnosed after the run, without changing the
+  rule: the invariant-#5 counter (`che/env/env.py:403-404`) counts
+  collapse-seeded ignitions near an alive agent, which **only Coupling A
+  produces and which does not require Coupling B**, so it measures the A
+  marginal the sweep holds fixed — the identification arms read 0.80× the
+  sweep, their 0.4/0.5 A share. **Instruments law:** the registered mediator
+  is blind to co-occurrence in mixed training; "co-active" names what it is
+  in all-on configurations only. Any paper use of the counter states this.
