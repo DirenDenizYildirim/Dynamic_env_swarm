@@ -80,8 +80,8 @@ how badly each one could hurt the submission.
 ## Post-unblind, before writing §9
 
 - [x] Identify the branch from the registered table, apply the falsifier
-      for B (2026-09-26: branch B, 3.855 < 4.433). ⟨Γ(t) reading rule for the
-      suffix still owed — post-unblind GPU stage.⟩
+      for B (2026-09-26: branch B, 3.855 < 4.433); Γ(t) suffix (2026-09-27):
+      "sign unstable over the final half" on both co-primaries.
 - [x] Realized power against the motivating effect band, reported not
       re-engineered (completion 71.6 % at k = 72, 60.2 % at k = 60).
 - [ ] **Branch-B carry-overs into the spine (2026-09-26):** abstract and §9
@@ -93,7 +93,7 @@ how badly each one could hurt the submission.
       counter is co-active only in all-on configurations (SECONDARY RESULT) —
       qualify every use, including tier-1 "rare and bursty" if it was
       measured on mixtures.
-- [ ] `branch_B.md` ⟨slots⟩ filled from the post-unblind stage: Γ(t) suffix
-      (survival and completion), Γ_H, eval floor, cross-card check.
+- [x] `branch_B.md` slots filled from the post-unblind stage (2026-09-27): Γ(t)
+      suffix, Γ_H exclusions, eval floor, cross-card check.
 - [ ] Delete the three unused branch files from the submission tree; keep
       them in the repo.

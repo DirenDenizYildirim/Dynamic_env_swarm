@@ -4,9 +4,10 @@
 survival effect would be read as a *composition* effect; the registered
 inert-share rule (§7 ruling proposal 1, 2026-09-18) now forbids that, and the
 secondary arms say why. Every number below is measured and committed; the
-source of each is listed at the end. `⟨…⟩` marks the three results still on
-the GPU (Γ(t), the High readout, the eval floor) — **the branch-B text is not
-final until they are in**, and the Γ(t) suffix is mandatory.
+source of each is listed at the end. The post-unblind stage is in
+(2026-09-27): **budget-robustness suffix = "sign unstable over the final
+half"** on both co-primaries; High readout null; evals reproduce
+bit-for-bit across cards.
 
 The registered text governs where this file differs from it
 (`phase6_framing_branches.md` §3–§4b; decision log: §7 PROPOSALS RULING,
@@ -24,6 +25,8 @@ PRE-UNBLIND RULINGS, UNBLIND RESULT, SECONDARY RESULT).
 | **Γ₄′ = JOINT − sweep_c50_p000**, same card, k = 72 / 20 | −0.0247, null | **+0.0013, z +0.41, null**; CI [−0.0056, +0.0081] |
 | **B̂ = ISO-4 − ISO** | −0.0046, null | **+0.0098, z +3.39**; 95 % [+0.0041, +0.0155] |
 | fire deaths per episode, JOINT − ISO (secondary) | | −0.118, z −4.59 |
+| **Γ_H** at High, β = 0.70 (out of family, rule vi) | −0.0079, null; X = 0.0340 | +0.0038, null; X = 0.0254 |
+| **Γ(t)** signs, t = 500…1000 (rule iv) | `+ − + + − − − − − − −` → **UNSTABLE** | `+ − − + + + + + + + +` → **UNSTABLE** |
 
 Arm means: completion ISO 0.7772, JOINT 0.7600, ISO-4 0.7726; survival ISO
 0.9158, JOINT 0.9254, ISO-4 0.9256, sweep_c50_p000 0.9241.
@@ -97,8 +100,9 @@ the evidence attributes the cost to exposure share, not to compounding.
 > isolated-training arm without hazard-free episodes matches joint training
 > (difference −0.03 points, replicated on the same hardware), and a
 > secondary dose design attributes the gap to hazard-free training episodes
-> rather than to composition. ⟨The sign of the survival contrast is stable /
-> is not stable over the final half of training.⟩
+> rather than to composition. The contrast's sign is not stable over the
+> final half of training: the survival gap opens only in the last fifth of the
+> budget and is still growing at the matched budget.
 
 Keep the qualifier in the abstract on every revision; it is registered.
 
@@ -124,14 +128,24 @@ Keep the qualifier in the abstract on every revision; it is registered.
 5. **Where the survival gap lives:** fire deaths (JOINT − ISO −0.118 per
    episode, z −4.59, secondary). ⟨Collapse deaths, danger-moment channels, if
    graded — out-of-family channels grade nothing without their own floor.⟩
-6. **Budget robustness** ⟨Γ(t), 11 points, sign rule (iv): stable /
-   UNSTABLE⟩, plus the completion Γ(t): a completion sign drifting toward
-   rejection late in training undercuts the asymmetry and must be reported if
-   seen. ⟨single-card curve and the 144-checkpoint cross-card check beside
-   it⟩.
-7. **The High readout** ⟨Γ_H, read asymmetrically: null → a-fortiori
-   exclusion; positive → "not separable from in-distribution advantage";
-   negative → exploratory⟩.
+6. **Budget robustness — "sign unstable over the final half"** (rule iv, both
+   co-primaries). Survival Γ(t) ≈ 0 through t = 850 (flips at 550, 600), then
+   +0.0056, +0.0083, +0.0096 at 900–1000 — the gap **opens late and is still
+   growing** at T\* (T = 2000 subsample, descriptive: +0.0159). Report the
+   registered verdict first, then the shape; never re-read the rule.
+   **Completion leans negative in the second half** (negative from t = 700;
+   Šidák CI excludes 0 at t = 750 only, −0.0147 [−0.0283, −0.0010],
+   descriptive — no registered test at t ≠ T\*). This is the case the
+   pre-unblind file said must be reported if seen: the asymmetry holds at T\*
+   (falsifier passes), but "completion unaffected" is not the right gloss —
+   "completion unresolved, leaning negative" is. Fig.: Γ(t) both metrics with
+   Šidák bands; the single-card curve has identical signs (ruling viii).
+7. **The High readout — a-fortiori exclusions** (rule vi): Γ_H completion
+   −0.0079 (X = 0.0340), survival +0.0038 (X = 0.0254), Γ_H,4 null on both;
+   Γ_H within rerun noise (0.73× / 0.75× floor-basis sd). "No gap larger than
+   2.5 survival points at High, even where JOINT trained on the evaluated
+   configuration and ISO never saw a composed one." Coupling B is live at
+   High and A is marginal (the mirror of Medium) — state it.
 8. **T = 2000, descriptive only** (4 seeds): Γ(2000) completion +0.0003,
    survival +0.0159 (95 % [−0.0002, +0.0319]); differential training-surface
    slope per 100 updates, survival 0.0072 → 0.0020, completion 0.0025 →
@@ -144,7 +158,10 @@ Keep the qualifier in the abstract on every revision; it is registered.
 10. **Reproducibility and hardware.** Seed dispersion over the rerun floor:
     1.12× / 1.09× completion, 1.25× / 1.19× survival (ISO / JOINT); Γ_survival
     is 5.40× the floor-basis sd(Γ). Card diagnostic on seeds 1–12
-    (descriptive). ⟨Eval floor on the post-unblind card.⟩
+    (descriptive). **Eval reproducibility is exact:** 4 reps × 2 checkpoints
+    bit-identical on the post-unblind card and to the grid's own evals; 280 of
+    288 paired cross-card evals identical, max |Δ| 2.4 × 10⁻⁴ (one agent in
+    one of 512 episodes).
 
 ## 5. Required honesty lines
 
@@ -194,6 +211,8 @@ Keep the qualifier in the abstract on every revision; it is registered.
 | "Γ₄ compares two GPUs." | Γ₄′ repeats it on the confirmatory card: +0.0013, null; the replicate difference is −0.0015, [−0.0086, +0.0056]. |
 | "The death penalty makes survival rewarded." | Yes; the claim is scoped to penalized vs rewarded channels. |
 | "Why not report γ_p as a composition effect?" | It moves per-element exposure with co-occurrence and does not extrapolate to JOINT; reported as a tension. |
+| "The survival gap only appears at the end of training." | Yes, and the registered rule says so: sign unstable over the final half. The claim is at matched compute only; the gap was still opening at T\* (T = 2000 descriptive: +1.6 points). |
+| "Completion goes negative." | It leans negative from t = 700 and rejects descriptively at one point (t = 750); at T\* it is a null that excludes any JOINT gain above 0.66 points. Reported, not explained away. |
 
 ## 8. What NOT to claim
 
@@ -205,6 +224,9 @@ Keep the qualifier in the abstract on every revision; it is registered.
   claim.
 - Not the founding hypothesis. Say flatly that branch A did not occur.
 - Not mediation — the mediator was blind.
+- Not "budget-robust" and not a converged gap — the registered suffix is
+  "sign unstable over the final half".
+- Not "completion is unaffected" — it is unresolved and leans negative.
 
 ## Sources (all committed 2026-09-26)
 
@@ -214,4 +236,7 @@ Keep the qualifier in the abstract on every revision; it is registered.
   — Γ₄, B̂, T = 2000.
 - `che/bench/results/phase6/secondary/secondary.{md,json}` — Γ₄′, replicate,
   sweep, plane, knees, mediation.
-- `docs/decision_log.md` — UNBLIND RESULT and SECONDARY RESULT entries.
+- `che/bench/results/phase6/post_unblind_analysis/post_evalfloor_gamma_t_high.{md,json}`
+  — Γ(t), cross-card check, High readout, eval floor.
+- `docs/decision_log.md` — UNBLIND RESULT, SECONDARY RESULT and POST-UNBLIND
+  STAGE RESULT entries.
