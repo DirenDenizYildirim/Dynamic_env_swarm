@@ -4968,3 +4968,30 @@ z_α, T\* = 1000, the eval draw, `K_SECONDARY = 20`,
 `K_CONFIRMATORY_REALIZED = 72`. The four registered branches stand verbatim;
 A_c is added for a cell the table did not contain. It does not run the
 unblind.
+
+
+## UNBLIND RESULT — BRANCH B; the survival effect DOES NOT SURVIVE the inert-share correction (recorded, 2026-09-26)
+
+A record of registered consequences, not a ruling: every reading below was
+fixed before the look (framing registration §3; §7 ruling proposal 1;
+PRE-UNBLIND RULINGS). One look, frozen tree `41b11cd`, `UNBLIND_LOG.txt`.
+
+- **Branch B at k = 72** (and at the k = 60 prefix): completion Γ −0.0173,
+  z −1.62, null (Šidák CI [−0.0412, +0.0066]); survival Γ +0.0096, z +4.43,
+  REJECT (CI [+0.0047, +0.0144]); falsifier 3.855 < 4.433 passes.
+- **Γ₄ (JOINT − ISO-4) on survival: −0.0003, z −0.09, null**, CI
+  [−0.0068, +0.0063]; **B̂ (ISO-4 − ISO) on survival: +0.0098, z +3.39**.
+  Registered rule (§7 proposal 1): Γ rejects and Γ₄'s CI includes 0 → **the
+  effect does not survive the inert-share correction. This is stated in the
+  abstract-level summary; the branch label stays B; branch-B text may not
+  describe the survival effect as a composition effect without this
+  qualifier.** Completion: Γ and Γ₄ both null → Γ₄ is a second exclusion
+  bound, X₄ = 0.0488.
+- **Disclosed with it:** ISO-4 trained and was evaluated on unit 2, ISO and
+  JOINT on unit 1 (same model; §2 of the 2026-09-26 BOX CHANGE entry). Γ₄ and
+  B̂ are cross-unit contrasts.
+- **T = 2000** (descriptive, UNDERPOWERED): Γ(2000) completion +0.0003,
+  survival +0.0159 (95 % CI [−0.0002, +0.0319]).
+- **Still owed before any branch text is final:** the Γ(t) budget-robustness
+  suffix, the High readout, the eval floor and the (viii) cross-card check —
+  the post-unblind GPU stage.
