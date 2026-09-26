@@ -1,0 +1,16 @@
+train_iso_t2000_s1 1027s
+eval_iso_t2000_s1 15s
+train_joint_t2000_s1 1031s
+eval_joint_t2000_s1 15s
+train_iso_t2000_s2 1027s
+eval_iso_t2000_s2 14s
+train_joint_t2000_s2 1027s
+eval_joint_t2000_s2 15s
+train_iso_t2000_s3 1031s
+eval_iso_t2000_s3 15s
+train_joint_t2000_s3 1030s
+eval_joint_t2000_s3 15s
+train_iso_t2000_s4 1030s
+eval_iso_t2000_s4 14s
+train_joint_t2000_s4 1030s
+eval_joint_t2000_s4 15s

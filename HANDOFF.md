@@ -14,7 +14,7 @@ this file only points at it.
 | Two-card grid, 252 runs | `g1_grid` | secondary seeds 13–20 live; conf seeds 1–12 SUPERSEDED (card diagnostic only) |
 | 5090 floors (ladder BRANCH C) | `g1_floors_5090` | committed `e88e5fd`, 24/24 verified. `floors.json` = the `--floors` input |
 | Secondary re-card, seeds 1–12, 8 arms, 96 runs | `g1_sec_s1_12_5090` | committed `e88e5fd`, **96/96 verified locally** against the box-written `SHA256_CKPT.txt` (the old pull never reached its own verification pass) |
-| ISO-4 (k = 20), T = 2000 (4 seeds × 2 arms) | `g1_iso4_5090`, `g1_t2000_5090` | **RUNNING on unit 2** since 2026-09-26 10:59 UTC, tmux `s7`, ~5.3 h expected (20 × ~530 s + 8 × ~1050 s) |
+| ISO-4 (k = 20), T = 2000 (4 seeds × 2 arms) | `g1_iso4_5090`, `g1_t2000_5090` | **COMPLETE** on unit 2 (2026-09-26, "S7 BLOCKS: exit green"), pulled and verified (20/20, 8/8), committed `968a781` and the T = 2000 commit. Not analysed. |
 
 **Old box (unit 1, `180.189.55.43:13768`) is GONE** — vast.ai rented its GPU
 to someone else after it was stopped. Nothing lived only there.
@@ -27,18 +27,13 @@ Download speed measured 2.6–14.9 MB/s. **Keep this box through the
 post-unblind eval stage** — ISO-4, T = 2000, Γ(t), High readout and the eval
 floor all then run on one unit.
 
-**Uploads to unit 2 (for the post-unblind stage):** `g1_conf_5090` (6.0 GB)
-and `g1_floors_5090` (0.8 GB) archives + `SHA256_CKPT.txt`, rsync over the
-~1 MB/s home uplink, then `sha256sum -c` on the box. If interrupted, re-run
-the same rsync (it resumes with `--partial`), then re-verify on the box.
-
-**Pull the §7 blocks when `s7` exits green:**
-
-    BOX=root@179.255.106.231 PORT=36005 bash che/scripts/pull_box_artifacts.sh \
-      che/bench/results/phase6/g1_iso4_5090
-    # and likewise g1_t2000_5090 — both local dirs are new, so the guard passes
-
-Confirm "N verified locally, 0 FAILED" for each (20 and 8), then commit.
+**Uploads to unit 2: DONE and verified.** `g1_conf_5090` 144/144 and
+`g1_floors_5090` 24/24 are on the box for the post-unblind stage. **Verify
+conf by FILENAME, not with `sha256sum -c SHA256_CKPT.txt`:** 68 of its 144
+lines still carry `g1_grid/` paths (seeds 13–46 were copied from there), so
+`-c` reports "FAILED open or read" on any other machine. Compare the box's
+`sha256sum ckpt_*.tar.zst` against `g1_conf_5090/.remote_sha256.txt`
+(basenames) — that is how the 144/144 was established.
 
 ## Built this session (pre-unblind, synthetic data only)
 
@@ -50,7 +45,7 @@ Confirm "N verified locally, 0 FAILED" for each (20 and 8), then commit.
 
 ## THE UNBLIND — sequence, and what the owner must rule first
 
-1. Wait for `g1_iso4_5090` and `g1_t2000_5090` to be pulled and committed.
+1. ~~Wait for the §7 blocks~~ — DONE 2026-09-26: both pulled, verified, committed.
 2. **Owner ratifies, BEFORE the run, SIX builder interpretations**: (i)–(iii)
    in the 2026-09-23 entry, (iv)–(vi) in the 2026-09-26 entry. Also decides
    the optional §5 of the 2026-09-26 entry (re-evaluate the 144 T\* = 1000
