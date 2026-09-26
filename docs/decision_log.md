@@ -5156,3 +5156,34 @@ Def. 8, the references list), `paper/99_pre_submission_checklist.md`.
 Archival documents (venue reviews, `architecture_decisions_v1.md`,
 `phase6_framing_branches.md`) are not edited; this entry supersedes them
 where they conflict. No constant, lock, config or test moves.
+
+
+## POST-UNBLIND STAGE RESULT — Γ(t) sign UNSTABLE on both co-primaries; High readout null; evals reproduce bit-for-bit (recorded, 2026-09-27)
+
+`p6_post_analysis --sections evalfloor gamma_t high` on the frozen tree
+`c36cf51`, one run, `POST_UNBLIND_LOG.txt`. Readings are the registered ones
+(T\* ruling item 3; §7 proposal 3; PRE-UNBLIND RULINGS iv, vi, viii).
+
+- **Budget-robustness suffix: "— sign unstable over the final half"**, both
+  co-primaries, by rule (iv) (all 11 point estimates must share one sign).
+  Survival signs `+ − − + + + + + + + +`: Γ(t) ≈ 0 through t = 850
+  (+0.0022 … +0.0036, flips at 550 and 600), then +0.0056, +0.0083, +0.0096
+  at 900–1000 (Šidák CI excludes 0 at those 3 points only). Completion signs
+  `+ − + + − − − − − − −`, negative from t = 700; its Šidák CI excludes 0 at
+  **t = 750 only (−0.0147, [−0.0283, −0.0010])**, descriptive — no registered
+  test exists at t ≠ T\*. **Description, not a re-reading:** the survival gap
+  *opens late* in training and is still growing at T = 1000 (the T = 2000
+  subsample, descriptive, reads +0.0159), and the completion trajectory leans
+  negative in the second half; both are reported as registered — "the
+  instability IS the finding" — and branch-B text must state the completion
+  lean, per `paper/branch_B.md` §4 item 6.
+- **High readout, rule (vi): both co-primaries null → a-fortiori
+  EXCLUSIONS.** Γ_H completion −0.0079 (X = 0.0340), survival +0.0038
+  (X = 0.0254); Γ_H,4 null on both. Γ_H is 0.73× / 0.75× the floor-basis
+  sd(Γ) on this card: within rerun noise.
+- **Eval reproducibility, ruling (viii): exact.** Eval floor: 4 reps × 2
+  checkpoints bit-identical on unit 3 **and** bit-identical to the grid's own
+  unit-1 evals. Cross-card at T\*, 144 checkpoints paired: 280 of 288
+  (checkpoint, metric) evals identical; max |Δ| = 2.4e−4 (one agent in one of
+  512 episodes); JOINT − ISO interaction ≤ 1e−5. **Γ(t) mixes cards at
+  t = 1000 at no measurable cost**; the single-card curve has the same signs.
