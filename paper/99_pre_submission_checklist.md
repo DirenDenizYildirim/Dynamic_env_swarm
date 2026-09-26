@@ -75,9 +75,21 @@ how badly each one could hurt the submission.
 
 ## Post-unblind, before writing §9
 
-- [ ] Identify the branch from the registered table, apply the falsifier
-      for B, apply the Γ(t) reading rule for the suffix and for D.
-- [ ] Realized power against the motivating effect band, reported not
-      re-engineered.
+- [x] Identify the branch from the registered table, apply the falsifier
+      for B (2026-09-26: branch B, 3.855 < 4.433). ⟨Γ(t) reading rule for the
+      suffix still owed — post-unblind GPU stage.⟩
+- [x] Realized power against the motivating effect band, reported not
+      re-engineered (completion 71.6 % at k = 72, 60.2 % at k = 60).
+- [ ] **Branch-B carry-overs into the spine (2026-09-26):** abstract and §9
+      say k = 40 — the realized primary is k = 72 (k = 60 prefix beside it);
+      the abstract's "never enters the reward or any cost channel, so survival
+      is learned only through the task return" contradicts the 0.5 death
+      penalty — reword as in branch_B.md §5 item 6; the DBCA sentence belongs
+      to the sweep (ENDPOINT CONFOUND entry); the invariant-#5 "co-active"
+      counter is co-active only in all-on configurations (SECONDARY RESULT) —
+      qualify every use, including tier-1 "rare and bursty" if it was
+      measured on mixtures.
+- [ ] `branch_B.md` ⟨slots⟩ filled from the post-unblind stage: Γ(t) suffix
+      (survival and completion), Γ_H, eval floor, cross-card check.
 - [ ] Delete the three unused branch files from the submission tree; keep
       them in the repo.
