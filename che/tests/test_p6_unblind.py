@@ -136,7 +136,7 @@ def _gam(z: float, k: int = K) -> float:
         (-6.0, 6.0, "D"),  # completion rejects negative
         (6.0, -6.0, "D"),  # survival rejects negative
         (-6.0, -6.0, "D"),
-        (6.0, 1.0, "UNREGISTERED"),  # (+, null) is not in the table -> STOP
+        (6.0, 1.0, "A_c"),  # (+, null): registered pre-unblind, ruling (ii)
     ],
 )
 def test_branch_table(tmp_path, zc, zs, label):
@@ -169,10 +169,17 @@ def test_asymmetry_case_says_so_and_never_says_B(tmp_path):
     assert b["label"] == "C" and "ASYMMETRY NOTE" in b["why"]
 
 
-def test_unregistered_cell_demands_a_ruling(tmp_path):
+def test_completion_only_cell_is_branch_a_c_with_a_survival_exclusion(tmp_path):
+    """Ruling (ii), 2026-09-26: (+, null) is the founding claim on completion;
+    the survival null is quoted as an exclusion with its X, and no asymmetry
+    (falsifier) reading is attached."""
     art = make_artifact(tmp_path / "a", K, {"completion": _gam(4.0)})
-    b = _run(art, tmp_path)["primary"]["branch"]
-    assert b["label"] == "UNREGISTERED" and "owner ruling" in b["why"]
+    r = _run(art, tmp_path)["primary"]
+    b = r["branch"]
+    assert b["label"] == "A_c" and "EXCLUSION" in b["why"]
+    x = r["family"]["survival_rate"]["exclusion_mde80"]
+    assert f"{x:.4f}" in b["why"]
+    assert "UNREGISTERED" not in json.dumps(r)
 
 
 # ------------------------------------------------- primary k and the prefix

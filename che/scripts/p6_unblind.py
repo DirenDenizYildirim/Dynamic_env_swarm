@@ -22,10 +22,11 @@ What it applies, and where each rule was registered:
   INTERVAL    Conditional on the common eval draw (seed 0, 512 episodes):
               training-seed variance only. §4b of the framing registration.
   BRANCHES    A (+,+)  B (null,+ AND falsifier)  C (null,null)  D (− either),
-              `phase6_framing_branches.md` §3, ratified 2026-08-13. "+" and
-              "null" mean rejection / non-rejection in the family; "−" is
-              read the same way — a REJECTION with negative sign. A negative
-              point estimate that does not reject is a null.
+              `phase6_framing_branches.md` §3, ratified 2026-08-13; and
+              A_c (+,null), registered pre-unblind 2026-09-26 (ruling ii).
+              "+" and "null" mean rejection / non-rejection in the family;
+              "−" is read the same way — a REJECTION with negative sign. A
+              negative point estimate that does not reject is a null.
   FALSIFIER   Branch B only if |z_c| + z_α < |z_s|. Registered 2026-08-13.
               If it fails: branch C with an asymmetry note, never B.
   EXCLUSION   A null is quoted as an EXCLUSION, never an absence: X = the
@@ -38,18 +39,17 @@ What it applies, and where each rule was registered:
               retained checkpoints evaluated on a box; this instrument only
               LABELS D and says so.
 
-Builder interpretations that the registered text did not spell out, each
-recorded in `docs/decision_log.md` (2026-09-23) and OWED owner ratification
-before the real run:
+Interpretations the registered text did not spell out, RULED by the owner
+pre-unblind (`docs/decision_log.md`, PRE-UNBLIND RULINGS, 2026-09-26):
 
   (i)   "−" in the branch table = rejection with negative sign (above).
-  (ii)  The cell (completion +, survival null) is NOT in the registered
-        table. The instrument labels it UNREGISTERED and stops; it does not
-        guess a branch.
+  (ii)  The cell (completion +, survival null) was not in the registered
+        table. It is registered as BRANCH A_c: the founding claim on the
+        founding primary (completion), with the survival null quoted as an
+        exclusion. No asymmetry claim, so B's falsifier is not applied.
   (iii) The test statistic is the normal z the frozen plan wrote, not a t.
         At k = 72 the t_{142} critical value differs from z_α in the third
-        decimal; the difference is stated in the report, not silently
-        absorbed either way.
+        decimal; the difference is stated in the report, not applied.
 
 USAGE on the frozen tree, once, with the owner present:
 
@@ -279,11 +279,14 @@ def resolve_branch(c: dict, s: dict) -> dict:
         label, why = "C", "neither co-primary rejects. Quote exclusions, not absences."
     else:
         label, why = (
-            "UNREGISTERED",
+            "A_c",
             (
-                "completion rejects POSITIVE while survival does not. This cell is "
-                "not in the registered branch table (§3). STOP: an owner ruling is "
-                "required before any framing is written. Do not guess a branch."
+                "completion rejects POSITIVE, survival null: the founding claim on "
+                "the founding primary (ruling ii, 2026-09-26). Claim JOINT > ISO on "
+                "task completion at matched compute; quote the survival null as an "
+                f"EXCLUSION, no survival gap larger than X = "
+                f"{s['exclusion_mde80']:.4f}. No asymmetry claim; branch-A honesty "
+                "lines apply."
             ),
         )
     return {"label": label, "why": why, "falsifier": falsifier}

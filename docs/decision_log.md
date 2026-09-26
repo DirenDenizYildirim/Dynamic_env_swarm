@@ -4903,3 +4903,68 @@ checkpoints on unit 3, and Γ₄ at θ\* compares JOINT evaluated on unit 1 with
 ISO-4 evaluated on unit 2. Same model throughout; disclosed in the block
 structure, as §2 above already requires. Unit 3's identity goes in its
 `UNIT.txt` and here when rented.
+
+
+## PRE-UNBLIND RULINGS — the six builder interpretations and two open choices (owner, 2026-09-26)
+
+Transcribed in the session they were issued. **Pre-unblind:** no per-arm or
+cross-arm Phase-6 mean has been computed or viewed; `unblind/` does not exist.
+Each item was put to the owner with its options and consequences stated; the
+owner chose. **None of these may be revisited after the look** — reversing any
+of them post-unblind is outcome selection.
+
+| # | question | RULED |
+|---|---|---|
+| (i) | what "−" means in the branch table | **Rejection with negative sign** (\|z\| > z_α, Γ < 0). A negative estimate that does not reject is a null. Ratified as built. |
+| (ii) | the cell (completion +, survival null), absent from the registered table | **REGISTERED NOW as branch A_c — the founding claim on the founding primary.** See below. Replaces the builder's STOP. |
+| (iii) | test statistic | **Normal z, z_α = 2.2365**, as the frozen plan wrote; the t critical value is printed, not applied. Ratified as built. |
+| (iv) | Γ(t) "sign stable" | **All 11 point estimates, t = 500 … 1000, share one nonzero sign**, per co-primary; t = 1000 is the grid's own eval. Consequence accepted in advance: on a null Γ, chance flips read UNSTABLE. Ratified as built. |
+| (v) | Γ₄ sample and threshold | **JOINT k = 72 vs ISO-4 k = 20**, SE `sqrt(s_J²/72 + s_4²/20)`, "rejects" and "CI includes 0" at z_α = 2.2365. (Γ null, Γ₄ rejects positive) stays UNREGISTERED. Ratified as built. |
+| (vi) | Γ_H reading | **As (i), at z_α = 2.2365.** Ratified as built. |
+| (vii) | primary k | **k = 72 stays primary**; the registered-ladder k = 60 prefix is reported beside it, UNDERPOWERED-flagged. |
+| (viii) | re-evaluate the 144 T\* = 1000 checkpoints on the post-unblind card | **YES.** See below. |
+
+### (ii) Branch A_c — registered now, before the look
+
+**Completion was the founding primary** (the task-performance claim; *Metric
+amendment — RATIFIED EXPLICITLY*, final-five ruling 2); survival was added as
+co-primary for coupling and composition claims. The cell (completion rejects
+positive, survival null) is therefore **the founding claim holding on its
+original metric**, and it is registered as such:
+
+- **Claim:** JOINT outperforms ISO on **task completion** at θ\*, at matched
+  compute (T = 1000), β = 0.49 held out from both arms.
+- **The survival null is quoted as an exclusion**, "no survival gap larger
+  than X", X = the 80 %-power MDE at z_α on the realized sd(Γ_survival) —
+  never as an absence.
+- **No asymmetry claim is made** ("paid in task return, not agents" is NOT
+  claimed): the claim is the completion effect itself, so branch B's
+  falsifier, which exists to license an asymmetry, is not applied.
+- **Every branch-A honesty line applies** (matched compute, conservative
+  measurement, δ inert, rare-event region), as do §4 (budget-robustness
+  suffix from Γ(t)), §4a (Medium siting), §4b (conditional interval), the
+  Γ₄ inert-share qualifier and the proposal-0 disclosure.
+- Options declined, recorded: mirror-of-B with a mirrored falsifier (no prior
+  theory predicts that direction); branch C with an asymmetry note; STOP and
+  rule after the look.
+
+`p6_unblind.py` labels the cell `A_c` instead of `UNREGISTERED`; its tests
+change accordingly. A `paper/branch_A_c.md` is owed only if the cell arrives.
+
+### (viii) The T\* = 1000 re-evaluation on the post-unblind card
+
+`run_p6_post_unblind_evals.sh`'s default `GAMMA_T_STEPS` gains `1000`
+(+144 evals). `p6_post_analysis.py` gains a **paired cross-card comparison**
+of each confirmatory checkpoint's post-card eval against its grid eval (per
+arm and the JOINT − ISO interaction), and the Γ(t) curve evaluated **wholly
+on the post-unblind card**, both **descriptive**. **The registered sign rule
+(iv) stays anchored on the grid's own t = 1000 eval, i.e. the primary Γ**;
+the single-card curve is reported beside it and decides nothing.
+
+### What this entry does NOT do
+
+No constant, lock, threshold or family moves: `METRICS`, `SIDAK_M = 2`,
+z_α, T\* = 1000, the eval draw, `K_SECONDARY = 20`,
+`K_CONFIRMATORY_REALIZED = 72`. The four registered branches stand verbatim;
+A_c is added for a cell the table did not contain. It does not run the
+unblind.

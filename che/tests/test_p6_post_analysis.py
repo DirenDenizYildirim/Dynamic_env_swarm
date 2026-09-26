@@ -132,14 +132,16 @@ def _evalfloor(d: Path, conf: Path, bump: float = 0.0) -> None:
             _eval(d / f"evalfloor_{tag}_rep{r}.json", T_STAR, THETA, means)
 
 
-def _gamma_t(d: Path, gamma_at: dict[int, float]) -> None:
-    """Post evals at t < T*: ISO at 0.5, JOINT at 0.5 + gamma_at[t], both metrics."""
+def _gamma_t(d: Path, gamma_at: dict[int, float], joint_bump_T: float = 0.0) -> None:
+    """Post evals at every retained t INCLUDING T* (ruling viii): ISO at 0.5,
+    JOINT at 0.5 + gamma_at[t], both metrics. `joint_bump_T` shifts only the
+    post-card JOINT evals at T* (a synthetic cross-card difference)."""
     d.mkdir(parents=True, exist_ok=True)
     k = P.K_CONF
     for t in P.GAMMA_T_STEPS:
-        if t == T_STAR:
-            continue
         for arm, mu in (("iso", 0.5), ("joint", 0.5 + gamma_at[t])):
+            if arm == "joint" and t == T_STAR:
+                mu += joint_bump_T
             for i, v in enumerate(_vals(k, mu)):
                 _eval(
                     d / f"eval_{arm}_s{i + 1}_u{t}.json",
@@ -195,7 +197,7 @@ def test_design_mirrors_the_job_scripts():
     assert default(post, "HIGH_CFG") == P.HIGH_CONFIG
     assert default(post, "THETA_STAR") == P.THETA_STAR
     gt = tuple(int(x) for x in default(post, "GAMMA_T_STEPS").split())
-    assert gt + (T_STAR,) == P.GAMMA_T_STEPS  # 1000 is the grid's own eval
+    assert gt == P.GAMMA_T_STEPS  # T* re-evaluated on the post card, ruling (viii)
     assert int(default(s7, "K_T2000")) == P.K_T2000
     assert int(default(s7, "T2000_UPDATES")) == P.T_2000
 
@@ -307,6 +309,57 @@ def test_gamma_t_sign_change_is_the_finding(tmp_path):
     ]["completion"]
     assert not v["stable"] and v["t_disagreeing"] == [750]
     assert "instability IS the finding" in v["reading"]
+
+
+def test_cross_card_identical_when_the_post_card_reproduces_the_grid(tmp_path):
+    conf = _conf(tmp_path / "conf", g_c=0.02, g_s=0.02)
+    ub = _unblind(tmp_path, conf)
+    _evalfloor(tmp_path / "post_evalfloor", conf)
+    _gamma_t(tmp_path / "post_gamma_t", {t: 0.02 for t in P.GAMMA_T_STEPS})
+    g = P.run(["gamma_t"], tmp_path / "out", **_paths(tmp_path, conf, ub))["gamma_t"]
+    cc = g["cross_card_T_star"]["completion"]
+    assert cc["iso"]["n_identical"] == cc["joint"]["n_identical"] == P.K_CONF
+    assert cc["interaction_joint_minus_iso"]["mean"] == 0.0
+    assert cc["single_card_stable"]
+
+
+def test_cross_card_difference_is_paired_and_reported(tmp_path):
+    conf = _conf(tmp_path / "conf", g_c=0.02, g_s=0.02)
+    ub = _unblind(tmp_path, conf)
+    _evalfloor(tmp_path / "post_evalfloor", conf)
+    _gamma_t(
+        tmp_path / "post_gamma_t", {t: 0.02 for t in P.GAMMA_T_STEPS}, joint_bump_T=1e-3
+    )
+    g = P.run(["gamma_t"], tmp_path / "out", **_paths(tmp_path, conf, ub))["gamma_t"]
+    cc = g["cross_card_T_star"]["survival_rate"]
+    assert cc["iso"]["n_identical"] == P.K_CONF and cc["joint"]["n_identical"] == 0
+    assert cc["joint"]["mean_diff"] == pytest.approx(1e-3)
+    assert cc["interaction_joint_minus_iso"]["mean"] == pytest.approx(1e-3)
+    assert cc["gamma_post_card_T_star"]["gamma"] == pytest.approx(0.021)
+
+
+def test_sign_rule_stays_anchored_on_the_grid_eval(tmp_path):
+    """Ruling (viii): the post-card T* eval is reported beside the rule and
+    decides nothing — even when its sign disagrees with the grid's."""
+    conf = _conf(tmp_path / "conf", g_c=0.02, g_s=0.02)
+    ub = _unblind(tmp_path, conf)
+    _evalfloor(tmp_path / "post_evalfloor", conf)
+    gam = {t: 0.02 for t in P.GAMMA_T_STEPS}
+    gam[T_STAR] = -0.01  # the post card's T* disagrees in sign
+    _gamma_t(tmp_path / "post_gamma_t", gam)
+    g = P.run(["gamma_t"], tmp_path / "out", **_paths(tmp_path, conf, ub))["gamma_t"]
+    assert g["verdict"]["completion"]["stable"]  # rule reads the grid's Γ(T*)
+    assert not g["cross_card_T_star"]["completion"]["single_card_stable"]
+
+
+def test_gamma_t_refuses_without_the_t_star_re_eval(tmp_path):
+    conf = _conf(tmp_path / "conf", g_c=0.02, g_s=0.02)
+    ub = _unblind(tmp_path, conf)
+    _evalfloor(tmp_path / "post_evalfloor", conf)
+    _gamma_t(tmp_path / "post_gamma_t", {t: 0.02 for t in P.GAMMA_T_STEPS})
+    (tmp_path / "post_gamma_t" / f"eval_joint_s5_u{T_STAR}.json").unlink()
+    with pytest.raises(SystemExit):
+        P.run(["gamma_t"], tmp_path / "out", **_paths(tmp_path, conf, ub))
 
 
 def test_gamma_t_refuses_a_wrong_step(tmp_path):

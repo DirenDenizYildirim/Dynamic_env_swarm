@@ -5,9 +5,12 @@
 #
 #   GAMMA_T   T* ruling (2026-08-11), item 3: Gamma(t) over the FINAL HALF of
 #             training is REQUIRED robustness evidence. Every confirmatory
-#             checkpoint retained for it (updates 500..950; 1000 is the grid's
-#             own eval) is evaluated at theta* on the common set.
-#             144 runs x 10 steps = 1440 evals.
+#             checkpoint retained for it (updates 500..1000) is evaluated at
+#             theta* on the common set. 1000 is ALSO the grid's own eval: it
+#             is re-evaluated here by pre-unblind ruling (viii), 2026-09-26,
+#             for a single-card curve and a 144-checkpoint cross-card check;
+#             the registered sign rule stays on the grid's eval.
+#             144 runs x 11 steps = 1584 evals.
 #   HIGH      S7 ruling (2026-09-18), proposal 3 as replaced: the T* = 1000
 #             checkpoint of every ISO, JOINT and ISO-4 run, plus the 16 same-
 #             seed floor reps, evaluated once under joint_high.yaml (theta*
@@ -48,7 +51,7 @@ K_CONF=${K_CONF:-72}
 K_ISO4=${K_ISO4:-20}
 N_FLOOR_REPS=${N_FLOOR_REPS:-8}
 T_STAR=${T_STAR:-1000}
-GAMMA_T_STEPS=${GAMMA_T_STEPS:-"500 550 600 650 700 750 800 850 900 950"}
+GAMMA_T_STEPS=${GAMMA_T_STEPS:-"500 550 600 650 700 750 800 850 900 950 1000"}
 EVALFLOOR_REPS=${EVALFLOOR_REPS:-4}
 EVALFLOOR_TAGS=${EVALFLOOR_TAGS:-"iso_s1 joint_s1"}
 N_EVAL=${N_EVAL:-512}

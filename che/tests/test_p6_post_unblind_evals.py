@@ -46,12 +46,12 @@ def test_gamma_t_block_is_the_final_half_on_both_confirmatory_arms(tmp_path):
     r = _run(tmp_path, marker=True, BLOCKS="gamma_t")
     assert r.returncode == 0, r.stderr
     stems = _stems(r)
-    assert len(stems) == 2 * 72 * 10 == 1440
+    assert len(stems) == 2 * 72 * 11 == 1584
     steps = {int(re.search(r"_u(\d+)$", s).group(1)) for s in stems}
-    # updates 500..950; 1000 is the grid's own eval
-    assert steps == set(range(500, 1000, 50))
-    assert sum(s.startswith("eval_iso_s") for s in stems) == 720
-    assert "eval_joint_s72_u950" in stems
+    # updates 500..1000; 1000 re-evaluated on the post card, ruling (viii)
+    assert steps == set(range(500, 1001, 50))
+    assert sum(s.startswith("eval_iso_s") for s in stems) == 792
+    assert "eval_joint_s72_u1000" in stems
 
 
 def test_high_readout_covers_conf_iso4_and_the_floor_reps(tmp_path):
@@ -78,7 +78,7 @@ def test_evalfloor_is_repeated_evals_of_the_same_checkpoint(tmp_path):
 def test_default_is_all_three_blocks(tmp_path):
     r = _run(tmp_path, marker=True)
     assert r.returncode == 0, r.stderr
-    assert "planned: 1628" in r.stdout  # 1440 + 180 + 8
+    assert "planned: 1772" in r.stdout  # 1584 + 180 + 8
 
 
 def test_every_eval_is_declared_and_at_an_explicit_step():

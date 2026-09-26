@@ -15,7 +15,10 @@ Sections, and where each reading rule was registered:
   GAMMA_T    T* ruling (2026-08-11) item 3: "budget-robust iff the sign of Γ
              is stable over the final half of training. If the sign is still
              moving at T, that instability IS the finding." REQUIRED evidence.
-             Refused unless the eval floor is present.
+             Refused unless the eval floor is present. Ruling (viii),
+             2026-09-26: the T* checkpoints are also re-evaluated on the post
+             card, giving a paired cross-card check and a single-card curve —
+             both descriptive; the sign rule stays on the grid's own eval.
   GAMMA4     §7 ruling (2026-09-18) proposal 1: Γ₄ = JOINT − ISO-4 and
              B̂ = ISO-4 − ISO, side by side with Γ on every branch; the
              inert-share qualifier rule; no magnitude threshold on B̂.
@@ -28,9 +31,8 @@ Sections, and where each reading rule was registered:
              differential training-surface slope against the T = 1000
              reference. Enters no branch decision.
 
-Builder interpretations the registered text did not spell out. Like (i)–(iii)
-of the unblind instrument, each is OWED OWNER RATIFICATION BEFORE the unblind
-(decision log, 2026-09-26):
+Interpretations the registered text did not spell out, RULED by the owner
+pre-unblind (`docs/decision_log.md`, PRE-UNBLIND RULINGS, 2026-09-26):
 
   (iv)  Γ(t) "sign stable" = the POINT ESTIMATE of Γ(t) has one nonzero sign
         at all 11 retained points t = 500, 550, …, 1000, per co-primary.
@@ -270,8 +272,22 @@ def sec_gamma_t(conf: Path, gt: Path, evalfloor: dict | None) -> dict:
         for m in FAMILY:
             c = contrast(arms["iso"][m], arms["joint"][m])
             pts[m].append({"t": t, **c})
+    # Ruling (viii): the T* checkpoints re-evaluated on the post card.
+    post_t = {
+        a: load_post(
+            gt, [f"eval_{a}_s{s}_u{T_STAR}" for s in seeds], T_STAR, THETA_STAR
+        )
+        for a in U.CONF_ARMS
+    }
+    grid_t = {a: U.load_arm(conf, a, seeds) for a in U.CONF_ARMS}
+    cross = _cross_card(post_t, grid_t)
     verdict: dict = {}
     for m in FAMILY:
+        single = contrast(post_t["iso"][m], post_t["joint"][m])
+        signs_sc = [p["sign"] for p in pts[m][:-1]] + [single["sign"]]
+        cross[m]["gamma_post_card_T_star"] = single
+        cross[m]["single_card_signs"] = signs_sc
+        cross[m]["single_card_stable"] = signs_sc[-1] != "0" and len(set(signs_sc)) == 1
         signs = [p["sign"] for p in pts[m]]
         ref = signs[-1]
         stable = ref != "0" and all(s == ref for s in signs)
@@ -286,7 +302,40 @@ def sec_gamma_t(conf: Path, gt: Path, evalfloor: dict | None) -> dict:
             else "UNSTABLE: the sign of Γ is still moving over the final half — "
             "that instability IS the finding (T* ruling item 3)",
         }
-    return {"steps": list(GAMMA_T_STEPS), "points": pts, "verdict": verdict}
+    return {
+        "steps": list(GAMMA_T_STEPS),
+        "points": pts,
+        "verdict": verdict,
+        "cross_card_T_star": cross,
+    }
+
+
+def _cross_card(post: dict, grid: dict) -> dict:
+    """Same checkpoint, post card − grid card, PAIRED by seed. Descriptive:
+    it grades nothing (ruling viii). Exact-equality counts first, because two
+    deterministic evals of one checkpoint either match bit for bit or not."""
+    out: dict = {}
+    for m in FAMILY:
+        d = {
+            a: [x - y for x, y in zip(post[a][m], grid[a][m], strict=True)]
+            for a in U.CONF_ARMS
+        }
+        inter = [dj - di for di, dj in zip(d["iso"], d["joint"], strict=True)]
+        n = len(inter)
+        out[m] = {
+            a: {
+                "n_identical": sum(x == 0.0 for x in d[a]),
+                "mean_diff": statistics.mean(d[a]),
+                "se": statistics.stdev(d[a]) / math.sqrt(n),
+                "max_abs_diff": max(abs(x) for x in d[a]),
+            }
+            for a in U.CONF_ARMS
+        }
+        out[m]["interaction_joint_minus_iso"] = {
+            "mean": statistics.mean(inter),
+            "se": statistics.stdev(inter) / math.sqrt(n),
+        }
+    return out
 
 
 def _gamma4_reading(g: dict, g4: dict) -> tuple[str, str]:
@@ -594,8 +643,38 @@ def render(res: dict) -> str:
                 "",
             ]
         L += [
+            "### Cross-card check at T* — post card − grid card, paired by seed "
+            "(ruling viii, descriptive)",
+            "",
+            "| metric | arm | identical | mean Δ (se) | max \\|Δ\\| |",
+            "|---|---|---|---|---|",
+        ]
+        for m in FAMILY:
+            cc = g["cross_card_T_star"][m]
+            for a in U.CONF_ARMS:
+                v = cc[a]
+                L.append(
+                    f"| {m} | {a} | {v['n_identical']}/{K_CONF} | "
+                    f"{v['mean_diff']:+.2e} ({v['se']:.2e}) | "
+                    f"{v['max_abs_diff']:.2e} |"
+                )
+            ix = cc["interaction_joint_minus_iso"]
+            L.append(f"| {m} | JOINT − ISO | | {ix['mean']:+.2e} ({ix['se']:.2e}) | |")
+        L.append("")
+        for m in FAMILY:
+            cc = g["cross_card_T_star"][m]
+            L.append(
+                f"- {m}: single-card curve signs {' '.join(cc['single_card_signs'])}"
+                f" → {'stable' if cc['single_card_stable'] else 'NOT stable'} "
+                f"(descriptive; the rule above reads the grid's own T* eval). "
+                "Γ at T* on the post card: "
+                f"{_f(cc['gamma_post_card_T_star']['gamma'])}."
+            )
+        L += [
+            "",
             "Blind to: t < 1000 is evaluated on the post-unblind card, t = 1000 "
-            "is the grid's own eval — read with the eval floor above.",
+            "is the grid's own eval — read with the eval floor and the cross-card "
+            "check above.",
             "",
         ]
     if "gamma4" in res:
