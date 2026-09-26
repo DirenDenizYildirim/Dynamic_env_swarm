@@ -4901,8 +4901,13 @@ uploaded again. Every post-unblind eval is still **within-unit** (all on
 unit 3); what changes is that the ISO-4 High readout evaluates unit-2-trained
 checkpoints on unit 3, and Γ₄ at θ\* compares JOINT evaluated on unit 1 with
 ISO-4 evaluated on unit 2. Same model throughout; disclosed in the block
-structure, as §2 above already requires. Unit 3's identity goes in its
-`UNIT.txt` and here when rented.
+structure, as §2 above already requires. **Unit 3** (rented the same
+evening, post-unblind): `180.189.55.43:31183`, RTX 5090
+`GPU-c4a5b128-c71b-6397-4510-35f626eecf13`, driver 580.95.05, CUDA 13.0;
+venv 3.12.3 / jax 0.11.0 / CudaDevice; shipped `git archive fef7522`. **Same
+host IP as unit 1** (`:13768`), but unit 1's GPU UUID was never recorded, so
+whether it is the same physical card can be neither asserted nor excluded.
+Post-unblind stage launched 17:54 UTC, 1772 evals, pipelined with the upload.
 
 
 ## PRE-UNBLIND RULINGS — the six builder interpretations and two open choices (owner, 2026-09-26)
