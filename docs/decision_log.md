@@ -4889,3 +4889,17 @@ eval, which is the registered primary Γ.
 No constant, config, lock, threshold or family moves. `METRICS`, `SIDAK_M = 2`,
 T\* = 1000, the eval draw, `K_SECONDARY = 20` and `K_CONFIRMATORY_REALIZED =
 72` are untouched. It does not authorize the unblind run.
+
+### ADDENDUM (2026-09-26, evening) — unit 2 destroyed after the §7 blocks; the post-unblind stage moves to a unit 3
+
+The owner destroyed unit 2 after both §7 blocks were pulled and verified
+(`968a781` ISO-4 20/20, `83ebf95` T = 2000 8/8) — nothing lived only there;
+its copies of the confirmatory and floors archives were uploads from the
+laptop. **Consequence:** the post-unblind stage (Γ(t), High readout, eval
+floor) runs on a **third** RTX 5090 unit, and the 6.8 GB of archives must be
+uploaded again. Every post-unblind eval is still **within-unit** (all on
+unit 3); what changes is that the ISO-4 High readout evaluates unit-2-trained
+checkpoints on unit 3, and Γ₄ at θ\* compares JOINT evaluated on unit 1 with
+ISO-4 evaluated on unit 2. Same model throughout; disclosed in the block
+structure, as §2 above already requires. Unit 3's identity goes in its
+`UNIT.txt` and here when rented.

@@ -19,7 +19,7 @@ this file only points at it.
 **Old box (unit 1, `180.189.55.43:13768`) is GONE** — vast.ai rented its GPU
 to someone else after it was stopped. Nothing lived only there.
 
-**New box (unit 2):** `ssh -p 36005 root@179.255.106.231`, repo `~/che_repo`
+**Unit 2 was DESTROYED by the owner after the §7 pulls (2026-09-26 evening); the post-unblind stage needs a NEW 5090 (unit 3) and a fresh 6.8 GB upload — use six parallel rsyncs, the uplink is per-connection limited (~40 KB/s one stream, ~260 KB/s six).** Former unit 2: `ssh -p 36005 root@179.255.106.231`, repo `~/che_repo`
 (shipped as `git archive e88e5fd`, no `.git`), identity in
 `~/che_repo/UNIT.txt` (RTX 5090 `GPU-cc0a5b55-…`, driver 580.173.02, CUDA
 13.0). Venv verified 3.12.3 / jax 0.11.0 / CudaDevice. 311 GB free.
@@ -27,7 +27,7 @@ Download speed measured 2.6–14.9 MB/s. **Keep this box through the
 post-unblind eval stage** — ISO-4, T = 2000, Γ(t), High readout and the eval
 floor all then run on one unit.
 
-**Uploads to unit 2: DONE and verified.** `g1_conf_5090` 144/144 and
+**Uploads to unit 2 were done and verified — now gone with the box; redo on unit 3.** `g1_conf_5090` 144/144 and
 `g1_floors_5090` 24/24 are on the box for the post-unblind stage. **Verify
 conf by FILENAME, not with `sha256sum -c SHA256_CKPT.txt`:** 68 of its 144
 lines still carry `g1_grid/` paths (seeds 13–46 were copied from there), so
