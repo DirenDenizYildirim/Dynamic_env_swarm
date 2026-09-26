@@ -1,0 +1,14 @@
+stage: post-unblind evals (blocks: gamma_t high evalfloor)
+date_utc: 2026-09-26T17:54:41Z
+git_commit: fef752256cc111fe362b8c0ec07bfb2d82bbb459
+unblind_marker: che/bench/results/phase6/unblind/UNBLIND_LOG.txt (1 look(s) logged)
+gpu: NVIDIA GeForce RTX 5090
+eval: n_episodes=512 seed=0  theta_star=che/configs/theta_star_holdout.yaml  high=che/configs/joint_high.yaml
+counts: planned=1772 done=0 skipped=0 failed=1772
+stage: post-unblind evals (blocks: gamma_t high evalfloor)
+date_utc: 2026-09-26T22:35:34Z
+git_commit: fef752256cc111fe362b8c0ec07bfb2d82bbb459
+unblind_marker: che/bench/results/phase6/unblind/UNBLIND_LOG.txt (1 look(s) logged)
+gpu: NVIDIA GeForce RTX 5090
+eval: n_episodes=512 seed=0  theta_star=che/configs/theta_star_holdout.yaml  high=che/configs/joint_high.yaml
+counts: planned=1772 done=1772 skipped=0 failed=0

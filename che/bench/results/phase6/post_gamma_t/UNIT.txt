@@ -1,0 +1,5 @@
+unit: NVIDIA GeForce RTX 5090, GPU-c4a5b128-c71b-6397-4510-35f626eecf13, 580.95.05
+CUDA Version: 13.0
+host: 180.189.55.43:31183 (vast.ai) -- same host IP as unit 1 (180.189.55.43:13768); unit 1 UUID never recorded
+shipped: fef752256cc111fe362b8c0ec07bfb2d82bbb459 (git archive)
+date_utc: 2026-09-26T17:53:05Z
