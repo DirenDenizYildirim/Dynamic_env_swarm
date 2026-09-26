@@ -69,6 +69,23 @@ lines still carry `g1_grid/` paths (seeds 13–46 were copied from there), so
 5. Archive, then release the box. Correct the `no-element` header line of
    `p6_iso.yaml` (§7 OWED item 5); keep the ten configs otherwise identical.
 
+## Decided 2026-09-26 evening — do not re-propose
+
+- **Unblinded: branch B**, with the registered inert-share qualifier
+  (UNBLIND RESULT entry); the secondary analysis ran (SECONDARY RESULT
+  entry); `paper/branch_B.md` rewritten around both.
+- **Extending ISO-4 from k = 20 to 72 was considered and DECLINED by the
+  owner** (cost/risk). Budget position: **no GPU spend after the post-unblind
+  eval stage** — pull, verify, then DESTROY unit 3 (not stop).
+- No-GPU follow-ups offered, not started: eval-draw sensitivity (two-way
+  bootstrap over seeds × the shared 512 episodes, from the per-episode
+  `eval_*.npz`), a floor-graded mechanism analysis of the per-episode
+  channels, and a pooled ISO-4 + sweep_c50_p000 estimate. All post-hoc,
+  labelled exploratory, built on synthetic data before reading.
+- Citation verification + UED/DR search delegated to a background agent;
+  its output is `paper/related_work_verification.md` — review before any
+  entry reaches a `.bib`.
+
 ## The paper (unchanged since 2026-09-24)
 
 `paper/tex/` — TMLR style + drafted sections, **not yet compiled**
