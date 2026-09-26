@@ -73,9 +73,9 @@ evidence does not support it.
   applies unmodified.
 - The compound question: stressors that co-occur interact causally
   (collapse → fire → smoke → blindness). Does a policy need to *see* them
-  co-occur to survive their co-occurrence? State it as a question with
-  priority holders (Agrawal 2023, Erdem & Üre 2025 `[VERIFY]`); our
-  contribution is the design, named by DBCA (Keysers et al. 2020): atom
+  co-occur to survive their co-occurrence? State it as a question with a
+  priority holder (Gao et al., RSS 2024 — compositional generalization over
+  environmental factors); our contribution is the design, named by DBCA (Keysers et al. 2020): atom
   divergence → 0, compound divergence → max, instantiated in MARL dynamics.
 - Why an instrument first: three of the four registered outcomes of the
   compositional test are not the founding hypothesis, and the paper was
@@ -95,21 +95,36 @@ them, then the neighbours.
 | severity by measured critical point | wildfire simulators (JaxWildfire arXiv:2512.06102 `[READ THE PDF]`) | they parameterize; we calibrate to a measured phase |
 | hazard generates hazard | none found | Coupling A |
 | Beer–Lambert on a POMDP observation kernel | none found | Coupling B |
-| JAX × MARL × hazards | JaxMARL, Multi-Agent Craftax, Assistax, POBAX, BenchMARL | none carry an evolving lethal field |
+| JAX × MARL × hazard survival under a hazard-independent reward | JaxMARL, Multi-Agent Craftax, Assistax (JAX MARL); POBAX (JAX, **single-agent**); BenchMARL (MARL, **TorchRL, not JAX**) | none carry an evolving lethal field |
 
 Neighbours and how they are positioned (rulings 2026-08-05):
 
 - **Hazard in the reward**: Haksar & Schwager 2018 (distributed MADQN under
   fire spread). Def. 2 clause 1 separates us.
-- **Hazard in a cost/constraint channel**: VULCAN `[VERIFY]` is the nearest
-  domain neighbour on the far side of the Def. 2 boundary; safe-RL / CMDP
-  generally.
-- **Compositional generalization in RL**: Agrawal 2023, Erdem & Üre 2025
-  `[VERIFY]` as priority holders on the question; Keysers et al. 2020 for
-  the split methodology; arXiv:2604.26150 `[READ THE PDF]` (single-agent,
-  reward penalizes burning cells; cite as contrast, not as prior).
-- **UED / domain randomization**: **this paragraph is owed and no search
-  has been run.** PLR, ACCEL, PAIRED, and the DR literature ask joint-vs-
+- **Hazard in the reward or a cost channel**: JaxWildfire (arXiv:2512.06102;
+  reward penalizes burning cells) is the foil across the Def. 2 boundary;
+  safe-RL / CMDP generally.
+- **Fire / smoke multi-agent domain neighbour**: VULCAN (Liu & Yan,
+  arXiv:2604.12831, INFOCOM EIN Workshop 2026) — VLM-based cooperative
+  navigation in indoor fire with smoke; not RL, not a CMDP.
+- **Compositional generalization**: Gao et al., RSS 2024 (arXiv:2403.05110)
+  as the priority holder on the question — it matches data-collection
+  *effort*, not active share; Keysers et al. 2020 (DBCA) for the split
+  methodology. `[OWNER READS Gao 2024]`
+- **Simultaneous / mixed perturbations**: Agrawal et al. 2023
+  (arXiv:2310.08746; multiple concurrent environmental uncertainties in MARL,
+  curriculum) and Erdem & Üre 2025 (MAKE 7(4):108; mixed state+action
+  adversarial attacks — reported direction opposite to ours; `[OWNER READS:
+  does it match exposure?]`). Neighbours, not priority holders.
+- **DR theory**: Chen et al., ICLR 2022 (arXiv:2110.03239). `[OWNER READS
+  before claiming Theorem 1 is unsubsumed]`
+- **arXiv:2604.26150**: single-agent; reward is negative operating cost — no
+  burning-cell penalty, no CA fire (verification 2026-09-26). Cite as a
+  contrast only if still relevant after reading. `[READ THE PDF]`
+- **UED / domain randomization**: search run 2026-09-26; a DRAFT paragraph
+  and verified entries are in `paper/related_work_verification.md`
+  (Part 2). Previously: **this paragraph is owed and no search
+  had been run.** PLR, ACCEL, PAIRED, and the DR literature ask joint-vs-
   isolated training-distribution questions routinely. Write this paragraph
   after a real search; a TMLR reviewer will ask.
 - **Communication value**: Pynadath & Tambe 2002 (COM-MTDP: observability
@@ -117,7 +132,7 @@ Neighbours and how they are positioned (rulings 2026-08-05):
   collective-redundancy conjunct. Cite, then refine, in that order.
 - **Multiple stressors / compound events**: ecology and climate literatures
   as supportive analogies for the word "compound", one sentence.
-- **SMART (RA-L 2026) `[VERIFY]`**: cited and pre-empted in Limitations.
+- ~~SMART (RA-L 2026)~~: **REMOVED** — no record found (2026-09-26).
 - **arXiv:2507.10142**: owner reads before submission; the one place a
   subsuming memorization-gap theorem could hide.
 
@@ -314,7 +329,8 @@ makes it awkward is outcome-dependent disclosure.
    paper compares two training distributions on one environment.
 10. **Hazard simplicity**: burn time one step, single ignition, no wind or
     fuel heterogeneity; the fire is a percolation front by construction.
-11. **SMART (RA-L 2026) `[VERIFY]`** pre-empted here.
+11. ~~SMART (RA-L 2026)~~ — removed; nothing to pre-empt until a real record
+    exists (CITATION REPOSITIONING RULING, 2026-09-26).
 
 ## §11 Reproducibility and appendix manifest
 

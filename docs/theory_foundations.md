@@ -81,8 +81,11 @@ The hazard is an **ambient survival stressor** iff:
    (coverage of the fire front, mapping error, suppression progress) —
    Haksar & Schwager–style work and the whole monitoring/estimation
    lineage; and CMDP/safe-RL places it in a constraint or cost channel —
-   **VULCAN is the nearest domain neighbor on the far side of that
-   boundary** and enters related work as such.
+   **JaxWildfire (arXiv:2512.06102), whose reward penalizes burning cells,
+   is the nearest neighbor on the far side of that boundary.** *(Amended
+   2026-09-26, CITATION REPOSITIONING RULING: VULCAN, named here before, is
+   a VLM navigation planner, not a CMDP; it is a fire/smoke domain
+   neighbor.)*
 2. **Non-adversarial:** $T_H$ is a *fixed* stochastic kernel — there is no
    optimizing, learning, or best-responding component in the environment. This
    distinguishes the setting from robust/minimax MARL and pursuit-evasion.
@@ -544,9 +547,12 @@ active, at held-out severity levels). Define:
 **The locked hypothesis, restated:** $\Gamma(\theta^*) > 0$, with primary
 metric task completion rate. **[EMPIRICAL — this is Phase 7's job.]**
 
-> **Positioning (2026-08-05, decision log).** The *question* has priority
-> holders (Agrawal 2023; Erdem & Üre 2025 — both cited); the *design* is
-> ours, and **Keysers et al.'s DBCA gives it a name**: matched per-element
+> **Positioning (2026-08-05, decision log; priority holders corrected
+> 2026-09-26, CITATION REPOSITIONING RULING).** The *question* has a priority
+> holder — Gao et al. (RSS 2024) on compositional generalization over
+> environmental factors (Agrawal 2023 and Erdem & Üre 2025, named here before,
+> concern simultaneous / adversarial perturbations and are neighbours, not
+> priority holders); the *design* is ours, and **Keysers et al.'s DBCA gives it a name**: matched per-element
 > marginals = atom divergence → 0, varied co-occurrence = compound
 > divergence → max — instantiated in MARL *dynamics* for the first time.
 > This is the accepted compositional-split methodology, applied where it
@@ -698,13 +704,21 @@ calibration measurements.
   Comprehensive Method on Realistic Data*, ICLR — DBCA; names our split
   design (atom divergence → 0, compound divergence → max; Def. 8 note).
 
-Positioning citations ruled 2026-08-05 (decision log), **bibliographic
-details owed — verify at citation time, never reconstruct from memory**:
+Positioning citations, ruled 2026-08-05 and **corrected 2026-09-26**
+(CITATION REPOSITIONING RULING; records in
+`paper/related_work_verification.md`):
 
-- VULCAN — nearest domain neighbor on the far side of the Def. 2 boundary
-  (hazard in a cost/constraint channel); enters related work as such.
-- Agrawal (2023); Erdem & Üre (2025) — priority holders on the
-  compositional-generalization-in-RL question (C4); both cited.
-- SMART (RA-L 2026) — cited and pre-empted in limitations.
-- arXiv:2507.10142 — owner reads before submission; the one place a
-  subsuming memorization-gap theorem could hide.
+- JaxWildfire, arXiv:2512.06102 — the foil across the Def. 2 boundary
+  (burning-cell penalty in the reward).
+- Liu & Yan, *VULCAN*, arXiv:2604.12831 (INFOCOM EIN Workshop 2026) — VLM
+  multi-agent navigation in indoor fire; a domain neighbor, not a CMDP.
+- Gao, Xie, Xiao, Finn & Sadigh, RSS 2024, arXiv:2403.05110 — priority on
+  compositional generalization over environmental factors.
+- Agrawal, Aralikatti, Sun & Huang, arXiv:2310.08746 (2023) — simultaneous
+  environmental uncertainties in MARL; Erdem & Üre, MAKE 7(4):108 (2025),
+  doi:10.3390/make7040108 — mixed adversarial attacks, a contrast. Neighbours.
+- Chen et al., ICLR 2022, arXiv:2110.03239 — DR theory; read before claiming
+  Theorem 1 is unsubsumed.
+- ~~SMART (RA-L 2026)~~ — REMOVED; no record found.
+- arXiv:2507.10142 — a survey per its abstract; owner skims before
+  submission.

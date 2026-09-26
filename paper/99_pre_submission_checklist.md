@@ -42,16 +42,20 @@ how badly each one could hurt the submission.
 
 ## Owed before submission, independent of the grid
 
-- [ ] **Bibliography verified by hand.** Every `[VERIFY]` in the spine:
-      VULCAN, Agrawal 2023, Erdem & Üre 2025, SMART (RA-L 2026). Relays
-      have twice named documents that do not exist. A fabricated citation
-      is a desk reject.
+- [x] **Relayed citations resolved** (2026-09-26, abstract-level, four
+      identities re-checked independently): VULCAN, Agrawal 2023, Erdem & Üre
+      2025 repositioned; SMART removed (CITATION REPOSITIONING RULING).
+- [ ] **Still owed by hand:** read Gao et al. RSS 2024, Chen et al. ICLR
+      2022, and Erdem & Üre 2025 in full (does it match exposure?); build the
+      `.bib` only from the BibTeX in `paper/related_work_verification.md`,
+      never from memory.
 - [ ] Read the JaxWildfire PDF (arXiv:2512.06102) and arXiv:2604.26150
       directly; the related-work rows currently rest on automated
       summaries.
 - [ ] Read arXiv:2507.10142 for a subsuming memorization-gap theorem.
-- [ ] **Write the UED / domain-randomization related-work paragraph after
-      a real search.** No search has been run. PLR, ACCEL, PAIRED, DR.
+- [ ] **Write the UED / domain-randomization related-work paragraph** from
+      the DRAFT in `paper/related_work_verification.md` Part 2 (search run
+      2026-09-26; no scoop found).
 - [ ] IEEE Xplore query (needs authenticated access).
 - [ ] Ratify the word "ambient" (pending since 2026-08-05).
 - [ ] Obtain TMLR's actual time-to-decision from published statistics or

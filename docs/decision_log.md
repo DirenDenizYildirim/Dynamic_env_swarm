@@ -5106,3 +5106,53 @@ intervals are not family-corrected and there are many of them.
   sweep, their 0.4/0.5 A share. **Instruments law:** the registered mediator
   is blind to co-occurrence in mixed training; "co-active" names what it is
   in all-on configurations only. Any paper use of the counter states this.
+
+
+## CITATION REPOSITIONING RULING — three relayed citations corrected, SMART removed (owner, 2026-09-26)
+
+Transcribed in the session it was issued. Grounds: the verification in
+`paper/related_work_verification.md` (`667f01b`), abstract-level, with the
+four consequential identities re-checked independently this session against
+arXiv / Crossref. The 2026-08-05 positioning rulings placed these works on
+premises the records do not support; this entry **supersedes those
+positionings** (not the Def. 2 strengthening, which stands on its own).
+
+1. **VULCAN** is Liu & Yan, *VULCAN: Vision-Language-Model Enhanced
+   Multi-Agent Cooperative Navigation for Indoor Fire-Disaster Response*,
+   INFOCOM EIN Workshop 2026, arXiv:2604.12831 — a VLM planner, **not RL and
+   not CMDP/safe-RL**. It enters related work as a **fire/smoke multi-agent
+   domain neighbour**. **JaxWildfire (arXiv:2512.06102) is the foil across
+   the Def. 2 boundary** (its reward penalizes burning cells), as the
+   2026-08-13 no-scoop entry already proposed.
+2. **Agrawal 2023** (identity inferred from the relayed name) is Agrawal,
+   Aralikatti, Sun & Huang, *Robustness to Multi-Modal Environment
+   Uncertainty in MARL using Curriculum Learning*, arXiv:2310.08746 (NeurIPS
+   2023 MASEC workshop per the verification). **Erdem & Üre 2025** is
+   *Learning to Balance Mixed Adversarial Attacks for Robust Reinforcement
+   Learning*, MAKE 7(4):108, doi:10.3390/make7040108. Neither is a
+   compositional-generalization priority holder. They are repositioned as
+   **neighbours on simultaneous / mixed perturbations**: Agrawal on multiple
+   concurrent environmental uncertainties in MARL; Erdem & Üre as an
+   **adversarial contrast** whose reported direction (single-type training
+   stays vulnerable to mixed attacks) is opposite to ours — whether its arms
+   match exposure is **owed a full read by the owner** before the paper
+   characterizes it.
+3. **Priority on the compositional question** goes to **Gao, Xie, Xiao,
+   Finn & Sadigh, RSS 2024** (arXiv:2403.05110; compositional generalization
+   over environmental factors, matched collection effort rather than active
+   share) and to **Keysers et al. 2020** (DBCA) for the split methodology.
+   **Chen et al., ICLR 2022** (arXiv:2110.03239, DR sim-to-real theory) is
+   owed a read before the paper claims Theorem 1 is unsubsumed.
+4. **SMART (RA-L 2026) is REMOVED.** Not found under the relayed
+   description; it is not cited and not pre-empted until a real record
+   exists.
+5. **Neighbour corrections, same source:** POBAX is single-agent; BenchMARL
+   is TorchRL-based, not JAX; arXiv:2604.26150's reward is negative operating
+   cost with no burning-cell penalty and no CA fire.
+
+What this entry changes: `paper/00_common_spine.md` §1–§2 and §10 item 11,
+`docs/theory_foundations.md` (the positioning note by Def. 2, the note beside
+Def. 8, the references list), `paper/99_pre_submission_checklist.md`.
+Archival documents (venue reviews, `architecture_decisions_v1.md`,
+`phase6_framing_branches.md`) are not edited; this entry supersedes them
+where they conflict. No constant, lock, config or test moves.
