@@ -26,13 +26,15 @@
   OpenReview. The venue pair (TMLR, then DMLR) is unchanged. Addendum, same
   day: author kit + Docker ALLOWED (the owner runs the download and the
   install; the classifier refuses the download from the session), and
-  `paper/tex/` FROZEN as the DMLR fallback. **Docker waits for the owner's
-  full `pacman -Syu`** (planned for the evening of 2026-09-27); after it, a
-  plain `sudo pacman -S docker` works. (Before it, the mirrors 404 on the
-  versions the stale sync DB expects; the Arch Linux Archive route is only
-  needed if the upgrade is postponed again.) Still owed by the builder: read
-  the kit in full, check `render_episode.py` on Phase-6 checkpoints, write a
-  port plan.
+  `paper/tex/` FROZEN as the DMLR fallback. **The scaffolding moves to a
+  Claude Code web session** (decision log, *SCAFFOLDING SITE*, 2026-09-27).
+  Its container has Docker, and its default network reaches GitHub, PyPI
+  and Docker Hub. The session follows `beyond_pdf_scaffold_prompt.md`
+  (kit notes, skeleton, bib, preview) and pushes a branch for the owner to
+  review. The local `pacman -Syu` + Docker route is now only the fallback.
+  **GIFs of trained policies stay a laptop job:** the checkpoints are
+  gitignored and not on GitHub. Still owed by the builder, locally: check
+  `render_episode.py` on Phase-6 checkpoints, then render the GIFs.
 - **Backup, in progress.** All Phase-6 archives were re-verified against
   their committed hashes on 2026-09-27 (`phase6_report.md` §3). A second
   copy was built that day at `~/che_backup_2026-09-27/`:
@@ -81,7 +83,10 @@
      β̂_c's R_L logistic centres.
    - **O-3 (builder):** re-measure the supplement size with `git archive`.
    - **O-4 (owner):** confirm TMLR's 100 MB limit on the venue page.
-4. **`paper/tex/` is FROZEN** as the DMLR-fallback source (addendum,
+4. **Beyond PDF scaffolding runs in a Claude Code web session** following
+   `beyond_pdf_scaffold_prompt.md` (S0–S5). If a pushed `paper/beyond_pdf/`
+   branch exists, review it before starting new paper work.
+   **`paper/tex/` is FROZEN** as the DMLR-fallback source (addendum,
    2026-09-27). It does not compile (`main.tex` inputs sections 02, 04–07 and
    `references.bib`, none of which exist); do not develop it.
 5. **Builder item still owed from the §7 ruling (2026-09-18):** item 2's

@@ -5359,3 +5359,50 @@ the substance of invariant 1 (the reward still reads no hazard, smoke or
 structure), the JaxWildfire/VULCAN positioning, and any registration or
 branch reading. `paper/branch_B.md` §5 item 6 already scopes the asymmetry
 as a penalized channel against a rewarded one; it stands.
+
+
+## SCAFFOLDING SITE — the Beyond PDF scaffolding runs in a Claude Code web session, not on the laptop (owner, 2026-09-27)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28).
+Amends the *mechanics* of the SUBMISSION FORMAT RULING addendum (same day),
+not its scope.
+
+### THE RULING
+
+> The first scaffolding of the TMLR Beyond PDF submission (downloading the
+> author kit, and its preview if the container can run it) is done in a
+> **Claude Code web session** working from the GitHub repository, instead
+> of on the owner's laptop after a full `pacman -Syu` and a local Docker
+> install.
+
+Owner's ground: the web container can download the kit freely, which this
+laptop session's permission classifier refuses.
+
+### What carries over unchanged from the addendum
+
+- The kit is **read in full before any of its files enter the tree**.
+- Kit and preview tooling are **paper tooling only**: no `che/` dependency,
+  no change to `pyproject.toml` or `uv.lock`, and the `CLAUDE.md` stack is
+  unchanged.
+- `paper/tex/` stays FROZEN as the DMLR-fallback source.
+- The four format constraints of the SUBMISSION FORMAT RULING (strict
+  double-blind; animations illustrate, never grade; interactive figures
+  obey the static-figure rules; the browser-printed PDF stands alone).
+- Every number enters `submission.md` with its `paper/numbers_ledger.md`
+  row ID.
+
+### Facts that follow, recorded 2026-09-27
+
+- The web session sees **only what is pushed**. The checkpoint archives
+  (`che/bench/results/phase{5,6}/**/*.tar.zst`, ~44 MB each) are gitignored
+  by the artifact-persistence layout and exist only on the laptop and its
+  backup. **So the web session cannot render GIFs of trained Phase-6
+  policies.** GIF slots are left marked. The GIFs are rendered on the
+  laptop (`che/scripts/render_episode.py`, CPU, no Docker), once the
+  owed check of that script on Phase-6 checkpoints is done, and then
+  committed.
+- The local `pacman -Syu` + Docker route is no longer on the critical path.
+  It stays available as the fallback if the web container cannot run the
+  kit's preview.
+
+No constant, lock, config, test, registration or branch reading changes.
