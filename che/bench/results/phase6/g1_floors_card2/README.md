@@ -26,8 +26,10 @@ holds
 - **`ckpt_iso_rep2.tar.zst` is truncated** (14.6 MB against ~44.8 MB for
   its siblings; `zstd -t` reports a premature end). Its eval exists because
   the harness evaluated the raw checkpoint directory before the archive was
-  written. The other eleven archives were **not** re-verified against
-  `SHA256_CKPT.txt` when this README was written.
+  written. **Correction (2026-09-27):** the other eleven archives *cannot*
+  be verified: `SHA256_CKPT.txt` holds a single line, for `ckpt_iso_rep1`
+  (written 21:20, the minute rep1 finished, and never appended to). Rep1
+  matches it; the other eleven have no recorded hash at all.
 - `SHA256_CKPT.txt` names this directory's path on the box
   (`che/bench/results/phase6/g1_floors_card2/`); the files were pulled to a
   local staging directory `_box_pull/` and relocated here on 2026-09-08 to

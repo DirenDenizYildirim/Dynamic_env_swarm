@@ -153,6 +153,22 @@ def test_endpoints_are_the_registered_contrast():
     assert all(c.delta > 0 for c in _cfg("p6_joint").mixture.components)
 
 
+@pytest.mark.parametrize("name", NAMES)
+def test_header_states_the_behavioural_no_element_share(name):
+    """§7 proposal 0 (2026-09-18): delta is certified inert, so ISO's
+    delta-only third is behaviourally empty and its nominal `no-element
+    0.0000` is false behaviourally. The header must say so wherever the two
+    shares differ — and ONLY there, so no other generated file changes."""
+    comps = _cfg(name).mixture.components
+    tot = sum(c.weight for c in comps)
+    inert = sum(c.weight for c in comps if c.kappa_A == 0 and c.kappa_B == 0) / tot
+    header = (REPO_ROOT / "che" / "configs" / f"{name}.yaml").read_text()
+    stated = "# Behaviourally no-element" in header
+    assert stated == (inert != pytest.approx(_marginals(name)["none"])), name
+    if stated:
+        assert f"# Behaviourally no-element {inert:.4f}" in header
+
+
 # ------------------------------------------------ realized draw, end to end
 
 

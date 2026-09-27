@@ -82,29 +82,54 @@ structure are theorems' hypotheses.
 
 ## Repository layout
 
-Refreshed against the tree 2026-07-31. **Keep it that way**: the
-phase-close checklist requires re-reading this block against the actual
-tree, because a new session treats it as authoritative before it has read
-any code. It previously omitted `che/calibration/` and `che/eval/`
-entirely — about a third of the codebase.
+Refreshed against the tree 2026-09-27 (Phase-6 close; previously
+2026-07-31). **Keep it that way**: the phase-close checklist requires
+re-reading this block against the actual tree, because a new session treats
+it as authoritative before it has read any code. It has omitted
+`che/calibration/` and `che/eval/` (to 2026-07-31) and `paper/` (to
+2026-09-27) — whole directories each time.
 
 ```
 CLAUDE.md
 HANDOFF.md                        # session state for the next model
+README.md, LICENSE
 docs/
   theory_foundations.md           # formal spec — the source of truth
   locks.yaml                      # MACHINE-READABLE registry of every locked
                                   #   constant; asserted by tests/test_locks.py
   decision_log.md                 # rulings, in the order they were issued
   architecture_decisions_v1.md    # pre-Phase-0 architecture record
+  venue_review_2026-08-{16,24}.md # venue reviews (NOT rulings; the log is)
 *_lock.md                         # per-axis lock records at repo root:
                                   #   severity_, coupling_a_, kappa_b_, comms_
+phase6_design_v2.md               # REGISTERED Phase-6 design (v1 archival)
+phase6_framing_branches.md        # REGISTERED outcome branches + falsifiers
+phase6_redteam_*.md, phase6_framing_allocation_ruling.txt  # Phase-6 record
+phase*_prompt.md, *_prompt.md     # archival phase prompts
+chaos_robotics_research_plan.md   # follow-up plan (most of it dropped
+                                  #   2026-09-09; see paper/future_work_*)
+paper/                            # the TMLR submission
+  00_common_spine.md              # branch-independent draft (~80 % of paper)
+  branch_{A,B,C,D}.md             # pre-registered framings; B LANDED
+                                  #   (2026-09-26) and is filled; A/C/D stay
+                                  #   in the repo, out of the submission
+  99_pre_submission_checklist.md  # everything owed before submission
+  related_work_verification.md    # citation audit + verified BibTeX — the
+                                  #   ONLY source a .bib entry may come from
+  future_work_robotics.md         # superseded in part (Expendable_swarm repo)
+  tex/                            # LaTeX draft, FROZEN as the DMLR fallback;
+                                  #   the TMLR submission is Beyond PDF
+                                  #   (Markdown/HTML, ruled 2026-09-27)
+phase2_results/                   # Phase-2 calibration artifacts (npz, figs)
+m06/, ext/, *_console.log         # gitignored: raw M6.0 spike ckpts (archived
+                                  #   as phase6/m60/m06_spike_ckpt.tar.zst), logs
 che/
   env/
     types.py        # chex.dataclass state containers (EnvState incl. rho)
     config.py       # frozen dataclasses; theta=(beta,kappa_A,kappa_B,delta)
                     #   + sub-params (sigma_s, eta, iota, collapse params,
-                    #   seeding radius, r_comm)
+                    #   seeding radius, r_comm); per-env traced theta +
+                    #   training mixtures (M6.0)
     hazard.py       # CA fire kernel (Def. 3) + smoke field (Def. 6)
     structure.py    # collapse dynamics + Coupling A impulse (Def. 5)
     observation.py  # egocentric crops + Beer–Lambert attenuation (Coupling B)
@@ -132,21 +157,32 @@ che/
     throughput.py   # Phase 0 gate benchmark (env-only; states keep-alive set)
     memprobe.py     # compile-time memory probe (M5.1 arena ladder)
     rowb_probe.py   # M5.1j row-B diagnostic
-    results/        # phase{0..5} reports, metrics, provenance (large; most
-                    #   checkpoints + renders are gitignored)
-  tests/            # 35 files; theory tests are ground truth (invariant #4)
+    results/        # phase{0..6} reports, metrics, provenance (large; every
+                    #   ckpt_*.tar.zst is gitignored, hashes are committed).
+                    #   phase6/: phase6_report.md is the INDEX; by_card/
+                    #   maps each artifact to the GPU that made it;
+                    #   g1_conf_5090 = the confirmatory artifact (k = 72);
+                    #   unblind/, secondary/, post_unblind_analysis/ = the
+                    #   one-look analysis outputs and their LOG files
+  tests/            # 40 test_*.py; theory tests are ground truth (inv. #4)
     golden/         # committed pre-refactor trajectory digests (M6.0a); the
                     #   cross-tree bitwise baseline for the traced-theta spike
   configs/          # severity_*, joint_*, theta_star_holdout, p6_* (Phase-6
-                    #   protocols, GENERATED) + gate_pop12.yaml are
+                    #   protocols incl. p6_iso4 + *_t2000, GENERATED by
+                    #   scripts/make_phase6_configs.py) + gate_pop12.yaml are
                     #   live; debug.yaml is the CPU fixture; reference.yaml,
                     #   m06_probe.yaml, phase1_accept.yaml are ARCHIVAL
                     #   (pre-Phase-2 placeholder theta) — see docs/locks.yaml
   scripts/          # run_*.sh GPU job scripts + plotting/report .py.
-                    #   run_p6_grid.sh is the Phase-6 grid (G1.3): 240 runs,
-                    #   resumable via lib_run_manifest.sh, layout asserted by
-                    #   tests/test_p6_grid.py. It computes NO cross-arm
-                    #   quantity — unblinding is a separate human-gated step.
+                    #   run_p6_grid.sh is the Phase-6 grid (G1.3): 252 runs
+                    #   as run (K_CONF=46), resumable via lib_run_manifest.sh,
+                    #   layout asserted by tests/test_p6_grid.py. It computes
+                    #   NO cross-arm quantity. The one-look instruments, each
+                    #   refusing to run out of order: p6_unblind.py (Γ,
+                    #   branch), p6_post_analysis.py (Γ₄, Γ(t), High, T=2000,
+                    #   eval floor), p6_secondary.py (sweep, plane, S5).
+                    #   run_p6_s7_blocks.sh / run_p6_post_unblind_evals.sh
+                    #   are the ISO-4 + T=2000 and post-unblind eval jobs.
 ```
 
 ## Coding conventions

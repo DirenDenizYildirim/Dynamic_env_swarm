@@ -16,13 +16,23 @@ that makes the grid citable. It stays whole.
 
 ## The map
 
-### RTX 5090 — `rtx5090/`
+### RTX 5090 — `rtx5090/` — three rented UNITS of the same model
 
-| directory | what | status |
+Updated 2026-09-27 at the Phase-6 close; every row is pulled and
+hash-verified locally. Unit identities: unit 1 `180.189.55.43:13768` (UUID
+never recorded; gone — vast.ai re-rented it); unit 2
+`GPU-cc0a5b55-…` (decision log, *BOX CHANGE* entry §2; destroyed by the owner
+2026-09-26); unit 3 `GPU-c4a5b128-…` (`post_gamma_t/UNIT.txt`; SSH refused
+2026-09-27, owner to confirm it is destroyed rather than stopped).
+
+| directory | unit | what |
 |---|---|---|
-| `g1_floors_5090` | G1.2-protocol floors on the 5090, 24 runs. Produced ladder **BRANCH C** (`k_req` completion 72) | on the box, not yet pulled |
-| `g1_conf_5090` | **Confirmatory at k = 72**, one stamp, all 72 seeds on the 5090. Seeded with conf seeds 13–46 copied from `g1_grid`, then runs seeds 1–12 and 47–72 | running |
-| *(secondary re-card)* | seeds 1–12, the 8 secondary arms | pending |
+| `g1_floors_5090` | 1 | G1.2-protocol floors, 24 runs. Ladder **BRANCH C** (`k_req` completion 72) |
+| `g1_conf_5090` | 1 | **Confirmatory at k = 72**, one stamp, all 72 seeds on unit 1 (seeds 13–46 copied from `g1_grid`) |
+| `g1_sec_s1_12_5090` | 1 | secondary re-card, seeds 1–12, the 8 secondary arms (96 runs) |
+| `g1_iso4_5090` | 2 | ISO-4 sensitivity arm, k = 20 (§7 proposal 1) |
+| `g1_t2000_5090` | 2 | T = 2000 subsample, 4 seeds × ISO/JOINT (descriptive) |
+| `post_gamma_t`, `post_high`, `post_evalfloor` | 3 | post-unblind evals only (no training): Γ(t), High readout, eval floor |
 
 ### RTX PRO 6000 — `pro6000/`
 
@@ -47,7 +57,7 @@ that makes the grid citable. It stays whole.
 **One card per seed throughout — no seed is split across cards.** That is the
 property the analysis depends on.
 
-After the single-card conversion completes, `g1_grid`'s **confirmatory** seeds
+The single-card conversion is complete: `g1_grid`'s **confirmatory** seeds
 1–12 are **superseded** by `g1_conf_5090` and must not be used in Γ. Its
 secondary seeds 13–20 remain live.
 
