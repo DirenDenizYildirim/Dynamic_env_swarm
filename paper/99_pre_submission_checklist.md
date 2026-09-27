@@ -54,7 +54,8 @@ how badly each one could hurt the submission.
 - [ ] **Still owed by hand:** read Gao et al. RSS 2024, Chen et al. ICLR
       2022, and Erdem & Üre 2025 in full (does it match exposure?); build the
       `.bib` only from the BibTeX in `paper/related_work_verification.md`,
-      never from memory.
+      never from memory. (`.bib` built 2026-09-27 on the scaffold branch,
+      verbatim, owner-read entries `%`-flagged; the reads are still owed.)
 - [ ] Read the JaxWildfire PDF (arXiv:2512.06102) and arXiv:2604.26150
       directly; the related-work rows currently rest on automated
       summaries.
@@ -102,10 +103,26 @@ how badly each one could hurt the submission.
 - [x] Owner: `paper/tex/` FROZEN as the DMLR-fallback source (addendum).
 - [x] **DONE 2026-09-27:** `render_episode.py` checked on Phase-6 checkpoints (works unchanged; first renders in `paper/renders/2026-09-27/`). Was: (last touched
       2026-07-30, before the traced-theta refactor).
+- [x] **Scaffold built, 2026-09-27** (web session, branch
+      `claude/cool-cori-dg8c4u`, **not merged**): kit read in full and
+      noted in `paper/beyond_pdf/KIT_NOTES.md` (no kit file enters the
+      tree); `submission.md` skeleton with the abstract verbatim and ledger
+      IDs; figure slots 1–10; GIF slots; `submission.bib` = the 37 verified
+      entries, verbatim.
+- [ ] **Preview the skeleton with the kit.** S4 FAILED in the web container
+      (no Docker daemon; starting it refused by the session's permission
+      classifier). Routes: `KIT_NOTES.md` §S4.
+- [ ] Owner rulings the scaffold raised: `description` field, title,
+      ISO/JOINT GIFs shown or not, bib fields that render raw LaTeX,
+      rubygems.org + Debian mirrors for the preview (`HANDOFF.md` item 4).
 - [ ] `authors` anonymous in `submission.md`; every interactive figure
       self-contained (no author-linked URL, font or data source).
+      (Authors: Anonymous in the skeleton, 2026-09-27. Interactive
+      figures: none yet.)
 - [ ] Every GIF has a static companion or a caption that carries it, so the
-      browser-printed PDF stands alone.
+      browser-printed PDF stands alone. (The one GIF placed so far, the
+      random-policy episode in §3, has its static companion beside it; the
+      ISO and JOINT companions are in `assets/img/submission/`.)
 - [ ] GIFs illustrate recorded behaviour and grade nothing; any claim is made
       in the text with its floor.
 - [ ] No acceptance-rate figure anywhere: the advice behind the ruling is

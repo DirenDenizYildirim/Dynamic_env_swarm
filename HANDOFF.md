@@ -85,9 +85,40 @@
      β̂_c's R_L logistic centres.
    - **O-3 (builder):** re-measure the supplement size with `git archive`.
    - **O-4 (owner):** confirm TMLR's 100 MB limit on the venue page.
-4. **Beyond PDF scaffolding runs in a Claude Code web session** following
-   `beyond_pdf_scaffold_prompt.md` (S0–S5). If a pushed `paper/beyond_pdf/`
-   branch exists, review it before starting new paper work.
+4. **Beyond PDF scaffold: PUSHED for review, NOT merged** (web session,
+   2026-09-27, branch `claude/cool-cori-dg8c4u`, one commit per milestone
+   S0–S5). **Review that diff before starting new paper work.**
+   - **Built.** `paper/beyond_pdf/` in the kit's layout:
+     - `KIT_NOTES.md` covers the kit (URL and sha256; no version or licence
+       stated), its YAML fields, how bib and assets resolve, the preview
+       and its image, every external URL (all kit-level, none author-tied)
+       and the conflicts.
+     - `submission.md` is the skeleton: the abstract verbatim with ledger
+       IDs, sections in spine order, figure slots 1–10 naming their data,
+       and GIF slots.
+     - `assets/` holds the three renders and their static PNGs,
+       byte-identical to `paper/renders/2026-09-27/`.
+     - `submission.bib` holds the 37 verified entries, verbatim.
+   - **No kit file is in the tree.** The preview and the upload are staged
+     in a scratch copy of the kit (`KIT_NOTES.md` §S1.8).
+   - **S4 preview FAILED at the Docker step:** the web container has no
+     Docker daemon, and starting it was refused by the session's permission
+     classifier. The page has never been rendered. Static checks passed,
+     including the bib through the kit's own Distill parser (37/37). The
+     routes to a real preview are in `KIT_NOTES.md` §S4; the laptop is
+     route (a).
+   - **Owner decisions the scaffold raised** (proposals until transcribed):
+     - what `description` carries (proposed: the abstract's first
+       sentence);
+     - the title (the first spine candidate is PROVISIONAL and uses
+       "ambient");
+     - whether to show the ISO/JOINT GIFs at all (in `assets/`, not
+       placed);
+     - whether to touch the 8 bib fields that render raw LaTeX;
+     - whether the preview may pull from rubygems.org and the Debian
+       mirrors.
+   - `CLAUDE.md`'s layout block does not yet list `paper/beyond_pdf/` or
+     `paper/renders/`.
    **`paper/tex/` is FROZEN** as the DMLR-fallback source (addendum,
    2026-09-27). It does not compile (`main.tex` inputs sections 02, 04–07 and
    `references.bib`, none of which exist); do not develop it.
@@ -99,9 +130,11 @@
    limitation. (Item 5, the ISO config header, was done 2026-09-27.)
 6. **Bibliography**, for the owner to read by hand: Gao et al. RSS 2024,
    Chen et al. ICLR 2022, Erdem & Üre 2025 (in full: does it match exposure?),
-   the JaxWildfire PDF, arXiv:2604.26150, arXiv:2507.10142. Build the `.bib`
-   **only** from the BibTeX in `paper/related_work_verification.md`. Then
-   write the UED/DR paragraph from its Part 2 draft.
+   the JaxWildfire PDF, arXiv:2604.26150, arXiv:2507.10142. The `.bib` is
+   **built** (item 4 branch: `paper/beyond_pdf/assets/bibliography/
+   submission.bib`, verbatim from `paper/related_work_verification.md`,
+   those six entries `%`-flagged); no entry is ever written from memory.
+   Then write the UED/DR paragraph from its Part 2 draft.
 7. **Owner decisions:**
    - ratify "ambient" (pending since 2026-08-05);
    - TMLR's actual time-to-decision;
