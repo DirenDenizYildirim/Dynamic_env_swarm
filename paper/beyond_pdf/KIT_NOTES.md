@@ -299,3 +299,115 @@ None of the kit's example files are copied into our tree: `Frog.gif`,
 8. **Nothing in the kit conflicts with strict double-blind** once
    `authors` is Anonymous, no author `url` is set, and `openreview_id` is
    left unset.
+
+---
+
+## S4: preview (2026-09-27): FAILED at the Docker step, stopped there
+
+### Exact command
+
+Staged in a scratch directory outside the repository, from the tree at
+the S3 commit:
+
+```
+unzip -q tmlr-beyond-pdf-author-kit.zip -x '__MACOSX/*'   # sha256 e531434b…bacc2d5 (S1.1)
+cd tmlr-beyond-pdf-author-kit
+rm -rf submission_folder && mkdir submission_folder        # drop the kit's example files
+cp <repo>/paper/beyond_pdf/submission.md submission_folder/
+cp -r <repo>/paper/beyond_pdf/assets submission_folder/    # never KIT_NOTES.md or .gitignore
+python3 compile_submission.py
+```
+
+### Result
+
+- **Merge step: OK.** The bib, 3 PNGs, 3 GIFs and `.gitkeep` were copied
+  into `tmlr_do_not_modify/`. The merged `_under_review/submission.md` is
+  byte-identical to ours, so the `$` → `$$` rewrite changed nothing.
+- **Build step: FAILED.** `docker_run.sh` printed:
+  `ERROR: failed to connect to the docker API at unix:///var/run/docker.sock;
+  check if the path is correct and if the daemon is running: dial unix
+  /var/run/docker.sock: connect: no such file or directory`.
+  No image was built and no `_site/` was written.
+- **`compile_submission.py` still exited 0.** It ignores the result of
+  `os.system`, so its exit code cannot be used to detect a failed preview.
+- **Therefore nothing about the rendered page is verified:** layout, TOC
+  anchors, math, GIF display, citations and the printed PDF are all
+  untested.
+
+Stopped here, per the session brief. Nothing outside `paper/beyond_pdf/` was
+edited, and the daemon was not started by any other route.
+
+### Why it fails here, and what else would fail after that (not tested)
+
+1. **No Docker daemon.** Starting `dockerd` was refused by this session's
+   permission classifier (S0).
+2. **The build needs the Debian mirrors and rubygems.org**, which lie
+   outside "GitHub, PyPI, Docker Hub" (S1.6). This is an owner question.
+3. **Containers cannot reach this session's egress proxy.** Per this
+   environment's proxy README, processes inside containers cannot reach it
+   and do not trust its CA. The kit's `Dockerfile` and `docker_run.sh` (do
+   not modify) pass neither `--network host` nor the CA, so `apt-get` would
+   likely fail even with a daemon.
+4. **`docker run -it` needs a TTY**, which this session's shell does not
+   have.
+
+### Checks run instead: static, NOT a preview
+
+They show the skeleton is well-formed for the kit's parsers. They show
+nothing about how it renders.
+
+- `submission.md` front matter, split exactly as `compile_submission.py`
+  splits it:
+  - `layout: distill`, `bibliography: submission.bib`;
+  - every author Anonymous, with no `url`; no `openreview_id`;
+  - `title` and `description` each one line with no `"`.
+- **Ledger:** 14 `N:` comments; every ID is a row in
+  `paper/numbers_ledger.md`.
+- **Kit mechanics:**
+  - no `$` in the body;
+  - the only Liquid tags are the 2 figure includes;
+  - no comment holds a Liquid delimiter or a nested comment;
+  - both included asset paths exist.
+- **TOC anchors:** all 15 TOC names equal their heading text, and Jekyll's
+  `slugify` (default mode) of each name equals the kramdown-GFM id of its
+  heading, emulated in Python from the two algorithms. Heading ids are
+  unique.
+- **Double-blind:**
+  - no owner name, account, e-mail, `github.com` or OSF string in
+    `submission.md` or the text files under `assets/`;
+  - no token in `submission.md` resolves to a commit of this repository;
+  - the GIFs carry only the loop and frame-timing extension blocks, and
+    the PNGs only IHDR, IDAT and IEND (no text or EXIF chunks).
+- **Bibliography, with the kit's own in-browser parser** (Distill
+  `bibtexParse` 0.0.22 plus `parseBibtex`, lifted from the kit's
+  `template.v2.js` and run under node in the scratch copy):
+  - **37 of 37 entries parse.**
+  - 8 rendered fields would show raw LaTeX or braces:
+    - the titles of `liu2026vulcan` (`{VULCAN}`),
+      `agrawal2023multimodal` (`{MARL}`), `bernstein2002` (`{M}arkov`) and
+      `kesten1980` (`$\frac{1}{2}$`);
+    - the authors of `rutherford2024jaxmarl` (`Gar\dh ar`),
+      `cakir2025jaxwildfire` (`{\c{C}}akir`) and `jiang2021robustplr`
+      (`Rockt\"{a}schel`);
+    - the journal of `zscheischler2020typology` (`\&`).
+  - A 9th such field, `tramer2019multiple`'s editor, is never rendered.
+  - **Cosmetic.** Fixing any of them edits a verified entry, which is the
+    owner's call (S1.9 item 4).
+
+### Routes to a real preview (owner's choice)
+
+- **(a) Laptop with Docker** (the HANDOFF fallback route): the command
+  above, in a terminal. The page is at
+  `http://0.0.0.0:8080/tmlr-beyond-pdf/under_review/submission/`.
+- **(b) This web environment.**
+  - It needs the daemon allowed: a permission rule for starting `dockerd`,
+    or `dockerd` started by the environment's setup script.
+  - It needs the owner's ruling on rubygems.org and the Debian mirrors.
+  - Even then, item 3 above may still block the build without kit edits,
+    which are not ours to make.
+- **(c) The web editor** at `https://tmlr-beyond-pdf.org/editor`, fed a zip
+  of the staged `submission_folder/`, in the owner's browser.
+
+Build outputs stay out of git: everything above ran in a scratch directory.
+`paper/beyond_pdf/.gitignore` ignores kit copies, `_site/`, `.jekyll-cache/`
+and `*.zip` for anyone who stages inside the folder.

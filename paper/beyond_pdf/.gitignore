@@ -1,0 +1,10 @@
+# Kit copies, preview build outputs and upload zips never enter git
+# (KIT_NOTES.md S1.8, S4). Stage and build in a scratch directory.
+_kit/
+tmlr-beyond-pdf-author-kit/
+tmlr_do_not_modify/
+submission_folder/
+_site/
+.jekyll-cache/
+*.zip
+.DS_Store
