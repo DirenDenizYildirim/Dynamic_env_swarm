@@ -100,7 +100,7 @@ how badly each one could hurt the submission.
 - [x] Owner: author kit + Docker ALLOWED (addendum, 2026-09-27); the owner
       runs the download and the Docker install. Kit read in full before use.
 - [x] Owner: `paper/tex/` FROZEN as the DMLR-fallback source (addendum).
-- [ ] `render_episode.py` checked on Phase-6 checkpoints (last touched
+- [x] **DONE 2026-09-27:** `render_episode.py` checked on Phase-6 checkpoints (works unchanged; first renders in `paper/renders/2026-09-27/`). Was: (last touched
       2026-07-30, before the traced-theta refactor).
 - [ ] `authors` anonymous in `submission.md`; every interactive figure
       self-contained (no author-linked URL, font or data source).

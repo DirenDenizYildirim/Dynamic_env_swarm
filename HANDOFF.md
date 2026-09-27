@@ -33,8 +33,10 @@
   (kit notes, skeleton, bib, preview) and pushes a branch for the owner to
   review. The local `pacman -Syu` + Docker route is now only the fallback.
   **GIFs of trained policies stay a laptop job:** the checkpoints are
-  gitignored and not on GitHub. Still owed by the builder, locally: check
-  `render_episode.py` on Phase-6 checkpoints, then render the GIFs.
+  gitignored and not on GitHub. The first three renders (random, ISO s1,
+  JOINT s1 at θ\*) are done and committed at `paper/renders/2026-09-27/`
+  with their selection rule. `render_episode.py` works on Phase-6
+  checkpoints unchanged. Any further render needs the laptop.
 - **Backup, in progress.** All Phase-6 archives were re-verified against
   their committed hashes on 2026-09-27 (`phase6_report.md` §3). A second
   copy was built that day at `~/che_backup_2026-09-27/`:

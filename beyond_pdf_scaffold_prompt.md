@@ -39,13 +39,23 @@ the owner and later sessions can port the paper into.
 - If the kit forces a choice the rulings don't cover, **stop and ask the
   owner.** A choice you make is a proposal until it is transcribed.
 
-## Known gap: no trained-policy GIFs here
+## GIFs: use the committed renders, never render trained policies here
 
-Checkpoint archives are gitignored and live only on the owner's laptop. You
-**cannot** render GIFs of trained Phase-6 policies. Leave each GIF slot as a
-marked placeholder (`<!-- GIF: rendered on laptop, render_episode.py -->`)
-with its static-companion caption drafted. Do not substitute random-policy
-renders for trained ones.
+Checkpoint archives are gitignored and live only on the owner's laptop, so
+you **cannot** render trained Phase-6 policies here. Three renders made on
+the laptop are committed at **`paper/renders/2026-09-27/`**: a random
+policy, ISO seed 1 and JOINT seed 1, at θ\*, each with a `*_static.png`
+companion. The owner may also upload the same files as a tar; if so, check
+them against that directory's `SHA256SUMS`.
+
+**Read its `README.md` before placing anything.** It carries the selection
+rule and the reading rules: single episodes, illustrate and never grade.
+The ISO/JOINT pair must not be captioned as showing the result, and
+whether to show them side by side is the owner's call. In S2, copy the GIFs
+into `assets/gif/submission/` and the PNGs into `assets/img/submission/`.
+The JSON sidecars and the README stay out of `assets/`. Any further GIF
+slot is a marked placeholder (`<!-- GIF: rendered on laptop -->`); never
+fill it with a random-policy render standing in for a trained one.
 
 ## Milestones: commit after each, with the milestone name in the message
 

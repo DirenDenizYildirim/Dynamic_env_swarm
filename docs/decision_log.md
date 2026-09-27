@@ -5406,3 +5406,21 @@ laptop session's permission classifier refuses.
   kit's preview.
 
 No constant, lock, config, test, registration or branch reading changes.
+
+### ADDENDUM (2026-09-27, same session) — first renders committed; the renderer works on Phase-6 checkpoints
+
+At the owner's request, the GIFs were rendered on the laptop before the web
+session, so the session has them. `che/scripts/render_episode.py` **works on
+Phase-6 checkpoints unchanged**: ISO and JOINT seed 1 both restored at step
+1000 through the harness's declared cross-config path (`--allow-hash`). That
+discharges the owed check. The selection rule was fixed before any render:
+θ\* config, seed 1 of each confirmatory arm at T\* = 1000, episode key 0,
+stochastic actions as in eval, plus a random-policy episode. Nothing else was
+rendered, so nothing was chosen from a set. The files, their archive hashes,
+commands and reading rules are in `paper/renders/2026-09-27/README.md`.
+They are committed because attaching files to a web session is not
+documented. A tar of the same files was handed to the owner.
+
+**Reading rule restated:** the two trained episodes differ by 2 of 12
+agents, far beyond the measured +0.96-point survival effect. They illustrate
+and grade nothing; whether to show them side by side is an owner decision.

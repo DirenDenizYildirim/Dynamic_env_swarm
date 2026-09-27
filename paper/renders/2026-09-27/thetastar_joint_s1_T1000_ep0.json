@@ -1,0 +1,15 @@
+{
+ "config": "che/configs/theta_star_holdout.yaml",
+ "ckpt_dir": "che/bench/results/phase6/g1_conf_5090/ckpt_joint_s1.tar.zst (extracted; step 1000)",
+ "seed": 0,
+ "greedy": false,
+ "obs_version": 3,
+ "allow_hash": [
+  "da6617b402b08b9b"
+ ],
+ "steps": 256,
+ "final_completion": 0.59375,
+ "final_alive": 12,
+ "n_agents": 12,
+ "episode_return": 19.0
+}
