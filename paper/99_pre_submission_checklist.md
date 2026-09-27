@@ -31,6 +31,8 @@ how badly each one could hurt the submission.
 - [ ] **"Certified inert" → "inert under a frozen random-projection encoder
       at this scale".** The message head receives no gradient by design.
       Soften everywhere the certification language appears in the paper.
+      (Spine abstract and §7 heading softened 2026-09-27; still owed in
+      `submission.md` when it is written.)
 - [ ] **Drop "swarm" as a claim.** The foraging task requires no
       coordination; twelve shared-parameter agents with a team reward.
       "Multi-agent" in the title; "swarm" only where it names the
@@ -104,7 +106,14 @@ how badly each one could hurt the submission.
       "sign unstable over the final half" on both co-primaries.
 - [x] Realized power against the motivating effect band, reported not
       re-engineered (completion 71.6 % at k = 72, 60.2 % at k = 60).
-- [ ] **Branch-B carry-overs into the spine (2026-09-26):** abstract and §9
+- [x] **DONE 2026-09-27 (branch-B splice):** abstract and §9 at k = 72 with
+      the k = 60 prefix and the 40 → 46 → 72 history stated as a deviation;
+      DBCA moved to the sweep (§1, §9.1) and the endpoint confound stated in
+      §2; the counter's scope added (§6). "Rare and bursty" was measured on
+      single-configuration A+B runs (the κ_B = 1.0 rows of Phase-4 Result 4),
+      not on mixtures, so it stands. The splice also found and fixed
+      "hazard-free" in `branch_B.md`: those episodes are fire-only (D1).
+      Original item: **Branch-B carry-overs into the spine (2026-09-26):** abstract and §9
       say k = 40 — the realized primary is k = 72 (k = 60 prefix beside it);
       ~~the abstract's "…learned only through the task return"~~ (reworded
       2026-09-27, DEF. 2 WORDING RULING); the DBCA sentence belongs

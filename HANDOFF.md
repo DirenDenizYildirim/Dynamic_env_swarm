@@ -50,11 +50,16 @@
    (new `test_death_penalty_is_cause_blind`), and "no shaping term" /
    "solely" are struck. When porting, carry the hazard-blind note and the
    Phase-2 d_p ablation **with its scope** into `submission.md`.
-2. **Splice branch B into the spine** (checklist, "Branch-B carry-overs"):
-   k = 40 → 72 (spine lines 46 and 279) with the k = 60 prefix beside it;
-   the DBCA sentence moves to the sweep; qualify every "co-active" (A-only in
-   mixed training); check whether "rare and bursty" was measured on mixtures.
-   The spine is the source the Beyond PDF `submission.md` is ported from.
+2. ~~Splice branch B into the spine~~ **DONE 2026-09-27.** The spine
+   (`paper/00_common_spine.md`) now carries the branch-B abstract, §9.1
+   design at k = 72 (the 40 → 46 → 72 history stated as a deviation),
+   §9.2 results, the DBCA sentence moved to the sweep, the §2
+   endpoint-confound bullet, the counter's scope note (§6) and the actual
+   hardware blocks (§10 item 8). "Rare and bursty" was measured on
+   single-config A+B runs, not mixtures, so it stands. **Fixed on the way:**
+   `branch_B.md` said "hazard-free episodes", but under D1 the δ-only
+   episodes are **fire-only**. The spine is the source the Beyond PDF
+   `submission.md` is ported from.
 3. **`paper/numbers_ledger.md`: does not exist yet.** Build it before filling
    numbers. The tex draft carries 14 `\todo{verify …}` values
    (`08_methodology.tex`, `03_environment.tex`) whose text will be reused.
@@ -62,11 +67,12 @@
 4. **`paper/tex/` is FROZEN** as the DMLR-fallback source (addendum,
    2026-09-27). It does not compile (`main.tex` inputs sections 02, 04–07 and
    `references.bib`, none of which exist); do not develop it.
-5. **Builder items still owed from the §7 ruling (2026-09-18):** item 2, the
-   dated amendment to `phase6_design_v2.md` §2 carrying proposal 0, plus the
-   same text in the spine; item 3's second half, the "no severity has both
-   couplings strongly live" line beside spine §4a. (Item 5, the ISO config
-   header, was done 2026-09-27.)
+5. **Builder item still owed from the §7 ruling (2026-09-18):** item 2's
+   first half, the dated amendment to `phase6_design_v2.md` §2 carrying
+   proposal 0's four points. The spine halves were done in the splice
+   (2026-09-27): proposal 0 is in spine §9.1 bias (a), and the "no severity
+   has both couplings strongly live" line is in spine §10 item 1, the §4a
+   limitation. (Item 5, the ISO config header, was done 2026-09-27.)
 6. **Bibliography**, for the owner to read by hand: Gao et al. RSS 2024,
    Chen et al. ICLR 2022, Erdem & Üre 2025 (in full: does it match exposure?),
    the JaxWildfire PDF, arXiv:2604.26150, arXiv:2507.10142. Build the `.bib`

@@ -45,7 +45,9 @@ rest on a cross-card comparison.
 
 **What JOINT's survival advantage is.** ISO spends a third of training on
 δ-only episodes, and δ was certified inert in Phase 5, so behaviourally those
-episodes carry no stressor. Removing them (ISO-4) raises survival by the
+episodes carry no active element. They are **fire-only**, not hazard-free:
+the fire burns in every episode (D1; the δ-only components run at β 0.43 and
+0.70). Removing them (ISO-4) raises survival by the
 whole ISO→JOINT gap (B̂ +0.0098 vs Γ +0.0096); training on the stressors
 **together** adds nothing detectable on top (Γ₄, Γ₄′ ≈ 0, bounded at ±0.7
 points). An independent family of arms on the confirmatory card says the same
@@ -64,7 +66,7 @@ back in agents, not task return.
 
 > Joint training keeps more of the swarm alive than isolated training at a
 > held-out severity, but the advantage is accounted for by the isolated arm's
-> hazard-free training episodes, not by composition; at matched active share
+> fire-only training episodes, not by composition; at matched active share
 > composition adds nothing detectable, and every effect of hazard exposure
 > lands on survival rather than on the task.
 
@@ -97,9 +99,9 @@ the evidence attributes the cost to exposure share, not to compounding.
 > 0.66 points at the same level, an asymmetry the registered falsifier
 > requires. **The survival
 > advantage does not survive the pre-registered inert-share correction:** an
-> isolated-training arm without hazard-free episodes matches joint training
+> isolated-training arm without its fire-only episodes matches joint training
 > (difference −0.03 points, replicated on the same hardware), and a
-> secondary dose design attributes the gap to hazard-free training episodes
+> secondary dose design attributes the gap to fire-only training episodes
 > rather than to composition. The contrast's sign is not stable over the
 > final half of training: the survival gap opens only in the last fifth of the
 > budget and is still growing at the matched budget.
