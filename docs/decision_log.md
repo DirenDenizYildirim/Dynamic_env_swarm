@@ -5265,3 +5265,20 @@ five sections and its bibliography.
 
 It changes no constant, lock, test, registration or branch reading, and it
 does not resolve the Def. 2 wording question, which applies in either format.
+
+### ADDENDUM (owner, 2026-09-27, same session) — two OWED items discharged
+
+1. **Author kit and Docker: ALLOWED.** The owner authorizes downloading the
+   official *TMLR Beyond PDF Author Kit* and installing Docker to run its
+   `compile_submission.py` preview. The session's permission classifier
+   still refuses the download, so **the owner runs it** (from the prompt
+   with `!`, or in a terminal). Docker is installed by the owner (it needs
+   `sudo`). **Scope:** Docker is paper-preview tooling only. It is not a
+   dependency of `che/`, nothing in `pyproject.toml` or `uv.lock` changes,
+   and the `CLAUDE.md` stack is unchanged. The kit is read in full before
+   any of its files enter the tree.
+2. **`paper/tex/` is FROZEN as the DMLR-fallback source.** It is not
+   developed further while the TMLR attempt is live. Text written for it
+   (notably `03_environment.tex`'s Def. 2 passage and `08_methodology.tex`)
+   may be ported into `submission.md`; the `\todo{verify}` numbers go
+   through `paper/numbers_ledger.md` either way.

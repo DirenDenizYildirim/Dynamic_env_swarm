@@ -79,8 +79,9 @@ how badly each one could hurt the submission.
 
 ## Beyond PDF format (SUBMISSION FORMAT RULING, 2026-09-27)
 
-- [ ] Owner: author kit + Docker allowed? Otherwise preview in the web editor.
-- [ ] Owner: fate of `paper/tex/` (proposal: frozen as the DMLR fallback).
+- [x] Owner: author kit + Docker ALLOWED (addendum, 2026-09-27); the owner
+      runs the download and the Docker install. Kit read in full before use.
+- [x] Owner: `paper/tex/` FROZEN as the DMLR-fallback source (addendum).
 - [ ] `render_episode.py` checked on Phase-6 checkpoints (last touched
       2026-07-30, before the traced-theta refactor).
 - [ ] `authors` anonymous in `submission.md`; every interactive figure
