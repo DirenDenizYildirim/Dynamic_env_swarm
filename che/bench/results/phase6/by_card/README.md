@@ -22,8 +22,8 @@ Updated 2026-09-27 at the Phase-6 close; every row is pulled and
 hash-verified locally. Unit identities: unit 1 `180.189.55.43:13768` (UUID
 never recorded; gone — vast.ai re-rented it); unit 2
 `GPU-cc0a5b55-…` (decision log, *BOX CHANGE* entry §2; destroyed by the owner
-2026-09-26); unit 3 `GPU-c4a5b128-…` (`post_gamma_t/UNIT.txt`; SSH refused
-2026-09-27, owner to confirm it is destroyed rather than stopped).
+2026-09-26); unit 3 `GPU-c4a5b128-…` (`post_gamma_t/UNIT.txt`; destroyed by the owner,
+confirmed 2026-09-27).
 
 | directory | unit | what |
 |---|---|---|

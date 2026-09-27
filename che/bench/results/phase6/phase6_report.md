@@ -139,6 +139,5 @@ cannot be regenerated, so a second copy is the one remaining protection.
       no-element share (generator change; the other 11 generated configs
       are byte-identical).
 
-**Still owed by the owner:** confirm unit 3 is destroyed, not stopped (SSH
-refused 2026-09-27); the card-2 decision-log entry; a second copy of the
-archives.
+**Still owed by the owner:** the card-2 decision-log entry; a second copy of
+the archives. (Unit 3: destroyed, owner-confirmed 2026-09-27.)

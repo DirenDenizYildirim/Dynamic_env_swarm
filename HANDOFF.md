@@ -18,11 +18,9 @@
   exclusions. Evals reproduce bit-for-bit across cards.
 - **No GPU spend, and none to propose** (owner, 2026-09-26). Every remaining
   analysis is $0 on committed per-episode `eval_*.npz` files.
-- **GPU boxes:** unit 1 is gone (vast.ai re-rented it). Unit 2 was destroyed
-  by the owner. **Unit 3 (`180.189.55.43:31183`) refused SSH on 2026-09-27;
-  the owner has not yet confirmed it is DESTROYED rather than stopped**, and a
-  stopped vast.ai instance still bills storage. Nothing lives only there: the
-  post-unblind stage produced evals only, all pulled and verified.
+- **GPU boxes: none.** Unit 1 is gone (vast.ai re-rented it); units 2 and 3
+  were destroyed by the owner (unit 3 confirmed 2026-09-27). Nothing lived
+  only on any of them.
 - **Format: TMLR Beyond PDF** (SUBMISSION FORMAT RULING, 2026-09-27): a
   Markdown/HTML article with GIFs and interactive figures, submitted on
   OpenReview. The venue pair (TMLR, then DMLR) is unchanged. Addendum, same
