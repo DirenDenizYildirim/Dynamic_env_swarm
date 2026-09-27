@@ -60,10 +60,27 @@
    `branch_B.md` said "hazard-free episodes", but under D1 the δ-only
    episodes are **fire-only**. The spine is the source the Beyond PDF
    `submission.md` is ported from.
-3. **`paper/numbers_ledger.md`: does not exist yet.** Build it before filling
-   numbers. The tex draft carries 14 `\todo{verify …}` values
-   (`08_methodology.tex`, `03_environment.tex`) whose text will be reused.
-   Every number needs its committed source.
+3. ~~`paper/numbers_ledger.md`~~ **BUILT 2026-09-27.** Every spine number
+   and all 14 tex `\todo{verify}` values have a row naming their committed
+   source, each checked against it this session. Building it found errors
+   in the spine, now **FIXED**:
+   - "PBT population 12": no reported run used PBT.
+   - Def.-4 refutation labelled M3.5; it is M3.0, and survival only.
+   - Two Prop.-3 runs merged into one.
+   - Ignition figures attributed to m35; they are m44.
+   - The High Coupling-B effect led with −8.8; lead with the correction's
+     3/3 replication.
+   - Bias (b) quoted launch-batch drift as general; **its sign reverses on
+     the grid card**.
+   - An untested "curriculum difficulty" hypothesis stated as a finding.
+
+   **Four ledger OPEN items:**
+   - **O-1 (owner): PBT framing.** `README.md:28` and the `CLAUDE.md`
+     project description still say training is a PBT hybrid.
+   - **O-2 (builder, $0 CPU, owner go-ahead):** a committed artifact for
+     β̂_c's R_L logistic centres.
+   - **O-3 (builder):** re-measure the supplement size with `git archive`.
+   - **O-4 (owner):** confirm TMLR's 100 MB limit on the venue page.
 4. **`paper/tex/` is FROZEN** as the DMLR-fallback source (addendum,
    2026-09-27). It does not compile (`main.tex` inputs sections 02, 04–07 and
    `references.bib`, none of which exist); do not develop it.

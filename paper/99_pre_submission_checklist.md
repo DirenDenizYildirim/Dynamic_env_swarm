@@ -70,6 +70,18 @@ how badly each one could hurt the submission.
       grid's own seeds, via their own post-grid instrument; until then the
       channels grade nothing and the paper says so.
 - [ ] The endogeneity family is cited by member name, never by ordinal.
+- [x] **`paper/numbers_ledger.md` built (2026-09-27).** Every number in
+      `submission.md` carries a ledger row ID, and new numbers get a row
+      first.
+- [ ] **Ledger O-1 (owner): PBT.** No reported run used PBT. Every run is
+      single-policy IPPO. Decide the wording; `README.md:28` and the
+      `CLAUDE.md` project description still say PBT hybrid.
+- [ ] **Ledger O-2:** a committed artifact for β̂_c's R_L logistic
+      centres, or restate §4 with the committed estimator.
+- [ ] **Ledger O-3:** measure the real supplement size (`git archive`); the
+      454 KB figure is from 2026-08-04.
+- [ ] **Ledger O-4 (owner):** confirm TMLR's supplement limit on its own
+      page.
 
 ## TMLR mechanics
 

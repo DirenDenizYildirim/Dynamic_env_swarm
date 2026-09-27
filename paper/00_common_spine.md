@@ -14,6 +14,10 @@ file differs from the registered text, the registered text governs
 (`phase6_framing_branches.md` §3–§4b; decision log *UNBLIND RESULT*,
 *SECONDARY RESULT*, *POST-UNBLIND STAGE RESULT*).
 
+**Every number here has a row in `paper/numbers_ledger.md`** (built
+2026-09-27) naming its committed source. A number enters `submission.md`
+only with its row ID.
+
 **Terminology, fixed by D1:** the fire burns in every training episode.
 The composable **elements** are Coupling A, Coupling B and δ. An episode
 with "no element" is a **fire-only** episode, not a hazard-free one.
@@ -234,16 +238,23 @@ with sketches and full proofs in the appendix.
   as *"ablations are exact by construction"*.
 - Concrete instance: 64 × 64 grid, 12 agents, horizon 256, 9 × 9 egocentric
   crop with 7 indicator planes plus smoke, own-state vector with absolute
-  position and time, 5 actions, foraging task with 32 items and +1 team
-  reward per collected item. Shared-parameter actor-critic
-  (Conv 16 → Conv 32 → Dense 128 → heads), IPPO, PBT population 12.
+  position, alive flag and time, 5 actions, foraging task with 32 items and
+  +1 team reward per collected item. Shared-parameter actor-critic
+  (Conv 16 → Conv 32 → Dense 128 → actor and critic heads, each with a
+  64-unit hidden layer; a stop-gradient message head), **trained by IPPO,
+  one policy per training seed.** Every reported run used single-policy
+  IPPO. The PBT population loop exists in the code and was exercised only
+  by the throughput benchmark, so it must not be described as the training
+  method (`paper/numbers_ledger.md` ENV-11, O-1).
 
 ## §4 Severity calibration
 
 - β̂_c = 0.500 ± 0.005 from the R_L logistic-centre family at
   L ∈ {32, 48, 64}, 512 seeds; self-duality R(β_c) ≈ 1/2 at all three sizes.
   Present the Kesten reproduction as **validation of the method**, not as
-  a result.
+  a result. **Provenance owed (ledger O-2):** the R_L logistic centres
+  exist only in `severity_lock.md`. The committed estimator outputs use
+  other estimators (crossing mean 0.504, consensus 0.499).
 - Locked levels and what they mean:
 
   | level | β | P_span | burnt fraction |
@@ -254,17 +265,25 @@ with sketches and full proofs in the appendix.
 
 - Medium sits between the finite-size pseudo-critical point β_c(64) ≈ 0.486
   and β̂_c; it is the held-out severity for the compositional test.
-- Def. 4's variance-peaks-at-Medium prediction was **not observed** (M3.5:
-  survival variance monotone, highest at High). Report the refutation.
+- Def. 4's variance-peaks-at-Medium prediction was **refuted for
+  survival** (M3.0, `def4_variance.md`: fixed-policy variance monotone,
+  highest at High). For completion it is inconclusive: Medium is nominally
+  highest but within CI of Low. The environment-level mechanism was
+  confirmed. Report all three; do not generalize the refutation beyond
+  survival.
 
 ## §5 Coupling A — hazard begets hazard
 
 - Lock: f_weak 0.15, λ₀ 5·10⁻⁵, λ_load 4·10⁻⁴, κ_A 0.06, r_A 1.
-- Prop. 3 handshake: R² = 0.998 over a 14× range; matched-reference ratio
-  0.992 ∈ [0.90, 1.02].
+- Prop. 3 handshake, **two runs, report them as two**: linearity R² = 0.998
+  over a 14× range of E[N_seeds] (L = 64 dense sweep), and matched-reference
+  ratio 0.992 ∈ [0.90, 1.02] with R² 0.9995 (v2 purified test, L = 32).
+  Both are handshake regimes (κ_A 0.02 and 0.003), not the locked
+  parameters.
 - **Finding: the ignition channel self-limits where the hazard is worst.**
   Seeded ignitions per episode 4.05 / 3.41 / 0.84 across Low / Medium /
-  High, a 4.83× fall, by fuel exhaustion. Replicated on m35.
+  High, a 4.83× fall, by fuel exhaustion (the Phase-4 grid, κ_B = 1.0 arm).
+  Replicated on m35, the Coupling-A grid: 4.08 / 3.42 / 0.83, 4.92×.
 - **Finding: the near-agent share is flat** across severity, [0.164, 0.203];
   the whole severity response is upstream of the agents.
 - Low leaves the survival ceiling (0.979 → 0.961). No weak-cell avoidance
@@ -273,22 +292,28 @@ with sketches and full proofs in the appendix.
 ## §6 Coupling B — hazard degrades perception
 
 - Lock κ_B = 1.0 on the detection band alone; the three lock bands did not
-  intersect (masked-frac band unreachable at Medium; E2C band disjoint from
-  detection band by 1.35×). Say this; it is honest and it is interesting.
+  intersect (masked-frac band unreachable at Medium for any κ_B; E2C band disjoint from
+  detection band by 1.35× under the random policy, 1.15× under the probe
+  policies). Say this; it is honest and it is interesting.
 - Thm. 1 E2C gate green: max |z| 2.11, χ² p = 0.586 against the closed-form
   1/2 + q/2.
 - **Finding: perception decay is paid in survival, not completion.** High:
-  −8.8 points survival (range 5–11 across the correction, direction 3/3,
-  floor sd 0.062); completion effect flipped sign on a same-seed retrain and
-  is **unresolved**. Medium: −0.0003, within noise. **This Medium number is
-  load-bearing for the Limitations section on every branch.**
+  the survival effect replicates in direction 3/3, range −0.047 to −0.107,
+  pooled 1.41× the measured floor (sd 0.062) (Phase-4 correction,
+  2026-07-30). Lead with that; the first 2-seed estimate, −8.8 points, is
+  quoted only beside it. The completion effect flipped sign on a same-seed
+  retrain and is **unresolved**. Medium: −0.0003, within noise, graded
+  against a 3-seed σ_seed of 0.0072, not a measured floor; the later Medium
+  survival floor is 0.0129. **This Medium number is load-bearing for the
+  Limitations section on every branch.**
 - **Finding: masking concentrates 16–118× on danger moments.** The coupling
   cannot be behaviourally suppressed.
 - Co-active visitation (Prop. 4 diagnostic): 0.64 events/episode at Medium,
   P(zero) = 0.563 / 0.578 / 0.883, var/mean 1.31–1.40. **Rare and bursty.**
   Always show the distribution, never the mean alone.
 - **Scope of "co-active", required wherever the counter is used.** These
-  figures are the κ_B = 1.0 rows of `phase4_report.md` Result 4:
+  figures are the κ_B = 1.0 rows of `phase4_report.md` Result 4, with
+  var/mean from the same cells in E1.1 (`e1/e11_report.md:208-210`):
   single-configuration runs with both couplings on, **not training
   mixtures**, so "rare and bursty" stands as measured. The counter (inv.
   #5, `che/env/env.py:398-404`) counts collapse-seeded ignitions inside an
@@ -321,7 +346,9 @@ This is a methods contribution and should be written as one.
 
 - **Floors are per-metric, per-hardware, per-artifact.** Exhibits:
   Medium completion floor 0.0145 on one card vs 0.0399 on another while
-  survival stayed 0.0129 / 0.0130; the traced tree differing from itself
+  survival stayed 0.0129 / 0.0130 (the code tree also differed between the
+  two runs, so say "card and tree", not "card"); the traced tree differing
+  from itself
   1 time in 4 on two channels (M6.0), which a reference-measured floor of
   zero had read as a real difference.
 - **Contrasts are graded on the contrast's SE**, sd(Γ) = √((σ_A² + σ_B²)/k),
@@ -340,8 +367,12 @@ This is a methods contribution and should be written as one.
   a plateau criterion with a floor in its denominator cannot certify on a
   perfect instrument; retired and replaced by an explicit fixed-budget
   estimand.
-- **Reproducibility floors grow with run length, ordered by curriculum
-  difficulty** (tier 2): ISO 2.1×, JOINT 5.2× from T = 500 → 1000.
+- **Reproducibility floors grow with run length** (tier 2): the completion
+  floor grew 2.1× for ISO and 5.2× for JOINT from T = 500 → 1000, so a
+  floor measured at one budget does not grade runs at another. That the
+  growth is *ordered by curriculum difficulty* is a hypothesis, labelled
+  untested at its source (n = 2 arms), and the two budgets' floors ran on
+  different boxes. Offer it as a hypothesis or not at all.
 
 ## §9 The compositional test — design, and the branch-B result **[Γ]**
 
@@ -360,7 +391,8 @@ This is a methods contribution and should be written as one.
   grid's own seed dispersion. Secondary: dose sweep c = 0.5 at five p points
   and identification c = 0.4 at three, k = 20, labelled non-verdict-bearing.
 - **How k reached 72, stated as a deviation.** Registered k = 40. The seed
-  ladder raised it to 46 on the 2026-09-09 re-floor. The grid card changed
+  ladder raised it to 46 on the re-floor run 2026-09-08 (logged 2026-09-09).
+  The grid card changed
   to an RTX 5090 (CARD RULING, 2026-09-21), and that card's re-floor
   returned k_req 72 for completion against the registered cap of 60. The cap
   was **raised to 72 on 2026-09-22, pre-unblind, with no outcome seen**
@@ -406,9 +438,16 @@ This is a methods contribution and should be written as one.
   registered, and ISO-4 was trained, before the look.** If Γ rejects and
   Γ₄'s CI contains 0, the effect does not survive the correction, and the
   text may not call it a composition effect.
-  (b) The arms sit at different points on their learning curves at T\*
-  (ISO 0.56× its floor, JOINT 1.02×); the differential drift is
-  ~0.012 per 100 updates, a local sensitivity estimate, never a bound.
+  (b) **Differential drift at T\*.** Registered from the launch batch (RTX
+  PRO 6000, 2026-08-10): over the last 100 updates, ISO drifted 0.56× its
+  completion floor and JOINT 1.02×, a JOINT − ISO differential of +0.012
+  per 100 updates, stated as a local sensitivity estimate, never a bound.
+  **It did not hold in sign on the grid card.** The 5090 re-floor reads
+  ISO 0.33× and JOINT 0.19×, a differential of −0.008; the second PRO 6000
+  re-floor reads +0.018. On the grid card's model, the T = 2000
+  subsample's training-surface slope over updates 500–1000 is +0.0025
+  (completion) and +0.0072 (survival) per 100 updates. Report all four and
+  claim no direction (ledger DES-10, DES-11).
 
 ### §9.2 Results — branch B, with the inert-share qualifier **[Γ]**
 
@@ -439,7 +478,8 @@ of `branch_B.md`). The registered reading comes first in every item.
    footnote. Show Γ₄, Γ₄′ and B̂ side by side. Removing the fire-only
    episodes (ISO-4) raises survival by the whole ISO→JOINT gap (B̂ +0.0098
    against Γ +0.0096). Training on the couplings together adds nothing
-   detectable on top of that (Γ₄, Γ₄′ ≈ 0, bounded at about ±0.7 points).
+   detectable on top of that: Γ₄ −0.03 points, Šidák CI [−0.68, +0.63];
+   Γ₄′ +0.13, [−0.56, +0.81]. These are exclusions, not absences.
    State the rule's registration date (2026-09-18). Γ₄′ was proposed
    after Γ₄ was seen and before its arm was read; say so. Γ₄′ is on the
    confirmatory card, so the correction does not rest on a cross-card
@@ -517,7 +557,9 @@ Required on every branch, in this order. Omitting one where the outcome
 makes it awkward is outcome-dependent disclosure.
 
 1. **Medium siting.** θ\* is where Coupling B measured −0.0003 on survival;
-   its 8.8-point effect is at High. Medium was chosen because both couplings
+   its survival effect is at High (replicated 3/3 at 4.7–10.7 points; the
+   registered §4a text quotes the first estimate, 8.8). Medium was chosen
+   because both couplings
    clear their lock criteria there and floors are smallest. That trades
    effect existence for measurability, and the paper says so. **By the
    project's own locks, no severity has both couplings strongly live**
@@ -562,8 +604,12 @@ makes it awkward is outcome-dependent disclosure.
 
 ## §11 Reproducibility and appendix manifest
 
-TMLR: anonymized supplementary code ≤ 100 MB. Ship `che/ docs/ pyproject.toml
-uv.lock` (454 KB), not `m06/`.
+TMLR: anonymized supplementary code; the ≤ 100 MB limit is recorded only
+in the decision log, so confirm it on TMLR's page (ledger O-4). Ship
+`che/ docs/ pyproject.toml uv.lock`, not `m06/`, built with `git archive`
+so gitignored checkpoint archives stay out. The old "454 KB" figure dates
+from 2026-08-04, before most results were committed; re-measure it
+(ledger O-3).
 
 Appendices:
 
