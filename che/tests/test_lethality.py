@@ -140,6 +140,28 @@ def test_step_ignition_under_stationary_agent_kills_and_penalizes():
     assert float(reward) == -0.5  # no food collected, one death at c = 0.5
 
 
+def test_death_penalty_is_cause_blind():
+    # Def. 2 note (DEF. 2 WORDING RULING, 2026-09-27): the penalty prices the
+    # outcome, not the hazard. One stationary agent dies by fire in one step
+    # and by collapse in another, task state identical: same reward, -d_p.
+    fire = ThetaConfig(beta=1.0, death_penalty=0.5)
+    cfg_f = EnvConfig(grid_size=L, n_agents=1, horizon=32, n_food=1, theta=fire)
+    s_f = _state_with(cfg_f, [[2, 2]], hazard_cells=[((2, 3), BURNING)])
+    # beta = 0 and no Burning cell: no fire. lambda_0 = 1 on a weak cell:
+    # u < 1 always, so the floor under the agent collapses this step.
+    fall = ThetaConfig(beta=0.0, lambda_0=1.0, death_penalty=0.5)
+    cfg_c = EnvConfig(grid_size=L, n_agents=1, horizon=32, n_food=1, theta=fall)
+    s_c = _state_with(cfg_c, [[2, 2]])
+    s_c = dataclasses.replace(s_c, weak=s_c.weak.at[2, 2].set(True))
+    actions = jnp.array([STAY], jnp.int32)
+    _, n_f, r_f, _, i_f = step(jax.random.PRNGKey(7), s_f, actions, cfg_f)
+    _, n_c, r_c, _, i_c = step(jax.random.PRNGKey(7), s_c, actions, cfg_c)
+    assert (int(i_f["deaths_fire"]), int(i_f["deaths_collapse"])) == (1, 0)
+    assert (int(i_c["deaths_fire"]), int(i_c["deaths_collapse"])) == (0, 1)
+    assert not bool(n_f.agent_alive[0]) and not bool(n_c.agent_alive[0])
+    assert float(r_f) == float(r_c) == -0.5
+
+
 def test_newly_dead_agent_does_not_collect():
     # Food sits on a cell that ignites this step; the agent moves onto it,
     # dies on arrival, and the item stays (DECISION in env.step).

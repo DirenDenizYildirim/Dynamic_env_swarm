@@ -43,9 +43,12 @@ environment's step order and reward structure are theorem hypotheses.
 Four properties, each enforced by test rather than by convention:
 
 1. **Reward independence (Def. 2).** The reward function reads task variables
-   only — never hazard, smoke, or structural state, and no auxiliary cost or
-   constraint channel either. Survival is learned *solely* because death
-   truncates future task return. `che/tests/test_reward_independence.py`.
+   and the agents' alive transition only — never hazard, smoke, or structural
+   state, and no auxiliary cost or constraint channel either. Survival is
+   learned through two hazard-blind routes: death ends an agent's future task
+   return, and each death costs a fixed 0.5 whatever its cause.
+   `che/tests/test_reward_independence.py`,
+   `che/tests/test_lethality.py::test_death_penalty_is_cause_blind`.
 2. **Bitwise-exact nested ablations.** With `kappa_A=0`, `kappa_B=0` or
    `delta=0`, trajectories are **bitwise identical** to the corresponding
    nested model under the same PRNG keys — achieved by having every

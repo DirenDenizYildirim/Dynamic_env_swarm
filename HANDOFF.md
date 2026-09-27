@@ -26,33 +26,37 @@
   OpenReview. The venue pair (TMLR, then DMLR) is unchanged. Addendum, same
   day: author kit + Docker ALLOWED (the owner runs the download and the
   install; the classifier refuses the download from the session), and
-  `paper/tex/` FROZEN as the DMLR fallback. Still owed by the builder: read
+  `paper/tex/` FROZEN as the DMLR fallback. **Docker waits for the owner's
+  full `pacman -Syu`** (planned for the evening of 2026-09-27); after it, a
+  plain `sudo pacman -S docker` works. (Before it, the mirrors 404 on the
+  versions the stale sync DB expects; the Arch Linux Archive route is only
+  needed if the upgrade is postponed again.) Still owed by the builder: read
   the kit in full, check `render_episode.py` on Phase-6 checkpoints, write a
   port plan.
-- **Artifacts are a single copy on the owner's laptop.** All Phase-6 archives
-  were re-verified against their committed hashes on 2026-09-27
-  (`phase6_report.md` §3). No second copy is recorded anywhere.
+- **Backup, in progress.** All Phase-6 archives were re-verified against
+  their committed hashes on 2026-09-27 (`phase6_report.md` §3). A second
+  copy was built that day at `~/che_backup_2026-09-27/`:
+  `che_results_2026-09-27.tar` (all of `che/bench/results/` +
+  `phase2_results/`, 10,353 entries, sha256 `fd7f31df…b5fda402`) and a git
+  bundle at `2f1e386` (sha256 `af00b53f…aa8b8699`); full hashes in its
+  `SHA256SUMS.txt`. **The owner is uploading it to their cloud server;
+  once confirmed, record it in `phase6_report.md` §3.** `main` was pushed to
+  GitHub the same day.
 
 ## Next, in order
 
-1. **The Definition 2 wording: OWNER RULING OWED.** Options were put to the
-   owner on 2026-09-27, in chat only, so **nothing is ruled yet**. The defect:
-   `docs/theory_foundations.md:74-75` says "no shaping term … survival is
-   learned *solely* because death truncates future task return", but every
-   config carries `death_penalty: 0.5`. The same claim is in `README.md:47`,
-   `paper/00_common_spine.md:33` (abstract). `paper/tex/sections/03_environment.tex`
-   has a near-correct draft with one error: it says *removing* the penalty
-   moved High survival 0.575 → 0.866 "with the task metric intact", but
-   *adding* it did, and completion moved too (0.765 → 0.821, D4). It is a
-   theory-doc change, so **transcribe the ruling into the decision log
-   first**, then edit every site in one commit.
+1. ~~Definition 2 wording~~ **DONE 2026-09-27** (DEF. 2 WORDING RULING,
+   Option 2): the reward is hazard-blind, prices deaths whatever their cause
+   (new `test_death_penalty_is_cause_blind`), and "no shaping term" /
+   "solely" are struck. When porting, carry the hazard-blind note and the
+   Phase-2 d_p ablation **with its scope** into `submission.md`.
 2. **Splice branch B into the spine** (checklist, "Branch-B carry-overs"):
    k = 40 → 72 (spine lines 46 and 279) with the k = 60 prefix beside it;
    the DBCA sentence moves to the sweep; qualify every "co-active" (A-only in
    mixed training); check whether "rare and bursty" was measured on mixtures.
    The spine is the source the Beyond PDF `submission.md` is ported from.
 3. **`paper/numbers_ledger.md`: does not exist yet.** Build it before filling
-   numbers. The tex draft carries 12 `\todo{verify …}` values
+   numbers. The tex draft carries 14 `\todo{verify …}` values
    (`08_methodology.tex`, `03_environment.tex`) whose text will be reused.
    Every number needs its committed source.
 4. **`paper/tex/` is FROZEN** as the DMLR-fallback source (addendum,

@@ -29,8 +29,9 @@ requires no coordination (see Limitations). "Multi-agent" is safe.
 > coupled to structural collapse (collapse seeds fire) and to perception
 > (smoke attenuates observation by Beer–Lambert transmittance), with an
 > independent communication-denial axis. The hazard is an *ambient survival
-> stressor*: it never enters the reward or any cost channel, so survival is
-> learned only through the task return. Three properties make CHE an
+> stressor*: it enters neither the reward nor any cost or constraint channel;
+> the reward sees only task variables and agent deaths, which it prices the
+> same whatever their cause. Three properties make CHE an
 > instrument rather than a demo: severity is defined by a *measured*
 > percolation critical point (β̂_c = 0.500 ± 0.005, reproducing Kesten's
 > exact value), every stressor is a parameter of one kernel so that
@@ -146,16 +147,17 @@ with sketches and full proofs in the appendix.
 - **Def. 1** factored Dec-POMDP; **Prop. 1** the step order
   collapse → hazard → smoke → agents → comms, observations from the
   post-step state. State it as the hypothesis of the theorems, which it is.
-- **Def. 2** ambient survival stressor. **Wording must change before
-  submission** (checklist item 1): the training reward carries a death
-  penalty of 0.5 per newly disabled agent, which reads the alive transition,
-  an X variable, and never h, ρ or c. Def. 2 as written says "no shaping
-  term" and "solely because death truncates future task return". Replace
-  with: *the hazard enters neither R nor any cost/constraint channel; R is a
-  function of task variables and the agent-state transition only. A death
-  penalty on the alive transition is permitted and is used; the dp = 0
-  ablation is reported.* Then report the Phase-2 dp = 0 vs 0.5 numbers so
-  the reader sees what the term buys (High survival 0.575 → 0.866).
+- **Def. 2** ambient survival stressor, **as reworded 2026-09-27** (DEF. 2
+  WORDING RULING; `docs/theory_foundations.md` Def. 2 is the text): R is a
+  function of task variables and the alive transition only; no term reads
+  h, ρ or c; no cost/constraint channel. Survival is learned through two
+  hazard-blind routes, truncated task return and a fixed d_p = 0.5 per
+  death whatever its cause. Include the **hazard-blind vs hazard-priced**
+  note (JaxWildfire prices burning cells; we price outcomes; the
+  cause-blindness test) and the Phase-2 d_p ablation **with its scope**
+  (pillar-only, 500 updates, 3 seeds): High survival 0.575 → 0.866 and
+  completion 0.765 → 0.821; Medium survival 0.931 → 0.951 at unchanged
+  completion; Low tied.
 - **Def. 3 / Prop. 2 / Cor. 1** fire CA and its exact bond-percolation
   equivalence for the idealized kernel. Burn time is exactly one step;
   single ignition at reset; say so.

@@ -67,8 +67,8 @@ The hazard is an \emph{ambient survival stressor} iff
   of the agent-state transition only: $R(s,a,s') = R(\mathrm{task}(x), a,
   \alpha \to \alpha')$, where $\alpha$ are the alive flags. No term of $R$
   references $h$, $\rho$ or $c$, and the hazard appears in no auxiliary cost
-  or constraint channel: no shaping term, no CMDP constraint, no Lagrangian
-  penalty, no safety critic.
+  or constraint channel: no CMDP constraint, no Lagrangian penalty, no
+  safety critic.
   \item \emph{Non-adversarial.} $T_H$ is a fixed stochastic kernel with no
   optimizing, learning or best-responding component.
 \end{enumerate}
@@ -82,9 +82,11 @@ observation kernel (Coupling B). We state one thing plainly that the phrase
 ``hazard-independent reward'' can hide: the training reward \emph{does}
 include a penalty of $0.5$ per newly disabled agent. That term reads the
 alive transition, an $\mathcal{X}$ variable, and never the hazard; it is
-permitted by Clause~1 and it matters. In the calibration phase, removing it
-moved survival at the highest severity from \todo{verify 0.575} to
-\todo{verify 0.866} with the task metric intact. The reader should therefore
+permitted by Clause~1, it prices a fire death and a collapse death
+identically, and it matters. In the calibration phase, adding it moved
+survival at the highest severity from \todo{verify 0.575} to
+\todo{verify 0.866}, and completion from \todo{verify 0.765} to
+\todo{verify 0.821}. The reader should therefore
 understand ``the reward cannot see the hazard'' literally: it sees deaths, not
 fire. A test enforces Clause~1 mechanically by constructing two states that
 differ only in hazard, smoke and structure and asserting identical rewards.

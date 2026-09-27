@@ -5282,3 +5282,80 @@ does not resolve the Def. 2 wording question, which applies in either format.
    (notably `03_environment.tex`'s Def. 2 passage and `08_methodology.tex`)
    may be ported into `submission.md`; the `\todo{verify}` numbers go
    through `paper/numbers_ledger.md` either way.
+
+
+## DEF. 2 WORDING RULING — Option 2: the reward is hazard-blind, not hazard-free of deaths (owner, 2026-09-27)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28).
+Closes `paper/99_pre_submission_checklist.md` defect 1 (found 2026-09-07).
+
+### The defect
+
+Def. 2 clause 1 (as amended 2026-08-05) said "no shaping term" and
+"**Survival is learned solely because death truncates future task return**",
+and wrote the reward as $R(s,a) = R(\mathrm{task}(x), a)$. The code
+(`che/env/env.py:349`) subtracts `death_penalty` × (agents newly disabled this
+step), and every training config carries `death_penalty: 0.5`. **D4
+(2026-07-19) itself calls that penalty "a shaping term on the task reward"**,
+so the August amendment contradicted an earlier ruling, and the formula
+omitted the next-state dependence the penalty needs. The same claim sat in
+`README.md` item 1 and the spine abstract.
+
+### THE RULING
+
+Three options were put to the owner (1: adopt the drafted wording; 2: Option 1
+plus a hazard-blind vs hazard-priced remark and a cause-blindness test;
+3: strike two phrases only). The owner ruled **Option 2 if its test is not
+expensive**. Builder's measured cost: one ~20-line test beside the existing
+`test_step_ignition_under_stationary_agent_kills_and_penalizes`, no change
+to `che/env` or any production code, seconds of runtime. **Option 2 is
+adopted.**
+
+**Clause 1 becomes** (theory doc, verbatim in substance):
+
+> $R$ is a function of task variables and of the agents' alive transition
+> only: $R(s,a,s') = R_{\mathrm{task}}(\mathrm{task}(x), a, \mathrm{task}(x'))
+> - d_p\,|\{i : \alpha_i = 1,\ \alpha'_i = 0\}|$. No term of $R$ references
+> $h$, $\rho$ or $c$, and the hazard appears in no auxiliary cost or
+> constraint channel: no CMDP constraint, no Lagrangian penalty, no safety
+> critic. Survival is learned through two **hazard-blind** routes: death ends
+> an agent's future task return, and each death costs a fixed $d_p$
+> ($= 0.5$, D4) whatever its cause.
+
+"No shaping term" and "solely" are **struck**.
+
+**Added, the hazard-blind vs hazard-priced note:** the penalty prices an
+outcome, not the hazard. It is identical for a fire death and a collapse
+death, and would be for any cause; a hazard-priced reward (JaxWildfire's
+penalty on burning cells) signals the hazard's state whether or not anything
+is harmed. At $d_p = 0$ the old "solely" reading holds exactly.
+
+**Added, the test:** `che/tests/test_lethality.py::
+test_death_penalty_is_cause_blind`. One agent dies by fire in one composed
+`step` and by collapse in another, with identical task outcomes; the two
+rewards must be equal, each equal to $-d_p$, and each death attributed to its
+own cause.
+
+**The ablation is reported as it exists, never re-run** (no GPU spend): Phase 2
+M2.5 (`che/bench/results/phase2/phase2_report.md`), pillar-only (no
+couplings), 500 updates, 3 seeds (± is half the min–max range), before the
+Phase 3–4 observation changes. $d_p$ 0 → 0.5: High survival 0.575 → 0.866 and
+completion 0.765 → 0.821; Medium survival 0.931 → 0.951, completion 0.750 at
+both; Low tied.
+
+### Sites edited in this commit
+
+`docs/theory_foundations.md` (Def. 2 clause 1 + the note), `README.md` item 1,
+`CLAUDE.md` invariant 1 (task variables include the alive transition),
+`paper/00_common_spine.md` (abstract + §3 Def. 2 bullet), the frozen
+`paper/tex/sections/03_environment.tex` (clause 1, and a reversed sentence: it
+said *removing* the penalty raised survival "with the task metric intact";
+*adding* it did, and completion moved too), the checklist, `HANDOFF.md`.
+
+### What this does NOT change
+
+The reward code, the `death_penalty` lock (0.5), `test_reward_independence.py`,
+the substance of invariant 1 (the reward still reads no hazard, smoke or
+structure), the JaxWildfire/VULCAN positioning, and any registration or
+branch reading. `paper/branch_B.md` §5 item 6 already scopes the asymmetry
+as a penalized channel against a rewarded one; it stands.

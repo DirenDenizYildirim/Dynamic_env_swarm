@@ -67,13 +67,18 @@ $O_\theta^i(o_i \mid s) = O^i_{\kappa_B}(o_i \mid x, h, c, k)$, where the
 
 The hazard is an **ambient survival stressor** iff:
 
-1. **Reward-independence (strengthened 2026-08-05):** $R(s, a)$ is measurable
-   with respect to task variables only — formally,
-   $R(s,a) = R(\mathrm{task}(x), a)$; no term of $R$ references $h$ or $c$ —
-   **and the hazard appears in NEITHER the reward NOR any auxiliary cost or
-   constraint channel**: no shaping term, no CMDP constraint, no Lagrangian
-   penalty, no safety critic. **Survival is learned solely because death
-   truncates future task return.** The hazard influences return *only*
+1. **Reward-independence (strengthened 2026-08-05; reworded 2026-09-27,
+   DEF. 2 WORDING RULING):** $R$ is a function of task variables and of the
+   agents' alive transition only —
+   $R(s,a,s') = R_{\mathrm{task}}(\mathrm{task}(x), a, \mathrm{task}(x'))
+   - d_p\,|\{i : \alpha_i = 1,\ \alpha'_i = 0\}|$; no term of $R$
+   references $h$, $\rho$ or $c$ — **and the hazard appears in NEITHER the
+   reward NOR any auxiliary cost or constraint channel**: no CMDP constraint,
+   no Lagrangian penalty, no safety critic. **Survival is learned through two
+   hazard-blind routes:** death ends an agent's future task return, and each
+   death costs a fixed $d_p$ ($= 0.5$, D4) whatever its cause. *(The
+   2026-08-05 wording said "no shaping term" and "solely"; D4 had already
+   called $d_p$ a shaping term, so both are struck.)* The hazard influences return *only*
    through the transition kernel (disabling agents: $\alpha_i \to 0$ when
    agent $i$ occupies a Burning cell) and the observation kernel
    (Coupling B). Contrast, two lineages this clause separates us from: the
@@ -86,6 +91,21 @@ The hazard is an **ambient survival stressor** iff:
    2026-09-26, CITATION REPOSITIONING RULING: VULCAN, named here before, is
    a VLM navigation planner, not a CMDP; it is a fire/smoke domain
    neighbor.)*
+
+   *Note on clause 1 — hazard-blind, not hazard-priced (2026-09-27).* The
+   death penalty prices an **outcome**, not the hazard: it is identical for
+   a fire death and a collapse death, and would be for any cause
+   (`che/tests/test_lethality.py::test_death_penalty_is_cause_blind`). A
+   hazard-priced reward — JaxWildfire's penalty on burning cells — signals
+   the hazard's state whether or not anything is harmed; this reward carries
+   information about the hazard only through outcomes the task also
+   suffers. At $d_p = 0$ the stronger reading holds exactly: survival is
+   learned solely because death truncates future task return. The only
+   $d_p$ ablation is Phase 2's M2.5 (pillar-only, no couplings, 500 updates,
+   3 seeds; `che/bench/results/phase2/phase2_report.md`): $d_p$ 0 → 0.5
+   moved High survival 0.575 → 0.866 and completion 0.765 → 0.821, Medium
+   survival 0.931 → 0.951 at unchanged completion, Low tied. It is reported
+   with that scope and not re-run.
 2. **Non-adversarial:** $T_H$ is a *fixed* stochastic kernel — there is no
    optimizing, learning, or best-responding component in the environment. This
    distinguishes the setting from robust/minimax MARL and pursuit-evasion.

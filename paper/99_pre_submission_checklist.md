@@ -6,7 +6,11 @@ how badly each one could hurt the submission.
 
 ## Defects found 2026-09-07 (not previously recorded anywhere in the tree)
 
-- [ ] **Definition 2 wording vs the death penalty.** Def. 2 (amended
+- [x] **DONE 2026-09-27 (DEF. 2 WORDING RULING, Option 2)**: clause 1
+      reworded, hazard-blind note + cause-blindness test added, README,
+      spine and CLAUDE.md updated. Still owed: carry the note and the scoped
+      ablation into `submission.md` when porting. Original defect:
+      **Definition 2 wording vs the death penalty.** Def. 2 (amended
       2026-08-05) says "no shaping term" and "survival is learned solely
       because death truncates future task return". Every training config
       carries `death_penalty: 0.5`, applied per newly disabled agent at
@@ -102,9 +106,8 @@ how badly each one could hurt the submission.
       re-engineered (completion 71.6 % at k = 72, 60.2 % at k = 60).
 - [ ] **Branch-B carry-overs into the spine (2026-09-26):** abstract and §9
       say k = 40 — the realized primary is k = 72 (k = 60 prefix beside it);
-      the abstract's "never enters the reward or any cost channel, so survival
-      is learned only through the task return" contradicts the 0.5 death
-      penalty — reword as in branch_B.md §5 item 6; the DBCA sentence belongs
+      ~~the abstract's "…learned only through the task return"~~ (reworded
+      2026-09-27, DEF. 2 WORDING RULING); the DBCA sentence belongs
       to the sweep (ENDPOINT CONFOUND entry); the invariant-#5 "co-active"
       counter is co-active only in all-on configurations (SECONDARY RESULT) —
       qualify every use, including tier-1 "rare and bursty" if it was

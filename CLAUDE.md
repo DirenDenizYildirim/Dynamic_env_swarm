@@ -30,7 +30,10 @@ structure are theorems' hypotheses.
 ## Non-negotiable invariants (violating these invalidates the paper)
 
 1. **Reward independence (Def. 2):** the reward function may read task
-   variables only — never hazard, smoke, or structural state. Enforced by
+   variables only — never hazard, smoke, or structural state. Task variables
+   include the agents' alive transition: the D4 death penalty reads it and is
+   cause-blind (Def. 2 as reworded 2026-09-27; `test_lethality.py::
+   test_death_penalty_is_cause_blind`). Enforced by
    `tests/test_reward_independence.py` (two states differing only in
    hazard/structure/smoke must yield identical rewards). Do not weaken this
    test; if a task design seems to need hazard-aware reward, stop and ask.
