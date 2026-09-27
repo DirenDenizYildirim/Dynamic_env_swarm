@@ -77,6 +77,21 @@ how badly each one could hurt the submission.
 - [ ] Every figure readable in greyscale; floor bars on every bar chart
       that has a floor.
 
+## Beyond PDF format (SUBMISSION FORMAT RULING, 2026-09-27)
+
+- [ ] Owner: author kit + Docker allowed? Otherwise preview in the web editor.
+- [ ] Owner: fate of `paper/tex/` (proposal: frozen as the DMLR fallback).
+- [ ] `render_episode.py` checked on Phase-6 checkpoints (last touched
+      2026-07-30, before the traced-theta refactor).
+- [ ] `authors` anonymous in `submission.md`; every interactive figure
+      self-contained (no author-linked URL, font or data source).
+- [ ] Every GIF has a static companion or a caption that carries it, so the
+      browser-printed PDF stands alone.
+- [ ] GIFs illustrate recorded behaviour and grade nothing; any claim is made
+      in the text with its floor.
+- [ ] No acceptance-rate figure anywhere: the advice behind the ruling is
+      advice, and no statistics are published.
+
 ## Post-unblind, before writing §9
 
 - [x] Identify the branch from the registered table, apply the falsifier

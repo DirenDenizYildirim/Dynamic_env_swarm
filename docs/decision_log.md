@@ -5187,3 +5187,81 @@ where they conflict. No constant, lock, config or test moves.
   (checkpoint, metric) evals identical; max |Δ| = 2.4e−4 (one agent in one of
   512 episodes); JOINT − ISO interaction ≤ 1e−5. **Γ(t) mixes cards at
   t = 1000 at no measurable cost**; the single-card curve has the same signs.
+
+
+## SUBMISSION FORMAT RULING — TMLR Beyond PDF (owner, 2026-09-27)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28).
+Post-unblind (branch B, 2026-09-26); no GPU spend remains. **Only the format
+changes; the venue does not.**
+
+### THE RULING
+
+> **The TMLR submission is made in the *Beyond PDF* format**: a
+> Markdown/HTML article on the Distill template, with GIFs and interactive
+> HTML figures, uploaded on OpenReview as a "Beyond PDF submission". TMLR
+> stays primary and DMLR stays the sequential fallback (VENUE RULING II,
+> unchanged).
+
+### Grounds, as the owner gave them
+
+Advice from a person in the field who has worked with TMLR's reviewers: submit
+in the new format, because reviewers weigh a paper's **structure** as much as
+its contribution, and a paper strong on both can use the format to its
+advantage. **This is recorded as advice, not as a measurement.** Checked this
+session against the format's own pages: **TMLR publishes no acceptance
+statistics for Beyond PDF** (1 accepted paper and 4 under review listed on
+2026-09-27). Under the numbers-enter-derived sub-rule (2026-07-28), **no
+acceptance rate or odds figure enters any document on the strength of this
+advice.**
+
+Builder's fit assessment (supporting, not a ground of the ruling): the hazard
+is visual (spread, smoke attenuation, collapse-seeded ignition) and hard to
+show in static figures; `che/scripts/render_episode.py` already renders one
+episode of a trained policy to a GIF on CPU, at $0; `paper/00_common_spine.md`
+and `paper/branch_B.md` are Markdown already, while `paper/tex/` is missing
+five sections and its bibliography.
+
+### Facts read from the format's pages, 2026-09-27
+
+- Announced by TMLR 2025-11-25 (jmlr.org/tmlr news). Submitted on OpenReview
+  "just like standard TMLR submissions", **double-blind**; nothing states a
+  different review standard.
+- Folder: `submission.md` (YAML header: `layout: distill`, anonymous
+  `authors` during review, `bibliography: submission.bib`) + `assets/{img,
+  gif, html}/submission/` + `assets/bibliography/submission.bib`. Videos go
+  in as GIFs; interactive figures as HTML (JavaScript allowed).
+- The PDF is printed from the browser, not typeset; GIFs are static in it.
+- Submissions under review are rendered **publicly** (anonymously) at
+  tmlr-beyond-pdf.org/under_review.
+- Local preview (`compile_submission.py`) requires **Docker**; a web editor
+  also exists.
+
+### Constraints this project adds to the format
+
+1. **Double-blind, strictly.** Interactive figures are self-contained: no
+   script, font or data loaded from any URL tied to the authors, and no repo,
+   OSF or account-resolving hash anywhere in `submission.md` or `assets/`.
+2. **Animations illustrate; they never grade** (instruments law, clause 2).
+   A GIF shows recorded behaviour; any claim it seems to support must be made,
+   with its floor, in the text, or not at all.
+3. **Every quantity shown interactively obeys the same rules as a static
+   figure**: floor bars where a floor exists, intervals at their registered
+   level, the registered reading first.
+4. **The browser-printed PDF must stand alone**, so every GIF gets a static
+   companion or a caption that carries its content.
+
+### What this entry does NOT decide — OWED
+
+- **Owner:** whether to allow downloading the author kit (the download was
+  refused by this session's permission classifier as external code) and
+  installing **Docker**, a tool outside the `CLAUDE.md` stack. Without
+  them, the web editor is the only preview.
+- **Owner:** what happens to `paper/tex/`. Builder's proposal: freeze it as
+  the DMLR-fallback source and do not develop it further.
+- **Builder:** confirm `render_episode.py` runs on the Phase-6 checkpoints
+  (it predates the traced-theta refactor); a port plan from the spine and
+  `branch_B.md` into `submission.md`.
+
+It changes no constant, lock, test, registration or branch reading, and it
+does not resolve the Def. 2 wording question, which applies in either format.
