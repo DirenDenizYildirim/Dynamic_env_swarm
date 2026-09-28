@@ -104,17 +104,26 @@ how badly each one could hurt the submission.
 - [x] **DONE 2026-09-27:** `render_episode.py` checked on Phase-6 checkpoints (works unchanged; first renders in `paper/renders/2026-09-27/`). Was: (last touched
       2026-07-30, before the traced-theta refactor).
 - [x] **Scaffold built, 2026-09-27** (web session, branch
-      `claude/cool-cori-dg8c4u`, **not merged**): kit read in full and
+      `claude/cool-cori-dg8c4u`; **merged by the owner 2026-09-28**, PR #1,
+      and reviewed the same day with no defect found): kit read in full and
       noted in `paper/beyond_pdf/KIT_NOTES.md` (no kit file enters the
       tree); `submission.md` skeleton with the abstract verbatim and ledger
       IDs; figure slots 1–10; GIF slots; `submission.bib` = the 37 verified
       entries, verbatim.
 - [ ] **Preview the skeleton with the kit.** S4 FAILED in the web container
       (no Docker daemon; starting it refused by the session's permission
-      classifier). Routes: `KIT_NOTES.md` §S4.
+      classifier). Routes: `KIT_NOTES.md` §S4. The owner's interim preview
+      (2026-09-28) is a style-mimicking HTML/CSS artifact; it is a writing
+      aid and does not discharge this item.
 - [ ] Owner rulings the scaffold raised: `description` field, title,
       ISO/JOINT GIFs shown or not, bib fields that render raw LaTeX,
       rubygems.org + Debian mirrors for the preview (`HANDOFF.md` item 4).
+- [ ] **Comment stripping at staging** (decision log, WRITING ROLES, OWED):
+      `assets/` and the page source are public during review, so the
+      `%` lines in `submission.bib` and the HTML comments in `submission.md`
+      are stripped in the staged upload copy (never in the repo copy) once
+      the owner rules. Then re-grep the staged copy for names, accounts,
+      repo URLs and resolving hashes.
 - [ ] `authors` anonymous in `submission.md`; every interactive figure
       self-contained (no author-linked URL, font or data source).
       (Authors: Anonymous in the skeleton, 2026-09-27. Interactive

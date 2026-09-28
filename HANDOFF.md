@@ -1,4 +1,4 @@
-# HANDOFF — session state for the next model (rewritten 2026-09-27)
+# HANDOFF — session state for the next model (rewritten 2026-09-27; updated 2026-09-28)
 
 **Phase 6 is CLOSED. This is the writing phase.** Read, in order:
 
@@ -85,9 +85,23 @@
      β̂_c's R_L logistic centres.
    - **O-3 (builder):** re-measure the supplement size with `git archive`.
    - **O-4 (owner):** confirm TMLR's 100 MB limit on the venue page.
-4. **Beyond PDF scaffold: PUSHED for review, NOT merged** (web session,
-   2026-09-27, branch `claude/cool-cori-dg8c4u`, one commit per milestone
-   S0–S5). **Review that diff before starting new paper work.**
+4. **Beyond PDF scaffold: MERGED** by the owner 2026-09-28 (PR #1,
+   `e2d1618`; built in a web session 2026-09-27, one commit per milestone
+   S0–S5). **Reviewed 2026-09-28, no defect found.** Checked independently:
+   no change under `che/`, `docs/`, `pyproject.toml`, `uv.lock` or
+   `paper/tex/`. The abstract is word-for-word the spine's (one declared
+   line-break join). All 14 ledger IDs point at the right rows. The bib is
+   the 37 source entries, exactly. The assets match the renders' hashes.
+   The GIFs carry only loop and frame-timing blocks, and the PNGs no text
+   chunks. The remote branch `claude/cool-cori-dg8c4u` can be deleted
+   (owner).
+   **Writing starts 2026-09-28 under the WRITING ROLES ruling:** the owner
+   writes **`paper/finale.md`** (later copied to `submission.md`); the
+   builder supplies numbers (ledger ID + source + scope), constraints,
+   choices and questions, then checks, and writes no paper text. **Every
+   writing session starts from `writing_session_prompt.md`.** Step 1, the
+   title, is prepared in it.
+   `paper/finale.md` is not yet created.
    - **Built.** `paper/beyond_pdf/` in the kit's layout:
      - `KIT_NOTES.md` covers the kit (URL and sha256; no version or licence
        stated), its YAML fields, how bib and assets resolve, the preview
@@ -103,22 +117,29 @@
      in a scratch copy of the kit (`KIT_NOTES.md` §S1.8).
    - **S4 preview FAILED at the Docker step:** the web container has no
      Docker daemon, and starting it was refused by the session's permission
-     classifier. The page has never been rendered. Static checks passed,
-     including the bib through the kit's own Distill parser (37/37). The
-     routes to a real preview are in `KIT_NOTES.md` §S4; the laptop is
-     route (a).
-   - **Owner decisions the scaffold raised** (proposals until transcribed):
-     - what `description` carries (proposed: the abstract's first
-       sentence);
-     - the title (the first spine candidate is PROVISIONAL and uses
-       "ambient");
+     classifier. Static checks passed, including the bib through the kit's
+     own Distill parser (37/37). **Interim preview (owner, 2026-09-28):** an
+     HTML/CSS artifact that mimics the style. It is a writing aid, not the
+     kit's build, so the kit preview (`KIT_NOTES.md` §S4, route (a) laptop
+     Docker or (c) web editor) is still owed before upload.
+   - **Owner decisions the scaffold raised** (proposals until transcribed),
+     with the builder's recommendation from the 2026-09-28 review:
+     - what `description` carries. Proposed: the abstract's first
+       sentence. Recommended: accept, and look again once a preview shows
+       the subtitle repeating the Abstract's opening.
+     - the title: the first spine candidate is PROVISIONAL and uses
+       "ambient".
      - whether to show the ISO/JOINT GIFs at all (in `assets/`, not
-       placed);
-     - whether to touch the 8 bib fields that render raw LaTeX;
-     - whether the preview may pull from rubygems.org and the Debian
-       mirrors.
-   - `CLAUDE.md`'s layout block does not yet list `paper/beyond_pdf/` or
-     `paper/renders/`.
+       placed). Recommended: not in the main text. One episode each differs
+       by 2 of 12 agents against a +0.96-point effect; an appendix with the
+       required caption at most.
+     - whether to touch the 8 bib fields that render raw LaTeX.
+       Recommended: fix them in `related_work_verification.md` (Unicode
+       characters), then re-copy, so the bib stays verbatim.
+     - rubygems.org and the Debian mirrors: moot unless the preview runs in
+       the web container (route b).
+   - `CLAUDE.md`'s layout block lists `paper/beyond_pdf/`, `paper/renders/`
+     and `paper/numbers_ledger.md` (refreshed 2026-09-28).
    **`paper/tex/` is FROZEN** as the DMLR-fallback source (addendum,
    2026-09-27). It does not compile (`main.tex` inputs sections 02, 04–07 and
    `references.bib`, none of which exist); do not develop it.
@@ -147,12 +168,20 @@
      decision-log entry. New fact from 2026-09-27: its `SHA256_CKPT.txt`
      holds **one** hash (rep1, which verifies); the other 11 archives were
      never hashed, and rep2 is truncated. It grades nothing either way.
+   - **comment stripping before upload** (decision log, WRITING ROLES,
+     OWED). `assets/` and the page source are public during review, so the
+     bib's `%` notes and `submission.md`'s ledger/TODO comments would ship
+     as they stand. Builder's proposal: strip them when staging into
+     `submission_folder/`, and keep them in the repository copy.
 
 After submission: the follow-up is the separate `Expendable_swarm` repo.
 
-## Working agreements (unchanged)
+## Working agreements
 
-Rulings bind only once transcribed. Numbers enter documents derived or
+**Writing roles (2026-09-28, WRITING ROLES):** the owner writes the paper;
+the builder gives numbers with ledger ID, source and scope, plus labelled
+suggestions, never paper text or placement. Rulings bind only once
+transcribed. Numbers enter documents derived or
 measured. Bars come with floors — per-metric, per-hardware, per-artifact.
 Contrasts graded on the contrast's SE. Instruments state what they are blind
 to. Run the CPU suite chunked and thread-capped (and never `pkill -f pytest`

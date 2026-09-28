@@ -85,12 +85,13 @@ structure are theorems' hypotheses.
 
 ## Repository layout
 
-Refreshed against the tree 2026-09-27 (Phase-6 close; previously
-2026-07-31). **Keep it that way**: the phase-close checklist requires
-re-reading this block against the actual tree, because a new session treats
-it as authoritative before it has read any code. It has omitted
-`che/calibration/` and `che/eval/` (to 2026-07-31) and `paper/` (to
-2026-09-27) — whole directories each time.
+Refreshed against the tree 2026-09-28 (Beyond PDF scaffold merged;
+previously 2026-09-27, 2026-07-31). **Keep it that way**: the phase-close
+checklist requires re-reading this block against the actual tree, because a
+new session treats it as authoritative before it has read any code. It has
+omitted `che/calibration/` and `che/eval/` (to 2026-07-31), `paper/` (to
+2026-09-27), and `paper/beyond_pdf/`, `paper/renders/` and
+`paper/numbers_ledger.md` (to 2026-09-28) — whole directories each time.
 
 ```
 CLAUDE.md
@@ -108,15 +109,31 @@ docs/
 phase6_design_v2.md               # REGISTERED Phase-6 design (v1 archival)
 phase6_framing_branches.md        # REGISTERED outcome branches + falsifiers
 phase6_redteam_*.md, phase6_framing_allocation_ruling.txt  # Phase-6 record
-phase*_prompt.md, *_prompt.md     # archival phase prompts
+phase*_prompt.md, *_prompt.md     # archival phase prompts, EXCEPT
+writing_session_prompt.md         #   LIVE: starts every paper-writing session
+                                  #   (owner writes paper/finale.md)
 chaos_robotics_research_plan.md   # follow-up plan (most of it dropped
                                   #   2026-09-09; see paper/future_work_*)
 paper/                            # the TMLR submission
+  beyond_pdf/                     # THE SUBMISSION (merged 2026-09-28, PR #1):
+                                  #   submission.md + assets/{img,gif,html,
+                                  #   bibliography}/ in the author kit's
+                                  #   layout; KIT_NOTES.md = kit facts, the
+                                  #   staging + preview procedure. No kit
+                                  #   file is in the tree
+  numbers_ledger.md               # every paper number -> its committed
+                                  #   source + row ID; new numbers get a row
+                                  #   FIRST, and submission.md cites the ID
+  renders/                        # episode GIFs + static companions with
+                                  #   their selection rule (laptop-only:
+                                  #   checkpoints are gitignored)
   00_common_spine.md              # branch-independent draft (~80 % of paper)
   branch_{A,B,C,D}.md             # pre-registered framings; B LANDED
                                   #   (2026-09-26) and is filled; A/C/D stay
                                   #   in the repo, out of the submission
   99_pre_submission_checklist.md  # everything owed before submission
+  README.md                       # pre-grid guide to the branch files
+                                  #   (2026-09-07; historical)
   related_work_verification.md    # citation audit + verified BibTeX — the
                                   #   ONLY source a .bib entry may come from
   future_work_robotics.md         # superseded in part (Expendable_swarm repo)

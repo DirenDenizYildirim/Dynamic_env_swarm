@@ -5424,3 +5424,81 @@ documented. A tar of the same files was handed to the owner.
 **Reading rule restated:** the two trained episodes differ by 2 of 12
 agents, far beyond the measured +0.96-point survival effect. They illustrate
 and grade nothing; whether to show them side by side is an owner decision.
+
+
+## WRITING ROLES — the owner writes the paper; the builder supplies numbers and suggestions (owner, 2026-09-28)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28).
+Issued when the Beyond PDF scaffold (PR #1, S0–S5) was merged and reviewed,
+at the start of writing `paper/beyond_pdf/submission.md` in full.
+
+### THE RULING
+
+> **The owner writes the paper.** The builder gives no paper text and does
+> not decide what goes where. The builder's part is **the real numbers** and
+> **suggestions**.
+
+Owner's ground: the project is large, and its **scale** is the problem the
+owner expects to face while writing, not the prose.
+
+### Builder's reading, until the owner corrects it
+
+- **A number is given with its provenance:** the value, its
+  `paper/numbers_ledger.md` row ID, the committed source (file and line) and
+  its scope (arm, severity, card, k, CI level, floor, registered or
+  exploratory). A number with no ledger row is not given until it has one,
+  derived or measured from a committed artifact in the same session (the
+  numbers-enter-derived sub-rule, 2026-07-28, unchanged).
+- **A suggestion is labelled as one.** It names the defect and the rule
+  behind it: a claim a number does not support, a dropped scope, a
+  registered reading not placed first, a limitation left out. The fix and
+  its wording are the owner's.
+- `paper/00_common_spine.md` and `paper/branch_B.md` stay the record the
+  owner writes from. The builder does not paste from them into
+  `submission.md`, and edits `submission.md` only mechanically (ledger-ID
+  comments, staging) and only when the owner asks.
+- The bookkeeping files stay the builder's: the ledger, the checklist,
+  `HANDOFF.md`, this log and `KIT_NOTES.md`.
+
+### Recorded the same day: the interim preview
+
+The owner previews the writing with an **HTML/CSS artifact that mimics the
+Beyond PDF style**. It is a writing aid and not the kit's Jekyll/Distill
+build, so it shows nothing the kit's build decides: the TOC anchors, the
+`$` → `$$` rewrite, Liquid includes, citation rendering and the
+browser-printed PDF. The checklist item *Preview the skeleton with the kit*
+stays open until a kit build runs before upload (`KIT_NOTES.md` §S4, route
+(a) laptop Docker or (c) the web editor). The rubygems.org / Debian-mirror
+question arises only on route (b), the web container.
+
+### OWED, owner, before upload: comment stripping
+
+Everything under `assets/` is served publicly during review, and HTML
+comments stay in the page source (`KIT_NOTES.md` §S1.7, S1.9 item 6). As
+staged today, the upload would expose the `%` notes in `submission.bib`
+("the owner reads this work before it is cited") and every ledger-ID, TODO
+and slot comment in `submission.md`, which name repository paths and pending
+owner decisions. None names a person or an account (checked 2026-09-28), but
+all of it is internal process. **Builder's proposal:** strip HTML comments
+and `%` lines when staging into the kit's `submission_folder/`, and keep
+them in the repository copy, where the ledger-ID rule binds. Not adopted
+until ruled.
+
+### What this entry does NOT change
+
+No constant, lock, test, registration or branch reading. The ledger rule, the
+format constraints of the SUBMISSION FORMAT RULING and `paper/tex/`'s freeze
+are unchanged.
+
+### ADDENDUM (owner, 2026-09-28, same session): the session format and the manuscript file
+
+The owner ruled the format of the builder's help, having tried it on the
+title: **per step, constraints → choices → questions; then the owner
+writes; then the builder checks**. The owner called it "just the right
+amount". It is written as a fresh-session driver, **`writing_session_prompt.md`**
+(repository root), which every writing session starts from. The owner's
+manuscript is **`paper/finale.md`**, the owner's name for it. It uses the
+kit's conventions from the start, so at the end it becomes
+`paper/beyond_pdf/submission.md`, whose name the kit fixes (builder's
+reading). The builder-drafted abstract now in `submission.md` does not
+carry over. Steps run in paper order from the title; the owner may reorder.
