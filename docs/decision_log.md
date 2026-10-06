@@ -5502,3 +5502,48 @@ kit's conventions from the start, so at the end it becomes
 `paper/beyond_pdf/submission.md`, whose name the kit fixes (builder's
 reading). The builder-drafted abstract now in `submission.md` does not
 carry over. Steps run in paper order from the title; the owner may reorder.
+
+
+## DRAFTS FILE — the owner drafts in chat; every draft is kept verbatim in `paper/writing_drafts.md` (owner, 2026-10-06)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before the builder relies on it. Amends the *mechanics* of the WRITING ROLES
+step cycle, not its roles.
+
+### THE RULING
+
+> **The owner drafts in the chat, not in a file.** In the same turn, the
+> builder appends every draft the owner types, **verbatim**, to
+> **`paper/writing_drafts.md`**, with the date, the step, and the builder's
+> open check findings beside it, **labelled as the builder's**, so that the
+> owner never writes anything twice. When the owner calls a section done,
+> the builder copies it from there into **`paper/finale.md`**.
+
+### Builder's reading, until the owner corrects it
+
+- "Verbatim" means byte-for-byte as typed: no typo fixes, no reflow. The
+  WRITING ROLES limits hold inside the drafts file: the builder's findings
+  name the phrase and the rule, and propose no wording.
+- Each entry is appended, never edited afterwards. A later draft of the same
+  section is a new entry; a finding the owner resolves is recorded as
+  resolved in the entry that resolves it.
+- Step 6 of `writing_session_prompt.md` is unchanged: what reaches
+  `paper/finale.md` is the owner's final text, verbatim, plus only
+  `<!-- N:ID -->` ledger comments and slot markers. The diff is shown and the
+  owner's OK precedes the `WRITING: <section>` commit.
+- `paper/writing_drafts.md` is a working record. It is outside
+  `paper/beyond_pdf/`, so it never ships, and it is committed with each
+  `WRITING:` commit and at session end. Nothing is pushed without the owner.
+
+### Recorded the same day, not ruled
+
+The owner's second working preference arrived truncated ("When I ask what
+you think, give a clear recommendation with its reasons from the …"). It is
+not transcribed until the owner completes it. Its substance, a labelled
+recommendation when the owner asks for a judgment, is already the builder's
+practice under WRITING ROLES ("a suggestion is labelled as one").
+
+### What this entry does NOT change
+
+The WRITING ROLES ruling and its addendum, the ledger rule, double-blind, and
+every constant, lock, test, registration and branch reading.

@@ -59,7 +59,11 @@ its committed source before you state it**, the ledger included.
   either placement.
 - **Questions:** three to five, whose answers do most of the work.
 
-**3. The owner writes,** in any state from notes to finished.
+**3. The owner writes,** in any state from notes to finished, **in the
+chat** (decision log, *DRAFTS FILE*, 2026-10-06). In the same turn, append
+each draft verbatim to `paper/writing_drafts.md` with the date, the step
+and your open check findings, labelled as yours. A section the owner calls
+done is copied from there into `paper/finale.md` (step 6).
 
 **4. Check their draft.** Report by category, pointing at the phrase and
 naming the rule:
