@@ -1,0 +1,242 @@
+[
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(500) estimate",
+  "value": "+0.0017",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 500]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(500) Šidák CI",
+  "value": "[−0.0055, +0.0089]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 500]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(550) estimate",
+  "value": "−0.0017",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 550]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(550) Šidák CI",
+  "value": "[−0.0096, +0.0062]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 550]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(600) estimate",
+  "value": "+0.0018",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 600]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(600) Šidák CI",
+  "value": "[−0.0063, +0.0099]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 600]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(650) estimate",
+  "value": "+0.0015",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 650]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(650) Šidák CI",
+  "value": "[−0.0093, +0.0122]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 650]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(700) estimate",
+  "value": "−0.0037",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 700]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(700) Šidák CI",
+  "value": "[−0.0142, +0.0068]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 700]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(800) estimate",
+  "value": "−0.0035",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 800]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(800) Šidák CI",
+  "value": "[−0.0187, +0.0116]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 800]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(850) estimate",
+  "value": "−0.0053",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 850]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(850) Šidák CI",
+  "value": "[−0.0216, +0.0110]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 850]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(900) estimate",
+  "value": "−0.0039",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 900]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(900) Šidák CI",
+  "value": "[−0.0228, +0.0149]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 900]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(950) estimate",
+  "value": "−0.0016",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 950]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion Γ(950) Šidák CI",
+  "value": "[−0.0245, +0.0212]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.completion[t = 950]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion single-card Γ(1000)",
+  "value": "−0.0173",
+  "source": "post_evalfloor_gamma_t_high.json → gamma_t.cross_card_T_star.completion.gamma_post_card_T_star"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "completion single-card Γ(1000) Šidák CI",
+  "value": "[−0.0412, +0.0066]",
+  "source": "post_evalfloor_gamma_t_high.json → gamma_t.cross_card_T_star.completion.gamma_post_card_T_star"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(500) estimate",
+  "value": "+0.0022",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 500]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(500) Šidák CI",
+  "value": "[−0.0029, +0.0073]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 500]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(550) estimate",
+  "value": "−0.0037",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 550]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(550) Šidák CI",
+  "value": "[−0.0086, +0.0013]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 550]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(600) estimate",
+  "value": "−0.0027",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 600]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(600) Šidák CI",
+  "value": "[−0.0078, +0.0025]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 600]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(650) estimate",
+  "value": "+0.0011",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 650]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(650) Šidák CI",
+  "value": "[−0.0043, +0.0065]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 650]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(700) estimate",
+  "value": "+0.0031",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 700]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(700) Šidák CI",
+  "value": "[−0.0021, +0.0084]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 700]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(750) estimate",
+  "value": "+0.0036",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 750]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(750) Šidák CI",
+  "value": "[−0.0021, +0.0093]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 750]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(800) estimate",
+  "value": "+0.0020",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 800]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(800) Šidák CI",
+  "value": "[−0.0032, +0.0072]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 800]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(850) estimate",
+  "value": "+0.0018",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 850]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(850) Šidák CI",
+  "value": "[−0.0034, +0.0071]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 850]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(900) Šidák CI",
+  "value": "[+0.0004, +0.0108]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 900]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate Γ(950) Šidák CI",
+  "value": "[+0.0034, +0.0132]",
+  "source": "post_unblind_analysis/post_evalfloor_gamma_t_high.json → gamma_t.points.survival_rate[t = 950]"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate single-card Γ(1000)",
+  "value": "+0.0096",
+  "source": "post_evalfloor_gamma_t_high.json → gamma_t.cross_card_T_star.survival_rate.gamma_post_card_T_star"
+ },
+ {
+  "figure": "F4 Γ(t)",
+  "what": "survival_rate single-card Γ(1000) Šidák CI",
+  "value": "[+0.0047, +0.0144]",
+  "source": "post_evalfloor_gamma_t_high.json → gamma_t.cross_card_T_star.survival_rate.gamma_post_card_T_star"
+ }
+]

@@ -1,0 +1,220 @@
+{
+ "arms": [
+  {
+   "name": "ISO",
+   "components": [
+    {
+     "name": "a_low",
+     "w": "1/6",
+     "wf": 0.16666666666666666,
+     "beta": 0.43,
+     "kA": 0.06,
+     "kB": 0.0,
+     "d": 0.0,
+     "A": true,
+     "B": false,
+     "D": false
+    },
+    {
+     "name": "b_low",
+     "w": "1/6",
+     "wf": 0.16666666666666666,
+     "beta": 0.43,
+     "kA": 0.0,
+     "kB": 1.0,
+     "d": 0.0,
+     "A": false,
+     "B": true,
+     "D": false
+    },
+    {
+     "name": "d_low",
+     "w": "1/6",
+     "wf": 0.16666666666666666,
+     "beta": 0.43,
+     "kA": 0.0,
+     "kB": 0.0,
+     "d": 1.0,
+     "A": false,
+     "B": false,
+     "D": true
+    },
+    {
+     "name": "a_high",
+     "w": "1/6",
+     "wf": 0.16666666666666666,
+     "beta": 0.7,
+     "kA": 0.06,
+     "kB": 0.0,
+     "d": 0.0,
+     "A": true,
+     "B": false,
+     "D": false
+    },
+    {
+     "name": "b_high",
+     "w": "1/6",
+     "wf": 0.16666666666666666,
+     "beta": 0.7,
+     "kA": 0.0,
+     "kB": 1.0,
+     "d": 0.0,
+     "A": false,
+     "B": true,
+     "D": false
+    },
+    {
+     "name": "d_high",
+     "w": "1/6",
+     "wf": 0.16666666666666666,
+     "beta": 0.7,
+     "kA": 0.0,
+     "kB": 0.0,
+     "d": 1.0,
+     "A": false,
+     "B": false,
+     "D": true
+    }
+   ],
+   "beh": {
+    "shares": {
+     "A": "1/3",
+     "B": "1/3",
+     "F": "1/3"
+    },
+    "mA": "1/3",
+    "mB": "1/3",
+    "active": "2/3"
+   },
+   "nom": {
+    "shares": {
+     "A": "1/3",
+     "B": "1/3",
+     "D": "1/3"
+    },
+    "mA": "1/3",
+    "mB": "1/3",
+    "active": "1"
+   }
+  },
+  {
+   "name": "ISO-4",
+   "components": [
+    {
+     "name": "a_low",
+     "w": "1/4",
+     "wf": 0.25,
+     "beta": 0.43,
+     "kA": 0.06,
+     "kB": 0.0,
+     "d": 0.0,
+     "A": true,
+     "B": false,
+     "D": false
+    },
+    {
+     "name": "b_low",
+     "w": "1/4",
+     "wf": 0.25,
+     "beta": 0.43,
+     "kA": 0.0,
+     "kB": 1.0,
+     "d": 0.0,
+     "A": false,
+     "B": true,
+     "D": false
+    },
+    {
+     "name": "a_high",
+     "w": "1/4",
+     "wf": 0.25,
+     "beta": 0.7,
+     "kA": 0.06,
+     "kB": 0.0,
+     "d": 0.0,
+     "A": true,
+     "B": false,
+     "D": false
+    },
+    {
+     "name": "b_high",
+     "w": "1/4",
+     "wf": 0.25,
+     "beta": 0.7,
+     "kA": 0.0,
+     "kB": 1.0,
+     "d": 0.0,
+     "A": false,
+     "B": true,
+     "D": false
+    }
+   ],
+   "beh": {
+    "shares": {
+     "A": "1/2",
+     "B": "1/2"
+    },
+    "mA": "1/2",
+    "mB": "1/2",
+    "active": "1"
+   },
+   "nom": {
+    "shares": {
+     "A": "1/2",
+     "B": "1/2"
+    },
+    "mA": "1/2",
+    "mB": "1/2",
+    "active": "1"
+   }
+  },
+  {
+   "name": "JOINT",
+   "components": [
+    {
+     "name": "joint_low",
+     "w": "1/2",
+     "wf": 0.5,
+     "beta": 0.43,
+     "kA": 0.06,
+     "kB": 1.0,
+     "d": 1.0,
+     "A": true,
+     "B": true,
+     "D": true
+    },
+    {
+     "name": "joint_high",
+     "w": "1/2",
+     "wf": 0.5,
+     "beta": 0.7,
+     "kA": 0.06,
+     "kB": 1.0,
+     "d": 1.0,
+     "A": true,
+     "B": true,
+     "D": true
+    }
+   ],
+   "beh": {
+    "shares": {
+     "AB": "1"
+    },
+    "mA": "1",
+    "mB": "1",
+    "active": "1"
+   },
+   "nom": {
+    "shares": {
+     "AB": "1"
+    },
+    "mA": "1",
+    "mB": "1",
+    "active": "1"
+   }
+  }
+ ],
+ "ratios": {
+  "JOINT": "3× ISO · 2× ISO-4"
+ }
+}

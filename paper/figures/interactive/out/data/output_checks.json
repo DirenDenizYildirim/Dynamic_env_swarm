@@ -1,0 +1,86 @@
+{
+ "html": {
+  "composer_training_mixtures.html": {
+   "bytes": 19393,
+   "findings": []
+  },
+  "coupling_a_explorer.html": {
+   "bytes": 18585,
+   "findings": []
+  },
+  "explorer_thetastar_iso_s1_T1000_ep0.html": {
+   "bytes": 171334,
+   "findings": []
+  },
+  "explorer_thetastar_joint_s1_T1000_ep0.html": {
+   "bytes": 115600,
+   "findings": []
+  },
+  "explorer_thetastar_random_seed0.html": {
+   "bytes": 118391,
+   "findings": []
+  },
+  "floors_explorer.html": {
+   "bytes": 18221,
+   "findings": []
+  },
+  "gamma_t_final_half.html": {
+   "bytes": 19265,
+   "findings": []
+  },
+  "ladder_registered_readings.html": {
+   "bytes": 24382,
+   "findings": []
+  },
+  "severity_explorer.html": {
+   "bytes": 174755,
+   "findings": []
+  },
+  "simplex_secondary.html": {
+   "bytes": 27723,
+   "findings": []
+  }
+ },
+ "png": {
+  "composer_training_mixtures.png": {
+   "bytes": 124751,
+   "findings": []
+  },
+  "coupling_a_explorer.png": {
+   "bytes": 180727,
+   "findings": []
+  },
+  "explorer_thetastar_iso_s1_T1000_ep0_static.png": {
+   "bytes": 135507,
+   "findings": []
+  },
+  "explorer_thetastar_joint_s1_T1000_ep0_static.png": {
+   "bytes": 129286,
+   "findings": []
+  },
+  "explorer_thetastar_random_seed0_static.png": {
+   "bytes": 133714,
+   "findings": []
+  },
+  "floors_explorer.png": {
+   "bytes": 192210,
+   "findings": []
+  },
+  "gamma_t_final_half.png": {
+   "bytes": 125430,
+   "findings": []
+  },
+  "ladder_registered_readings.png": {
+   "bytes": 257989,
+   "findings": []
+  },
+  "severity_explorer.png": {
+   "bytes": 138626,
+   "findings": []
+  },
+  "simplex_secondary.png": {
+   "bytes": 219546,
+   "findings": []
+  }
+ }
+}

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Confirmatory contrast Γ</title>
+<style>
+:root{color-scheme:light;--surface:#ffffff;--ink:#0b0b0b;--ink2:#52514e;
+--muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--band:#ecebe6;--band2:#d9d8d1;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--neutral:#52514e;
+--sev1:#86b6ef;--sev2:#2a78d6;--sev3:#104281;
+--ring:rgba(11,11,11,0.10);--shadow:0 2px 8px rgba(0,0,0,0.12)}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){
+color-scheme:dark;--surface:#1a1a19;--ink:#ffffff;--ink2:#c3c2b7;--muted:#898781;
+--grid:#2c2c2a;--axis:#383835;--band:#2a2a28;--band2:#3a3a37;--s1:#3987e5;
+--s2:#d95926;--s3:#199e70;--neutral:#c3c2b7;--sev1:#86b6ef;--sev2:#3987e5;
+--sev3:#b7d3f6;--ring:rgba(255,255,255,0.10);--shadow:0 2px 8px rgba(0,0,0,0.5)}}
+:root[data-theme="dark"]{color-scheme:dark;--surface:#1a1a19;--ink:#ffffff;
+--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--band:#2a2a28;
+--band2:#3a3a37;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--neutral:#c3c2b7;
+--sev1:#86b6ef;--sev2:#3987e5;--sev3:#b7d3f6;--ring:rgba(255,255,255,0.10);
+--shadow:0 2px 8px rgba(0,0,0,0.5)}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--surface);color:var(--ink)}
+body{font:13px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;padding:10px 16px 14px}
+.controls{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin:0 0 6px}
+.seg{display:inline-flex;border:1px solid var(--axis);border-radius:6px;overflow:hidden}
+.seg button{font:inherit;font-size:12px;color:var(--ink2);background:transparent;border:0;
+padding:4px 10px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--axis)}
+.seg button[aria-pressed="true"]{background:var(--band);color:var(--ink);font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--s1);outline-offset:-2px}
+.lab{font-size:12px;color:var(--muted)}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{fill:var(--ink2);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.tick{font-size:11px;font-variant-numeric:tabular-nums}
+.axt{font-size:12px}
+.ttl{font-size:13px;font-weight:600;fill:var(--ink)}
+.note{font-size:11px;fill:var(--muted)}
+.hit{fill:transparent;cursor:default}
+.hit:focus{outline:none}
+.hit:focus-visible{stroke:var(--s1);stroke-width:1.5}
+#tip{position:fixed;pointer-events:none;display:none;z-index:9;background:var(--surface);
+color:var(--ink);border:1px solid var(--ring);box-shadow:var(--shadow);border-radius:6px;
+padding:6px 9px;font-size:12px;max-width:300px;font-variant-numeric:tabular-nums}
+#tip strong{font-weight:600}
+#tip span{color:var(--ink2)}
+#tip .h{color:var(--ink);font-weight:600;margin-bottom:2px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink2);margin:2px 0 4px}
+.legend svg{display:inline-block;width:auto;vertical-align:middle;margin-right:4px}
+details{margin-top:8px;font-size:12px;color:var(--ink2)}
+summary{cursor:pointer}
+table{border-collapse:collapse;margin-top:6px;font-variant-numeric:tabular-nums}
+th,td{padding:3px 8px;border-bottom:1px solid var(--grid);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--ink);font-weight:600}
+.tw{overflow-x:auto;max-width:100%}
+</style>
+</head>
+<body>
+
+<div class="controls"><span class="lab">metric</span><span id="cm"></span>
+<span class="lab">view</span><span id="cv"></span></div>
+<div class="legend" id="lg"></div>
+<div id="chart"></div>
+<details><summary>Table view</summary><div class="tw" id="tbl"></div></details>
+
+<div id="tip" role="tooltip"></div>
+<script>
+const DATA={"rows":{"completion":[{"key":"gamma","sym":"Γ","what":"JOINT − ISO","k":"k = 72, 72","g":-0.01728396945529509,"ci":[-0.04117199635934299,0.006604057448752806],"X":0.03287746603793296,"sd":0.010681098307991134,"z":-1.6181827895324186,"rej":false,"floor":0.00969656312144283},{"key":"prefix","sym":"Γ","what":"JOINT − ISO, k = 60 prefix","k":"k = 60, 60 (seeds 1–60)","g":-0.021700032552083304,"ci":[-0.04860542251762931,0.005205357413462706],"X":0.037030310137489274,"sd":0.012030257517339698,"z":-1.8037878674505652,"rej":false,"floor":null},{"key":"gamma4","sym":"Γ₄","what":"JOINT − ISO-4","k":"k = 72, 20","g":-0.01264275444878471,"ci":[-0.048129588121250726,0.022844079223681306],"X":0.048841085684752546,"sd":0.015867294549585024,"z":-0.7967807246078604,"rej":false,"floor":null},{"key":"gamma4p","sym":"Γ₄′","what":"JOINT − sweep_c50_p000","k":"k = 72, 20","g":-0.024703301323784732,"ci":[-0.06164717599578576,0.012240573348216294],"X":0.05084643406159864,"sd":0.016518784026607086,"z":-1.4954672985611233,"rej":false,"floor":null},{"key":"bhat","sym":"B̂","what":"ISO-4 − ISO","k":"k = 20, 72","g":-0.00464121500651038,"ci":[-0.040471210794177585,0.031188780781156826],"X":0.0493133850853414,"sd":0.016020733270278233,"z":-0.28970053543808705,"rej":false,"floor":null}],"survival_rate":[{"key":"gamma","sym":"Γ","what":"JOINT − ISO","k":"k = 72, 72","g":0.009553128646479725,"ci":[0.004733447651722807,0.014372809641236644],"X":0.006633402534888313,"sd":0.0021550330098394103,"z":4.43293842964921,"rej":true,"floor":0.0017694398121432153},{"key":"prefix","sym":"Γ","what":"JOINT − ISO, k = 60 prefix","k":"k = 60, 60 (seeds 1–60)","g":0.010449213782946276,"ci":[0.00544797669983576,0.015450450866056793],"X":0.006883281026435637,"sd":0.002236212524409971,"z":4.67272840523211,"rej":true,"floor":null},{"key":"gamma4","sym":"Γ₄","what":"JOINT − ISO-4","k":"k = 72, 20","g":-0.0002626823054420191,"ci":[-0.0068362101753172266,0.006310845564433188],"X":0.009047249492782747,"sd":0.0029392338551225815,"z":-0.08937101244401115,"rej":false,"floor":null},{"key":"gamma4p","sym":"Γ₄′","what":"JOINT − sweep_c50_p000","k":"k = 72, 20","g":0.0012591285838020605,"ci":[-0.005600812937860419,0.008119070105464539],"X":0.009441445093250725,"sd":0.0030672985288513355,"z":0.4105008273432023,"rej":false,"floor":null},{"key":"bhat","sym":"B̂","what":"ISO-4 − ISO","k":"k = 20, 72","g":0.009815810951921744,"ci":[0.003344861820802591,0.016286760083040898],"X":0.008906068766002223,"sd":0.0028933676311198994,"z":3.39252117371703,"rej":true,"floor":null}]},"seeds":{"completion":{"iso":[0.72174072265625,0.77886962890625,0.71636962890625,0.82421875,0.7750244140625,0.7059326171875,0.7447509765625,0.6910400390625,0.73529052734375,0.9267578125,0.90081787109375,0.863525390625,0.82330322265625,0.7244873046875,0.77374267578125,0.88580322265625,0.78717041015625,0.82672119140625,0.74688720703125,0.7369384765625,0.79345703125,0.72735595703125,0.75067138671875,0.692138671875,0.77386474609375,0.83355712890625,0.7213134765625,0.86517333984375,0.70806884765625,0.82318115234375,0.77947998046875,0.72332763671875,0.76544189453125,0.77264404296875,0.75,0.90985107421875,0.745361328125,0.92333984375,0.71771240234375,0.733642578125,0.7333984375,0.92279052734375,0.8787841796875,0.8253173828125,0.74993896484375,0.8692626953125,0.72772216796875,0.7587890625,0.907470703125,0.78399658203125,0.85076904296875,0.88470458984375,0.80181884765625,0.7908935546875,0.73309326171875,0.7894287109375,0.6995849609375,0.6883544921875,0.71728515625,0.7471923828125,0.76214599609375,0.7696533203125,0.6826171875,0.81280517578125,0.7021484375,0.74163818359375,0.7105712890625,0.764404296875,0.7149658203125,0.7392578125,0.76318359375,0.73828125],"joint":[0.7205810546875,0.69464111328125,0.70660400390625,0.72320556640625,0.78778076171875,0.7933349609375,0.71099853515625,0.79315185546875,0.79632568359375,0.9244384765625,0.841796875,0.75128173828125,0.7735595703125,0.80078125,0.71343994140625,0.82635498046875,0.6849365234375,0.71875,0.90802001953125,0.7479248046875,0.72869873046875,0.7642822265625,0.79986572265625,0.69970703125,0.76629638671875,0.79241943359375,0.7503662109375,0.7515869140625,0.71929931640625,0.84173583984375,0.70159912109375,0.70526123046875,0.7039794921875,0.8924560546875,0.79071044921875,0.7161865234375,0.75067138671875,0.902099609375,0.693359375,0.7109375,0.7103271484375,0.70147705078125,0.7935791015625,0.6829833984375,0.86138916015625,0.78228759765625,0.73236083984375,0.752685546875,0.71380615234375,0.865478515625,0.922607421875,0.7919921875,0.8037109375,0.71905517578125,0.72344970703125,0.72552490234375,0.74200439453125,0.73052978515625,0.69744873046875,0.7054443359375,0.7900390625,0.7117919921875,0.73541259765625,0.73822021484375,0.79656982421875,0.68182373046875,0.88177490234375,0.74603271484375,0.77874755859375,0.6856689453125,0.702880859375,0.71026611328125],"iso4":[0.77587890625,0.73870849609375,0.80743408203125,0.75750732421875,0.70819091796875,0.741943359375,0.70697021484375,0.86651611328125,0.7989501953125,0.79931640625,0.876708984375,0.739501953125,0.90692138671875,0.8145751953125,0.71539306640625,0.83746337890625,0.7139892578125,0.70367431640625,0.72283935546875,0.719482421875],"sweep_c50_p000":[0.87548828125,0.750732421875,0.74755859375,0.84405517578125,0.73065185546875,0.8074951171875,0.8834228515625,0.73028564453125,0.7625732421875,0.8218994140625,0.85638427734375,0.7484130859375,0.70849609375,0.75,0.84747314453125,0.8709716796875,0.6903076171875,0.75299072265625,0.67236328125,0.84161376953125]},"survival_rate":{"iso":[0.9046224355697632,0.92236328125,0.90576171875,0.9287109375,0.9152018427848816,0.91455078125,0.9152017831802368,0.9091796875,0.8932291269302368,0.9223633408546448,0.9005534052848816,0.9324544668197632,0.9296875596046448,0.9000651240348816,0.92431640625,0.9166667461395264,0.93310546875,0.9041341543197632,0.9070638418197632,0.9044596552848816,0.9099935293197632,0.896484375,0.9316406846046448,0.92333984375,0.8896484375,0.9345703125,0.89599609375,0.9430338740348816,0.9070638418197632,0.9313151836395264,0.91650390625,0.9249675273895264,0.8976236581802368,0.8792318105697632,0.9153646230697632,0.9300130605697632,0.9184570908546448,0.9140625,0.91357421875,0.8984375,0.9186198115348816,0.9161784052848816,0.9124349355697632,0.9173177480697632,0.9051107168197632,0.9200846552848816,0.90234375,0.9249674677848816,0.9150390625,0.9231771230697632,0.9220377802848816,0.9296875,0.9192708730697632,0.9217122793197632,0.9036458730697632,0.9114583730697632,0.9182943105697632,0.9348958730697632,0.9114583730697632,0.9119466543197632,0.9083659052848816,0.9265950918197632,0.919921875,0.9083659052848816,0.9371744990348816,0.9073892831802368,0.9152018427848816,0.9366862177848816,0.9267578125,0.93310546875,0.9078776836395264,0.9168294668197632],"joint":[0.91845703125,0.92724609375,0.9225260615348816,0.9137369990348816,0.9230143427848816,0.9449869394302368,0.9360352158546448,0.9518229365348816,0.9231771230697632,0.9287109375,0.931640625,0.9169921875,0.9335938096046448,0.9332682490348816,0.9375000596046448,0.9293619990348816,0.9410807490348816,0.9161784052848816,0.9264323711395264,0.9204102158546448,0.9314779043197632,0.9228516221046448,0.9430338740348816,0.9249674081802368,0.8953450918197632,0.93505859375,0.919921875,0.9103190302848816,0.9173177480697632,0.9248046875,0.9111328125,0.9288737773895264,0.91455078125,0.9241536855697632,0.8972982168197632,0.93603515625,0.92529296875,0.9365234375,0.9169921875,0.9083659052848816,0.94384765625,0.9099935293197632,0.9197591543197632,0.9358724355697632,0.9182943105697632,0.9187825918197632,0.92041015625,0.9150390625,0.94140625,0.94775390625,0.9415689706802368,0.92626953125,0.9371744990348816,0.9132487177848816,0.92333984375,0.9140625,0.91748046875,0.9314779043197632,0.9324544668197632,0.9129231572151184,0.9103190302848816,0.9436848759651184,0.9212239980697632,0.9112955927848816,0.92236328125,0.9158529043197632,0.9510091543197632,0.9269205927848816,0.9075521230697632,0.9440104365348816,0.89306640625,0.9578450918197632],"iso4":[0.9200846552848816,0.93798828125,0.9296875596046448,0.9124349355697632,0.9308269023895264,0.9217122793197632,0.9326171875,0.9308268427848816,0.92919921875,0.9361979365348816,0.9285482168197632,0.9272461533546448,0.9187825918197632,0.9210612177848816,0.9132487177848816,0.9326171875,0.9423828125,0.92919921875,0.9264323115348816,0.8916015625],"sweep_c50_p000":[0.9409180283546448,0.9381510615348816,0.908203125,0.9166666865348816,0.92236328125,0.9202474355697632,0.8948568105697632,0.9360352158546448,0.9186198115348816,0.9409180283546448,0.9335938096046448,0.9313150644302368,0.92041015625,0.9357097148895264,0.9287109375,0.9169921875,0.9222005605697632,0.9189453125,0.91259765625,0.9248046875]}},"means":{"completion":{"iso":0.7772394816080729,"joint":0.7599555121527778,"iso4":0.7725982666015625,"sweep_c50_p000":0.7846588134765625},"survival_rate":{"iso":0.9158189785149362,"joint":0.9253721071614159,"iso4":0.925634789466858,"sweep_c50_p000":0.9241129785776139}}};
+
+const NS='http://www.w3.org/2000/svg';
+function S(tag,a,p){const e=document.createElementNS(NS,tag);if(a)for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+function T(a,txt,p){const e=S('text',a,p);e.textContent=txt;return e;}
+function lin(d0,d1,r0,r1){return v=>r0+(v-d0)*(r1-r0)/(d1-d0);}
+function niceTicks(lo,hi,n){const sp=hi-lo,s0=sp/Math.max(1,n),m=Math.pow(10,Math.floor(Math.log10(s0))),e=s0/m;
+const st=e>=7.5?10*m:e>=3.5?5*m:e>=1.5?2*m:m;const o=[];for(let v=Math.ceil(lo/st-1e-9)*st;v<=hi+st*1e-9;v+=st)o.push(+v.toFixed(12));return o;}
+const MINUS='−';
+function fmt(v,nd){const s=Math.abs(v).toFixed(nd);if(v<0&&+s!==0)return MINUS+s;return '+'+s;}
+function fmtU(v,nd){const s=Math.abs(v).toFixed(nd);return (v<0&&+s!==0?MINUS:'')+s;}
+function decimals(step){return Math.max(0,-Math.floor(Math.log10(step)+1e-9));}
+function tickFmt(ts){const st=ts.length>1?Math.abs(ts[1]-ts[0]):1;const d=decimals(st);return v=>fmtU(v,d);}
+const tip=document.getElementById('tip');
+function showTip(x,y,head,rows){tip.replaceChildren();if(head){const h=document.createElement('div');h.className='h';h.textContent=head;tip.appendChild(h);}
+for(const [val,lab] of rows){const r=document.createElement('div');const b=document.createElement('strong');b.textContent=val;r.appendChild(b);
+if(lab){const s=document.createElement('span');s.textContent=' '+lab;r.appendChild(s);}tip.appendChild(r);}
+tip.style.display='block';const w=tip.offsetWidth,h=tip.offsetHeight;let L=x+14,Tp=y+14;
+if(L+w>window.innerWidth-4)L=x-w-14;if(Tp+h>window.innerHeight-4)Tp=y-h-14;tip.style.left=Math.max(4,L)+'px';tip.style.top=Math.max(4,Tp)+'px';}
+function hideTip(){tip.style.display='none';}
+function bindTip(node,head,rows){node.setAttribute('tabindex','0');node.setAttribute('role','img');
+node.setAttribute('aria-label',head+': '+rows.map(r=>r.join(' ')).join('; '));
+node.addEventListener('pointermove',ev=>showTip(ev.clientX,ev.clientY,head,rows));
+node.addEventListener('pointerleave',hideTip);
+node.addEventListener('focus',()=>{const r=node.getBoundingClientRect();showTip(r.right,r.top,head,rows);});
+node.addEventListener('blur',hideTip);}
+function seg(container,opts,init,onChange){const d=document.createElement('div');d.className='seg';d.setAttribute('role','group');
+const bs=[];for(const [val,lab] of opts){const b=document.createElement('button');b.type='button';b.textContent=lab;
+b.setAttribute('aria-pressed',String(val===init));b.addEventListener('click',()=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));onChange(val);});bs.push(b);d.appendChild(b);}
+container.appendChild(d);return d;}
+function table(container,head,rows){const t=document.createElement('table');const tr=document.createElement('tr');
+for(const h of head){const th=document.createElement('th');th.textContent=h;tr.appendChild(th);}t.appendChild(tr);
+for(const r of rows){const x=document.createElement('tr');for(const c of r){const td=document.createElement('td');td.textContent=c;x.appendChild(td);}t.appendChild(x);}
+container.replaceChildren(t);}
+function marker(shape,cx,cy,r,a,p){if(shape==='s')return S('rect',Object.assign({x:cx-r*0.9,y:cy-r*0.9,width:r*1.8,height:r*1.8},a),p);
+if(shape==='^'){const h=r*1.15;return S('path',Object.assign({d:`M${cx},${cy-h}L${cx+h},${cy+h*0.8}L${cx-h},${cy+h*0.8}Z`},a),p);}
+if(shape==='D'){const h=r*1.2;return S('path',Object.assign({d:`M${cx},${cy-h}L${cx+h},${cy}L${cx},${cy+h}L${cx-h},${cy}Z`},a),p);}
+return S('circle',Object.assign({cx:cx,cy:cy,r:r},a),p);}
+// follow the embedding page's theme when it sets one (same-origin iframe)
+(function(){function sync(){try{const t=window.parent&&window.parent!==window?window.parent.document.documentElement.getAttribute('data-theme'):null;
+if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}}
+sync();try{if(window.parent!==window)new MutationObserver(sync).observe(window.parent.document.documentElement,{attributes:true,attributeFilter:['data-theme']});}catch(e){}})();
+
+
+let metric='survival_rate', view='contrasts';
+const ML={completion:'completion',survival_rate:'survival rate'};
+const ARMS=[['iso','ISO','--s1','o'],['iso4','ISO-4','--s3','^'],['sweep_c50_p000','sweep_c50_p000','--neutral','D'],['joint','JOINT','--s2','s']];
+const RM={gamma:['o',true],prefix:['o',false],gamma4:['^',true],gamma4p:['D',true],bhat:['s',true]};
+const YP={gamma:0,prefix:1,gamma4:2.55,gamma4p:3.55,bhat:4.55};
+function legend(){const lg=document.getElementById('lg');lg.replaceChildren();
+const items=view==='contrasts'?[['ci','estimate, Šidák 95 % CI (m = 2)'],['band','±X, 80 %-power MDE'],['floor','floor: ±1 sd(Γ), floor basis']]
+:ARMS.map(a=>['arm',a[1],a]).concat([['mean','arm mean']]);
+for(const [kind,lab,a] of items){const s=document.createElement('span');const sv=S('svg',{width:26,height:12,viewBox:'0 0 26 12'});
+if(kind==='ci'){S('line',{x1:2,x2:24,y1:6,y2:6,stroke:'var(--ink)','stroke-width':2},sv);S('circle',{cx:13,cy:6,r:4,fill:'var(--ink)'},sv);}
+if(kind==='band')S('rect',{x:1,y:1,width:24,height:10,fill:'var(--band)'},sv);
+if(kind==='floor'){const d=S('defs',null,sv);const pt=S('pattern',{id:'hl',width:4,height:4,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},d);S('line',{x1:0,y1:0,x2:0,y2:4,stroke:'var(--muted)','stroke-width':1},pt);S('rect',{x:1,y:1,width:24,height:10,fill:'url(#hl)'},sv);}
+if(kind==='arm')marker(a[3],13,6,4,{fill:'none',stroke:`var(${a[2]})`,'stroke-width':1.5},sv);
+if(kind==='mean')S('line',{x1:3,x2:23,y1:6,y2:6,stroke:'var(--ink)','stroke-width':2.5},sv);
+s.appendChild(sv);s.appendChild(document.createTextNode(lab));lg.appendChild(s);}}
+function drawContrasts(){const R=DATA.rows[metric];const W=760,H=330,ml=230,mr=200,mt=34,mb=46;
+const svg=S('svg',{viewBox:`0 0 ${W} ${H}`,'aria-label':'Forest plot of contrasts for '+ML[metric]});
+let lo=Math.min(...R.map(r=>Math.min(r.ci[0],-r.X))),hi=Math.max(...R.map(r=>Math.max(r.ci[1],r.X)));const pad=0.06*(hi-lo);lo-=pad;hi+=pad;
+const x=lin(lo,hi,ml,W-mr),y=lin(-0.75,5.25,mt,H-mb),rh=(y(1)-y(0));
+const ts=niceTicks(lo,hi,6),tf=tickFmt(ts);
+for(const t of ts){S('line',{x1:x(t),x2:x(t),y1:mt-6,y2:H-mb,stroke:'var(--grid)'},svg);T({x:x(t),y:H-mb+16,'text-anchor':'middle',class:'tick'},tf(t),svg);}
+S('line',{x1:ml,x2:W-mr,y1:H-mb,y2:H-mb,stroke:'var(--axis)'},svg);
+S('line',{x1:x(0),x2:x(0),y1:mt-6,y2:H-mb,stroke:'var(--muted)','stroke-width':1},svg);
+T({x:(ml+W-mr)/2,y:H-8,'text-anchor':'middle',class:'axt'},'difference in '+ML[metric]+' (fraction)',svg);
+T({x:ml-8,y:y(-0.62),'text-anchor':'end',class:'note','font-style':'italic'},'confirmatory family',svg);
+T({x:ml-8,y:y(1.95),'text-anchor':'end',class:'note','font-style':'italic'},'outside the confirmatory family',svg);
+S('line',{x1:20,x2:W-10,y1:y(1.78),y2:y(1.78),stroke:'var(--grid)'},svg);
+T({x:W-mr+10,y:mt-14,class:'note'},'estimate  Šidák 95 % CI',svg);T({x:W-46,y:mt-14,class:'note'},'test',svg);
+const d=S('defs',null,svg);const pt=S('pattern',{id:'hf',width:5,height:5,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},d);S('line',{x1:0,y1:0,x2:0,y2:5,stroke:'var(--muted)','stroke-width':1},pt);
+for(const r of R){const yy=y(YP[r.key]);const g=S('g',null,svg);
+S('rect',{x:x(-r.X),y:yy-rh*0.32,width:x(r.X)-x(-r.X),height:rh*0.64,fill:'var(--band)'},g);
+if(r.floor!==null)S('rect',{x:x(-r.floor),y:yy-rh*0.32,width:x(r.floor)-x(-r.floor),height:rh*0.64,fill:'url(#hf)'},g);
+const col=(r.key==='gamma'||r.key==='prefix')?'var(--ink)':'var(--ink2)';
+S('line',{x1:x(r.ci[0]),x2:x(r.ci[1]),y1:yy,y2:yy,stroke:col,'stroke-width':2},g);
+for(const e of r.ci)S('line',{x1:x(e),x2:x(e),y1:yy-5,y2:yy+5,stroke:col,'stroke-width':1.5},g);
+const [mk,f]=RM[r.key];marker(mk,x(r.g),yy,5,{fill:f?col:'var(--surface)',stroke:col,'stroke-width':1.6},g);
+T({x:20,y:yy-3,class:'tick',fill:'var(--ink)'},r.sym+'  '+r.what,svg).style.fill='var(--ink)';
+T({x:20,y:yy+11,class:'note'},r.k,svg);
+T({x:W-mr+10,y:yy+4,class:'tick'},fmt(r.g,4)+'  ['+fmt(r.ci[0],4)+', '+fmt(r.ci[1],4)+']',svg).style.fill='var(--ink)';
+T({x:W-46,y:yy+4,class:'tick'},r.rej?'REJECT':'null',svg);
+const hit=S('rect',{x:ml,y:yy-rh*0.45,width:W-mr-ml,height:rh*0.9,class:'hit'},svg);
+const rows=[[fmt(r.g,4),'estimate'],['['+fmt(r.ci[0],4)+', '+fmt(r.ci[1],4)+']','Šidák 95 % CI'],[r.sd.toFixed(5),'sd(Γ)'],[fmt(r.z,2),'z'],['±'+r.X.toFixed(4),'X, 80 %-power MDE']];
+if(r.floor!==null)rows.push(['±'+r.floor.toFixed(5),'floor-basis sd(Γ)']);rows.push([r.rej?'REJECT':'null','test at Šidák level'],[r.k,'']);
+bindTip(hit,r.sym+'  '+r.what+' ('+ML[metric]+')',rows);}
+return svg;}
+function drawArms(){const W=760,H=330,ml=64,mr=20,mt=24,mb=56;const svg=S('svg',{viewBox:`0 0 ${W} ${H}`,'aria-label':'Per-seed '+ML[metric]+' by arm'});
+const all=ARMS.flatMap(a=>DATA.seeds[metric][a[0]]);let lo=Math.min(...all),hi=Math.max(...all);const pad=0.06*(hi-lo);lo-=pad;hi+=pad;
+const y=lin(lo,hi,H-mb,mt),bw=(W-ml-mr)/ARMS.length,xc=i=>ml+bw*(i+0.5);
+const ts=niceTicks(lo,hi,6),tf=tickFmt(ts);
+for(const t of ts){S('line',{x1:ml,x2:W-mr,y1:y(t),y2:y(t),stroke:'var(--grid)'},svg);T({x:ml-8,y:y(t)+4,'text-anchor':'end',class:'tick'},tf(t),svg);}
+T({x:14,y:(mt+H-mb)/2,transform:`rotate(-90 14 ${(mt+H-mb)/2})`,'text-anchor':'middle',class:'axt'},ML[metric]+' at θ*, per seed',svg);
+ARMS.forEach((a,i)=>{const v=DATA.seeds[metric][a[0]],mu=DATA.means[metric][a[0]];
+T({x:xc(i),y:H-mb+18,'text-anchor':'middle',class:'tick'},a[1],svg).style.fill='var(--ink)';T({x:xc(i),y:H-mb+33,'text-anchor':'middle',class:'note'},'k = '+v.length,svg);
+v.forEach((val,j)=>{const xx=xc(i)+bw*0.42*(((j*0.6180339887)%1)-0.5);
+marker(a[3],xx,y(val),3.6,{fill:'none',stroke:`var(${a[2]})`,'stroke-width':1.3},svg);
+const h=S('circle',{cx:xx,cy:y(val),r:9,class:'hit'},svg);bindTip(h,a[1]+', seed '+(j+1),[[val.toFixed(4),ML[metric]+' (mean of 512 eval episodes)']]);});
+S('line',{x1:xc(i)-bw*0.3,x2:xc(i)+bw*0.3,y1:y(mu),y2:y(mu),stroke:'var(--ink)','stroke-width':2.5},svg);
+const hm=S('rect',{x:xc(i)-bw*0.3,y:y(mu)-6,width:bw*0.6,height:12,class:'hit'},svg);bindTip(hm,a[1]+' arm mean',[[mu.toFixed(4),ML[metric]],['k = '+v.length,'']]);});
+return svg;}
+function render(){legend();const c=document.getElementById('chart');c.replaceChildren(view==='contrasts'?drawContrasts():drawArms());
+if(view==='contrasts')table(document.getElementById('tbl'),['contrast','k','estimate','Šidák 95 % CI','sd(Γ)','z','X (MDE80)','floor-basis sd(Γ)','test'],
+DATA.rows[metric].map(r=>[r.sym+' '+r.what,r.k.replace('k = ',''),fmt(r.g,4),'['+fmt(r.ci[0],4)+', '+fmt(r.ci[1],4)+']',r.sd.toFixed(5),fmt(r.z,2),r.X.toFixed(4),r.floor===null?'—':r.floor.toFixed(5),r.rej?'REJECT':'null']));
+else table(document.getElementById('tbl'),['arm','k','arm mean'].concat(Array.from({length:72},(_,i)=>'seed '+(i+1))),
+ARMS.map(a=>[a[1],String(DATA.seeds[metric][a[0]].length),DATA.means[metric][a[0]].toFixed(4)].concat(DATA.seeds[metric][a[0]].map(v=>v.toFixed(4)))));}
+seg(document.getElementById('cm'),[['completion','completion'],['survival_rate','survival rate']],metric,v=>{metric=v;render();});
+seg(document.getElementById('cv'),[['contrasts','contrasts'],['arms','per-seed arm values']],view,v=>{view=v;render();});
+render();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contrast over training</title>
+<style>
+:root{color-scheme:light;--surface:#ffffff;--ink:#0b0b0b;--ink2:#52514e;
+--muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--band:#ecebe6;--band2:#d9d8d1;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--neutral:#52514e;
+--sev1:#86b6ef;--sev2:#2a78d6;--sev3:#104281;
+--ring:rgba(11,11,11,0.10);--shadow:0 2px 8px rgba(0,0,0,0.12)}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){
+color-scheme:dark;--surface:#1a1a19;--ink:#ffffff;--ink2:#c3c2b7;--muted:#898781;
+--grid:#2c2c2a;--axis:#383835;--band:#2a2a28;--band2:#3a3a37;--s1:#3987e5;
+--s2:#d95926;--s3:#199e70;--neutral:#c3c2b7;--sev1:#86b6ef;--sev2:#3987e5;
+--sev3:#b7d3f6;--ring:rgba(255,255,255,0.10);--shadow:0 2px 8px rgba(0,0,0,0.5)}}
+:root[data-theme="dark"]{color-scheme:dark;--surface:#1a1a19;--ink:#ffffff;
+--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--band:#2a2a28;
+--band2:#3a3a37;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--neutral:#c3c2b7;
+--sev1:#86b6ef;--sev2:#3987e5;--sev3:#b7d3f6;--ring:rgba(255,255,255,0.10);
+--shadow:0 2px 8px rgba(0,0,0,0.5)}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--surface);color:var(--ink)}
+body{font:13px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;padding:10px 16px 14px}
+.controls{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin:0 0 6px}
+.seg{display:inline-flex;border:1px solid var(--axis);border-radius:6px;overflow:hidden}
+.seg button{font:inherit;font-size:12px;color:var(--ink2);background:transparent;border:0;
+padding:4px 10px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--axis)}
+.seg button[aria-pressed="true"]{background:var(--band);color:var(--ink);font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--s1);outline-offset:-2px}
+.lab{font-size:12px;color:var(--muted)}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{fill:var(--ink2);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.tick{font-size:11px;font-variant-numeric:tabular-nums}
+.axt{font-size:12px}
+.ttl{font-size:13px;font-weight:600;fill:var(--ink)}
+.note{font-size:11px;fill:var(--muted)}
+.hit{fill:transparent;cursor:default}
+.hit:focus{outline:none}
+.hit:focus-visible{stroke:var(--s1);stroke-width:1.5}
+#tip{position:fixed;pointer-events:none;display:none;z-index:9;background:var(--surface);
+color:var(--ink);border:1px solid var(--ring);box-shadow:var(--shadow);border-radius:6px;
+padding:6px 9px;font-size:12px;max-width:300px;font-variant-numeric:tabular-nums}
+#tip strong{font-weight:600}
+#tip span{color:var(--ink2)}
+#tip .h{color:var(--ink);font-weight:600;margin-bottom:2px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink2);margin:2px 0 4px}
+.legend svg{display:inline-block;width:auto;vertical-align:middle;margin-right:4px}
+details{margin-top:8px;font-size:12px;color:var(--ink2)}
+summary{cursor:pointer}
+table{border-collapse:collapse;margin-top:6px;font-variant-numeric:tabular-nums}
+th,td{padding:3px 8px;border-bottom:1px solid var(--grid);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--ink);font-weight:600}
+.tw{overflow-x:auto;max-width:100%}
+</style>
+</head>
+<body>
+
+<div class="controls"><span class="lab">t = 1000 evaluated on</span><span id="cs"></span></div>
+<div class="legend" id="lg"></div>
+<div id="chart" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:8px 18px"></div>
+<div class="lab" id="note" style="margin-top:2px"></div>
+<details><summary>Table view</summary><div class="tw" id="tbl"></div></details>
+
+<div id="tip" role="tooltip"></div>
+<script>
+const DATA={"completion":{"grid":[{"t":500,"g":0.0017310248480902901,"ci":[-0.005452325983191657,0.008914375679372238],"sd":0.0032119051405083126,"z":0.5389402153440745,"iso":0.7125608656141493,"joint":0.7142918904622396,"k":72},{"t":550,"g":-0.0016988118489583703,"ci":[-0.009591026491433495,0.006193402793516755],"sd":0.0035288607469610416,"z":-0.4814051816641789,"iso":0.715622795952691,"joint":0.7139239841037326,"k":72},{"t":600,"g":0.0017725626627603797,"ci":[-0.006327560766131456,0.009872686091652216],"sd":0.0036218233928811913,"z":0.48941167762194254,"iso":0.7149013943142362,"joint":0.7166739569769965,"k":72},{"t":650,"g":0.0014512803819444198,"ci":[-0.009311832836753908,0.012214393600642748],"sd":0.004812531016091375,"z":0.30156281114695355,"iso":0.7182557847764757,"joint":0.7197070651584201,"k":72},{"t":700,"g":-0.0037078857421875,"ci":[-0.014222949018458655,0.006807177534083655],"sd":0.0047016199797383805,"z":-0.7886400343214943,"iso":0.7223078409830729,"joint":0.7185999552408854,"k":72},{"t":750,"g":-0.01467132568359375,"ci":[-0.028323050234204523,-0.0010196011329829772],"sd":0.006104121222920296,"z":-2.403511520790995,"iso":0.7360432942708334,"joint":0.7213719685872396,"k":72},{"t":800,"g":-0.0035459730360243302,"ci":[-0.018696040622054218,0.011604094550005557],"sd":0.0067740781567721025,"z":-0.5234620791139517,"iso":0.7357847425672743,"joint":0.73223876953125,"k":72},{"t":850,"g":-0.00532786051432288,"ci":[-0.021622917568031703,0.010967196539385944],"sd":0.007286039446627347,"z":-0.7312423372603488,"iso":0.7455062866210938,"joint":0.7401784261067709,"k":72},{"t":900,"g":-0.0039325290256075895,"ci":[-0.022784348290990252,0.014919290239775073],"sd":0.008429249333435434,"z":-0.4665337173037263,"iso":0.7548395792643229,"joint":0.7509070502387153,"k":72},{"t":950,"g":-0.0016208224826388395,"ci":[-0.024461842281141687,0.021220197315864008],"sd":0.010212948055631997,"z":-0.15870270501816822,"iso":0.7614669799804688,"joint":0.7598461574978299,"k":72},{"t":1000,"g":-0.01728396945529509,"ci":[-0.04117199635934299,0.006604057448752806],"sd":0.010681098307991134,"z":-1.6181827895324186,"iso":0.7772394816080729,"joint":0.7599555121527778,"k":72}],"single":[{"t":500,"g":0.0017310248480902901,"ci":[-0.005452325983191657,0.008914375679372238],"sd":0.0032119051405083126,"z":0.5389402153440745,"iso":0.7125608656141493,"joint":0.7142918904622396,"k":72},{"t":550,"g":-0.0016988118489583703,"ci":[-0.009591026491433495,0.006193402793516755],"sd":0.0035288607469610416,"z":-0.4814051816641789,"iso":0.715622795952691,"joint":0.7139239841037326,"k":72},{"t":600,"g":0.0017725626627603797,"ci":[-0.006327560766131456,0.009872686091652216],"sd":0.0036218233928811913,"z":0.48941167762194254,"iso":0.7149013943142362,"joint":0.7166739569769965,"k":72},{"t":650,"g":0.0014512803819444198,"ci":[-0.009311832836753908,0.012214393600642748],"sd":0.004812531016091375,"z":0.30156281114695355,"iso":0.7182557847764757,"joint":0.7197070651584201,"k":72},{"t":700,"g":-0.0037078857421875,"ci":[-0.014222949018458655,0.006807177534083655],"sd":0.0047016199797383805,"z":-0.7886400343214943,"iso":0.7223078409830729,"joint":0.7185999552408854,"k":72},{"t":750,"g":-0.01467132568359375,"ci":[-0.028323050234204523,-0.0010196011329829772],"sd":0.006104121222920296,"z":-2.403511520790995,"iso":0.7360432942708334,"joint":0.7213719685872396,"k":72},{"t":800,"g":-0.0035459730360243302,"ci":[-0.018696040622054218,0.011604094550005557],"sd":0.0067740781567721025,"z":-0.5234620791139517,"iso":0.7357847425672743,"joint":0.73223876953125,"k":72},{"t":850,"g":-0.00532786051432288,"ci":[-0.021622917568031703,0.010967196539385944],"sd":0.007286039446627347,"z":-0.7312423372603488,"iso":0.7455062866210938,"joint":0.7401784261067709,"k":72},{"t":900,"g":-0.0039325290256075895,"ci":[-0.022784348290990252,0.014919290239775073],"sd":0.008429249333435434,"z":-0.4665337173037263,"iso":0.7548395792643229,"joint":0.7509070502387153,"k":72},{"t":950,"g":-0.0016208224826388395,"ci":[-0.024461842281141687,0.021220197315864008],"sd":0.010212948055631997,"z":-0.15870270501816822,"iso":0.7614669799804688,"joint":0.7598461574978299,"k":72},{"t":1000,"g":-0.0172882080078125,"ci":[-0.04117681399714021,0.00660039798151521],"sd":0.010681357235479255,"z":-1.6185403808411063,"iso":0.7772411770290799,"joint":0.7599529690212674,"k":72}],"signs":["+","-","+","+","-","-","-","-","-","-","-"],"stable":false,"single_signs":["+","-","+","+","-","-","-","-","-","-","-"],"single_stable":false,"floor":0.00969656312144283},"survival_rate":{"grid":[{"t":500,"g":0.0021972664528423502,"ci":[-0.0028978995063622124,0.007292432412046913],"sd":0.0022782111190845955,"z":0.9644700767351317,"iso":0.8803620752361085,"joint":0.8825593416889509,"k":72},{"t":550,"g":-0.003650805188549877,"ci":[-0.00858049322107536,0.001278882843975605],"sd":0.0022042206631226464,"z":-1.6562793596979997,"iso":0.8855116267999014,"joint":0.8818608216113515,"k":72},{"t":600,"g":-0.002656163440810322,"ci":[-0.007849678077879015,0.0025373511962583717],"sd":0.0023221859480207488,"z":-1.143820305636691,"iso":0.8906340665287442,"joint":0.8879779030879339,"k":72},{"t":650,"g":0.0010918503006299707,"ci":[-0.004309742408397583,0.0064934430096575246],"sd":0.002415224286903113,"z":0.45206994089562597,"iso":0.8935750507646136,"joint":0.8946669010652436,"k":72},{"t":700,"g":0.003137656384044285,"ci":[-0.0021085118449456096,0.00838382461303418],"sd":0.002345729047408497,"z":1.3376039263830108,"iso":0.8979356818728976,"joint":0.9010733382569419,"k":72},{"t":750,"g":0.00358751167853677,"ci":[-0.0021260530218809737,0.009301076378954514],"sd":0.0025547169089921197,"z":1.4042697513409053,"iso":0.9014485941992866,"joint":0.9050361058778233,"k":72},{"t":800,"g":0.0020345027248064307,"ci":[-0.0031627689933449755,0.007231774442957837],"sd":0.002323865858737391,"z":0.875481997877374,"iso":0.9065190346704589,"joint":0.9085535373952653,"k":72},{"t":850,"g":0.0018491380744509733,"ci":[-0.003384148093990445,0.0070824242428923915],"sd":0.002339969067495528,"z":0.7902403925493374,"iso":0.9093017818199264,"joint":0.9111509198943774,"k":72},{"t":900,"g":0.005617502662870533,"ci":[0.00044355008741679865,0.010791455238324267],"sd":0.0023134391266924057,"z":2.4282042254995693,"iso":0.9119714995225271,"joint":0.9175890021853976,"k":72},{"t":950,"g":0.008305306235949161,"ci":[0.0033994577690325354,0.013211154702865787],"sd":0.0021935612334045376,"z":3.7862203751015566,"iso":0.913750564886464,"joint":0.9220558711224132,"k":72},{"t":1000,"g":0.009553128646479725,"ci":[0.004733447651722807,0.014372809641236644],"sd":0.0021550330098394103,"z":4.43293842964921,"iso":0.9158189785149362,"joint":0.9253721071614159,"k":72}],"single":[{"t":500,"g":0.0021972664528423502,"ci":[-0.0028978995063622124,0.007292432412046913],"sd":0.0022782111190845955,"z":0.9644700767351317,"iso":0.8803620752361085,"joint":0.8825593416889509,"k":72},{"t":550,"g":-0.003650805188549877,"ci":[-0.00858049322107536,0.001278882843975605],"sd":0.0022042206631226464,"z":-1.6562793596979997,"iso":0.8855116267999014,"joint":0.8818608216113515,"k":72},{"t":600,"g":-0.002656163440810322,"ci":[-0.007849678077879015,0.0025373511962583717],"sd":0.0023221859480207488,"z":-1.143820305636691,"iso":0.8906340665287442,"joint":0.8879779030879339,"k":72},{"t":650,"g":0.0010918503006299707,"ci":[-0.004309742408397583,0.0064934430096575246],"sd":0.002415224286903113,"z":0.45206994089562597,"iso":0.8935750507646136,"joint":0.8946669010652436,"k":72},{"t":700,"g":0.003137656384044285,"ci":[-0.0021085118449456096,0.00838382461303418],"sd":0.002345729047408497,"z":1.3376039263830108,"iso":0.8979356818728976,"joint":0.9010733382569419,"k":72},{"t":750,"g":0.00358751167853677,"ci":[-0.0021260530218809737,0.009301076378954514],"sd":0.0025547169089921197,"z":1.4042697513409053,"iso":0.9014485941992866,"joint":0.9050361058778233,"k":72},{"t":800,"g":0.0020345027248064307,"ci":[-0.0031627689933449755,0.007231774442957837],"sd":0.002323865858737391,"z":0.875481997877374,"iso":0.9065190346704589,"joint":0.9085535373952653,"k":72},{"t":850,"g":0.0018491380744509733,"ci":[-0.003384148093990445,0.0070824242428923915],"sd":0.002339969067495528,"z":0.7902403925493374,"iso":0.9093017818199264,"joint":0.9111509198943774,"k":72},{"t":900,"g":0.005617502662870533,"ci":[0.00044355008741679865,0.010791455238324267],"sd":0.0023134391266924057,"z":2.4282042254995693,"iso":0.9119714995225271,"joint":0.9175890021853976,"k":72},{"t":950,"g":0.008305306235949161,"ci":[0.0033994577690325354,0.013211154702865787],"sd":0.0021935612334045376,"z":3.7862203751015566,"iso":0.913750564886464,"joint":0.9220558711224132,"k":72},{"t":1000,"g":0.009562171167797562,"ci":[0.004743362565377533,0.01438097977021759],"sd":0.002154642935416316,"z":4.437937725375354,"iso":0.9158121968309084,"joint":0.925374367998706,"k":72}],"signs":["+","-","-","+","+","+","+","+","+","+","+"],"stable":false,"single_signs":["+","-","-","+","+","+","+","+","+","+","+"],"single_stable":false,"floor":0.0017694398121432153}};
+
+const NS='http://www.w3.org/2000/svg';
+function S(tag,a,p){const e=document.createElementNS(NS,tag);if(a)for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+function T(a,txt,p){const e=S('text',a,p);e.textContent=txt;return e;}
+function lin(d0,d1,r0,r1){return v=>r0+(v-d0)*(r1-r0)/(d1-d0);}
+function niceTicks(lo,hi,n){const sp=hi-lo,s0=sp/Math.max(1,n),m=Math.pow(10,Math.floor(Math.log10(s0))),e=s0/m;
+const st=e>=7.5?10*m:e>=3.5?5*m:e>=1.5?2*m:m;const o=[];for(let v=Math.ceil(lo/st-1e-9)*st;v<=hi+st*1e-9;v+=st)o.push(+v.toFixed(12));return o;}
+const MINUS='−';
+function fmt(v,nd){const s=Math.abs(v).toFixed(nd);if(v<0&&+s!==0)return MINUS+s;return '+'+s;}
+function fmtU(v,nd){const s=Math.abs(v).toFixed(nd);return (v<0&&+s!==0?MINUS:'')+s;}
+function decimals(step){return Math.max(0,-Math.floor(Math.log10(step)+1e-9));}
+function tickFmt(ts){const st=ts.length>1?Math.abs(ts[1]-ts[0]):1;const d=decimals(st);return v=>fmtU(v,d);}
+const tip=document.getElementById('tip');
+function showTip(x,y,head,rows){tip.replaceChildren();if(head){const h=document.createElement('div');h.className='h';h.textContent=head;tip.appendChild(h);}
+for(const [val,lab] of rows){const r=document.createElement('div');const b=document.createElement('strong');b.textContent=val;r.appendChild(b);
+if(lab){const s=document.createElement('span');s.textContent=' '+lab;r.appendChild(s);}tip.appendChild(r);}
+tip.style.display='block';const w=tip.offsetWidth,h=tip.offsetHeight;let L=x+14,Tp=y+14;
+if(L+w>window.innerWidth-4)L=x-w-14;if(Tp+h>window.innerHeight-4)Tp=y-h-14;tip.style.left=Math.max(4,L)+'px';tip.style.top=Math.max(4,Tp)+'px';}
+function hideTip(){tip.style.display='none';}
+function bindTip(node,head,rows){node.setAttribute('tabindex','0');node.setAttribute('role','img');
+node.setAttribute('aria-label',head+': '+rows.map(r=>r.join(' ')).join('; '));
+node.addEventListener('pointermove',ev=>showTip(ev.clientX,ev.clientY,head,rows));
+node.addEventListener('pointerleave',hideTip);
+node.addEventListener('focus',()=>{const r=node.getBoundingClientRect();showTip(r.right,r.top,head,rows);});
+node.addEventListener('blur',hideTip);}
+function seg(container,opts,init,onChange){const d=document.createElement('div');d.className='seg';d.setAttribute('role','group');
+const bs=[];for(const [val,lab] of opts){const b=document.createElement('button');b.type='button';b.textContent=lab;
+b.setAttribute('aria-pressed',String(val===init));b.addEventListener('click',()=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));onChange(val);});bs.push(b);d.appendChild(b);}
+container.appendChild(d);return d;}
+function table(container,head,rows){const t=document.createElement('table');const tr=document.createElement('tr');
+for(const h of head){const th=document.createElement('th');th.textContent=h;tr.appendChild(th);}t.appendChild(tr);
+for(const r of rows){const x=document.createElement('tr');for(const c of r){const td=document.createElement('td');td.textContent=c;x.appendChild(td);}t.appendChild(x);}
+container.replaceChildren(t);}
+function marker(shape,cx,cy,r,a,p){if(shape==='s')return S('rect',Object.assign({x:cx-r*0.9,y:cy-r*0.9,width:r*1.8,height:r*1.8},a),p);
+if(shape==='^'){const h=r*1.15;return S('path',Object.assign({d:`M${cx},${cy-h}L${cx+h},${cy+h*0.8}L${cx-h},${cy+h*0.8}Z`},a),p);}
+if(shape==='D'){const h=r*1.2;return S('path',Object.assign({d:`M${cx},${cy-h}L${cx+h},${cy}L${cx},${cy+h}L${cx-h},${cy}Z`},a),p);}
+return S('circle',Object.assign({cx:cx,cy:cy,r:r},a),p);}
+// follow the embedding page's theme when it sets one (same-origin iframe)
+(function(){function sync(){try{const t=window.parent&&window.parent!==window?window.parent.document.documentElement.getAttribute('data-theme'):null;
+if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}}
+sync();try{if(window.parent!==window)new MutationObserver(sync).observe(window.parent.document.documentElement,{attributes:true,attributeFilter:['data-theme']});}catch(e){}})();
+
+
+let which='grid';
+const ML={completion:'completion',survival_rate:'survival rate'};
+function legend(){const lg=document.getElementById('lg');lg.replaceChildren();
+const it=[['l','Γ(t) = JOINT − ISO, k = 72, 72'],['b','Šidák 95 % CI (m = 2)'],['f','floor at T* = 1000: ±1 sd(Γ), floor basis']];
+for(const [k,lab] of it){const s=document.createElement('span');const sv=S('svg',{width:26,height:12,viewBox:'0 0 26 12'});
+if(k==='l'){S('line',{x1:2,x2:24,y1:6,y2:6,stroke:'var(--ink)','stroke-width':2},sv);S('circle',{cx:13,cy:6,r:3.5,fill:'var(--ink)',stroke:'var(--surface)','stroke-width':1.5},sv);}
+if(k==='b')S('rect',{x:1,y:1,width:24,height:10,fill:'var(--ink)','fill-opacity':0.1,stroke:'var(--ink2)','stroke-width':0.6},sv);
+if(k==='f'){const d=S('defs',null,sv);const p=S('pattern',{id:'lf',width:4,height:4,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},d);S('line',{x1:0,y1:0,x2:0,y2:4,stroke:'var(--muted)','stroke-width':1},p);S('rect',{x:1,y:1,width:24,height:10,fill:'url(#lf)'},sv);}
+s.appendChild(sv);s.appendChild(document.createTextNode(lab));lg.appendChild(s);}}
+function draw(m){const D=DATA[m],P=D[which];const W=380,H=300,ml=58,mr=12,mt=40,mb=62;
+const svg=S('svg',{viewBox:`0 0 ${W} ${H}`,'aria-label':'Gamma of t for '+ML[m]});
+let lo=Math.min(...P.map(p=>p.ci[0]),-D.floor),hi=Math.max(...P.map(p=>p.ci[1]),D.floor);const pad=0.08*(hi-lo);lo-=pad;hi+=pad;
+const x=lin(480,1028,ml,W-mr),y=lin(lo,hi,H-mb,mt);const ts=niceTicks(lo,hi,5),tf=tickFmt(ts);
+for(const t of ts){S('line',{x1:ml,x2:W-mr,y1:y(t),y2:y(t),stroke:'var(--grid)'},svg);T({x:ml-6,y:y(t)+4,'text-anchor':'end',class:'tick'},tf(t),svg);}
+S('line',{x1:ml,x2:W-mr,y1:y(0),y2:y(0),stroke:'var(--muted)'},svg);
+S('line',{x1:ml,x2:W-mr,y1:H-mb,y2:H-mb,stroke:'var(--axis)'},svg);
+for(const p of P){if(p.t%100===0)T({x:x(p.t),y:H-mb+15,'text-anchor':'middle',class:'tick'},String(p.t),svg);
+S('line',{x1:x(p.t),x2:x(p.t),y1:H-mb,y2:H-mb+3,stroke:'var(--axis)'},svg);}
+T({x:(ml+W-mr)/2,y:H-8,'text-anchor':'middle',class:'axt'},'training update t',svg);
+T({x:12,y:(mt+H-mb)/2,transform:`rotate(-90 12 ${(mt+H-mb)/2})`,'text-anchor':'middle',class:'axt'},'Γ(t), difference in '+ML[m],svg);
+const signs=which==='grid'?D.signs:D.single_signs,stable=which==='grid'?D.stable:D.single_stable;
+T({x:ml-6,y:H-mb+32,'text-anchor':'end',class:'note'},'sign',svg);
+P.forEach((p,i)=>T({x:x(p.t),y:H-mb+33,'text-anchor':'middle',class:'tick'},signs[i]==='+'?'+':MINUS,svg).style.fill='var(--ink)');
+T({x:ml-50,y:18,class:'ttl'},ML[m],svg);
+T({x:ml-50,y:33,class:'note'},which==='grid'?(stable?'rule (iv): sign stable':'rule (iv): sign unstable over the final half'):(stable?'single-card signs: stable (descriptive)':'single-card signs: not stable (descriptive)'),svg).style.fill='var(--ink2)';
+const dfs=S('defs',null,svg);const pt=S('pattern',{id:'hp'+m,width:5,height:5,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},dfs);S('line',{x1:0,y1:0,x2:0,y2:5,stroke:'var(--muted)','stroke-width':1},pt);
+S('rect',{x:x(1008),y:y(D.floor),width:x(1022)-x(1008),height:y(-D.floor)-y(D.floor),fill:`url(#hp${m})`},svg);
+let band='M'+P.map(p=>x(p.t)+','+y(p.ci[1])).join('L')+'L'+P.slice().reverse().map(p=>x(p.t)+','+y(p.ci[0])).join('L')+'Z';
+S('path',{d:band,fill:'var(--ink)','fill-opacity':0.1},svg);
+S('path',{d:'M'+P.map(p=>x(p.t)+','+y(p.ci[1])).join('L'),fill:'none',stroke:'var(--ink2)','stroke-width':0.7},svg);
+S('path',{d:'M'+P.map(p=>x(p.t)+','+y(p.ci[0])).join('L'),fill:'none',stroke:'var(--ink2)','stroke-width':0.7},svg);
+S('path',{d:'M'+P.map(p=>x(p.t)+','+y(p.g)).join('L'),fill:'none',stroke:'var(--ink)','stroke-width':2,'stroke-linejoin':'round'},svg);
+const cross=S('line',{y1:mt,y2:H-mb,stroke:'var(--muted)','stroke-width':1,visibility:'hidden'},svg);
+const dots=P.map(p=>S('circle',{cx:x(p.t),cy:y(p.g),r:4.5,fill:'var(--ink)',stroke:'var(--surface)','stroke-width':2},svg));
+const hit=S('rect',{x:ml,y:mt,width:W-mr-ml,height:H-mb-mt,class:'hit',tabindex:0},svg);
+function at(i,cx,cy){const p=P[i];cross.setAttribute('x1',x(p.t));cross.setAttribute('x2',x(p.t));cross.setAttribute('visibility','visible');
+dots.forEach((d,j)=>d.setAttribute('r',j===i?6:4.5));
+const card=p.t<1000?'post-unblind card':(which==='grid'?'grid card (registered Γ)':'post-unblind card');
+showTip(cx,cy,ML[m]+', t = '+p.t,[[fmt(p.g,4),'Γ(t)'],['['+fmt(p.ci[0],4)+', '+fmt(p.ci[1],4)+']','Šidák 95 % CI'],[p.sd.toFixed(5),'sd(Γ)'],[fmt(p.z,2),'z'],
+[p.iso.toFixed(4),'ISO mean'],[p.joint.toFixed(4),'JOINT mean'],[card,'']]);}
+let cur=P.length-1;
+hit.addEventListener('pointermove',ev=>{const r=svg.getBoundingClientRect();const sx=(ev.clientX-r.left)*W/r.width;let b=0,bd=1e9;
+P.forEach((p,i)=>{const dd=Math.abs(x(p.t)-sx);if(dd<bd){bd=dd;b=i;}});cur=b;at(b,ev.clientX,ev.clientY);});
+hit.addEventListener('pointerleave',()=>{cross.setAttribute('visibility','hidden');dots.forEach(d=>d.setAttribute('r',4.5));hideTip();});
+hit.addEventListener('keydown',ev=>{if(ev.key==='ArrowLeft'||ev.key==='ArrowRight'){cur=Math.max(0,Math.min(P.length-1,cur+(ev.key==='ArrowLeft'?-1:1)));
+const r=svg.getBoundingClientRect();at(cur,r.left+x(P[cur].t)*r.width/W,r.top+y(P[cur].g)*r.height/H);ev.preventDefault();}});
+hit.addEventListener('focus',()=>{const r=svg.getBoundingClientRect();at(cur,r.left+x(P[cur].t)*r.width/W,r.top+y(P[cur].g)*r.height/H);});
+hit.addEventListener('blur',()=>{cross.setAttribute('visibility','hidden');hideTip();});
+return svg;}
+function render(){legend();const c=document.getElementById('chart');c.replaceChildren(draw('completion'),draw('survival_rate'));
+document.getElementById('note').textContent=which==='grid'?'t = 1000: grid-card eval (the registered Γ); t < 1000: post-unblind card. Arrow keys step through checkpoints when a chart has focus.':'Single-card curve: all 11 checkpoints evaluated on the post-unblind card. Arrow keys step through checkpoints when a chart has focus.';
+const rows=[];for(const m of ['completion','survival_rate']){DATA[m][which].forEach((p,i)=>rows.push([ML[m],String(p.t),fmt(p.g,4),'['+fmt(p.ci[0],4)+', '+fmt(p.ci[1],4)+']',p.sd.toFixed(5),fmt(p.z,2),p.iso.toFixed(4),p.joint.toFixed(4),(which==='grid'?DATA[m].signs:DATA[m].single_signs)[i]==='+'?'+':MINUS]));}
+table(document.getElementById('tbl'),['metric','t','Γ(t)','Šidák 95 % CI','sd(Γ)','z','ISO mean','JOINT mean','sign'],rows);}
+seg(document.getElementById('cs'),[['grid','grid card (registered)'],['single','post-unblind card (single-card curve)']],which,v=>{which=v;render();});
+render();
+
+</script>
+</body>
+</html>

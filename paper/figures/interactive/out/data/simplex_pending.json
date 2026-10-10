@@ -1,0 +1,86 @@
+[
+ {
+  "figure": "F5 simplex",
+  "what": "completion dose slope",
+  "value": "−0.0251",
+  "source": "secondary.json → metrics.completion.dose_trend"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion dose slope 95 % CI",
+  "value": "[−0.0943, +0.0412]",
+  "source": "secondary.json → metrics.completion.dose_trend"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion endpoint",
+  "value": "−0.0097",
+  "source": "secondary.json → metrics.completion.endpoint_grade"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion endpoint 95 % CI",
+  "value": "[−0.0482, +0.0287]",
+  "source": "secondary.json → metrics.completion.endpoint_grade"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion γ_p",
+  "value": "+0.0269",
+  "source": "secondary.json → metrics.completion.confound"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion γ_p 95 % CI",
+  "value": "[−0.0675, +0.1245]",
+  "source": "secondary.json → metrics.completion.confound"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion γ_n",
+  "value": "−0.0652",
+  "source": "secondary.json → metrics.completion.confound"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion γ_n 95 % CI",
+  "value": "[−0.1534, +0.0242]",
+  "source": "secondary.json → metrics.completion.confound"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion bound",
+  "value": "−0.0326",
+  "source": "secondary.json → metrics.completion.confound"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion bound 95 % CI",
+  "value": "[−0.0767, +0.0121]",
+  "source": "secondary.json → metrics.completion.confound"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion plane prediction JOINT − ISO-4",
+  "value": "+0.0269",
+  "source": "secondary.json → metrics.completion.confound.gamma_p"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion plane prediction JOINT − ISO-4 95 % CI",
+  "value": "[−0.0675, +0.1245]",
+  "source": "secondary.json → metrics.completion.confound.gamma_p"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion Γ₄ 95 % CI",
+  "value": "[−0.0481, +0.0228]",
+  "source": "secondary.json → metrics.completion (post_gamma4_t2000.json → gamma4)"
+ },
+ {
+  "figure": "F5 simplex",
+  "what": "completion Γ₄′ 95 % CI",
+  "value": "[−0.0616, +0.0122]",
+  "source": "secondary.json → metrics.completion.replicate"
+ }
+]

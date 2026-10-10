@@ -1,0 +1,7 @@
+{
+ "config": "che/configs/severity_medium.yaml",
+ "rule": "rollout_frames, random policy, PRNGKey(0)",
+ "hazard_sha256": "548f5f3f577af8169f71b4d826ebc72e6d27cf98af4e9ed599caa9bfb6e92363",
+ "smoke_sha256": "e85557e162e5494d7ea48fc14256a42c4fb58aa4f21387a9ca6fb1c0fb1f0990",
+ "final_non_fuel_share_this_episode": 0.16845703125
+}

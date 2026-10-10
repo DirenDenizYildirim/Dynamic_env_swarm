@@ -1,0 +1,62 @@
+[
+ {
+  "figure": "F2 ladder",
+  "what": "G survival_rate 80 %-power MDE X",
+  "value": "0.0066",
+  "source": "unblind/unblind.json → primary.family.survival_rate"
+ },
+ {
+  "figure": "F2 ladder",
+  "what": "G60 completion Šidák CI",
+  "value": "[−0.0486, +0.0052]",
+  "source": "unblind/unblind.json → prefix.family.completion"
+ },
+ {
+  "figure": "F2 ladder",
+  "what": "G60 completion 80 %-power MDE X",
+  "value": "0.0370",
+  "source": "unblind/unblind.json → prefix.family.completion"
+ },
+ {
+  "figure": "F2 ladder",
+  "what": "G60 survival_rate Šidák CI",
+  "value": "[+0.0054, +0.0155]",
+  "source": "unblind/unblind.json → prefix.family.survival_rate"
+ },
+ {
+  "figure": "F2 ladder",
+  "what": "G60 survival_rate 80 %-power MDE X",
+  "value": "0.0069",
+  "source": "unblind/unblind.json → prefix.family.survival_rate"
+ },
+ {
+  "figure": "F2 ladder",
+  "what": "G4 completion Šidák CI",
+  "value": "[−0.0481, +0.0228]",
+  "source": "post_gamma4_t2000.json → gamma4.per_metric.completion.gamma4"
+ },
+ {
+  "figure": "F2 ladder",
+  "what": "G4 completion z",
+  "value": "−0.80",
+  "source": "post_gamma4_t2000.json → gamma4.per_metric.completion.gamma4"
+ },
+ {
+  "figure": "F2 ladder",
+  "what": "G4p completion Šidák CI",
+  "value": "[−0.0616, +0.0122]",
+  "source": "secondary.json → replicate.completion.gamma4_prime"
+ },
+ {
+  "figure": "F2 ladder",
+  "what": "G4p completion z",
+  "value": "−1.50",
+  "source": "secondary.json → replicate.completion.gamma4_prime"
+ },
+ {
+  "figure": "F2 ladder",
+  "what": "B completion Šidák CI",
+  "value": "[−0.0405, +0.0312]",
+  "source": "post_gamma4_t2000.json → gamma4.per_metric.completion.b_hat"
+ }
+]
