@@ -90,6 +90,11 @@ how badly each one could hurt the submission.
       that resolve to an account; pre-registration described in-text by
       date. Anonymized supplementary code ≤ 100 MB (ship 454 KB, not
       `m06/`).
+- [ ] **Repository private before upload** (REPO VISIBILITY, 2026-10-10):
+      the owner switches it; the builder then checks that an
+      unauthenticated request for the repository page returns 404. Copies
+      made while it was public are not removed by the switch, so naming the
+      environment stays the owner's call at each step.
 - [ ] No parallel submission anywhere archival. DMLR is sequential fallback
       only.
 - [ ] Length justified by content; use the appendix manifest (spine §11).

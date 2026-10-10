@@ -168,6 +168,9 @@
      decision-log entry. New fact from 2026-09-27: its `SHA256_CKPT.txt`
      holds **one** hash (rep1, which verifies); the other 11 archives were
      never hashed, and rep2 is truncated. It grades nothing either way.
+   - **repository private before upload** (REPO VISIBILITY, 2026-10-10):
+     the owner switches it; the builder verifies with an unauthenticated
+     request (404 expected).
    - **comment stripping before upload** (decision log, WRITING ROLES,
      OWED). `assets/` and the page source are public during review, so the
      bib's `%` notes and `submission.md`'s ledger/TODO comments would ship

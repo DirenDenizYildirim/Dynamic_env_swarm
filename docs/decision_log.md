@@ -5547,3 +5547,34 @@ practice under WRITING ROLES ("a suggestion is labelled as one").
 
 The WRITING ROLES ruling and its addendum, the ledger rule, double-blind, and
 every constant, lock, test, registration and branch reading.
+
+
+## REPO VISIBILITY — the GitHub repository goes private (owner, 2026-10-10)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28).
+Answers the open question in `writing_session_prompt.md` ("Kit mechanics and
+double-blind"), asked at the title step.
+
+> The owner: "the repo will go private."
+
+### Builder's reading, until the owner corrects it
+
+- **The owner makes the switch.** `gh` is not installed in the session, and
+  the builder does not change repository settings. It must be done before
+  upload, because TMLR renders submissions under review publicly.
+- **The switch closes the live route from the environment's name to the
+  account, not necessarily every route.** The answer implies the repository
+  is public now; for how long is not recorded (`main` was pushed 2026-09-27,
+  `HANDOFF.md`). Copies made while it was public (search-engine caches,
+  public event archives, software archives) are not removed by the switch.
+  Whether any exist was not checked.
+- **Naming the environment stays the owner's choice** at each step where the
+  name could appear. Title draft 1 (2026-10-10) names none.
+- **Check after the switch (builder, \$0):** an unauthenticated request for
+  the repository page returns 404, not 200. Listed in the checklist.
+
+### What this entry does NOT change
+
+The double-blind rules (no name, account, repository or OSF link, no
+resolving hash), and every constant, lock, test, registration and branch
+reading.
