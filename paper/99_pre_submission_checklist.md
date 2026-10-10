@@ -36,7 +36,8 @@ how badly each one could hurt the submission.
 - [ ] **Drop "swarm" as a claim.** The foraging task requires no
       coordination; twelve shared-parameter agents with a team reward.
       "Multi-agent" in the title; "swarm" only where it names the
-      homogeneity assumption.
+      homogeneity assumption. (Title: DONE 2026-10-10, "multi-agent"; TITLE
+      AND TERMINOLOGY RULINGS. Still owed in the body.)
 
 ## Owed before the grid
 
@@ -51,20 +52,25 @@ how badly each one could hurt the submission.
 - [x] **Relayed citations resolved** (2026-09-26, abstract-level, four
       identities re-checked independently): VULCAN, Agrawal 2023, Erdem & Üre
       2025 repositioned; SMART removed (CITATION REPOSITIONING RULING).
-- [ ] **Still owed by hand:** read Gao et al. RSS 2024, Chen et al. ICLR
+- [x] **DONE 2026-10-10 (READS RULING):** the full reads recorded in
+      `related_work_verification.md` Part 3 discharge the owner reads; Gao
+      read by the owner. Was: read ~~Gao et al. RSS 2024~~, Chen et al. ICLR
       2022, and Erdem & Üre 2025 in full (does it match exposure?); build the
       `.bib` only from the BibTeX in `paper/related_work_verification.md`,
       never from memory. (`.bib` built 2026-09-27 on the scaffold branch,
       verbatim, owner-read entries `%`-flagged; the reads are still owed.)
-- [ ] Read the JaxWildfire PDF (arXiv:2512.06102) and arXiv:2604.26150
+- [x] **DONE 2026-10-10 (READS RULING, Part 3).** Was: read the JaxWildfire PDF (arXiv:2512.06102) and arXiv:2604.26150
       directly; the related-work rows currently rest on automated
       summaries.
-- [ ] Read arXiv:2507.10142 for a subsuming memorization-gap theorem.
-- [ ] **Write the UED / domain-randomization related-work paragraph** from
+- [x] **DONE 2026-10-10 (READS RULING, Part 3):** a survey; no theorem. Was: read arXiv:2507.10142 for a subsuming memorization-gap theorem.
+- [x] **DONE 2026-10-10:** §2 (owner's text) carries it. Was: **Write the UED / domain-randomization related-work paragraph** from
       the DRAFT in `paper/related_work_verification.md` Part 2 (search run
       2026-09-26; no scoop found).
-- [ ] IEEE Xplore query (needs authenticated access).
-- [ ] Ratify the word "ambient" (pending since 2026-08-05).
+- [ ] IEEE Xplore query (needs authenticated access). §2 discloses that it
+      was not run (2026-10-10).
+- [x] **DONE 2026-10-10 (TITLE AND TERMINOLOGY RULINGS):** "ambient"
+      ratified; Def. 2 is the "ambient hazard", "stressor" names only the
+      composable elements, θ is the "environment configuration".
 - [ ] Obtain TMLR's actual time-to-decision from published statistics or
       OpenReview before writing any runway arithmetic.
 - [ ] Per-artifact floors for the two render-gate drift channels from the
@@ -90,6 +96,8 @@ how badly each one could hurt the submission.
       that resolve to an account; pre-registration described in-text by
       date. Anonymized supplementary code ≤ 100 MB (ship 454 KB, not
       `m06/`).
+- [ ] **Abstract ≤ 5,000 characters** (owner checked 2026-10-10; ABSTRACT
+      entry). The final abstract is 2,424 characters. Re-count if it changes.
 - [ ] **Repository private before upload** (REPO VISIBILITY, 2026-10-10):
       the owner switches it; the builder then checks that an
       unauthenticated request for the repository page returns 404. Copies
@@ -98,6 +106,11 @@ how badly each one could hurt the submission.
 - [ ] No parallel submission anywhere archival. DMLR is sequential fallback
       only.
 - [ ] Length justified by content; use the appendix manifest (spine §11).
+      §1 is ≈ 1,620 words: look again in the final pass, once §9 exists.
+- [ ] A verified CMDP / safe-RL entry for §1 (`related_work_verification.md`
+      first, then `submission.bib`).
+- [ ] Staging: `<!-- cite:key -->` placeholders in `finale.md` become
+      `<d-cite key="…"></d-cite>`.
 - [ ] Every figure readable in greyscale; floor bars on every bar chart
       that has a floor.
 
@@ -120,7 +133,8 @@ how badly each one could hurt the submission.
       classifier). Routes: `KIT_NOTES.md` §S4. The owner's interim preview
       (2026-09-28) is a style-mimicking HTML/CSS artifact; it is a writing
       aid and does not discharge this item.
-- [ ] Owner rulings the scaffold raised: `description` field, title,
+- [ ] Owner rulings the scaffold raised: ~~`description` field~~ (ruled
+      2026-10-10, DESCRIPTION entry), ~~title~~ (ruled 2026-10-10),
       ISO/JOINT GIFs shown or not, bib fields that render raw LaTeX,
       rubygems.org + Debian mirrors for the preview (`HANDOFF.md` item 4).
 - [ ] **Comment stripping at staging** (decision log, WRITING ROLES, OWED):
@@ -133,6 +147,10 @@ how badly each one could hurt the submission.
       self-contained (no author-linked URL, font or data source).
       (Authors: Anonymous in the skeleton, 2026-09-27. Interactive
       figures: none yet.)
+- [ ] **Figures (FIGURE BATCH RULINGS, 2026-10-10):** placed figures copied
+      from `paper/figures/` into `assets/` at their section step; B8 fixes
+      applied; every number in a placed figure has a ledger row; GIF slot 2
+      decided (ISO/JOINT not in the main text).
 - [ ] Every GIF has a static companion or a caption that carries it, so the
       browser-printed PDF stands alone. (The one GIF placed so far, the
       random-policy episode in §3, has its static companion beside it; the

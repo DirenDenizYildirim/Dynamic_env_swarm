@@ -271,6 +271,9 @@ None of the kit's example files are copied into our tree: `Frog.gif`,
 1. **`description` vs the abstract** (a choice the rulings do not cover).
    The instructions say description = abstract. The layout needs it as one
    line with no `"`. Live submissions use one or two sentences.
+   - **RULED 2026-10-10 (decision log, DESCRIPTION):** `description` is
+     one owner-written sentence, and the abstract is a body section with no
+     heading. The S2 proposal below is superseded.
    - **Proposed in S2, owner to rule:** `description` carries the spine
      abstract's first sentence, verbatim (no numbers). The full abstract,
      with ledger IDs, is the first body section.

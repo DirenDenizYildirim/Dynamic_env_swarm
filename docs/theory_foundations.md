@@ -20,7 +20,7 @@ result we invoke), or **[EMPIRICAL]** (motivated by theory, decided by experimen
 - Time $t = 0, 1, 2, \dots$; horizon $T$ (episodic) or discount $\gamma \in (0,1)$
   (used for theory statements; the implementation is episodic).
 - $\Delta(\mathcal{Y})$ = probability distributions over $\mathcal{Y}$.
-- Stressor configuration $\theta = (\beta, \kappa_A, \kappa_B, \delta) \in \Theta$:
+- Environment configuration $\theta = (\beta, \kappa_A, \kappa_B, \delta) \in \Theta$:
   hazard transmissibility $\beta$, Coupling A strength $\kappa_A$, Coupling B
   strength $\kappa_B$, comms-denial level $\delta$.
 
@@ -34,7 +34,15 @@ A CHE is a Dec-POMDP
 $\mathcal{M}_\theta = \langle I, \mathcal{S}, \{\mathcal{A}_i\}, T_\theta, R, \{\Omega_i\}, O_\theta, \gamma \rangle$
 whose state space factors as
 
-$$\mathcal{S} = \mathcal{X} \times \mathcal{H} \times \mathcal{C} \times \mathcal{K}$$
+$$\mathcal{S} = \mathcal{X} \times \mathcal{H} \times \mathcal{P} \times \mathcal{C} \times \mathcal{K} \times \{0,\dots,T\}$$
+
+> **Amended 2026-10-10 (FIGURE BATCH RULINGS, C11; decision log).** The
+> smoke field $\rho \in \mathcal{P} = \mathbb{R}_{\ge 0}^{G}$ (D3) and the
+> step index $t$ are state components, as in the code (`che/env/types.py`).
+> The observation kernel reads $\rho$, which carries memory, so the
+> Dec-POMDP is well defined only with $\rho$ in the state. The agent kernel
+> reads the post-step fields, $T_X(x' \mid x, a, h', c')$, as the code does
+> (`che/env/env.py`, agent step).
 
 - $\mathcal{X}$: joint agent state (positions $x_i \in G$, alive/disabled flags
   $\alpha_i \in \{0,1\}$, task-carried state).
@@ -42,18 +50,20 @@ $$\mathcal{S} = \mathcal{X} \times \mathcal{H} \times \mathcal{C} \times \mathca
   $\Sigma_H = \{\mathrm{Fuel}, \mathrm{Burning}, \mathrm{Burnt}\}$ for the discrete
   kernel (a continuous intensity variant $\mathcal{H} = [0,1]^G$ is an
   implementation option; the theory below uses the discrete kernel).
+- $\mathcal{P} = \mathbb{R}_{\ge 0}^{G}$: smoke field $\rho$, updated per cell as
+  $\rho' = e^{-\eta}\rho + \sigma_s\,\mathbf{1}[h' = \mathrm{Burning}]$ (D3; Def. 6).
 - $\mathcal{C} = \{\mathrm{intact}, \mathrm{collapsed}\}^{G}$: structural state.
 - $\mathcal{K}$: comms-channel state (realized link graph $G^{\mathrm{comm}}_t$ on $I$).
 
 and whose **transition kernel factorizes** as
 
-$$T_\theta(s' \mid s, a) \;=\; \underbrace{T_C(c' \mid c, x)}_{\text{structure}} \;\cdot\; \underbrace{T_H^{\beta,\kappa_A}(h' \mid h, c, c')}_{\text{hazard (Coupling A enters here)}} \;\cdot\; \underbrace{T_K^{\delta}(k' \mid x')}_{\text{comms}} \;\cdot\; \underbrace{T_X(x' \mid x, a, h, c)}_{\text{agents}}$$
+$$T_\theta(s' \mid s, a) \;=\; \underbrace{T_C(c' \mid c, x)}_{\text{structure}} \;\cdot\; \underbrace{T_H^{\beta,\kappa_A}(h' \mid h, c, c')}_{\text{hazard (Coupling A enters here)}} \;\cdot\; \underbrace{T_\rho(\rho' \mid \rho, h')}_{\text{smoke}} \;\cdot\; \underbrace{T_X(x' \mid x, a, h', c')}_{\text{agents}} \;\cdot\; \underbrace{T_K^{\delta}(k' \mid x')}_{\text{comms}}$$
 
 Each agent's observation is drawn from
 $O_\theta^i(o_i \mid s) = O^i_{\kappa_B}(o_i \mid x, h, c, k)$, where the
 **dependence of the observation kernel on $h$ is Coupling B** (Section 5).
 
-### Definition 2 (Ambient survival stressor) — the paper's core reframe, stated formally
+### Definition 2 (Ambient hazard) — the paper's core reframe, stated formally
 
 > **Amended 2026-08-05 (positioning rulings, decision log).** Two changes.
 > *(1) Terminology:* "passive" is **struck** — at a control venue it asserts
@@ -64,8 +74,15 @@ $O_\theta^i(o_i \mid s) = O^i_{\kappa_B}(o_i \mid x, h, c, k)$, where the
 > *(2) Clause 1 strengthened:* the hazard is excluded from auxiliary cost
 > and constraint channels, not only from $R$ — the boundary the old wording
 > left open, which invited the CMDP/safe-RL reader to see themselves.
+>
+> **Amended 2026-10-10 (TERMINOLOGY RULING, decision log).** "Ambient" is
+> **ratified**. The definition is renamed from "ambient survival stressor" to
+> **"ambient hazard"**, because "stressor" now names only the composable
+> elements {Coupling A, Coupling B, comms denial} (D1), never the fire, which
+> burns in every episode. $\theta$ is the **environment configuration**
+> (Notation), since it includes the fire's $\beta$.
 
-The hazard is an **ambient survival stressor** iff:
+The hazard is **ambient** iff:
 
 1. **Reward-independence (strengthened 2026-08-05; reworded 2026-09-27,
    DEF. 2 WORDING RULING):** $R$ is a function of task variables and of the
@@ -117,7 +134,7 @@ The hazard is an **ambient survival stressor** iff:
 
 ### Proposition 1 (Well-posedness / Markov closure) [PROVEN]
 
-For every $\theta \in \Theta$, the process $s_t = (x_t, h_t, c_t, k_t)$ under any
+For every $\theta \in \Theta$, the process $s_t = (x_t, h_t, \rho_t, c_t, k_t, t)$ under any
 joint policy is a Markov chain, and $\mathcal{M}_\theta$ is a well-defined
 Dec-POMDP: finite-horizon optimal joint policies exist, and all standard value
 definitions apply.
@@ -127,7 +144,9 @@ measurable in its conditioning variables, all of which are components of
 $(s, a)$ or of already-sampled components of $s'$ (the dependence of $T_H$ on
 $c'$ and of $T_K$ on $x'$ is a sequential composition within one time step:
 sample $c' \sim T_C$, then $h' \sim T_H(\cdot \mid h, c, c')$, then
-$x' \sim T_X$, then $k' \sim T_K(\cdot \mid x')$). A composition of Markov
+$\rho' = T_\rho(\rho, h')$ (deterministic), then $x' \sim T_X(\cdot \mid x, a, h', c')$,
+then $k' \sim T_K(\cdot \mid x')$; amended 2026-10-10 to name $\rho$ and the
+post-step arguments of $T_X$, as in the code). A composition of Markov
 kernels is a Markov kernel on the product space, so $T_\theta$ is a valid
 transition kernel on $\mathcal{S}$ and $(s_t)$ is Markov. $\mathcal{S}$,
 $\mathcal{A} = \prod_i \mathcal{A}_i$, and $\Omega_i$ are finite, so
@@ -328,6 +347,15 @@ Agent $i$'s ability to observe a feature at position $y$ from position $x_i$
 is gated by the transmittance along the line of sight:
 
 $$\tau_i(y) \;=\; \exp\!\Big(-\kappa_B \int_{x_i \to y} \rho_H \, d\ell\Big),$$
+
+> **Amended 2026-10-10 (FIGURE BATCH RULINGS, C11).** As implemented, $\rho$
+> is the per-cell field $\rho' = e^{-\eta}\rho + \sigma_s\mathbf{1}[h' =
+> \mathrm{Burning}]$ ($\sigma_s = 1.0$, $\eta = 0.5$; no spatial smoothing), the
+> integral is a 4-point midpoint quadrature of the mean of $\rho'$ along the
+> ray, $\tau = \exp(-\kappa_B \cdot \mathrm{dist} \cdot \bar\rho)$, and each cell
+> of the crop is **revealed with probability $\tau$** (its content planes
+> zeroed otherwise; a visibility plane records the reveal). The text below
+> is the pre-implementation design and is kept as record.
 
 where $\rho_H$ is the local hazard/smoke density (in the discrete kernel, a
 kernel-smoothed indicator of Burning/recently-Burnt cells — smoke outlives

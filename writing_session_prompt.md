@@ -37,7 +37,10 @@ which no session has verified.
    the owner before preparing it.**
 
 Per step, read the matching spine section, the `branch_B.md` parts, and the
-reports its ledger rows cite. Read nothing more.
+reports its ledger rows cite. Read nothing more. **Figure-first (FIGURE BATCH
+RULINGS, 2026-10-10):** also read the section's row in
+`paper/figures/interactive/DESIGN.md` §5 and its figure's MANIFEST entry, and
+put what the figure shows into the step's constraints.
 
 ## The step cycle, one section at a time
 
@@ -167,6 +170,10 @@ first.
 - **GIFs illustrate and never grade.**
 - **No acceptance-rate or odds figure** anywhere.
 - **"Swarm" is not a claim;** "multi-agent" is safe.
+- **"Stressor" names only the composable elements** {Coupling A,
+  Coupling B, comms denial}. The fire is the *ambient hazard* (Def. 2) and
+  is never a stressor; θ is the *environment configuration* (TITLE AND
+  TERMINOLOGY RULINGS, 2026-10-10).
 
 ## Kit mechanics and double-blind
 
@@ -203,17 +210,21 @@ committed data, floors shown), what it shows, and who writes the caption
 
 | step | open item |
 |---|---|
-| Title | ratify "ambient"; "swarm"; whether to name the environment (repo visibility) |
-| Abstract, `description` | the `description` field; how code release is described without a link |
-| §2 | the six owner reads before those works are cited; the UED/DR paragraph (its Part-2 draft is builder text, so it counts as constraints only); the 8 bib fields that render raw LaTeX |
+| Title | **DONE 2026-10-10** (TITLE AND TERMINOLOGY RULINGS; REPO VISIBILITY) |
+| Abstract, `description` | **DONE 2026-10-10** (ABSTRACT and DESCRIPTION entries). How code availability is described moved to §11 |
+| §2 | **DONE 2026-10-10** (READS RULING). Still open: the 8 bib fields that render raw LaTeX. Was: the owner reads before those works are cited; the UED/DR paragraph (its Part-2 draft is builder text, so it counts as constraints only); the 8 bib fields that render raw LaTeX |
 | §3 | PBT wording (O-1); whether the random-policy GIF stays |
 | §4 | O-2 (no committed artifact for the R_L logistic centres) |
 | §9 | whether the ISO/JOINT GIFs appear at all |
 | §10 | drift-channel floors, or the text says they grade nothing. The §5 honesty lines and the §4a Medium-siting limitation are required. Dropping any other spine §10 item because the outcome makes it awkward would be outcome-dependent disclosure (a suggestion to raise, not a rule) |
-| §11 | O-3 (supplement size), O-4 (venue limit) |
+| §11 | O-3 (supplement size), O-4 (venue limit, and whether a Beyond PDF submission takes a supplement); how code availability is described without a link (moved here 2026-10-10) |
 | upload | comment stripping (*WRITING ROLES*, OWED); the kit preview; the card-2 entry, if appendix F touches it |
 
 ## Step 1, prepared 2026-09-28: the title
+
+**DONE 2026-10-10.** The title is ruled (decision log, *TITLE AND
+TERMINOLOGY RULINGS*) and is in `paper/finale.md`. The next step is the
+Abstract. What follows is kept as the record of how the step was prepared.
 
 Re-verify each fact against its source before presenting it. Present it in
 the owner's format; the owner has already seen this version once.

@@ -40,7 +40,8 @@ structure are theorems' hypotheses.
 2. **Kernel factorization order (Prop. 1):** one env step samples, in order:
    collapse `c' ~ T_C(c, x)` → hazard `h' ~ T_H(h, c, c')` (Coupling A reads
    the collapse increment `c' − c`) → smoke `ρ' = e^{−η}ρ + σ_s·1[burning]` →
-   agents `x' ~ T_X(x, a, h, c)` → comms `k' ~ T_K(x')`. Observations are
+   agents `x' ~ T_X(x, a, h', c')` (post-step fields; notation corrected
+   2026-10-10 to match the code) → comms `k' ~ T_K(x')`. Observations are
    drawn from the post-step state via `O_{κ_B}(·|x', h', ρ', c', k')`.
 3. **Bitwise ablation nesting:** with `kappa_A=0`, `kappa_B=0`, or `delta=0`,
    trajectories must be *bitwise identical* to the corresponding nested model
@@ -85,8 +86,9 @@ structure are theorems' hypotheses.
 
 ## Repository layout
 
-Refreshed against the tree 2026-09-28 (Beyond PDF scaffold merged;
-previously 2026-09-27, 2026-07-31). **Keep it that way**: the phase-close
+Refreshed against the tree 2026-10-10 (`paper/finale.md`,
+`paper/writing_drafts.md` and `paper/figures/` added; previously 2026-09-28, 2026-09-27,
+2026-07-31). **Keep it that way**: the phase-close
 checklist requires re-reading this block against the actual tree, because a
 new session treats it as authoritative before it has read any code. It has
 omitted `che/calibration/` and `che/eval/` (to 2026-07-31), `paper/` (to
@@ -121,9 +123,23 @@ paper/                            # the TMLR submission
                                   #   layout; KIT_NOTES.md = kit facts, the
                                   #   staging + preview procedure. No kit
                                   #   file is in the tree
+  finale.md                       # THE OWNER'S MANUSCRIPT (WRITING ROLES):
+                                  #   owner text only, verbatim + ledger-ID
+                                  #   comments; becomes beyond_pdf/
+                                  #   submission.md at the end
+  writing_drafts.md               # every chat draft verbatim + the
+                                  #   builder's labelled check findings
+                                  #   (DRAFTS FILE, 2026-10-06); append-only
   numbers_ledger.md               # every paper number -> its committed
                                   #   source + row ID; new numbers get a row
                                   #   FIRST, and submission.md cites the ID
+  figures/                        # CANDIDATE figures (FIGURES, FIGURES FIRST,
+                                  #   FIGURE BATCH RULINGS 2026-10-10): src/
+                                  #   + out/ static slot figures; interactive/
+                                  #   = self-contained HTML set + DESIGN.md
+                                  #   (the adopted figure-led reading path);
+                                  #   copied into beyond_pdf/assets/ only
+                                  #   when placed at a section step
   renders/                        # episode GIFs + static companions with
                                   #   their selection rule (laptop-only:
                                   #   checkpoints are gitignored)

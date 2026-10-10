@@ -151,7 +151,7 @@ one call succeeded). **IEEE Xplore was not queried.** That matters for item 4.
   to mixed perturbations". A naive mixed adversary fails to balance its budget
   across modalities.
 - **Correction:** this is **adversarial robustness to co-occurring perturbation
-  types**, not compositional generalization, and not an ambient stressor. It asks
+  types**, not compositional generalization, and not an ambient hazard. It asks
   the joint-vs-isolated question. It is also the one found work whose headline
   says isolated (single-type) training fails on the combination — **the opposite
   direction** from CHE's matched-share result. That is worth one sentence.
@@ -861,14 +861,14 @@ Ranked neighbours a reviewer could raise:
    It is the closest design analogue: one-factor-at-a-time vs joint-coverage
    training data, compared at a matched budget. But the budget is *effort*
    (factor changes), not active share or marginals. It is imitation learning with
-   benign visual/physical factors, not survival under a lethal stressor, and it
+   benign visual/physical factors, not survival under a lethal hazard, and it
    finds composition *works*. **Must cite**, and say precisely which quantity each
    design matches.
 2. **Erdem & Üre, MAKE 2025 — moderate on the question, low on the design.** Same
    joint-vs-isolated question in adversarial robust RL. Its headline ("single-type
    training … remain[s] highly vulnerable to mixed perturbations") runs *opposite*
    to CHE's matched-share null, which a reviewer may bring up. Differences: an
-   adversarial perturbation budget vs an ambient, non-adversarial stressor. Its
+   adversarial perturbation budget vs an ambient, non-adversarial hazard. Its
    exposure design is **unverified** (MDPI full text blocked); read the paper before
    claiming it does not match exposure.
 3. **Agrawal et al., NeurIPS 2023 workshop — low.** Multi-uncertainty robust MARL
@@ -891,3 +891,132 @@ submission:** VULCAN's CMDP framing (item 1); the "burning cells" label on
 arXiv:2604.26150 (item 15); POBAX/BenchMARL in the JAX × MARL row (item 12); the
 stale 2507.10142 "hiding place" note (item 16); and SMART, which could not be found
 and should not be cited as it stands (item 4).
+
+---
+
+## Part 3 — full-text checks of the §2 draft, 2026-10-10
+
+Run by four web-verification agents in the builder's writing session, at the
+owner's request, against §2 draft 1 (`paper/writing_drafts.md`). Each agent
+read the full text (PDF or HTML), and where named the public code. Verdicts
+below are the agents' reports as checked by the builder; quotes and locations
+are theirs. Downloads were kept in the session scratchpad, not the tree.
+**These are assistant reads, not the owner's** (see the open question in the
+§2 draft-1 findings).
+
+| work | read | verdict on the draft's claims |
+|---|---|---|
+| Haksar & Schwager 2018 | author PDF (msl.stanford.edu) | MADQN (Alg. 3) SUPPORTED; reward for moving to a burning boundary tree (Alg. 2, l. 4) SUPPORTED, one of five reward terms; no agent damage state (by omission) |
+| JaxWildfire, arXiv:2512.06102v1 | PDF | JAX CA, single air-tanker PPO agent, partial egocentric observations, no smoke SUPPORTED; reward "penalty … proportional to the number of burning cells and a terminal +10" with **no published coefficient**; **agent harm never mentioned** (code unreleased): "cannot harm" is an inference from silence |
+| VULCAN, arXiv:2604.12831v1 | PDF | VLM global planner + hazard-aware FMM SUPPORTED; hazard map = temperature, smoke **and sensing uncertainty** (Eq. 9); metric "Cumulative Hazard Exposure (CHE)" (Eq. 14) SUPPORTED; no transmittance model; smoke density "inferred from RGB degradation and depth consistency"; **VULCAN itself is not evaluated** (baselines only; deployment "ongoing") |
+| Raut, Zhao, Moreira, arXiv:2604.26150v1 | PDF | MDP with one PPO agent; line-failure probability set by power flows (Eq. 3), used interchangeably with ignition; reward = negative operating cost (Eq. 6); no spread model: all SUPPORTED |
+| Multi-Agent Craftax, arXiv:2511.04904v1 + github.com/BaselOmari/MA-Craftax @ e1d9437 | paper + code | health loss to resources and enemies, death SUPPORTED; **lava is impassable, not lethal**, in MA-Craftax (collision map; no lava damage in its game logic); lethal in Crafter and Craftax-Classic; lava static SUPPORTED; no spreading hazard; **perception IS attenuated by darkness** (not by a hazard); code adds 0.1 × Δhealth to the reward (`game_logic.py:3413-3418`), which the paper never mentions |
+| JaxMARL, Assistax | repos | no hazard environment SUPPORTED. Assistax now: RLC 2026 / RLJ vol. 7 (entry update candidate) |
+| POBAX, arXiv:2508.00046 | paper | single-agent suite SUPPORTED (the word is not used) |
+| Crafter (arXiv:2109.06780), Craftax (arXiv:2402.16801) | papers | both state a ±0.1-per-health-point reward term (Crafter §3.3; Craftax §3.3) |
+| Gao et al. RSS 2024 | arXiv HTML/PDF | L and Stair, §III-C "Data Collection Strategies", §IV-A "Evaluation Protocol", §V-B "Pairwise Composition" SUPPORTED; goal-conditioning holds for the formal setup and the real-robot runs, **not the simulation runs** (App. B-C); demonstrations matched within a subplot, **factor changes measure effort but are not matched across strategies**; value frequencies differ across strategies, but **in the real L-vs-Stair pair the share of demos departing from base is equal (15/16)** by construction; Stair "generally the most effective", the coverage link is the authors' hypothesis |
+| Erdem & Üre 2025 | publisher PDF (mdpi-res.com) | single-agent continuous control vs a learned adversary; single-type training vulnerable to mixed attacks; budget "balancing" (separate per-modality caps, no shared budget); mixed arms "trained under more severe perturbations" SUPPORTED; "every arm perturbed at every step" by inference only |
+| Agrawal et al. 2023 | arXiv PDF | noise on reward, state, action; curriculum raising noise, up to two types; training length set by convergence (no budgets reported) SUPPORTED |
+| Hu et al., arXiv:2507.10142 | v2 PDF, compared with v1 | the held-fixed recommendation is **v2 only** (2026) and reads "systematically varies … while holding other factors fixed"; it does mention compositional generalization and compositional policies, but never analyses simultaneous multi-factor shifts |
+| Chen et al. ICLR 2022 | arXiv PDF v2 | latent-MDP framing, rates not exact values, fully observed states SUPPORTED; history-dependence is argued, not proven; **Prop. 1 is an M-way irreversible commitment** (wrong w.p. 1 − 1/M) when Assumption 1 is dropped, not a two-way coin flip |
+| Pynadath & Tambe 2002 | JAIR PDF | §3 and Table 2 SUPPORTED; Thms 5–6 give the no-difference cases; **free communication under collective observability (NEXP → P) is Thm 4**; Thm 3 gives NEXP → PSPACE for collectively partially observable |
+
+### New verified entries
+
+García & Fernández 2015, verbatim from https://jmlr.org/papers/v16/garcia15a.bib
+(key changed to the project's convention; JMLR assigns no DOI). Abstract
+(p. 1437): safe RL is "the process of learning policies that maximize the
+expectation of the return in problems in which it is important to ensure
+reasonable system performance and/or respect safety constraints during the
+learning and/or deployment processes".
+
+```bibtex
+@article{garcia2015safe,
+  author  = {Javier García and Fernando Fernández},
+  title   = {A Comprehensive Survey on Safe Reinforcement Learning},
+  journal = {Journal of Machine Learning Research},
+  year    = {2015},
+  volume  = {16},
+  number  = {42},
+  pages   = {1437--1480},
+  url     = {http://jmlr.org/papers/v16/garcia15a.html}
+}
+```
+
+**Altman, *Constrained Markov Decision Processes*: NOT YET AN ENTRY, owner's
+choice.** doi:10.1201/9781315140223 resolves (Crossref) to the **2021
+Routledge eBook reissue**: `@book{Altman_2021, title={Constrained Markov
+Decision Processes: Stochastic Modeling}, ISBN={9781315140223},
+DOI={10.1201/9781315140223}, publisher={Routledge}, author={Altman, Eitan},
+year={2021}, month=Dec}` ("Stochastic Modeling" is the series, recorded as a
+subtitle). The original is Chapman & Hall/CRC, 1999, ISBN 9780849303821
+(publisher page `firstPublishedYear` 1999; Open Library record). A 1999 entry
+is not a verbatim record of any single source.
+
+Crafter (ICLR 2022, OpenReview forum 1W0z96MFEoH, via the Wayback archive of
+the forum page) and Craftax (ICML 2024, PMLR 235:35104–35137) BibTeX were
+retrieved by the agents and are not entered here until a draft cites them.
+
+### Entered 2026-10-10 because §2 draft 2 cites them
+
+Crafter: the OpenReview forum's `_bibtex` field, read from the Wayback
+archive of https://openreview.net/forum?id=1W0z96MFEoH (live OpenReview,
+its API and DBLP returned bot challenges); venue "ICLR 2022 Poster". Key
+changed to the project's convention. The reward sentence: "a reward of −0.1
+for every health point lost and a reward of +0.1 for every health point that
+is regenerated" (arXiv:2109.06780v2, §3.3).
+
+```bibtex
+@inproceedings{hafner2022crafter,
+  title     = {Benchmarking the Spectrum of Agent Capabilities},
+  author    = {Danijar Hafner},
+  booktitle = {International Conference on Learning Representations},
+  year      = {2022},
+  url       = {https://openreview.net/forum?id=1W0z96MFEoH}
+}
+```
+
+Craftax: verbatim from https://proceedings.mlr.press/v235/matthews24a.html,
+with the `abstract` and `pdf` fields dropped and the key changed. The reward
+sentence: "We also penalise the agent by 0.1 for every point of damage taken
+and reward it by 0.1 for every point recovered" (arXiv:2402.16801v2, §3.3).
+The paper introduces both Craftax and Craftax-Classic; lava is lethal in
+Craftax-Classic (`craftax_classic/game_logic.py:1641-1647`) and blocked, not
+lethal, in full Craftax (agent's code read).
+
+```bibtex
+@inproceedings{matthews2024craftax,
+  title     = {Craftax: A Lightning-Fast Benchmark for Open-Ended Reinforcement Learning},
+  author    = {Matthews, Michael and Beukman, Michael and Ellis, Benjamin and Samvelyan, Mikayel and Jackson, Matthew Thomas and Coward, Samuel and Foerster, Jakob Nicolaus},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning},
+  pages     = {35104--35137},
+  year      = {2024},
+  editor    = {Salakhutdinov, Ruslan and Kolter, Zico and Heller, Katherine and Weller, Adrian and Oliver, Nuria and Scarlett, Jonathan and Berkenkamp, Felix},
+  volume    = {235},
+  series    = {Proceedings of Machine Learning Research},
+  month     = {21--27 Jul},
+  publisher = {PMLR},
+  url       = {https://proceedings.mlr.press/v235/matthews24a.html}
+}
+```
+
+### Follow-up checks against §2 draft 3 (same agents, same full texts)
+
+- **Erdem & Üre.** Tables 3–4 are the authors' evidence that single-type
+  arms stay vulnerable to hybrid attacks (§5, p. 18), with exceptions (ATLA-PPO
+  913.2 ± 65.7, Pendulum, Table 3; NR-PPO 880.1 ± 30.8, Cheetah, Table 4).
+  Table 5 tests single-type attacks on the **two hybrid arms only** (ASA-PPO ≥
+  N-HYBRID-PPO in 6 of 6 cells, one tie); **no table tests ASA-PPO against the
+  single-type-trained arms under single-type attacks**, although the abstract
+  claims it. Six training arms (Non-Robust, NA-PPO, NR-PPO, ATLA-PPO,
+  N-HYBRID-PPO, ASA-PPO); **none mixes or alternates single-type attacks**;
+  the attack is computed at every step (Alg. 1), no scheduled clean steps, the
+  output is a capped magnitude that may be near zero (unreported).
+- **Chen et al.** Members share S, A, R, H, s₁ and differ in P_M (§4.2);
+  Assumption 1 (bounded diameter D) is assumed by Thms 1, 2 and 4 (Thms 1 and
+  4 add a second assumption); Prop. 1 is an existence claim, Gap against the
+  true MDP's optimum (Eq. 1). Reading a two-corridor toy as a two-member latent
+  MDP needs the signals encoded as states; Prop. 1's Ω(H) comes from per-step
+  reward in absorbing states (App. G.1), so a terminal-reward toy that reveals
+  the corridor with positive probability is **not** shown Ω(H) by it:
+  violating Assumption 1 means only that the upper bounds do not apply.

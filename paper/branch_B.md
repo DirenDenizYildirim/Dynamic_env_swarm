@@ -49,8 +49,8 @@ episodes carry no active element. They are **fire-only**, not hazard-free:
 the fire burns in every episode (D1; the δ-only components run at β 0.43 and
 0.70). Removing them (ISO-4) raises survival by the
 whole ISO→JOINT gap (B̂ +0.0098 vs Γ +0.0096); training on the stressors
-**together** adds nothing detectable on top (Γ₄, Γ₄′ ≈ 0, bounded at ±0.7
-points). An independent family of arms on the confirmatory card says the same
+**together** adds nothing detectable on top (Γ₄, Γ₄′ ≈ 0; Šidák CIs [−0.68, +0.63] and [−0.56, +0.81] points, RES-6,
+RES-8; lag fixed 2026-10-10). An independent family of arms on the confirmatory card says the same
 thing: across the two secondary sweeps, the **no-element share costs survival**
 (γ_n = −0.0237 per unit share, 95 % [−0.0419, −0.0057]), and at ISO's
 behavioural empty share of 1/3 that slope predicts ISO-4 − ISO = +0.0079
@@ -80,6 +80,10 @@ the plane predicts JOINT − ISO-4 ≈ +0.033 at full co-occurrence, while Γ₄
 non-verdict-bearing.
 
 ## 2. Title
+
+**Superseded 2026-10-10:** the owner's title is ruled (decision log,
+*TITLE AND TERMINOLOGY RULINGS*) and lives in `paper/finale.md`. The
+candidates below are builder text, kept as record.
 
 - *Paid in agents, not in composition: a pre-registered test of joint vs
   isolated training under ambient hazards*
@@ -191,7 +195,7 @@ Keep the qualifier in the abstract on every revision; it is registered.
 
 - **Match active share before claiming composition.** Joint-vs-isolated
   comparisons in multi-task RL, domain randomization and curricula rarely
-  control how much of training carries the stressor at all. Here that one
+  control how much of training carries any stressor at all. Here that one
   uncontrolled quantity accounts for the whole effect. The ISO-4 arm cost
   20 runs.
 - **A registered design caught it.** The inert-share bias was named and its
@@ -220,8 +224,8 @@ Keep the qualifier in the abstract on every revision; it is registered.
 
 - Not "compound stress is paid in agents" — the registered wording no longer
   holds; it is *exposure*.
-- Not "composition does not matter" — Γ₄ and Γ₄′ are exclusions (≈ ±0.7
-  points on survival), not absences, and γ_p is a local positive slope.
+- Not "composition does not matter" — Γ₄ and Γ₄′ are exclusions (Šidák CIs
+  [−0.68, +0.63] and [−0.56, +0.81] points on survival, RES-6, RES-8), not absences, and γ_p is a local positive slope.
 - Not "composition does not affect the task" — the completion bounds are the
   claim.
 - Not the founding hypothesis. Say flatly that branch A did not occur.

@@ -100,8 +100,40 @@
    builder supplies numbers (ledger ID + source + scope), constraints,
    choices and questions, then checks, and writes no paper text. **Every
    writing session starts from `writing_session_prompt.md`.** Step 1, the
-   title, is prepared in it.
-   `paper/finale.md` is not yet created.
+   title, is **DONE 2026-10-10** (TITLE AND TERMINOLOGY RULINGS) and is in
+   `paper/finale.md`. Step 2, the **Abstract, is DONE 2026-10-10**
+   (ABSTRACT entry): a body section, the environment named in full. Step
+   3, **`description`, is DONE 2026-10-10** (DESCRIPTION entry): one
+   owner-written sentence. Step 4, **§1 Introduction, is DONE 2026-10-10**
+   (§1 INTRODUCTION entry). Step 5, **§2 Related work, is DONE 2026-10-10**
+   (READS RULING entry; the recorded full reads discharge the owner reads).
+   **Writing resumes at §3, figure-first** (FIGURE BATCH RULINGS, 2026-10-10:
+   the figure-led path of `paper/figures/interactive/DESIGN.md` §5 is adopted
+   within the current structure; §1–§2 stay). §3 is prepared; ask its open
+   questions again (formal depth, PBT, where the hyperparameters go). **Owed
+   figure work:** the B8 presentation fixes (composer "as certified"; Γ(t)
+   descriptive label; slot labels if used); deterministic selection rules,
+   then the §5/§6 explorer deep links; ledger rows for every number in the
+   figures kept (C13; lists in `paper/figures/MANIFEST.md` and
+   `paper/figures/interactive/MANIFEST.md`).
+   **Lint debt (2026-10-10):** `ruff check` is clean on `paper/figures/src/`
+   and `paper/renders/2026-10-10/src/`, but reports 813 findings in
+   `paper/figures/interactive/src/` (792 E501 long lines, mostly embedded
+   JS/CSS/HTML strings; 13 B905; 6 B023 loop-variable closures, worth a look;
+   2 B007). The outputs were verified independently; fix with the B8 rebuild. Owed from §1: §9.2
+   reports γ_n *and* where the plane fit fails (γ_p vs Γ₄); a verified
+   CMDP / safe-RL entry. Drafts are typed in chat and kept verbatim in
+   `paper/writing_drafts.md` (DRAFTS FILE, 2026-10-06).
+   **The spine abstract (builder text) still carries lags**, verified
+   2026-10-10 and avoided by the owner's abstract: it omits the completion
+   lean; its Γ(t) suffix names one contrast, not both co-primaries; "every
+   acceptance bar is graded against a measured floor" is contradicted by
+   CB-9 and by `e11_report.md:113-121`; β̂_c is O-2 open; "a secondary dose
+   design attributes the gap" overreaches (non-verdict-bearing, γ_p
+   positive); k = 72 is not called a deviation. "Not behaviourally
+   suppressible" is in the post-correction headline too
+   (`phase4_report.md:647-648`); its problem is scope (trained policies at
+   500 updates), not the correction.
    - **Built.** `paper/beyond_pdf/` in the kit's layout:
      - `KIT_NOTES.md` covers the kit (URL and sha256; no version or licence
        stated), its YAML fields, how bib and assets resolve, the preview
@@ -124,11 +156,11 @@
      Docker or (c) web editor) is still owed before upload.
    - **Owner decisions the scaffold raised** (proposals until transcribed),
      with the builder's recommendation from the 2026-09-28 review:
-     - what `description` carries. Proposed: the abstract's first
-       sentence. Recommended: accept, and look again once a preview shows
-       the subtitle repeating the Abstract's opening.
-     - the title: the first spine candidate is PROVISIONAL and uses
-       "ambient".
+     - ~~what `description` carries~~ **RULED 2026-10-10** (DESCRIPTION
+       entry): one owner-written sentence; it restates the abstract's
+       opening, so look again once a kit preview runs.
+     - ~~the title~~ **RULED 2026-10-10** (TITLE AND TERMINOLOGY
+       RULINGS), in `paper/finale.md`.
      - whether to show the ISO/JOINT GIFs at all (in `assets/`, not
        placed). Recommended: not in the main text. One episode each differs
        by 2 of 12 agents against a +0.96-point effect; an appendix with the
@@ -149,15 +181,26 @@
    (2026-09-27): proposal 0 is in spine §9.1 bias (a), and the "no severity
    has both couplings strongly live" line is in spine §10 item 1, the §4a
    limitation. (Item 5, the ISO config header, was done 2026-09-27.)
-6. **Bibliography**, for the owner to read by hand: Gao et al. RSS 2024,
-   Chen et al. ICLR 2022, Erdem & Üre 2025 (in full: does it match exposure?),
+6. **Bibliography: reads DISCHARGED 2026-10-10** (READS RULING;
+   `related_work_verification.md` Part 3; `submission.bib` now 40 entries).
+   Was, for the owner to read by hand: Gao et al. RSS 2024, Chen et al. ICLR 2022, Erdem & Üre 2025 (in full: does it match exposure?),
    the JaxWildfire PDF, arXiv:2604.26150, arXiv:2507.10142. The `.bib` is
    **built** (item 4 branch: `paper/beyond_pdf/assets/bibliography/
    submission.bib`, verbatim from `paper/related_work_verification.md`,
    those six entries `%`-flagged); no entry is ever written from memory.
    Then write the UED/DR paragraph from its Part 2 draft.
 7. **Owner decisions:**
-   - ratify "ambient" (pending since 2026-08-05);
+   - ~~Batched figure decisions~~ **RULED 2026-10-10** (FIGURE BATCH
+     RULINGS: all accepted). Was: the
+     restyled GIFs (`paper/renders/2026-10-10/`): keep `provenance/` or fold
+     it into `src/`; policy labels on the GIFs (with GIF slot 2, whether ISO
+     and JOINT appear at all); when the restyle replaces the 2026-09-27 files
+     in `assets/`. Plus whatever the slot-figure agent (`paper/figures/`) and
+     the Opus design agent (`paper/figures/interactive/DESIGN.md`) raise, and
+     §3's four questions. Also open: the theory-doc ρ amendment; a commit
+     checkpoint.
+   - ~~ratify "ambient"~~ **DONE 2026-10-10**: Def. 2 is the "ambient
+     hazard"; "stressor" names only the composable elements;
    - TMLR's actual time-to-decision;
    - whether to run the optional $0 analyses (eval-draw sensitivity,
      floor-graded mechanism channels, pooled ISO-4 + sweep_p000). Any of these

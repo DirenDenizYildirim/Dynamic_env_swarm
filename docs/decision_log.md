@@ -5570,7 +5570,7 @@ double-blind"), asked at the title step.
   Whether any exist was not checked.
 - **Naming the environment stays the owner's choice** at each step where the
   name could appear. Title draft 1 (2026-10-10) names none.
-- **Check after the switch (builder, \$0):** an unauthenticated request for
+- **Check after the switch (builder, $0):** an unauthenticated request for
   the repository page returns 404, not 200. Listed in the checklist.
 
 ### What this entry does NOT change
@@ -5578,3 +5578,381 @@ double-blind"), asked at the title step.
 The double-blind rules (no name, account, repository or OSF link, no
 resolving hash), and every constant, lock, test, registration and branch
 reading.
+
+
+## TITLE AND TERMINOLOGY RULINGS — "stressor" names the elements; Def. 2 is the "ambient hazard" ("ambient" RATIFIED); θ is the "environment configuration"; the title is final (owner, 2026-10-10)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before any rename. Settles three open items: the title (writing step 1),
+"ambient" (pending since 2026-08-05, POSITIONING RULINGS §3), and "swarm" in
+the title (checklist defect, 2026-09-07).
+
+### THE RULINGS
+
+1. **"Stressor" means the elements you combine:** {Coupling A, Coupling B,
+   comms denial} (D1). The fire is not a stressor; it burns in every
+   episode. Grounds, from the proposal the owner adopted, verified by the
+   builder: POSITIONING RULINGS §3 kept the word for the ecology
+   multiple-stressors analogy (Crain et al. 2008; Côté et al. 2016, both
+   verified and in `submission.bib`), which concerns co-occurring stressors.
+   The registered documents (`phase6_framing_branches.md:108`;
+   `phase6_design_v2.md:26, :106`) and the code (`che/env/types.py:38`,
+   `che/env/config.py:163`) already used this sense.
+2. **Def. 2 is renamed "ambient hazard"** (was "ambient survival
+   stressor"). **"Ambient" is RATIFIED**, as an adjective on "hazard". Its
+   requirement (non-adversarial, not instrumented, no energy claim) and
+   Def. 2's content are unchanged.
+3. **θ = (β, κ_A, κ_B, δ) is the "environment configuration"** (was
+   "stressor configuration"), because it includes the fire's β.
+4. **The docstrings are renamed too.**
+5. **The builder selects the wording at the remaining sites** and reports
+   every new name to the owner.
+6. **The title is final:**
+
+   > A multi-agent fire environment with a hazard-blind reward, and a
+   > pre-registered test of training on co-occurring versus isolated
+   > stressors
+
+   It settles, for the title: "multi-agent", not "swarm" (the checklist
+   item stays open for the body); the environment is not named;
+   "pre-registered" attaches to the JOINT-vs-ISO test, registered 2026-08-13
+   (DES-12). The owner asked for the builder's view on "fire"; the builder
+   recommended keeping it, in the session. A later change is an amendment
+   to this entry.
+
+### Sites edited (same commit)
+
+- `docs/theory_foundations.md`: Notation (θ); Def. 2 heading; a dated
+  amendment note; the clause lead, now "The hazard is **ambient** iff".
+- `paper/00_common_spine.md`: the abstract ("The hazard is *ambient*"); the
+  §3 Def. 2 bullet; the title candidates marked superseded.
+- `paper/branch_B.md`: §2 marked superseded; §6 "carries any stressor at
+  all" (was "the stressor", which can be read as the fire).
+- `paper/related_work_verification.md:154, :864, :871`: "stressor" →
+  "hazard" where it meant the fire.
+- `che/env/config.py:3, :22`: docstrings say "environment configuration".
+- `CLAUDE.md` layout block, the checklist, `HANDOFF.md`,
+  `writing_session_prompt.md`.
+
+### Not edited, and why
+
+`paper/tex/` (FROZEN); the registered documents (already in the elements
+sense, and never edited after registration); archival documents
+(`architecture_decisions_v1.md`, venue reviews, phase prompts) and results
+narratives (`che/bench/results/e1/e13_mechanism_section.md`);
+`paper/branch_{A,C,D}.md` (out of the submission);
+`paper/beyond_pdf/submission.md` (its builder-drafted abstract does not
+carry over, and `paper/finale.md` replaces the file); this log's earlier
+entries; `paper/writing_drafts.md` (append-only). Where any of them
+conflicts with this entry, this entry wins.
+
+### What this entry does NOT change
+
+No constant, lock, config, test, registration or branch reading. Only
+names move.
+
+
+## ABSTRACT — final; a body section for now; the environment named in full (owner, 2026-10-10)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28).
+Writing step 2 (`writing_session_prompt.md`).
+
+1. **The abstract is final** (draft 5 in `paper/writing_drafts.md`, copied
+   verbatim into `paper/finale.md` with 17 ledger-ID comments). It carries
+   the registered inert-share qualifier at abstract level, the Γ(t) suffix on
+   both co-primaries and the completion lean, as the UNBLIND RESULT and
+   POST-UNBLIND STAGE RESULT entries require.
+2. **Placement: a body section, for now**, directly after the front matter,
+   with no heading. `description` is the next step and may change this.
+3. **The environment is named in full**, "the Compound Hostile Environment
+   (CHE)". This is the owner's double-blind call under REPO VISIBILITY: the
+   repository goes private before upload; copies made while it was public
+   are unchecked.
+4. **Venue fact, as the owner checked it on 2026-10-10:** the abstract limit
+   is 5,000 characters. The final text is 2,424 characters (comments
+   excluded). The page the owner read is not recorded here.
+5. **Code release** is not mentioned in the abstract; the open item moves
+   to `description` and §11.
+
+No constant, lock, test, registration or branch reading changes.
+
+
+## DESCRIPTION — one owner-written sentence; the abstract stays in the body (owner, 2026-10-10)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28).
+Writing step 3. Closes the scaffold's open question (`KIT_NOTES.md` §S1.9
+item 1), whose S2 proposal (the abstract's first sentence, verbatim) is
+superseded.
+
+1. **`description` is final** (draft 2 in `paper/writing_drafts.md`), in
+   `paper/finale.md`'s front matter as a plain YAML scalar: one line, no
+   `"`, no backslash, no `: `, no number, so no ledger-ID comment.
+2. **The abstract stays a body section**, directly after the front matter,
+   with no heading (ABSTRACT entry, item 2, settled).
+3. **The line restates the abstract's opening** directly above it. The
+   owner accepted this; it is looked at again when a kit preview runs.
+4. **Code availability** is not in `description` or the abstract. How it is
+   described without a link moves to §11, with O-3 and O-4.
+
+No constant, lock, test, registration or branch reading changes.
+
+
+## §1 INTRODUCTION — final; Gao et al. 2024 read by the owner (owner, 2026-10-10)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28).
+Writing step 4.
+
+1. **§1 is final** (draft 3 in `paper/writing_drafts.md`), copied verbatim
+   into `paper/finale.md` with the owner's own comments and ledger IDs; the
+   builder added one ID, `N:ENV-11`, after "one policy per training seed".
+2. **Gao et al., RSS 2024 (`gao2024composition`): read by the owner,
+   2026-10-10, with LLM summaries alongside.** The citation in §1 claims only
+   what the verified abstract supports. Builder's caution, recorded: any
+   further characterization (what Gao matched; its reported figures) is
+   checked against the paper itself, not a summary. The other five owed
+   reads stand.
+3. **Obligations §1 creates elsewhere:**
+   - **§9.2** reports what the secondary design adds on the
+     active-share-versus-frequency question (γ_n; SEC-1, SEC-3) **and where
+     its fit fails** (γ_p's ≈ +3.3-point prediction for JOINT − ISO-4,
+     SEC-4, against Γ₄ −0.03, RES-6). §1 points there.
+   - **A verified CMDP / safe-RL entry** in
+     `paper/related_work_verification.md`, then `submission.bib`, for §1's
+     "safe and constrained reinforcement learning" sentence. Owner: "we will
+     add them".
+   - **Staging:** `<!-- cite:key -->` placeholders become
+     `<d-cite key="…"></d-cite>`; process comments are stripped (WRITING
+     ROLES, OWED).
+4. **Deferred, the builder's recommendation:** §1's length (≈ 1,620 words)
+   is looked at again in the final pass, once §9 exists.
+
+No constant, lock, test, registration or branch reading changes.
+
+
+## READS RULING — the recorded full reads discharge the owner-read requirement; §2 RELATED WORK final (owner, 2026-10-10)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before §2 is recorded as final. Writing step 5.
+
+### THE RULING
+
+> **The full reads recorded in `paper/related_work_verification.md` Part 3
+> discharge the owner-read requirement.** The owner will still read the
+> papers and review the claims personally; that review is the owner's own
+> check, not a gate on the text.
+
+Part 3 records, for each work, the full text read (PDF or HTML, and code
+where named), by Claude's web-verification agents on 2026-10-10, with quotes
+and their locations, and the follow-up checks against §2 drafts 3–4. It
+covers the five works still owed: Erdem & Üre 2025, Chen et al. ICLR 2022,
+JaxWildfire (arXiv:2512.06102), Raut et al. (arXiv:2604.26150) and Hu et al.
+(arXiv:2507.10142). Gao et al. 2024 was read by the owner (§1 INTRODUCTION).
+
+**Supersedes:** the owner-read clauses of the CITATION REPOSITIONING RULING
+(2026-09-26) items 2 and 3, and the "read the PDFs directly" item OWED in
+NO-SCOOP CHECKS (2026-08-13). Neither entry is edited.
+
+### §2 Related work is final
+
+1. Draft 4 in `paper/writing_drafts.md`, copied verbatim into
+   `paper/finale.md` with the owner's comments and ledger IDs (CA-8, CA-9,
+   DES-14). No ID was added.
+2. **Left as written, by the owner's call:** "every arm is perturbed
+   throughout" (the Non-Robust baseline is unattacked; the adversarial arms
+   are attacked at every step), and "about seven percent under random
+   policies" (CA-9: 7.4–8.3 % as an increase, 6.9–7.6 % as a share; the
+   trained figure is from the m35 Phase-3 policies). Both are recorded in the
+   draft-4 findings.
+3. **Entered along the way:** ledger CA-8 (9×) and CA-9 (base-rate collapses);
+   `submission.bib` entries `garcia2015safe`, `hafner2022crafter`,
+   `matthews2024craftax` (40 entries), each verified in Part 3 first. Altman
+   (CMDP) is not cited.
+4. **Obligations §2 creates elsewhere:** §10 states that no adaptive
+   curriculum is evaluated (spine §10 item 9); §7 presents Remark 2′ as a
+   refinement of Pynadath & Tambe (their Theorem 4, Theorems 5–6, Table 2).
+   §1's uncited safe-RL sentence can now cite `garcia2015safe` (the owner's
+   call; a §1 edit).
+5. **Still open, unchanged:** the eight bib fields that render raw LaTeX
+   (`KIT_NOTES.md` §S4); the IEEE Xplore query, which §2 discloses as not run.
+
+No constant, lock, test, registration or branch reading changes.
+
+
+## FIGURES — the builder produces candidate figures, interactive figures and GIFs for every slot, from committed sources (owner, 2026-10-10)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28).
+Amends the per-slot procedure in `writing_session_prompt.md` ("for each
+figure slot, ask the owner whether you produce the plot"): the owner asked
+for all of them at once, built by an agent while the writing continues.
+
+> The owner: the GIFs, graphs and interactive figures are made by the
+> builder (an agent), and "they need to come from the source and the actual
+> results".
+
+### Builder's reading, until the owner corrects it
+
+- **Candidates, not placements.** Every figure is built from committed
+  artifacts into `paper/figures/` (code and outputs). At each section step
+  the owner decides whether a figure appears and what it shows; only then
+  is it copied into `paper/beyond_pdf/assets/`. **Captions are the owner's**;
+  figures carry factual labels only (axes, arms, units, interval levels,
+  "floor"), no interpretive sentences.
+- **Sources and numbers.** Plotted data come from committed files (eval
+  `.npz`, report JSON, calibration `.npz`, configs). Every number a figure
+  states is traceable to a ledger row or to a committed file and key; a
+  number with no row is listed for the ledger before the figure is used. No
+  new estimator or fit is computed (the $0-analysis protocol of `HANDOFF.md`
+  item 7 still applies: owner go-ahead, synthetic build, EXPLORATORY label);
+  O-2 stays open, so Figure 2 shows no R_L logistic centres.
+- **The format constraints of the SUBMISSION FORMAT RULING bind:** interactive
+  figures are self-contained (inline JS and data, no external URL or font,
+  no library added without asking); intervals at their registered level,
+  floor bars wherever a floor exists, the registered reading first; every
+  interactive figure and GIF has a static companion; GIFs illustrate and
+  never grade, and any new render's selection rule is written down before it
+  is made. Greyscale-readable. No author-identifying metadata in any file.
+- **No GPU spend.** CPU work is thread-capped. Nothing under `che/`,
+  `docs/` or the manuscript files changes; figure code lives in
+  `paper/figures/`. Nothing is committed without the owner.
+
+No constant, lock, test, registration or branch reading changes.
+
+### ADDENDUM (owner, 2026-10-10, same session): restyle the three committed GIFs; an ideation pass on interactive figures
+
+1. **Restyle authorized, presentation only.** The three committed renders
+   (`paper/renders/2026-09-27/`: random policy, ISO seed 1, JOINT seed 1 at
+   θ\*, episode key 0, step 1000) are re-rendered prettier into a new dated
+   directory, `paper/renders/2026-10-10/`. **Fixed:** the same episodes under
+   the same selection rule (no new choice from a set); identical
+   trajectories, checked by comparing the per-frame state arrays with the
+   original renderer's; nothing that grades (no alive-agent counter, no
+   side-by-side, no highlighting of ISO vs JOINT). **Free:** palette
+   (colour-blind-safe, greyscale-readable), nearest-neighbour upscaling, frame
+   size and rate, gridlines, a legend, factual labels such as the time step.
+   A structure/collapse layer, and a smoke overlay that cannot be mistaken for
+   agent perception, may be added only if they show the state as it is. The
+   2026-09-27 files are not overwritten; the static companions are
+   regenerated; metadata is stripped.
+2. **Ideation, not placement.** A separate agent proposes which interactive
+   figures this paper's format would reward. It writes nothing into the
+   paper; the owner decides at each section step.
+
+
+## FIGURES FIRST — interactive figures are the heart of the paper; the structure may follow them (owner, 2026-10-10)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28).
+Builds on FIGURES and its addendum (same day).
+
+> The owner: take inspiration from the richest Beyond PDF submissions under
+> review; make those types of figures the heart of the paper, not just the
+> text; the paper's structure can change if needed; "the best way to present
+> a rigorous boring null with a fun reading experience". An Opus agent first
+> reviews those examples, then crafts figures in that style.
+
+### Builder's reading, until the owner corrects it
+
+- **Inspiration, not copying.** Patterns (step-through, hover, toggles,
+  synchronized players, verdict placement) are learned from the published
+  examples; no code, asset or text is copied from them, and nothing loads
+  from their site.
+- **Structure stays the owner's.** The agent may propose a figure-led
+  structure; the owner decides it, and §1–§2 and the title, abstract and
+  `description` are already final until the owner reopens them.
+- **What the FIGURES rules still require:** committed data or the
+  pre-selected renders below; no new estimator, fit or test; registered
+  levels, floors, registered reading first; self-contained HTML; a static
+  companion for each; greyscale-readable; double-blind; no captions (the
+  owner's).
+- **Extended this day:** (1) **interactive episode players** may embed
+  per-frame state data, rendered locally from the same pre-selected episodes
+  as the GIFs (θ\*, episode key 0, random policy, ISO and JOINT seed 1 at
+  step 1000), never side by side and with no survivor tally; whether ISO and
+  JOINT appear at all stays the owner's GIF-slot-2 decision; (2)
+  **illustrative renders of the environment code** (no policy or a random
+  policy) at fixed keys, with the selection rule written down before
+  rendering, labelled illustrative, grading nothing; (3) figures may carry the
+  **registered verdict strings verbatim** (e.g. "REJECT", "null", "sign
+  unstable over the final half") as labels; no other interpretive text.
+
+No constant, lock, test, registration or branch reading changes.
+
+### NOTE (owner, 2026-10-10, same session): writing paused at §3
+
+The owner pauses the writing at §3 until the figure-led design
+(`paper/figures/interactive/DESIGN.md`) is in: if the figures become the
+heart of the paper, sections may need rewriting, and §1–§2 may be reopened
+by the owner. §3's four open questions (formal depth, PBT, hyperparameters,
+the theory-doc ρ amendment) wait with it.
+
+
+## FIGURE BATCH RULINGS — all fourteen recommendations accepted; writing resumes at §3, figure-first (owner, 2026-10-10)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28).
+The owner, on the builder's batched list (`paper/figures/AUDIT_builder_2026-10-10.md`):
+"accept all and commit". Asked first whether to restart the paper, the owner
+accepted the builder's recommendation not to.
+
+**A. Structure and figure set**
+1. **The figure-led reading path of `paper/figures/interactive/DESIGN.md` §5
+   is adopted within the current structure.** Title, abstract,
+   `description`, §1 and §2 stay; §1 gains figure pointers and its result
+   paragraphs may shrink at the final pass. A preview under the abstract,
+   if ever added, must show Γ₄'s "does not survive the inert-share
+   correction" beside Γ, never Γ alone.
+2. **Per slot, the interactive version where it exists** (`paper/figures/interactive/`);
+   the slot agent's static versions (`paper/figures/`) for Figs 1, 4, 5 and 6.
+3. **GIF slot 2 decided: the ISO and JOINT episodes are not in the main
+   text**; at most an appendix, shown separately, captioned as one
+   pre-selected episode each, with plain policy labels.
+4. **The random-policy episode explorer replaces GIF slot 1.** The restyled
+   GIFs (`paper/renders/2026-10-10/`) are kept, unplaced, with their
+   `provenance/` folder.
+5. **The slot agent's mechanism GIFs are dropped** (kept as files, unused);
+   the explorer covers both couplings.
+6. **Explorer deep links for §5 and §6** are built only after a
+   deterministic selection rule is written down.
+
+**B. Labels and fixes**
+7. **B̂ carries no verdict chip** (estimate and CI only). The post-unblind
+   instrument printed "REJECT" for it (`post_gamma4_t2000.md:16`); no test was
+   registered.
+8. **Presentation fixes, no content change:** remove "as certified" from the
+   composer's subtitle; label the Γ(t) intervals at t ≠ 1000 descriptive;
+   correct the slot versions' labels if any is used.
+9. **Spreads from other runs (Figs 3 and 5) are labelled "reference scale
+   (cross-artifact)", never "floor".**
+10. **The simplex shows both the γ_n prediction that fits (SEC-3 vs RES-7)
+    and the γ_p prediction that misses (SEC-4 vs RES-6).**
+
+**C. Record and housekeeping**
+11. **Theory-doc amendment, and `CLAUDE.md` invariant #2's notation**,
+    applied in this commit (below).
+12. **Fig 2 / severity:** the locked β̂_c = 0.500 is shown with its
+    provenance label; whether to run O-2 is decided at §4.
+13. **Ledger rows** are added for every number in the figures that are kept.
+14. **Two commits:** writing, rulings and bookkeeping; then the figure and
+    render folders.
+
+**The pause at §3 ends.** §3 resumes figure-first; its open questions (formal
+depth, PBT, where the hyperparameters go) are asked again at its step.
+
+### C11, applied: the formal spec now matches the code
+
+- **State:** s = (x, h, ρ, c, k, t). The smoke field ρ ∈ ℝ≥0^G is a state
+  component (D3; `che/env/types.py:91`), and so is the step index t (the
+  observation carries t/T). Observations depend on ρ, which carries memory,
+  so the Dec-POMDP of Def. 1 and the Markov chain of Prop. 1 are well defined
+  only with ρ in the state.
+- **Smoke:** ρ′ = e^(−η)·ρ + σ_s·1[h′ = Burning], per cell, no spatial
+  smoothing (`che/env/hazard.py:70-79`; σ_s = 1.0, η = 0.5, held by
+  convention).
+- **Coupling B as implemented:** each cell of an agent's crop is revealed
+  with probability τ = exp(−κ_B · dist · mean ρ′ along the ray), a 4-point
+  quadrature; unrevealed cells' content planes are zeroed, and a visibility
+  plane records the reveal (`che/env/observation.py:3-19`).
+- **T_X reads the post-step fields:** x′ ~ T_X(x, a, h′, c′); an agent
+  standing on a cell that ignites or collapses this step is disabled
+  (`che/env/env.py:336-341`).
+- Edited: `docs/theory_foundations.md` (Def. 1, Prop. 1, Def. 6, each with a
+  dated note) and `CLAUDE.md` invariant #2. No code, constant, lock, test,
+  registration or branch reading changes.

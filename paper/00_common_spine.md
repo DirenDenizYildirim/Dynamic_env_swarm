@@ -26,6 +26,10 @@ with "no element" is a **fire-only** episode, not a hazard-free one.
 
 ## Title candidates (branch B)
 
+**Superseded 2026-10-10:** the owner's title is ruled (decision log,
+*TITLE AND TERMINOLOGY RULINGS*) and lives in `paper/finale.md`. The
+candidates below are builder text, kept as record.
+
 - *Paid in agents, not in composition: a pre-registered test of joint vs
   isolated training under ambient hazards*
 - *What joint training buys under ambient hazards is exposure, and it is
@@ -48,8 +52,8 @@ title: the foraging task requires no coordination (see Limitations).
 > multi-agent RL environment in which a cellular-automaton fire is causally
 > coupled to structural collapse (collapse seeds fire) and to perception
 > (smoke attenuates observation by Beer–Lambert transmittance), with an
-> independent communication-denial axis. The hazard is an *ambient survival
-> stressor*: it enters neither the reward nor any cost or constraint channel;
+> independent communication-denial axis. The hazard is *ambient*: it
+> enters neither the reward nor any cost or constraint channel;
 > the reward sees only task variables and agent deaths, which it prices the
 > same whatever their cause. Three properties make CHE an
 > instrument rather than a demo: severity is defined by a *measured*
@@ -212,7 +216,7 @@ with sketches and full proofs in the appendix.
 - **Def. 1** factored Dec-POMDP; **Prop. 1** the step order
   collapse → hazard → smoke → agents → comms, observations from the
   post-step state. State it as the hypothesis of the theorems, which it is.
-- **Def. 2** ambient survival stressor, **as reworded 2026-09-27** (DEF. 2
+- **Def. 2** ambient hazard (renamed 2026-10-10), **as reworded 2026-09-27** (DEF. 2
   WORDING RULING; `docs/theory_foundations.md` Def. 2 is the text): R is a
   function of task variables and the alive transition only; no term reads
   h, ρ or c; no cost/constraint channel. Survival is learned through two

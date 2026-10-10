@@ -1,6 +1,6 @@
 """Frozen configuration dataclasses and the YAML loader.
 
-theta = (beta, kappa_A, kappa_B, delta) is the stressor configuration of
+theta = (beta, kappa_A, kappa_B, delta) is the environment configuration of
 Def. 1; sub-parameters follow the definitions they belong to. All configs are
 frozen (hashable) so they can be passed as static arguments to jitted
 functions — one compilation per config, no traced branching on parameters.
@@ -19,7 +19,7 @@ import yaml
 
 @dataclasses.dataclass(frozen=True)
 class ThetaConfig:
-    """Stressor configuration theta and its sub-parameters (Def. 1)."""
+    """Environment configuration theta and its sub-parameters (Def. 1)."""
 
     # Primary axes.
     beta: float = 0.35  # hazard transmissibility (Def. 3)
