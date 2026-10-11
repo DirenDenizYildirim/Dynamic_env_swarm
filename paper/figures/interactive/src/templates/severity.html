@@ -1,0 +1,15 @@
+
+<div class="wrap">
+  <p class="sub">fire calibration: P_span = P(a centre ignition reaches the boundary), all-fuel grid, no agents · renders: illustrative · random policy · episode key 0 · severity configs (κ_A 0.06, κ_B 1.0, δ 0)</p>
+  <div class="ctl" role="group" aria-label="playback">
+    <button class="pill" id="play" aria-pressed="false">&#9654; play</button>
+    <input type="range" id="scrub" min="0" max="256" step="1" value="0" aria-label="time step t" style="flex:1;min-width:140px">
+    <span class="num" id="tlab"></span>
+  </div>
+  <div class="cols">
+    <div><h3>P_span against β, ±1 SE (binomial)</h3><div id="chart"></div></div>
+    <div><h3>one episode at each locked severity, 64 × 64 (illustrative)</h3><div class="trio" id="trio"></div>
+      <div class="legend" id="lg" style="display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:var(--ink2);margin-top:6px"></div></div>
+  </div>
+  <details class="tbl"><summary>table view</summary><div id="tbl"></div></details>
+</div>

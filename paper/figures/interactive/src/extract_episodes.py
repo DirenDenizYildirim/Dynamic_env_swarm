@@ -97,8 +97,13 @@ def sha256_file(p: Path) -> str:
 
 def frame_digest(hazard, smoke, food, pos, alive) -> str:
     h = hashlib.sha256()
-    for a, dt in ((hazard, np.uint8), (smoke, np.float32), (food, np.uint8),
-                  (pos, np.int32), (alive, np.bool_)):
+    for a, dt in (
+        (hazard, np.uint8),
+        (smoke, np.float32),
+        (food, np.uint8),
+        (pos, np.int32),
+        (alive, np.bool_),
+    ):
         a = np.ascontiguousarray(np.asarray(a))
         assert a.dtype == dt, (a.dtype, dt)
         h.update(a.tobytes())
@@ -112,11 +117,16 @@ def make_policy(ep, cfg, scratch: Path):
     got = sha256_file(arch)
     listed = (CKPT_DIR / "SHA256_CKPT.txt").read_text()
     assert got == ep["sha256"], f"sha256 mismatch for {arch.name}"
-    assert any(line.split()[0] == got and line.split()[1].endswith(ep["archive"])
-               for line in listed.splitlines() if line.strip()), "not in SHA256_CKPT.txt"
+    assert any(
+        line.split()[0] == got and line.split()[1].endswith(ep["archive"])
+        for line in listed.splitlines()
+        if line.strip()
+    ), "not in SHA256_CKPT.txt"
     dest = scratch / ep["archive"].replace(".tar.zst", "")
     if not dest.exists():
-        subprocess.run(["tar", "--zstd", "-xf", str(arch), "-C", str(scratch)], check=True)
+        subprocess.run(
+            ["tar", "--zstd", "-xf", str(arch), "-C", str(scratch)], check=True
+        )
     params, ckpt_step = load_params(dest, cfg, allow_hashes=(ep["allow_hash"],))
     assert int(ckpt_step) == 1000, ckpt_step
     return make_policy_fn(cfg, params, greedy=False), int(ckpt_step)
@@ -130,21 +140,24 @@ def true_crops(state, k: int) -> np.ndarray:
     occ = np.zeros((L, L), np.float32)
     pos = np.asarray(state.agent_pos)
     alive = np.asarray(state.agent_alive)
-    for (r, c), a in zip(pos, alive):
+    for (r, c), a in zip(pos, alive, strict=True):
         if a:
             occ[r, c] = 1.0
-    planes = np.stack([
-        (hz == BURNING).astype(np.float32),
-        (hz == BURNT).astype(np.float32),
-        np.asarray(state.smoke, np.float32),
-        np.asarray(state.food).astype(np.float32),
-        np.asarray(state.weak).astype(np.float32),
-        (np.asarray(state.structure) == COLLAPSED).astype(np.float32),
-        occ,
-    ], axis=-1)
+    planes = np.stack(
+        [
+            (hz == BURNING).astype(np.float32),
+            (hz == BURNT).astype(np.float32),
+            np.asarray(state.smoke, np.float32),
+            np.asarray(state.food).astype(np.float32),
+            np.asarray(state.weak).astype(np.float32),
+            (np.asarray(state.structure) == COLLAPSED).astype(np.float32),
+            occ,
+        ],
+        axis=-1,
+    )
     r = k // 2
     padded = np.pad(planes, ((r, r), (r, r), (0, 0)))
-    return np.stack([padded[p0:p0 + k, p1:p1 + k] for p0, p1 in pos])
+    return np.stack([padded[p0 : p0 + k, p1 : p1 + k] for p0, p1 in pos])
 
 
 def instrumented_rollout(key, ecfg, policy):
@@ -159,18 +172,29 @@ def instrumented_rollout(key, ecfg, policy):
         k_struct, k_seed, k_fire = jax.random.split(k_step, 3)
         occ_pre = occupancy_grid(state.agent_pos, state.agent_alive, ecfg.grid_size)
         structure_new = structure_step(
-            k_struct, state.structure, state.weak, occ_pre.astype(jnp.float32),
-            lambda_0=th.lambda_0, lambda_load=th.lambda_load)
+            k_struct,
+            state.structure,
+            state.weak,
+            occ_pre.astype(jnp.float32),
+            lambda_0=th.lambda_0,
+            lambda_load=th.lambda_load,
+        )
         inc = (structure_new == COLLAPSED) & (state.structure == INTACT)
-        seed_mask = coupling_a_seed_mask(k_seed, inc, kappa_A=tl.kappa_A, r_seed=th.r_seed)
+        seed_mask = coupling_a_seed_mask(
+            k_seed, inc, kappa_A=tl.kappa_A, r_seed=th.r_seed
+        )
         hazard_ca = hazard_step(k_fire, state.hazard, beta=tl.beta, iota=th.iota)
         hazard_new = seed_ignitions(hazard_ca, seed_mask)
         return structure_new, inc, hazard_new, hazard_ca != hazard_new
 
     @jax.jit
     def tau_and_reveal(obs_key, state):
-        tau = transmittance(state.smoke, state.agent_pos,
-                            kappa_B=state.theta_live.kappa_B, k=ecfg.obs_window)
+        tau = transmittance(
+            state.smoke,
+            state.agent_pos,
+            kappa_B=state.theta_live.kappa_B,
+            k=ecfg.obs_window,
+        )
         reveal = jax.random.uniform(obs_key, tau.shape) < tau
         return tau, reveal
 
@@ -178,20 +202,36 @@ def instrumented_rollout(key, ecfg, policy):
     key, k_reset = jax.random.split(key)
     obs, state = reset(k_reset, ecfg)
     n_food0 = int(np.asarray(state.food).sum())
-    rec = dict(hazard=[], smoke=[], food=[], pos=[], alive=[], structure=[],
-               reveal=[], tau=[], seeded=[], collapse_inc=[], completion=[],
-               ret=[], digest=[])
+    rec = dict(
+        hazard=[],
+        smoke=[],
+        food=[],
+        pos=[],
+        alive=[],
+        structure=[],
+        reveal=[],
+        tau=[],
+        seeded=[],
+        collapse_inc=[],
+        completion=[],
+        ret=[],
+        digest=[],
+    )
     weak = np.asarray(state.weak)
 
     def record(state, obs, obs_key, ep_return, seeded, inc):
         grid = np.asarray(obs["grid"])
         crops = true_crops(state, k)
         vis = grid[..., 7]
-        assert np.array_equal(grid[..., :7], crops * vis[..., None]), "obs != crop x reveal"
+        assert np.array_equal(grid[..., :7], crops * vis[..., None]), (
+            "obs != crop x reveal"
+        )
         assert set(np.unique(vis)).issubset({0.0, 1.0})
         tau, reveal = tau_and_reveal(obs_key, state)
         tau, reveal = np.asarray(tau), np.asarray(reveal)
-        assert np.array_equal(reveal.astype(np.float32), vis), "reveal re-draw != obs plane"
+        assert np.array_equal(reveal.astype(np.float32), vis), (
+            "reveal re-draw != obs plane"
+        )
         assert np.array_equal(np.asarray(state.weak), weak)
         rec["hazard"].append(np.asarray(state.hazard))
         rec["smoke"].append(np.asarray(state.smoke))
@@ -205,8 +245,15 @@ def instrumented_rollout(key, ecfg, policy):
         rec["collapse_inc"].append(inc)
         rec["completion"].append(1.0 - float(np.asarray(state.food).sum()) / n_food0)
         rec["ret"].append(ep_return)
-        rec["digest"].append(frame_digest(state.hazard, state.smoke, state.food,
-                                          state.agent_pos, state.agent_alive))
+        rec["digest"].append(
+            frame_digest(
+                state.hazard,
+                state.smoke,
+                state.food,
+                state.agent_pos,
+                state.agent_alive,
+            )
+        )
 
     L = ecfg.grid_size
     zeros = np.zeros((L, L), bool)
@@ -219,8 +266,12 @@ def instrumented_rollout(key, ecfg, policy):
         actions, messages = policy(k_act, obs, aggregate(messages, obs["links"]))
         s_new, inc, h_new, seeded = internals(k_step, state)
         obs, state_next, reward, done, info = jstep(k_step, state, actions)
-        assert np.array_equal(np.asarray(h_new), np.asarray(state_next.hazard)), "h' recompute"
-        assert np.array_equal(np.asarray(s_new), np.asarray(state_next.structure)), "c' recompute"
+        assert np.array_equal(np.asarray(h_new), np.asarray(state_next.hazard)), (
+            "h' recompute"
+        )
+        assert np.array_equal(np.asarray(s_new), np.asarray(state_next.structure)), (
+            "c' recompute"
+        )
         seeded, inc = np.asarray(seeded), np.asarray(inc)
         assert int(seeded.sum()) == int(info["seeded_ignitions"])
         assert int(inc.sum()) == int(info["collapse_events"])
@@ -228,7 +279,9 @@ def instrumented_rollout(key, ecfg, policy):
         n_collapse += int(inc.sum())
         state = state_next
         ep_return += float(reward)
-        record(state, obs, jax.random.fold_in(k_step, _OBS_STREAM), ep_return, seeded, inc)
+        record(
+            state, obs, jax.random.fold_in(k_step, _OBS_STREAM), ep_return, seeded, inc
+        )
         if bool(done):
             break
     return rec, weak, n_seeded, n_collapse
@@ -249,12 +302,17 @@ def main(argv=None):
             continue
         policy, ckpt_step = make_policy(ep, cfg, scratch)
         ref = RE.rollout_frames(jax.random.PRNGKey(EPISODE_SEED), ecfg, policy)
-        ref_digest = [frame_digest(f["hazard"], f["smoke"], f["food"], f["pos"], f["alive"])
-                      for f in ref]
+        ref_digest = [
+            frame_digest(f["hazard"], f["smoke"], f["food"], f["pos"], f["alive"])
+            for f in ref
+        ]
         rec, weak, n_seeded, n_collapse = instrumented_rollout(
-            jax.random.PRNGKey(EPISODE_SEED), ecfg, policy)
+            jax.random.PRNGKey(EPISODE_SEED), ecfg, policy
+        )
         assert len(ref_digest) == len(rec["digest"]) == ecfg.horizon + 1
-        assert ref_digest == rec["digest"], "trajectory differs from the original renderer"
+        assert ref_digest == rec["digest"], (
+            "trajectory differs from the original renderer"
+        )
         committed = json.loads((RENDERS / f"{ep['stem']}.json").read_text())
         last = ref[-1]
         assert int(last["alive"].sum()) == committed["final_alive"]
@@ -265,32 +323,50 @@ def main(argv=None):
         assert float(smoke.max()) <= 1.0 + 1e-7, smoke.max()
         np.savez_compressed(
             OUT / f"{ep['stem']}_frames.npz",
-            hazard=np.stack(rec["hazard"]), smoke=smoke, food=np.stack(rec["food"]),
-            pos=np.stack(rec["pos"]), alive=np.stack(rec["alive"]),
-            structure=np.stack(rec["structure"]), weak=weak,
-            reveal=np.stack(rec["reveal"]), tau=np.stack(rec["tau"]),
-            seeded=np.stack(rec["seeded"]), collapse_inc=np.stack(rec["collapse_inc"]),
+            hazard=np.stack(rec["hazard"]),
+            smoke=smoke,
+            food=np.stack(rec["food"]),
+            pos=np.stack(rec["pos"]),
+            alive=np.stack(rec["alive"]),
+            structure=np.stack(rec["structure"]),
+            weak=weak,
+            reveal=np.stack(rec["reveal"]),
+            tau=np.stack(rec["tau"]),
+            seeded=np.stack(rec["seeded"]),
+            collapse_inc=np.stack(rec["collapse_inc"]),
         )
-        (OUT / f"{ep['stem']}_digests.json").write_text(json.dumps({
-            "episode": ep["stem"],
-            "config": CONFIG,
-            "episode_key_seed": EPISODE_SEED,
-            "checkpoint_archive": ep["archive"],
-            "checkpoint_archive_sha256": ep.get("sha256"),
-            "allow_hash": ep.get("allow_hash"),
-            "checkpoint_step": ckpt_step,
-            "n_frames": len(ref_digest),
-            "frame_digest": "sha256 over hazard|smoke|food|agent_pos|agent_alive bytes",
-            "reference": "che.scripts.render_episode.rollout_frames (unmodified)",
-            "all_frames_equal_reference": True,
-            "final_matches_committed_render_json": True,
-            "seeded_ignitions_total": n_seeded,
-            "collapse_events_total": n_collapse,
-            "digests": rec["digest"],
-        }, indent=1) + "\n")
-        print(f"{ep['stem']}: 257/257 frames equal the reference; "
-              f"collapse events {n_collapse}, seeded ignitions {n_seeded}; "
-              f"smoke max {smoke.max():.4f}")
+        (OUT / f"{ep['stem']}_digests.json").write_text(
+            json.dumps(
+                {
+                    "episode": ep["stem"],
+                    "config": CONFIG,
+                    "episode_key_seed": EPISODE_SEED,
+                    "checkpoint_archive": ep["archive"],
+                    "checkpoint_archive_sha256": ep.get("sha256"),
+                    "allow_hash": ep.get("allow_hash"),
+                    "checkpoint_step": ckpt_step,
+                    "n_frames": len(ref_digest),
+                    "frame_digest": (
+                        "sha256 over hazard|smoke|food|agent_pos|agent_alive bytes"
+                    ),
+                    "reference": (
+                        "che.scripts.render_episode.rollout_frames (unmodified)"
+                    ),
+                    "all_frames_equal_reference": True,
+                    "final_matches_committed_render_json": True,
+                    "seeded_ignitions_total": n_seeded,
+                    "collapse_events_total": n_collapse,
+                    "digests": rec["digest"],
+                },
+                indent=1,
+            )
+            + "\n"
+        )
+        print(
+            f"{ep['stem']}: 257/257 frames equal the reference; "
+            f"collapse events {n_collapse}, seeded ignitions {n_seeded}; "
+            f"smoke max {smoke.max():.4f}"
+        )
 
 
 if __name__ == "__main__":

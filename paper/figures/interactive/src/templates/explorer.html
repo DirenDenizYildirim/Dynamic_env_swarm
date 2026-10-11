@@ -1,0 +1,41 @@
+
+<div class="wrap" id="app">
+  <div class="hdr"><span class="pol" id="pol"></span><span class="sub" id="sub"></span></div>
+  <div class="ctl" role="group" aria-label="playback">
+    <button class="pill" id="play" aria-pressed="false">&#9654; play</button>
+    <button class="pill" id="back" aria-label="previous step">&#9664;</button>
+    <button class="pill" id="fwd" aria-label="next step">&#9654;&#xFE0E;</button>
+    <span class="lab">speed</span>
+    <span class="row" id="speeds"></span>
+    <span class="num" id="tlab" aria-live="polite"></span>
+  </div>
+  <div class="scrub">
+    <input type="range" id="scrub" min="0" max="256" step="1" value="0" aria-label="time step t">
+    <svg id="track" role="img" aria-label="time track: collapse events and collapse-seeded ignitions"></svg>
+    <div class="ctl" style="margin:2px 0 0">
+      <button class="pill" id="evprev">&#9664; event</button>
+      <button class="pill" id="evnext">event &#9654;</button>
+      <span class="legend" style="margin:0">
+        <span><svg width="10" height="10"><rect x="1" y="1" width="8" height="8" fill="var(--ink)"/></svg>collapse event</span>
+        <span><svg width="12" height="12"><circle cx="6" cy="6" r="4.2" fill="none" stroke="var(--A)" stroke-width="2"/></svg>collapse-seeded ignition (Coupling A)</span>
+      </span>
+    </div>
+  </div>
+  <div class="main">
+    <div class="mapbox"><canvas id="map" role="img" tabindex="0"></canvas></div>
+    <div class="side">
+      <div class="lab">layers</div>
+      <div class="row" id="layers"></div>
+      <div class="lab">agent: click a marker on the map, or a number</div>
+      <div class="row agents" id="agents"></div>
+      <div class="sel" id="sel"></div>
+      <div class="obsrow">
+        <figure><canvas id="obs"></canvas><figcaption>observation, as produced (obs v3)</figcaption></figure>
+        <figure><canvas id="tru"></canvas><figcaption>state, same 9 × 9 cells</figcaption></figure>
+        <figure><canvas id="tau"></canvas><figcaption>P(seen) = τ, Beer–Lambert transmittance</figcaption></figure>
+      </div>
+      <div class="legend" id="olegend"></div>
+      <div class="kbd noprint">keys: space play/pause · ← → step (shift: 10) · [ ] previous / next event · 1–9 agent</div>
+    </div>
+  </div>
+</div>

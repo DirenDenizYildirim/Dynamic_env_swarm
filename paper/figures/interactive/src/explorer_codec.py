@@ -14,6 +14,7 @@ from __future__ import annotations
 import base64
 
 import numpy as np
+from common_web import load_template
 
 
 def varint(n: int, out: bytearray):
@@ -37,7 +38,7 @@ def zrle(a: np.ndarray) -> bytes:
     edges = np.flatnonzero(np.diff(nz)) + 1
     starts = np.concatenate([[0], edges])
     ends = np.concatenate([edges, [n]])
-    runs = list(zip(starts.tolist(), ends.tolist(), nz[starts].tolist()))
+    runs = list(zip(starts.tolist(), ends.tolist(), nz[starts].tolist(), strict=True))
     k = 0
     while k < len(runs):
         s, e, isnz = runs[k]
@@ -110,7 +111,7 @@ def unzrle(b: bytes, n: int) -> np.ndarray:
         z = r.v()
         i += z
         lit = r.v()
-        out[i:i + lit] = np.frombuffer(b, np.uint8, lit, r.p)
+        out[i : i + lit] = np.frombuffer(b, np.uint8, lit, r.p)
         r.p += lit
         i += lit
     return out
@@ -137,16 +138,4 @@ def unhazard(h0: np.ndarray, b: bytes, T: int) -> np.ndarray:
     return out.reshape(T, *h0.shape)
 
 
-JS_DECODER = r"""
-var DEC = (function(){
-  function R(b){ this.b=b; this.p=0; }
-  R.prototype.v = function(){ var n=0, s=0, x; do { x=this.b[this.p++]; n += (x & 127) * Math.pow(2, s); s+=7; } while(x & 128); return n; };
-  function unzrle(b, n){ var r=new R(b), out=new Uint8Array(n), i=0;
-    while(i<n){ i += r.v(); var lit=r.v(); for(var k=0;k<lit;k++) out[i++]=b[r.p++]; } return out; }
-  function unbits(b, n){ var out=new Uint8Array(n); for(var i=0;i<n;i++) out[i]=(b[i>>3]>>(7-(i&7)))&1; return out; }
-  function cells(b, T){ var r=new R(b), out=[]; for(var f=0;f<T;f++){ var c=r.v(), a=new Array(c); for(var k=0;k<c;k++) a[k]=r.v(); out.push(a);} return out; }
-  function hazard(h0, b, T, N){ var r=new R(b), out=new Uint8Array(T*N); out.set(h0,0);
-    for(var f=1;f<T;f++){ out.copyWithin(f*N,(f-1)*N,f*N); var c=r.v(); for(var k=0;k<c;k++){ var i=r.v(); out[f*N+i]=b[r.p++]; } } return out; }
-  return {R:R, unzrle:unzrle, unbits:unbits, cells:cells, hazard:hazard};
-})();
-"""
+JS_DECODER = load_template("decoder.js")

@@ -405,6 +405,12 @@ can be led by one figure the reader operates before the text explains it.
 | §9.2 | **F2** ladder → **F4** Γ(t) → **F5** simplex | the registered order: verdict, correction, robustness, what the secondary design adds and where its fit fails |
 | GIF slot 2 | F1 ISO / F1 JOINT, separately, if the owner places them | illustration only |
 
+**Ruled 2026-10-10 (OPENING AND §1 REOPENED; FIGURE BATCH RULINGS):** the
+random-policy explorer opens the paper directly under the abstract; §1 is
+carried by the composer (F3) and a compact two-rung ladder (F2b: Γ and Γ₄
+only, never Γ alone); the full ladder stays in §9.2; ISO and JOINT
+explorers are not in the main text (appendix at most).
+
 What could move: F3 could open §9 rather than sit in §9.1; F1's §6 deep
 link could replace Figure 4's masking panel as the section's lead; the
 ladder preview after the abstract is optional and duplicates §9.2 by design.

@@ -32,7 +32,10 @@ def main():
     (OUT_DATA / "output_checks.json").write_text(json.dumps(report, indent=1) + "\n")
     for kind in ("html", "png"):
         for name, r in report[kind].items():
-            print(f"{kind:4s} {name:58s} {r['bytes'] / 1e3:8.1f} KB  {'OK' if not r['findings'] else r['findings']}")
+            print(
+                f"{kind:4s} {name:58s} {r['bytes'] / 1e3:8.1f} KB  "
+                f"{'OK' if not r['findings'] else r['findings']}"
+            )
     if bad:
         sys.exit(1)
 

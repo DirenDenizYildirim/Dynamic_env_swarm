@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registered readings</title>
+<style>:root{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--band:#ecebe5;--chipfill:#0b0b0b;--chiptext:#fcfcfb;--focus:#0b0b0b;--hover:rgba(11,11,11,0.06);--A:#4a3aa7;--B:#e87ba4;--fireonly:#c3c2b7;--fuel:#e9ebe0;--burning:#eb6834;--burnt:#3d3a36;--smoke_hatch:#f4f1eb;--map_gridline:#8c8a83;--agent:#2a78d6;--food:#1baf7a;--map_white:#ffffff;--map_bg:#fcfcfb;--map_ink:#0b0b0b;--outside:#f4f3ef;--unseen:#a9a59a;--unseen_mark:#3d3a36;--map_grid:#e1e0d9;--map_axis:#c3c2b7;--map_A:#4a3aa7;--tau_end:#9c2f5c;color-scheme:light;}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--surface:#1a1a19;--ink:#f5f5f2;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--band:#2a2a27;--chipfill:#f5f5f2;--chiptext:#1a1a19;--focus:#f5f5f2;--hover:rgba(255,255,255,0.08);--A:#9085e9;--B:#d55181;--fireonly:#4a4945;--fuel:#e9ebe0;--burning:#eb6834;--burnt:#3d3a36;--smoke_hatch:#f4f1eb;--map_gridline:#8c8a83;--agent:#2a78d6;--food:#1baf7a;--map_white:#ffffff;--map_bg:#fcfcfb;--map_ink:#0b0b0b;--outside:#f4f3ef;--unseen:#a9a59a;--unseen_mark:#3d3a36;--map_grid:#e1e0d9;--map_axis:#c3c2b7;--map_A:#4a3aa7;--tau_end:#9c2f5c;color-scheme:dark;}}:root[data-theme="dark"]{--surface:#1a1a19;--ink:#f5f5f2;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--band:#2a2a27;--chipfill:#f5f5f2;--chiptext:#1a1a19;--focus:#f5f5f2;--hover:rgba(255,255,255,0.08);--A:#9085e9;--B:#d55181;--fireonly:#4a4945;--fuel:#e9ebe0;--burning:#eb6834;--burnt:#3d3a36;--smoke_hatch:#f4f1eb;--map_gridline:#8c8a83;--agent:#2a78d6;--food:#1baf7a;--map_white:#ffffff;--map_bg:#fcfcfb;--map_ink:#0b0b0b;--outside:#f4f3ef;--unseen:#a9a59a;--unseen_mark:#3d3a36;--map_grid:#e1e0d9;--map_axis:#c3c2b7;--map_A:#4a3aa7;--tau_end:#9c2f5c;color-scheme:dark;}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--surface);color:var(--ink);
+ font:13px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.wrap{padding:12px 16px 14px;max-width:980px;margin:0 auto}
+.sub{color:var(--ink2);font-size:12px;margin:0 0 8px}
+.muted{color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ctl{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:0 0 8px}
+.ctl .lab{font-size:11px;color:var(--muted);margin-right:2px;text-transform:none}
+button.pill{font:inherit;font-size:12px;min-height:28px;padding:3px 10px;border-radius:14px;
+ border:1px solid var(--axis);background:var(--surface);color:var(--ink);cursor:pointer;
+ display:inline-flex;align-items:center;gap:6px;line-height:1}
+button.pill[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+button.pill:hover{background:var(--hover)}
+button.pill[aria-pressed="true"]:hover{background:var(--ink)}
+button.pill:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible,[tabindex]:focus-visible,summary:focus-visible{
+ outline:2px solid var(--focus);outline-offset:2px}
+input[type=range]{accent-color:var(--ink)}
+.chip{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.02em;padding:2px 7px;
+ border-radius:10px;border:1px solid var(--ink);white-space:nowrap;line-height:1.35}
+.chip.fill{background:var(--chipfill);color:var(--chiptext)}
+.chip.line{background:transparent;color:var(--ink)}
+.chip.weak{color:var(--ink);background-image:radial-gradient(var(--muted) 0.8px,transparent 1px);
+ background-size:4px 4px}
+.tt{position:fixed;pointer-events:none;z-index:9;background:var(--surface);color:var(--ink);
+ border:1px solid var(--axis);border-radius:6px;padding:6px 8px;font-size:12px;line-height:1.35;
+ box-shadow:0 2px 8px rgba(0,0,0,.12);max-width:280px;display:none}
+.tt b{font-variant-numeric:tabular-nums}
+.num{font-variant-numeric:tabular-nums}
+details.tbl{margin-top:8px;font-size:12px}
+details.tbl summary{cursor:pointer;color:var(--ink2)}
+details.tbl table{border-collapse:collapse;margin-top:6px;font-variant-numeric:tabular-nums}
+details.tbl th,details.tbl td{border-bottom:1px solid var(--grid);padding:3px 8px;text-align:left;
+ vertical-align:top}
+svg text{fill:var(--ink);font-family:inherit}
+svg .tick{fill:var(--muted);font-size:11px}
+svg .gl{stroke:var(--grid);stroke-width:1}
+svg .ax{stroke:var(--axis);stroke-width:1}
+svg .zero{stroke:var(--muted);stroke-width:1}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+@media print{.ctl,.noprint,details.tbl{display:none!important} .tt{display:none!important}}
+.ol .hd{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;font-size:11.5px;color:var(--ink2);margin:0 0 6px}
+.ol .lk{color:var(--ink);text-decoration:underline dotted;text-underline-offset:3px}
+.ol .blk{margin:0 0 8px}
+.ol h3{font-size:13px;font-weight:600;margin:0 0 2px}
+.ol .r{display:grid;grid-template-columns:minmax(150px,0.9fr) minmax(0,1.5fr) minmax(170px,1fr);gap:2px 12px;align-items:center;padding:3px 0;border-top:1px solid var(--grid)}
+.ol .r.ax{border-top:none;padding-top:0}
+.ol .id{font-size:12.5px;line-height:1.3}
+.ol .id b{font-weight:600}
+.ol .m{display:block;font-size:11px;color:var(--ink2)}
+.ol .vt{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:12px}
+.ol .wk svg{display:block;width:100%;height:auto}
+.ol .foot{font-size:11px;color:var(--ink2);margin-top:2px}
+@media (max-width:600px){.ol .r{grid-template-columns:1fr}.ol .r.ax .id,.ol .r.ax .vt{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap ol">
+  <div class="hd"><span>registered readings at θ*, matched budget T* = 1000 · intervals: Šidák 95 % (m = 2)</span><span class="lk">full ladder: §9.2</span></div>
+  <div id="blocks"></div>
+  <div class="foot" id="foot"></div>
+</div>
+
+<script type="application/json" id="data">{"rows":[{"id":"G","rung":1,"sym":"Γ","contrast":"JOINT − ISO","k":"k 72 / 72 †","unit":"unit 1, both arms","family":"confirmatory family (Šidák m = 2)","date":null,"shape":"dot","m":{"completion":{"gamma":-0.01728396945529509,"lo":-0.04117199635934299,"hi":0.006604057448752806,"X":0.03287746603793296,"reject":false,"k":[72,72],"est":"−0.0173","ci":"[−0.0412, +0.0066]","z":"−1.62","Xt":"0.0329","floor":0.00969656312144283,"band":true},"survival_rate":{"gamma":0.009553128646479725,"lo":0.004733447651722807,"hi":0.014372809641236644,"X":0.006633402534888313,"reject":true,"k":[72,72],"est":"+0.0096","ci":"[+0.0047, +0.0144]","z":"+4.43","Xt":null,"floor":0.0017694398121432153,"band":true}},"meta":"k 72 / 72 · confirmatory family · unit 1"},{"id":"G4","rung":2,"sym":"Γ₄","contrast":"JOINT − ISO-4","k":"k 72 / 20","unit":"cross-unit: JOINT unit 1, ISO-4 unit 2","family":"outside the confirmatory family","date":"ISO-4 rule registered 2026-09-18, pre-unblind","shape":"tri","m":{"completion":{"gamma":-0.01264275444878471,"lo":-0.048129588121250726,"hi":0.022844079223681306,"X":0.048841085684752546,"reject":false,"k":[20,72],"est":"−0.0126","ci":null,"z":null,"Xt":"0.0488","floor":null,"band":true},"survival_rate":{"gamma":-0.0002626823054420191,"lo":-0.0068362101753172266,"hi":0.006310845564433188,"X":0.009047249492782747,"reject":false,"k":[20,72],"est":"−0.0003","ci":"[−0.0068, +0.0063]","z":"−0.09","Xt":null,"floor":null,"band":false}},"meta":"k 72 / 20 · ISO-4: sensitivity arm, outside the confirmatory family · cross-unit"}],"metrics":[{"k":"survival_rate","name":"survival","axis":"Δ survival rate (fraction)","dom":[-0.009,0.0165],"ticks":[-0.005,0.0,0.005,0.01,0.015],"dp":3},{"k":"completion","name":"completion","axis":"Δ completion (fraction)","dom":[-0.055,0.03],"ticks":[-0.04,-0.02,0.0,0.02],"dp":2}],"consequence":{"survival_rate":{"text":"does not survive the inert-share correction","kind":"fill"},"completion":{"text":"second exclusion bound, X₄ = 0.0488","kind":"line"}},"foot":"ISO-4 is ISO without its δ-only components; its reading rule was registered on 2026-09-18, before unblinding. k = 72 is a recorded deviation: the registered seed ladder's cap was 60, raised to 72 on 2026-09-22, pre-unblind."}</script>
+<script>
+(function(){
+  // Theme: follow the embedding page when same-origin (al-folio sets data-theme).
+  function syncTheme(){
+    try{
+      var p = window.parent && window.parent !== window && window.parent.document;
+      var t = p && p.documentElement.getAttribute('data-theme');
+      if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);return;}
+    }catch(e){}
+  }
+  syncTheme();
+  try{
+    var pd = window.parent && window.parent !== window && window.parent.document;
+    if(pd && window.MutationObserver){
+      new MutationObserver(function(){syncTheme(); if(window.__redraw) window.__redraw();})
+        .observe(pd.documentElement,{attributes:true,attributeFilter:['data-theme']});
+    }
+  }catch(e){}
+  // Self-size the iframe when same-origin (fixed iframe heights clip on phones).
+  function fit(){
+    try{
+      var fe = window.frameElement;
+      if(fe){ fe.style.height = (document.documentElement.scrollHeight + 4) + 'px'; }
+    }catch(e){}
+  }
+  window.__fit = fit;
+  window.addEventListener('load', fit);
+  if(window.ResizeObserver){ new ResizeObserver(fit).observe(document.body); }
+  window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener && window.matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', function(){ if(window.__redraw) window.__redraw(); });
+})();
+var U = {
+  css: function(name){ return getComputedStyle(document.documentElement).getPropertyValue('--'+name).trim(); },
+  reduced: function(){ return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); },
+  el: function(tag, attrs, text){
+    var e = document.createElement(tag);
+    if(attrs) for(var k in attrs){ if(attrs[k]!==null && attrs[k]!==undefined) e.setAttribute(k, attrs[k]); }
+    if(text!==undefined && text!==null) e.textContent = text;
+    return e;
+  },
+  svg: function(tag, attrs, text){
+    var e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    if(attrs) for(var k in attrs){ if(attrs[k]!==null && attrs[k]!==undefined) e.setAttribute(k, attrs[k]); }
+    if(text!==undefined && text!==null) e.textContent = text;
+    return e;
+  },
+  clear: function(n){ while(n.firstChild) n.removeChild(n.firstChild); },
+  sgn: function(x, d){ var s = (x>0?'+':(x<0?'−':'')); return s + Math.abs(x).toFixed(d); },
+  ci: function(a, d){ return '[' + U.sgn(a[0],d) + ', ' + U.sgn(a[1],d) + ']'; },
+  tip: (function(){
+    var t = null;
+    function node(){ if(!t){ t = document.createElement('div'); t.className='tt'; t.setAttribute('role','tooltip'); document.body.appendChild(t);} return t; }
+    return {
+      show: function(lines, x, y){
+        var n = node(); U.clear(n);
+        lines.forEach(function(l, i){
+          var d = document.createElement('div');
+          if(Array.isArray(l)){ var b=document.createElement('b'); b.textContent=l[0]; d.appendChild(b);
+            if(l[1]) d.appendChild(document.createTextNode(' ' + l[1])); }
+          else d.textContent = l;
+          n.appendChild(d);
+        });
+        n.style.display='block';
+        var w = n.offsetWidth, h = n.offsetHeight;
+        var vx = Math.min(x + 14, window.innerWidth - w - 6), vy = y + 14;
+        if(vy + h > window.innerHeight - 4) vy = Math.max(4, y - h - 10);
+        n.style.left = Math.max(4, vx) + 'px'; n.style.top = vy + 'px';
+      },
+      hide: function(){ if(t) t.style.display='none'; }
+    };
+  })(),
+  b64: function(s){ var bin = atob(s), n = bin.length, out = new Uint8Array(n);
+    for(var i=0;i<n;i++) out[i] = bin.charCodeAt(i); return out; },
+  // Tooltip at a focused element's position (keyboard parity with hover).
+  tipAt: function(el, lines){ var r = el.getBoundingClientRect(); U.tip.show(lines, r.left + r.width/2, r.top + r.height/2); }
+};
+</script>
+<script>var D = JSON.parse(document.getElementById('data').textContent);
+function marker(svg, shape, x, y){
+  if(shape==='dot') svg.appendChild(U.svg('circle', {cx:x, cy:y, r:4.6, fill:'var(--ink)', stroke:'var(--surface)', 'stroke-width':2}));
+  if(shape==='tri') svg.appendChild(U.svg('path', {d:'M'+x+','+(y-5.6)+'L'+(x+5.2)+','+(y+3.6)+'L'+(x-5.2)+','+(y+3.6)+'Z', fill:'var(--ink)', stroke:'var(--surface)', 'stroke-width':1.5}));
+}
+function whisker(mt, d, shape){
+  var W = 240, H = 22, X = function(v){ return 8 + (v - mt.dom[0])/(mt.dom[1]-mt.dom[0])*(W-16); };
+  var svg = U.svg('svg', {viewBox:'0 0 '+W+' '+H, role:'img', 'aria-label':'estimate and Šidák 95 % interval'});
+  svg.appendChild(U.svg('line', {x1:X(0), x2:X(0), y1:0, y2:H, 'class':'zero'}));
+  svg.appendChild(U.svg('line', {x1:X(d.lo), x2:X(d.hi), y1:H/2, y2:H/2, stroke:'var(--ink)', 'stroke-width':2}));
+  [d.lo, d.hi].forEach(function(v){ svg.appendChild(U.svg('line', {x1:X(v), x2:X(v), y1:H/2-5, y2:H/2+5, stroke:'var(--ink)', 'stroke-width':2})); });
+  marker(svg, shape, X(d.gamma), H/2);
+  return svg;
+}
+function axis(mt){
+  var W = 240, H = 26, X = function(v){ return 8 + (v - mt.dom[0])/(mt.dom[1]-mt.dom[0])*(W-16); };
+  var svg = U.svg('svg', {viewBox:'0 0 '+W+' '+H, 'aria-hidden':'true'});
+  svg.appendChild(U.svg('line', {x1:8, x2:W-8, y1:2, y2:2, 'class':'ax'}));
+  mt.ticks.forEach(function(v){ svg.appendChild(U.svg('line', {x1:X(v), x2:X(v), y1:2, y2:6, 'class':'ax'}));
+    svg.appendChild(U.svg('text', {x:X(v), y:17, 'text-anchor':'middle', 'class':'tick'}, Math.abs(v)<1e-12 ? '0' : (v>0?'+':'−') + Math.abs(v).toFixed(mt.dp))); });
+  return svg;
+}
+function chip(text, kind){ return U.el('span', {'class':'chip ' + kind}, text); }
+function render(){
+  var host = document.getElementById('blocks'); U.clear(host);
+  D.metrics.forEach(function(mt){
+    var blk = U.el('section', {'class':'blk'}); blk.appendChild(U.el('h3', null, mt.name));
+    D.rows.forEach(function(r){
+      var d = r.m[mt.k], row = U.el('div', {'class':'r'});
+      var id = U.el('div', {'class':'id'}); var b = U.el('b', null, r.sym); id.appendChild(b); id.appendChild(document.createTextNode('  ' + r.contrast));
+      id.appendChild(U.el('span', {'class':'m'}, r.meta)); row.appendChild(id);
+      var vt = U.el('div', {'class':'vt'});
+      vt.appendChild(chip(d.reject ? 'REJECT' : 'null', d.reject ? 'fill' : 'line'));
+      vt.appendChild(U.el('span', {'class':'num'}, d.est + (d.ci ? ' ' + d.ci : '')));
+      if(r.id==='G4'){ var c = D.consequence[mt.k]; vt.appendChild(chip(c.text, c.kind)); }
+      row.appendChild(vt);
+      var wk = U.el('div', {'class':'wk'}); wk.appendChild(whisker(mt, d, r.shape)); row.appendChild(wk);
+      blk.appendChild(row);
+    });
+    var ax = U.el('div', {'class':'r ax'}); ax.appendChild(U.el('div', {'class':'id'})); ax.appendChild(U.el('div', {'class':'vt'}));
+    var wk = U.el('div', {'class':'wk'}); wk.appendChild(axis(mt)); wk.appendChild(U.el('div', {'class':'m', style:'text-align:center'}, mt.axis)); ax.appendChild(wk); blk.appendChild(ax);
+    host.appendChild(blk);
+  });
+  document.getElementById('foot').textContent = D.foot;
+  if(window.__fit) window.__fit();
+}
+window.__redraw = render; render();
+</script>
+</body>
+</html>

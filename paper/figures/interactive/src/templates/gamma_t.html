@@ -1,0 +1,16 @@
+
+<div class="wrap">
+  <p class="sub">Γ(t) = JOINT − ISO at the 11 retained checkpoints, k = 72 per arm · Šidák 95 % (m = 2) · registered rule (iv): all 11 signs must agree</p>
+  <div class="ctl" role="group" aria-label="overlays">
+    <button class="pill" id="tsingle" aria-pressed="false">single-card curve (t = 1000 re-evaluated on the post-unblind card)</button>
+    <button class="pill" id="tfloor" aria-pressed="true"><svg width="16" height="10"><defs><pattern id="stip0" width="3" height="3" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="0.7" fill="var(--muted)"/></pattern></defs><rect width="16" height="10" fill="url(#stip0)"/></svg>floor at T* = 1000</button>
+  </div>
+  <div class="panels" id="panels"></div>
+  <div class="legend">
+    <span><svg width="26" height="12"><line x1="13" x2="13" y1="1" y2="11" stroke="var(--ink)" stroke-width="2.4"/><circle cx="13" cy="6" r="3.6" fill="var(--ink)"/></svg>t = 1000: the registered Γ, Šidák 95 % CI</span>
+    <span><svg width="26" height="12"><line x1="13" x2="13" y1="1" y2="11" stroke="var(--ink)" stroke-width="1.4"/><circle cx="13" cy="6" r="3.6" fill="var(--ink)"/></svg>t &lt; 1000: Šidák 95 % CI, descriptive (no registered test)</span>
+    <span><svg width="14" height="14"><circle cx="7" cy="7" r="5.5" fill="none" stroke="var(--ink)" stroke-width="1.3"/></svg>sign differs from the sign at T*</span>
+    <span id="cardnote">t = 1000: the grid card's own eval (the registered Γ) · t &lt; 1000: post-unblind card</span>
+  </div>
+  <details class="tbl"><summary>table view</summary><div id="tbl"></div></details>
+</div>

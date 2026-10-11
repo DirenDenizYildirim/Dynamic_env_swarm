@@ -64,7 +64,7 @@ svg .zero{stroke:var(--muted);stroke-width:1}
   <p class="sub">training mixtures, read from the committed configs · each component is one episode type at one training severity · display only</p>
   <div class="ctl" role="group" aria-label="view">
     <span class="lab">δ-only episodes</span>
-    <button class="pill" id="vbeh" aria-pressed="true">as certified: δ inert → fire-only</button>
+    <button class="pill" id="vbeh" aria-pressed="true">δ inert under a frozen random-projection encoder at this scale</button>
     <button class="pill" id="vnom" aria-pressed="false">nominal: δ counted</button>
     <span class="lab" style="margin-left:8px">severity</span>
     <button class="pill" id="vsev" aria-pressed="false">split by β 0.43 / 0.70</button>
@@ -243,7 +243,7 @@ function render(){
     var sp = U.el('span'), s = U.svg('svg', {width:18, height:12}), d = U.svg('defs'); s.appendChild(d);
     s.appendChild(U.svg('rect', {width:18, height:12, rx:2, fill:fill(d, t.k)})); sp.appendChild(s); sp.appendChild(document.createTextNode(t.name)); lg.appendChild(sp); });
   document.getElementById('note').textContent = S.view==='beh'
-    ? 'as certified: δ inert under a frozen random-projection encoder at this scale · the fire burns in every episode'
+    ? 'δ inert under a frozen random-projection encoder at this scale · the fire burns in every episode'
     : 'nominal: δ counted, as the configs’ headers count it · the fire burns in every episode';
   table(); if(window.__fit) window.__fit();
 }

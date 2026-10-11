@@ -5956,3 +5956,32 @@ depth, PBT, where the hyperparameters go) are asked again at its step.
 - Edited: `docs/theory_foundations.md` (Def. 1, Prop. 1, Def. 6, each with a
   dated note) and `CLAUDE.md` invariant #2. No code, constant, lock, test,
   registration or branch reading changes.
+
+
+## OPENING AND §1 REOPENED — a hero explorer under the abstract; §1 rewritten figure-led; §2 kept (owner delegated, builder's call, 2026-10-10)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28).
+The owner: keep the title, abstract and `description`, rewrite the rest, and
+use interactive elements at the start to catch attention, "but it's your
+call". The builder's call, which the owner may overrule:
+
+1. **Title, abstract and `description` stay** as in `paper/finale.md`.
+2. **The random-policy episode explorer opens the paper**, directly under the
+   abstract. It illustrates and grades nothing; it is the episode already
+   approved for the main text (FIGURE BATCH RULINGS A3–A4).
+3. **§1 is reopened and rewritten figure-led and shorter**, carried by two
+   figures: the training-mixture composer, and a compact two-rung ladder
+   showing Γ and Γ₄ together, with the registered qualifier ("does not
+   survive the inert-share correction") beside the gain (the A1 condition).
+   The full ladder stays in §9.2. The owner's earlier §1 text stays in
+   `paper/writing_drafts.md` as material; `finale.md` keeps it until the new
+   §1 is called done.
+4. **§2 Related work keeps its text** (figure-independent, verified twice,
+   READS RULING). Its position (after §1, or after the results) is decided at
+   the final pass.
+5. **Owed before the opening figures are placed:** the B8 fix to the composer;
+   the compact ladder variant, built from the ladder's own data; ledger rows
+   for every number the three opening figures show (C13).
+
+Supersedes FIGURE BATCH RULINGS A1's "§1–§2 stay" for §1 only. No constant,
+lock, test, registration or branch reading changes.

@@ -1,0 +1,8 @@
+
+.panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 22px}
+@media (max-width:760px){.panels{grid-template-columns:1fr}}
+.panel h3{font-size:14px;margin:0 0 4px;font-weight:600;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.panel svg{display:block;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11px;color:var(--ink2);margin-top:6px;align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+g.pt:focus{outline:none} g.pt:focus .hit{stroke:var(--ink);stroke-width:1.5}

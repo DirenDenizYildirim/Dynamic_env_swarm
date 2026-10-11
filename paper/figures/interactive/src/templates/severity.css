@@ -1,0 +1,10 @@
+
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:12px 20px;align-items:start}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.cols svg{display:block;width:100%;height:auto}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.trio figure{margin:0}
+.trio canvas{display:block;width:100%;aspect-ratio:1/1;border-radius:4px;cursor:pointer}
+.trio figcaption{font-size:11px;color:var(--ink2);margin-top:3px;line-height:1.3}
+.trio figure.on canvas{outline:2px solid var(--ink);outline-offset:1px}
+h3{font-size:13px;margin:0 0 4px;font-weight:600}

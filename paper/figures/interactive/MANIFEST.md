@@ -28,11 +28,32 @@ and glyphs to the restyled GIFs in `paper/renders/2026-10-10/` (builder's
 audit item 5). Colour means stressor identity (Coupling A violet, Coupling B
 magenta, both with textures) or map state; statistics are ink and grey.
 
+**Revision 2026-10-10 (evening), after FIGURE BATCH RULINGS and OPENING AND
+§1 REOPENED.** Changed: the composer's "as certified" removed (B8); Γ(t)'s
+intervals at t ≠ 1000 labelled descriptive (B8); the simplex pairs each
+plane prediction with its measured contrast (B10); **new compact opening
+ladder (F2b)** for §1; the hero explorer checked for the opening slot (no
+change needed). Code: every inline CSS/HTML/JS asset moved verbatim into
+`src/templates/` (read at build time, still inlined into each output);
+`ruff check paper/figures/interactive/src` is clean (B023, B905, B007, F841,
+I001, E501 fixed). **Identity of the rebuild:** after the template move and
+the lint fixes, all 34 outputs (10 HTML, 10 PNG, 14 data JSON) were
+byte-identical to the previous build except two PNGs, `ladder_registered_readings.png`
+and `gamma_t_final_half.png`: the B023 findings there were a real bug
+(late-bound `mt` in the tick formatter gave the completion axis three
+decimals instead of two); fixed. After the intended changes, the outputs
+that differ from the previous build are exactly: composer HTML+PNG (wording;
+data payload identical), Γ(t) HTML+PNG (labels; data payload identical),
+simplex HTML+PNG (prediction rows regrouped; all other payload fields
+identical), the new opening ladder, and `output_checks.json`. Explorer HTML,
+PNGs, state digests and codec checks are unchanged; the node decoder check
+still passes on all three.
+
 **Rebuild** (from the repo root; CPU only, thread-capped):
 
     export OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 XLA_FLAGS=--xla_cpu_multi_thread_eigen=false
     nice -n 15 uv run python paper/figures/interactive/src/extract_episodes.py --scratch <scratch dir>   # JAX, ~1 min
-    for b in build_explorer build_ladder build_composer build_gamma_t build_simplex \
+    for b in build_explorer build_ladder build_opening_ladder build_composer build_gamma_t build_simplex \
              build_severity build_floors build_coupling_a static_companions check_outputs; do
       nice -n 15 uv run python paper/figures/interactive/src/$b.py; done
     for s in thetastar_random_seed0 thetastar_iso_s1_T1000_ep0 thetastar_joint_s1_T1000_ep0; do
@@ -115,6 +136,20 @@ with the PNG companion beside it via `figure.html`. Heights below are for a
   ignitions, food and twelve agents over 256 steps, with one selected agent's
   9 by 9 observation, the true state of the same cells, and the probability
   each cell was seen."
+- **Opening slot (OPENING AND §1 REOPENED, item 2), checked 2026-10-10:**
+  at rest the random-policy file shows t = 128 with agent 7 and its three
+  panels selected, paused (no autoplay; playback starts only on the reader's
+  press, also under `prefers-reduced-motion`). At 360 px width the layout
+  stacks to one column with no clipping (map ~330 px; layer and agent pills
+  wrap). Iframe height at phone width ≈ 1100 (self-sizing when same-origin).
+  **Visible labels and their sources:** "random policy" (selection rule,
+  `paper/renders/2026-09-27/README.md`); θ\* (β 0.49 CAL-3, κ_A 0.06 CA-1,
+  κ_B 1.0 CB-1, δ 1.0 COM-6); 64 × 64 cells, 12 agents, 9 × 9 cells,
+  t = k / 256 (ENV-6); "episode key 0" (README selection rule, file + key;
+  NEEDS LEDGER ROW if a row is wanted for identifiers); speeds and agent
+  numbers are interface labels; the hover readouts of ρ and τ are per-cell
+  state of the shown episode (not results; NEEDS LEDGER ROW if the owner
+  wants them treated as stated numbers, else they can be removed).
 - **Policy label:** plain ("random policy", "ISO policy · training seed 1 ·
   update 1000", …); `build_explorer.py --no-label` strips it.
 
@@ -150,6 +185,35 @@ with the PNG companion beside it via `figure.html`. Heights below are for a
   and ISO-4 minus isolated, each with its Šidák-corrected interval and its
   registered verdict."
 
+## F2b. Compact opening ladder (new, for §1)
+
+`out/html/opening_ladder.html` (15 KB) · `out/img/opening_ladder.png` (136 KB) ·
+iframe height ≈ 400 in a ~700 px text column (≈ 760 at phone width).
+
+- **Anchors:** §1 (OPENING AND §1 REOPENED, item 3). Built from the full
+  ladder's own data (`build_ladder.build_data()`): same values, assertions
+  and ledger routing. **Only Γ (k = 72) and Γ₄, both co-primaries, no
+  toggles**, so it can never show Γ without Γ₄ (A1). Survival block first
+  (the abstract's order), then completion; per block, Γ and Γ₄ rows on one
+  shared axis. Verdict chips first: Γ survival REJECT; Γ completion null;
+  Γ₄ survival null with **"does not survive the inert-share correction"**
+  on the line directly under it, next to the Γ survival gain; Γ₄ completion
+  null with **"second exclusion bound, X₄ = 0.0488"**. ISO-4 marked "sensitivity
+  arm, outside the confirmatory family · cross-unit", k 72 / 20. A
+  link-style label "full ladder: §9.2". Footnote: ISO-4's definition and
+  registration date; k = 72 as the recorded deviation.
+- **Every number shown → ledger:** Γ survival +0.0096 [+0.0047, +0.0144]
+  RES-2; Γ completion −0.0173 [−0.0412, +0.0066] RES-1; Γ₄ survival −0.0003
+  [−0.0068, +0.0063] RES-6; Γ₄ completion −0.0126 RES-6 (its CI
+  [−0.0481, +0.0228]: **NEEDS LEDGER ROW**, hidden, whisker drawn); X₄ 0.0488
+  RES-6; k 72 / 72 DES-3, DES-13; k 72 / 20 DES-13, DES-15; m = 2, T\* = 1000
+  DES-13; "unit 1", "cross-unit" HW-4; 2026-09-18 DES-15; cap 60 and
+  2026-09-22 DES-1, DES-3; axis ticks are graduations.
+- **Alt text (proposal):** "Joint minus isolated training and joint minus
+  ISO-4, for survival and completion, each with its Šidák-corrected interval
+  and registered verdict; the survival gain is shown beside the ISO-4
+  contrast, labelled does not survive the inert-share correction."
+
 ## F3. Training-mixture composer
 
 `out/html/composer_training_mixtures.html` (19 KB) ·
@@ -160,16 +224,23 @@ with the PNG companion beside it via `figure.html`. Heights below are for a
   only, A + B together, fire-only = δ-only), textures 45°/135°/crosshatch;
   per-stressor marginals A, B and the active share beneath, aligned across
   arms (ISO-4 and JOINT share active share 1; marginals 0.5 vs 1.0).
-  Switches: "as certified: δ inert → fire-only" vs "nominal: δ counted";
+  Switches: "δ inert under a frozen random-projection encoder at this scale"
+  (default; "as certified" removed everywhere, B8) vs "nominal: δ counted";
   split by β 0.43 / 0.70. Hover: config components and weights. **No slider,
   no prediction.**
 - **Sources:** `che/configs/p6_iso.yaml`, `p6_iso4.yaml`, `p6_joint.yaml`
   (`mixture.components`, via `load_config`).
-- **Stated numbers → ledger:** marginals ISO 1/3, JOINT 1, ratio 3× (DES-7);
-  fire-only 1/3 (DES-8); ISO-4 1/2, active shares 2/3 / 1 / 1, ratio 2×
-  (DES-14); β 0.43 / 0.70 (CAL-3). Component weights 1/6, 1/4, 1/2 and the
-  component κ/δ values: committed configs, `mixture.components[*].weight`
-  (uniform mixtures, as spine §9.1 describes them).
+- **Every number shown → ledger:** segment shares ISO 1/3 · 1/3 · 1/3 (A,
+  B: DES-7; fire-only: DES-8), ISO-4 1/2 · 1/2 (DES-14), JOINT 1 (DES-7);
+  marginals ISO A 1/3, B 1/3 and JOINT A 1, B 1 (DES-7), ISO-4 A 1/2, B 1/2
+  (DES-14); active share 2/3 / 1 / 1 (DES-14); "3× ISO" (DES-7), "2× ISO-4"
+  (DES-14); β 0.43 / 0.70 (CAL-3); tooltip κ_A 0.06 (CA-1), κ_B 1.0
+  (CB-1), δ 1.0 (COM-6), 0 values (configs). **NEEDS LEDGER ROW:** the
+  per-component weights 1/6, 1/4, 1/2 shown with the severity split and in
+  tooltips/table (source `che/configs/p6_{iso,iso4,joint}.yaml`
+  `mixture.components[*].weight`, normalised); the nominal-view ISO active
+  share 1 (source `p6_iso.yaml:7`, "no-element 0.0000"). Axis ticks 0,
+  1/3, 1/2, 2/3, 1 are graduations.
 - **Alt text (proposal):** "Stacked bars of the three training mixtures by
   episode type, with each arm's per-stressor frequencies and the share of
   episodes that carry an active stressor."
@@ -181,7 +252,10 @@ with the PNG companion beside it via `figure.html`. Heights below are for a
 
 - **Shows, first:** "sign unstable over the final half" (both co-primaries),
   then the 11-sign string with disagreeing checkpoints ringed; points with
-  Šidák whiskers, **no connecting line, no trend line**; floor at T\* only;
+  Šidák whiskers, **no connecting line, no trend line**; a bracket over
+  t = 500–950 labelled "descriptive intervals (no registered test at
+  t ≠ T\*)" and "T\* registered" at 1000, thin whiskers for the descriptive
+  intervals and a thick one for the registered Γ (B8); floor at T\* only;
   toggle for the single-card curve (t = 1000 re-evaluated on the
   post-unblind card, hollow marker). Card note under the plot.
 - **Sources:** `P6/post_unblind_analysis/post_evalfloor_gamma_t_high.json`
@@ -208,7 +282,12 @@ with the PNG companion beside it via `figure.html`. Heights below are for a
   sweep_c50_p000's mixture) and JOINT at m = 1 outside it; arm means against
   p with the committed plane fit as grey ticks (no numbers). Right:
   secondary estimates (95 %), then the plane's predictions against the
-  measured contrasts: γ_p × 1 vs Γ₄ and Γ₄′; γ_n × (0 − 1/3) vs B̂.
+  measured contrasts, as two labelled pairs (B10): "ISO-4 − ISO: plane
+  prediction from γ_n, measured B̂" (SEC-3 +0.0079 beside RES-7 +0.0098
+  [+0.0033, +0.0163]) and "JOINT − ISO-4: plane prediction from γ_p,
+  measured Γ₄ and Γ₄′" (SEC-4 ≈ +0.033 with γ_p's interval [+0.0137,
+  +0.0502] from SEC-1, beside RES-6 and RES-8). Completion shows the γ_p pair
+  only (no ledgered γ_n prediction for completion).
   Metric switch survival | completion; prediction toggle.
 - **Sources:** `P6/secondary/secondary.json` (`design`, `metrics.*`,
   `mediation`, `replicate`); `P6/post_unblind_analysis/post_gamma4_t2000.json`.
@@ -332,7 +411,8 @@ rows): component weights 1/6, 1/4, 1/2 (configs); the arm (p, n) values
 
 ## Double-blind and self-containment check (recorded 2026-10-10)
 
-`src/check_outputs.py` over all 10 HTML and 10 PNG outputs: **0 findings**
+`src/check_outputs.py` over all 11 HTML and 11 PNG outputs (re-run after the
+evening revision): **0 findings**
 (`out/data/output_checks.json`). HTML: no `http(s)://` (the SVG namespace
 identifier excepted), no `<script src`, `<link`, `@import`, `<iframe`,
 `fetch(`, no `/home/`, `/tmp/`, user or account name, `github`, tool name,

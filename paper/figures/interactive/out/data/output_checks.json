@@ -1,7 +1,7 @@
 {
  "html": {
   "composer_training_mixtures.html": {
-   "bytes": 19393,
+   "bytes": 19406,
    "findings": []
   },
   "coupling_a_explorer.html": {
@@ -25,11 +25,15 @@
    "findings": []
   },
   "gamma_t_final_half.html": {
-   "bytes": 19265,
+   "bytes": 20346,
    "findings": []
   },
   "ladder_registered_readings.html": {
    "bytes": 24382,
+   "findings": []
+  },
+  "opening_ladder.html": {
+   "bytes": 15281,
    "findings": []
   },
   "severity_explorer.html": {
@@ -37,13 +41,13 @@
    "findings": []
   },
   "simplex_secondary.html": {
-   "bytes": 27723,
+   "bytes": 27967,
    "findings": []
   }
  },
  "png": {
   "composer_training_mixtures.png": {
-   "bytes": 124751,
+   "bytes": 124416,
    "findings": []
   },
   "coupling_a_explorer.png": {
@@ -67,11 +71,15 @@
    "findings": []
   },
   "gamma_t_final_half.png": {
-   "bytes": 125430,
+   "bytes": 148532,
    "findings": []
   },
   "ladder_registered_readings.png": {
-   "bytes": 257989,
+   "bytes": 257896,
+   "findings": []
+  },
+  "opening_ladder.png": {
+   "bytes": 136048,
    "findings": []
   },
   "severity_explorer.png": {
@@ -79,7 +87,7 @@
    "findings": []
   },
   "simplex_secondary.png": {
-   "bytes": 219546,
+   "bytes": 229638,
    "findings": []
   }
  }

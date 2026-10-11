@@ -1,0 +1,15 @@
+
+<div class="wrap">
+  <p class="sub">training mixtures, read from the committed configs · each component is one episode type at one training severity · display only</p>
+  <div class="ctl" role="group" aria-label="view">
+    <span class="lab">δ-only episodes</span>
+    <button class="pill" id="vbeh" aria-pressed="true">δ inert under a frozen random-projection encoder at this scale</button>
+    <button class="pill" id="vnom" aria-pressed="false">nominal: δ counted</button>
+    <span class="lab" style="margin-left:8px">severity</span>
+    <button class="pill" id="vsev" aria-pressed="false">split by β 0.43 / 0.70</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="legend" id="legend"></div>
+  <p class="sub" style="margin-top:8px" id="note"></p>
+  <details class="tbl"><summary>table view</summary><div id="tbl"></div></details>
+</div>

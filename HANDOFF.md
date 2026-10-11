@@ -107,7 +107,20 @@
    owner-written sentence. Step 4, **§1 Introduction, is DONE 2026-10-10**
    (§1 INTRODUCTION entry). Step 5, **§2 Related work, is DONE 2026-10-10**
    (READS RULING entry; the recorded full reads discharge the owner reads).
-   **Writing resumes at §3, figure-first** (FIGURE BATCH RULINGS, 2026-10-10:
+   **SESSION END 2026-10-10. Start here next time.** The owner will decide,
+   fresh, whether to restart the paper beyond the §1 rewrite; the builder's
+   delegated call (decision log, OPENING AND §1 REOPENED) is: keep the title,
+   abstract and `description`; hero explorer under the abstract; §1 rewritten
+   figure-led (composer + compact Γ/Γ₄ ladder); §2 kept. **The §1 rewrite step
+   is prepared** (session record); its essentials: the three opening figures
+   and their ledger rows (ENV-13, DES-7/8/14/16, RES-1/2/6, DES-13/15);
+   §2 depends on §1 twice ("§1 stated what our comparison holds fixed"; the
+   3× endpoint confound "(§1, §9)"); the old §1 text is reusable from
+   `paper/writing_drafts.md`. **Review page** (private artifact, every figure
+   live, in reading order): https://claude.ai/artifact/HkpD3sho2QhJLdnX8BKveS .
+   **Uncommitted** at session end (the owner commits only on their word): the
+   OPENING entry, ledger rows DES-16/ENV-13/RES-6, and the interactive set's
+   B8/B10 fixes, compact ladder and lint cleanup. Before that: **Writing resumes at §3, figure-first** (FIGURE BATCH RULINGS, 2026-10-10:
    the figure-led path of `paper/figures/interactive/DESIGN.md` §5 is adopted
    within the current structure; §1–§2 stay). §3 is prepared; ask its open
    questions again (formal depth, PBT, where the hyperparameters go). **Owed

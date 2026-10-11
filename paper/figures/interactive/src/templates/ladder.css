@@ -1,0 +1,12 @@
+
+.steps{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+.steps button.pill{font-size:12px}
+.panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px}
+@media (max-width:760px){.panels{grid-template-columns:1fr}}
+.panel h3{font-size:14px;margin:0 0 2px;font-weight:600}
+.panel svg{display:block;width:100%;height:auto}
+.foot{font-size:11px;color:var(--ink2);margin-top:6px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11px;color:var(--ink2);margin-top:6px;align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+g.row text{paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round} g.row text.ct{stroke:none} g.row{cursor:default} g.row:focus{outline:none} g.row:focus .hit{stroke:var(--ink);stroke-width:1.5}
+.dim{opacity:.5}
