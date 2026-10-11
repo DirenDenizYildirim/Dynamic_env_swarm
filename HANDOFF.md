@@ -47,6 +47,20 @@
   once confirmed, record it in `phase6_report.md` §3.** `main` was pushed to
   GitHub the same day.
 
+- **Demonstration draft (2026-10-11, uncommitted on the owner's word).**
+  Under the decision log's *DEMONSTRATION DRAFT* ruling, a builder-written
+  Beyond PDF demonstration of the whole body is in `paper/demo_beyond/`
+  (read its `README.md`; reviews in `REVIEW.md`, including six OWNER ITEMS
+  the reviews found in the owner's text and the record). Private artifact:
+  https://claude.ai/artifact/541rk1RcCKs1trTe64Y4aX . `paper/finale.md` is
+  untouched, and *WRITING ROLES* still governs it.
+- **Paper v2 (2026-10-11, PAPER V2 ruling).** Builder subagents draft the paper
+  from the demonstration scaffold; the owner checks every word. *WRITING ROLES*
+  is superseded for v2, and the title and abstract are reopened. Start a v2
+  session by pasting `paper_v2_prompt.md`, which carries the owner's fix list
+  with verified locations and TMLR's LLM policy (disclosure footnote on the
+  first page).
+
 ## Next, in order
 
 1. ~~Definition 2 wording~~ **DONE 2026-09-27** (DEF. 2 WORDING RULING,

@@ -1,0 +1,10 @@
+<!-- BUILDER-WRITTEN DEMONSTRATION (DEMONSTRATION DRAFT ruling, 2026-10-11); not the owner's text -->
+
+<figure class="l-page">
+  <iframe src="{{ 'assets/html/submission/explorer_thetastar_random_seed0.html' | relative_url }}" width="100%" height="720" style="border:none" title="Episode explorer: one random-policy episode of CHE at the held-out configuration" loading="lazy"></iframe>
+  <figcaption><strong>Figure 1.</strong> One episode of CHE. Twelve<!-- N:ENV-6 --> agents move on a 64 × 64<!-- N:ENV-6 --> grid for 256<!-- N:ENV-6 --> steps at the held-out configuration θ&#42;: fire transmissibility β = 0.49<!-- N:CAL-3 -->, Coupling A κ<sub>A</sub> = 0.06<!-- N:CA-1 -->, Coupling B κ<sub>B</sub> = 1.0<!-- N:CB-1 -->, communication denial δ = 1.0<!-- N:COM-6 -->. The map is environment state: fire, smoke field ρ, weak and collapsed floor, food, agents alive and dead, and collapse-seeded ignitions (Coupling A; here 11<!-- N:DX-33 --> collapse events, 7<!-- N:DX-33 --> seeded ignitions). Perception is only in the selected agent's three panels: its 9 × 9<!-- N:ENV-6 --> observation as produced, the true state of those cells, and P(seen) = τ, the Beer–Lambert transmittance through smoke. Fixed before rendering: θ&#42;, episode key 0, random policy, stochastic actions<!-- N:ENV-13 -->. No outcome is reported. <span class="figure-note">Status: illustrative · random policy · grades nothing · Interact: play (space), scrub or step (← →), jump between events with [ and ], toggle layers, click an agent; opens paused at t = 128<!-- N:DX-33 -->, agent 7<!-- N:DX-33 -->.</span></figcaption>
+</figure>
+
+<div class="print-companion">
+{% include figure.html path="assets/img/submission/explorer_thetastar_random_seed0_static.png" class="img-fluid" alt="Three map frames of one random-policy episode, at its start, middle and end, showing fire state, smoke density, weak and collapsed floor, collapse-seeded ignitions, food and agents, with one selected agent's observation, the true state of the same cells, and the probability that each cell was seen." caption="Static companion of Figure 1 for the printed PDF." %}
+</div>

@@ -1,0 +1,54 @@
+
+/* ---------- Demonstration additions (paper/demo_beyond/src/build_demo.py) ---------- */
+/* Banner tint marks builder text; the kit page itself has no banner. */
+.pv-bar { background: #3b2a55; }
+.pv-bar .pv-src { color: #d9cdea; }
+d-article .owner-abstract { grid-column: text; }
+d-article .owner-abstract p { font-size: 1.06rem; line-height: 1.7; }
+d-article .owner-abstract::before {
+  content: "Owner’s abstract, verbatim from paper/finale.md";
+  display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.6rem;
+}
+/* Display math scrolls inside itself at phone width. */
+d-article .math-display { grid-column: text; overflow-x: auto; overflow-y: hidden; margin: 0.4rem 0 1.2rem; }
+d-article mjx-container[display="true"] { margin: 0.6em 0 !important; }
+/* Highlighted code: Pygments tokens carry colour; the kit's teal is the fallback. */
+d-article pre { grid-column: text; white-space: pre; overflow-x: auto; overflow-wrap: normal; line-height: 1.5; }
+d-article pre code { background: none; padding: 0; color: inherit; font-size: 12.5px; }
+.highlight { background: transparent; }
+/* Interactive figures: an iframe per figure, page width, self-sizing. */
+d-article figure.l-page, d-article figure.l-body-outset, d-article figure.l-body { margin-block: 1.6rem 2.4rem; }
+d-article figure iframe { display: block; width: 100%; border: 1px solid var(--rule); border-radius: 4px; background: #fff; }
+d-article figure figcaption { margin-top: 0.6rem; font-size: 13px; line-height: 1.55; color: var(--ink-soft); }
+d-article figure figcaption strong { color: var(--ink); font-weight: 500; }
+/* Citations and footnotes. */
+d-article a.citation { color: #3c6e8f; text-decoration: none; border-bottom: none; font-variant-numeric: tabular-nums; }
+d-article .cite-group { color: #3c6e8f; white-space: nowrap; }
+d-article .cite-missing { color: #a3261b; background: #fde7e4; border-radius: 3px; padding: 0 3px; }
+d-article sup.fn a { text-decoration: none; color: #3c6e8f; }
+d-article ol.footnotes, d-article ol.refs { grid-column: text; font-size: 13px; line-height: 1.55; }
+d-article ol.refs .ref-n { font-variant-numeric: tabular-nums; color: var(--ink-soft); margin-right: 4px; }
+d-article ol.refs li { border-top: 1px solid var(--rule); padding-top: 8px; }
+/* Each part's kit source, beside the rendered part. */
+d-article details.kit-src { grid-column: page; margin: 0.6rem 0 2.4rem; border: 1px dashed #b9a6d3; border-radius: 4px; background: #faf7fd; }
+d-article details.kit-src summary { cursor: pointer; padding: 6px 12px; font-size: 13px; font-weight: 500; color: #3b2a55; }
+d-article details.kit-src summary:focus-visible { outline: 2px solid #3b2a55; outline-offset: 2px; }
+d-article details.kit-src pre { margin: 0; border-radius: 0 0 4px 4px; max-height: 32rem; overflow: auto; font-size: 12px; color: #2b2238; background: #f3eef9; }
+d-article details.kit-src code { color: inherit; background: none; }
+d-article table { display: block; overflow-x: auto; grid-column: text; }
+/* Figure notes, long captions under static figures, print companions. */
+d-article .figure-note { display: block; margin-top: 0.35rem; font-size: 12px; color: #5a4f6b; }
+d-article p.caption { grid-column: text; font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin-top: -1rem; }
+body.show-print .print-companion { display: block; grid-column: page; border-left: 3px solid #b9a6d3; padding-left: 12px; }
+body.show-print .print-companion::before { content: "Print companion (hidden on screen in the kit; shown in the browser-printed PDF)"; display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #3b2a55; margin-bottom: 0.4rem; }
+.pv-bar { display: none; }
+d-byline .view-toggle { margin: 0 0 0.3em; }
+d-byline .view-toggle label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; }
+d-byline .view-toggle input { width: 14px; height: 14px; margin: 0; accent-color: #2698ba; }
+/* The kit's sidebar contents box needs a wider left margin than the grid has
+   below ~1400 px; there it sits above the text, as the kit does under 1024 px. */
+@media (max-width: 1400px) {
+  d-article d-contents { display: block; grid-column: text; grid-row: auto; justify-self: stretch; width: auto; padding: 0.5em 1em; margin-bottom: 1.5em; border: 1px solid var(--rule); }
+  d-article d-contents nav { grid-column: none; }
+}

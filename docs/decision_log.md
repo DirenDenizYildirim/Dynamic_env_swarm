@@ -5985,3 +5985,128 @@ call". The builder's call, which the owner may overrule:
 
 Supersedes FIGURE BATCH RULINGS A1's "§1–§2 stay" for §1 only. No constant,
 lock, test, registration or branch reading changes.
+
+
+## DEMONSTRATION DRAFT — the builder writes a full Beyond PDF demonstration of the paper, outside `paper/finale.md` (owner, 2026-10-11)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before any demonstration text was written. The owner, in chat: launch agents,
+one of which reads the writing prompt and helps the others write the paper;
+"you will write the best ever paper for this project without underreaching or
+overreaching I need this because I need to see how I could turn my static
+written into the new format for TMLR beyond"; the builder writes every part
+"except the title abstract and description", with "other subagents review";
+"the paper should be an artifact I could view with code parts Latex and most
+importantly for this format interactive parts".
+
+The builder reminded the owner once that *WRITING ROLES* (2026-09-28) is the
+owner's own ruling (`writing_session_prompt.md`). This entry is the new
+ruling. Its scope, as the builder reads it (the owner may overrule):
+
+1. **The builder writes a demonstration of the whole body** (every section
+   after the abstract, appendix included) in the author kit's syntax, under
+   `paper/demo_beyond/`, with subagents. The title, abstract and
+   `description` are the owner's, copied verbatim from `paper/finale.md`.
+2. **`paper/finale.md` is not edited.** *WRITING ROLES* still governs it.
+   This ruling is an exception for the demonstration only.
+3. **The demonstration is labelled builder-written** wherever it is shown
+   (file headers, the artifact's banner). Whether any of it moves into
+   `finale.md`, and in what form, is the owner's decision.
+4. **Every other rule binds unchanged.** Numbers come only from
+   `paper/numbers_ledger.md`. A number with no row gets a row first, in
+   `paper/demo_beyond/ledger_supplement.md`, verified against its committed
+   source; the canonical ledger is not edited. Citations come only from
+   `paper/beyond_pdf/assets/bibliography/submission.bib`. `branch_B.md` §5
+   (required honesty lines) and §8 (what not to claim) bind, registered
+   strings stay verbatim, and the text stays double-blind.
+5. **Independent review before publishing:** subagents check numbers,
+   claims (overreach, undersell, conflict, missing) and mechanics, and their
+   findings and resolutions are recorded in `paper/demo_beyond/REVIEW.md`.
+6. **Delivered as a private artifact** with the interactive figures live,
+   LaTeX math and code excerpts.
+
+No constant, lock, test, registration or branch reading changes.
+
+*Amended 2026-10-11 (owner, same session):* the artifact's banner is removed
+at the owner's request. Item 3's label now sits in the page's byline
+("builder-written except the title, abstract and description"), as well as
+on line 1 of every section file.
+
+
+## PAPER V2 — builder subagents draft the paper from the demonstration scaffold; the owner checks every word; title and abstract reopened; the owner's fix list (owner, 2026-10-11)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28). The
+owner, in chat, after reviewing the demonstration and asking for TMLR's LLM
+policy: "we need a better paper so give me a prompt for a better paper that
+will use subagents that will be our bases but I will check word by word and
+review everything to make sure it is right since I will be responsible and we
+will also use the beyond format with the kit and everything, we will give it
+the paper you created as a scaffold but we will change a couple things",
+followed by the fix list in item 4.
+
+1. **Roles for the v2 paper.** Builder subagents draft the paper, title,
+   abstract and `description` included, starting from the demonstration
+   (`paper/demo_beyond/`) as a scaffold. The owner checks every word, approves
+   section by section, and is responsible for the result. This supersedes
+   *WRITING ROLES* (2026-09-28) for the v2 paper. Only text the owner has
+   approved enters `paper/finale.md` or the submission.
+2. **TMLR's LLM policy, as read on 2026-10-11** (editorial policies; FAQ).
+   - LLMs may be used as general-purpose assistive tools.
+   - Authors are fully responsible for every word, and LLMs cannot be
+     authors.
+   - The FAQ requires mentioning the tool's use "as a footnote on the first
+     page", and expects the ideas, claims and results to be "human-sourced".
+   - Submissions that appear largely LLM-generated "will be closely
+     examined".
+   - The Beyond PDF instructions say nothing on LLMs.
+
+   The v2 paper carries the disclosure footnote. Every v2 sentence comes with
+   its provenance, so that the owner can check it and defend it.
+3. **Reopened.** The title, ruled final in *TITLE AND TERMINOLOGY RULINGS*, and
+   the abstract, ruled final in *ABSTRACT* (both 2026-10-10). The terminology
+   rulings themselves ("stressor", "ambient hazard", "environment
+   configuration") stand.
+4. **The owner's fix list**, to be applied in v2 (the locations were verified
+   by the builder the same day; `paper_v2_prompt.md` lists them):
+   - **Mechanical:**
+     - the |Δ| table bug;
+     - the broken references;
+     - the empty BibTeX year;
+     - strip the HTML comments if the preprint links to the rendered site.
+   - **Correctness:**
+     - Corollary 1(3) and (4);
+     - soften Remark 1;
+     - call Proposition 4 an upper bound rather than "irreducible".
+   - **Framing:**
+     - retitle so that the hazard-blind reward is not the lead;
+     - rewrite the abstract to lead with the plain result;
+     - own the δ confound as a design error;
+     - separate the "match the active share" advice from "therefore";
+     - cut the internal jargon in §9.
+
+   The owner's "stuff like this" means the list is not exhaustive. Further
+   findings of the same kinds are reported to the owner before they are
+   fixed.
+5. **No new runs and no GPU spend.** Registered strings stay verbatim, and
+   every other rule binds unchanged (numbers from the ledger, the citation
+   source, double-blind, `branch_B.md` §5 and §8).
+
+No constant, lock, test, registration or branch reading changes.
+
+*Amended 2026-10-11 (owner, same session): the v2 process.* The owner, in chat:
+"plan change before the commit we should work like this now". Phase 1 of v2
+runs as follows:
+
+1. three planner agents plan how the paper should be structured;
+2. a reviewer agent reviews this session's paper (the demonstration) and
+   writes decisions and what should change;
+3. two builder agents read the plans and this paper and start the scaffold;
+4. many agents build the final version of the paper;
+4.5. once the final version is finished, the owner and one blind agent
+   review it. The owner looks for anything wrong that could have been said
+   and for garbled text. The blind agent reviews as a reviewer would.
+
+"This is the end of phase 1." This replaces the process section of
+`paper_v2_prompt.md`. Items 1–5 above are unchanged. A "decision" by the
+reviewer agent or a builder is a builder decision inside the owner's rulings.
+Anything that would change a ruling is put to the owner at step 4.5.
