@@ -1,0 +1,613 @@
+{
+ "summary": {
+  "pass": 32,
+  "fail": 1,
+  "info": 5
+ },
+ "run": {
+  "run_name": "kit_run_20261011_233532_5425",
+  "root": "v2",
+  "sha256": "e531434b698e04dc9e07e4100c8eb21f3a5a9caca873c102b589af4e9bacc2d5",
+  "sha_ok": true,
+  "build_rc": 0,
+  "merge_rc": 0,
+  "bundle_rc": 0,
+  "jekyll_rc": 0,
+  "control_jekyll_rc": 0,
+  "gems": "github-pages (232) jekyll (3.10.0) kramdown (2.4.0) kramdown-parser-gfm (1.1.0)"
+ },
+ "checks": [
+  {
+   "group": "Pipeline",
+   "check": "build_v2.py (source checks)",
+   "status": "PASS",
+   "counts": "0 failures, 0 warnings, 16 STUB-SPEC blocks, 0 M1 source flags",
+   "details": []
+  },
+  {
+   "group": "Pipeline",
+   "check": "kit zip sha256",
+   "status": "PASS",
+   "counts": "e531…",
+   "details": []
+  },
+  {
+   "group": "Pipeline",
+   "check": "kit merge_files() and jekyll build --future",
+   "status": "PASS",
+   "counts": "merge 0, jekyll 0, control jekyll 0; github-pages (232) jekyll (3.10.0) kramdown (2.4.0) kramdown-parser-gfm (1.1.0)",
+   "details": []
+  },
+  {
+   "group": "Math and Liquid",
+   "check": "MathJax errors",
+   "status": "PASS",
+   "counts": "0 errors in 412 rendered expressions (source count 412)",
+   "details": []
+  },
+  {
+   "group": "Math and Liquid",
+   "check": "no raw $ or TeX in rendered text",
+   "status": "PASS",
+   "counts": "0 hits",
+   "details": []
+  },
+  {
+   "group": "Math and Liquid",
+   "check": "math count, source against rendered",
+   "status": "INFO",
+   "counts": "source 412, rendered 412",
+   "details": []
+  },
+  {
+   "group": "Math and Liquid",
+   "check": "0 Liquid left",
+   "status": "PASS",
+   "counts": "0 left",
+   "details": []
+  },
+  {
+   "group": "Tables (M1)",
+   "check": "kit table count equals the source's",
+   "status": "PASS",
+   "counts": "kit 16 against source 16; build's M1 source scan flagged 0 line(s)",
+   "details": []
+  },
+  {
+   "group": "References (M2)",
+   "check": "no raw LaTeX or -- in Distill's reference list",
+   "status": "PASS",
+   "counts": "0 of 39 entries",
+   "details": []
+  },
+  {
+   "group": "References (M2)",
+   "check": "rendered authors and titles equal the bib's Unicode fields",
+   "status": "PASS",
+   "counts": "0 mismatches in 39 entries",
+   "details": []
+  },
+  {
+   "group": "References (M2)",
+   "check": "every d-cite resolves",
+   "status": "PASS",
+   "counts": "49 d-cite tags, 0 unresolved",
+   "details": []
+  },
+  {
+   "group": "References (M2)",
+   "check": "reference list has one entry per cited key",
+   "status": "PASS",
+   "counts": "39 entries, 39 cited keys",
+   "details": []
+  },
+  {
+   "group": "References (M2)",
+   "check": "hover cards show no raw TeX",
+   "status": "PASS",
+   "counts": "49 hover cards, 0 problems",
+   "details": []
+  },
+  {
+   "group": "Citation box (M3)",
+   "check": "the cite-this-work box has a year",
+   "status": "PASS",
+   "counts": "year = {October 11, 2026}",
+   "details": [
+    "@inproceedings{anonymous2026apreregisteredtest,\n  author = {Anonymous, },\n  title = {A pre-registered test of training on co-occurring versus isolated stressors in a multi-agent fire environment},\n  booktitle = {TMLR Beyond PDF},\n  year = {October 11, 2026}\n}",
+    "Anonymous, \"A pre-registered test of training on co-occurring versus isolated stressors in a multi-agent fire environment\", TMLR Beyond PDF, 2026."
+   ]
+  },
+  {
+   "group": "Byline",
+   "check": "what the byline shows for Submitted",
+   "status": "INFO",
+   "counts": "'Not submitted yet.' (front matter submitted_date: None)",
+   "details": []
+  },
+  {
+   "group": "Byline",
+   "check": "title and description render intact (heading, byline, cite box)",
+   "status": "PASS",
+   "counts": "4 of 4 hold",
+   "details": []
+  },
+  {
+   "group": "Links and frames",
+   "check": "every toc link resolves",
+   "status": "PASS",
+   "counts": "12 of 12 resolve (source toc 12)",
+   "details": []
+  },
+  {
+   "group": "Links and frames",
+   "check": "every in-page # link resolves",
+   "status": "PASS",
+   "counts": "12 of 12",
+   "details": []
+  },
+  {
+   "group": "Links and frames",
+   "check": "every iframe loads (same origin)",
+   "status": "PASS",
+   "counts": "11 of 11 loaded (source 11)",
+   "details": []
+  },
+  {
+   "group": "Links and frames",
+   "check": "each iframe's document fits its frame (after self-sizing)",
+   "status": "PASS",
+   "counts": "11 of 11 fit; worst shortfall 0 px",
+   "details": [
+    "explorer_thetastar_random_seed0.html: attr 1100, frame 1212, document 1212, shortfall 0 px, attr 9.2 % below",
+    "composer_training_mixtures.html: attr 442, frame 454, document 454, shortfall 0 px, attr 2.6 % below",
+    "opening_ladder.html: attr 427, frame 439, document 439, shortfall 0 px, attr 2.7 % below",
+    "severity_explorer.html: attr 528, frame 536, document 536, shortfall 0 px, attr 1.5 % below",
+    "coupling_a_explorer.html: attr 736, frame 748, document 748, shortfall 0 px, attr 1.6 % below",
+    "floors_explorer.html: attr 472, frame 484, document 484, shortfall 0 px, attr 2.5 % below",
+    "ladder_registered_readings.html: attr 1012, frame 1024, document 1024, shortfall 0 px, attr 1.2 % below",
+    "gamma_t_final_half.html: attr 503, frame 515, document 515, shortfall 0 px, attr 2.3 % below",
+    "simplex_secondary.html: attr 832, frame 844, document 844, shortfall 0 px, attr 1.4 % below",
+    "explorer_thetastar_iso_s1_T1000_ep0.html: attr 868, frame 912, document 912, shortfall 0 px, attr 4.8 % below",
+    "explorer_thetastar_joint_s1_T1000_ep0.html: attr 872, frame 952, document 952, shortfall 0 px, attr 8.4 % below"
+   ]
+  },
+  {
+   "group": "Links and frames",
+   "check": "iframe height attributes within 5 % of the self-sized height at 1280 (P2 §7.2)",
+   "status": "FAIL",
+   "counts": "9 of 11 within 5 %",
+   "details": [
+    "explorer_thetastar_random_seed0.html: attr 1100 vs 1212 (9.2 %)",
+    "explorer_thetastar_joint_s1_T1000_ep0.html: attr 872 vs 952 (8.4 %)"
+   ]
+  },
+  {
+   "group": "Links and frames",
+   "check": "images load",
+   "status": "PASS",
+   "counts": "15 of 15 (source includes 15)",
+   "details": []
+  },
+  {
+   "group": "Print",
+   "check": "print companions hidden on screen",
+   "status": "PASS",
+   "counts": "11 of 11 hidden",
+   "details": []
+  },
+  {
+   "group": "Print",
+   "check": "print companions shown in print media, images loaded",
+   "status": "PASS",
+   "counts": "11 of 11",
+   "details": []
+  },
+  {
+   "group": "Print",
+   "check": "iframes hidden in print media",
+   "status": "PASS",
+   "counts": "11 of 11 hidden",
+   "details": []
+  },
+  {
+   "group": "Requests",
+   "check": "0 failed requests",
+   "status": "PASS",
+   "counts": "0 failed of 169 (11 aborted during re-layout and then loaded, not counted)",
+   "details": []
+  },
+  {
+   "group": "Requests",
+   "check": "console errors",
+   "status": "INFO",
+   "counts": "0 console, 1 page errors",
+   "details": [
+    "Error: Invalid repo: \"\""
+   ]
+  },
+  {
+   "group": "Listings and overflow",
+   "check": "listings in the built page equal their committed lines byte for byte",
+   "status": "PASS",
+   "counts": "6 of 6 identical",
+   "details": []
+  },
+  {
+   "group": "Listings and overflow",
+   "check": "no listing cut at 1024 or 1280 px; no page overflow at any width",
+   "status": "PASS",
+   "counts": "listing font 12px",
+   "details": [
+    "1024 px: listings scrolling inside their block none (worst 0 px); page horizontal overflow 0 px",
+    "1280 px: listings scrolling inside their block none (worst 0 px); page horizontal overflow 0 px",
+    "390 px: listings scrolling inside their block [1, 2, 3, 4, 5, 6] (worst 280 px); page horizontal overflow 0 px"
+   ]
+  },
+  {
+   "group": "Listings and overflow",
+   "check": "display math wider than the column (reported, not graded)",
+   "status": "INFO",
+   "counts": "6 instances over three widths, 0 cut off with no scrollbar",
+   "details": [
+    "1024 px: display math 56 px too wide, scrolls, under '3 The environment': 'R(s,a,s′)=Rtask(task(x),a,task(x′))−dp|{i:αi=1,\\xa0αi′=0}|,'",
+    "1024 px: display math 100 px too wide, scrolls, under '5 Coupling A: collapse seeds the fire': 'E[BT]=λATχ(β)(1+o(1)),and in generalE[BT]≤λATχ(β),'",
+    "390 px: display math 48 px too wide, scrolls, under '3 The environment': 'Tθ(s′∣s,a)=TC(c′∣c,x)⏟collapseTHβ,κA(h′∣h,c,c′)⏟fire;\\xa0Coupli'",
+    "390 px: display math 111 px too wide, scrolls, under '3 The environment': 'R(s,a,s′)=Rtask(task(x),a,task(x′))−dp|{i:αi=1,\\xa0αi′=0}|,'",
+    "390 px: display math 147 px too wide, scrolls, under '5 Coupling A: collapse seeds the fire': 'E[BT]=λATχ(β)(1+o(1)),and in generalE[BT]≤λATχ(β),'",
+    "390 px: display math 10 px too wide, scrolls, under '7 Communication denial: inert under this encoder at this scale': 'Pr[i→j\\xa0open]=1[‖xi′−xj′‖∞≤Rcomm](1−δ),'"
+   ]
+  },
+  {
+   "group": "Footnote (N1)",
+   "check": "where <d-footnote> text lands, on screen and in print",
+   "status": "INFO",
+   "counts": "1 footnote(s)",
+   "details": [
+    "footnote 1 (We used the LLM assistant Claude as a tool: under our ruling…): on screen the marker is at 0.9% of the page height, under '(before the first section heading)'; its text is listed in the footnote list at 95.5% (inside d-appendix: True). Printed PDF (50 pages): the marker's sentence is on page 1; the footnote TEXT is on page 47, bottom third.",
+    "Printed page 1 holds: 'A pre-registered test of training on cooccurring versus isolated stressors in a multi-agent fire environment A pre-registered test of whether training a single ' … The abstract starts on page 1."
+   ]
+  },
+  {
+   "group": "YAML",
+   "check": "title and description: one line, no double quote, YAML-safe",
+   "status": "PASS",
+   "counts": "staged front matter parses; no problems",
+   "details": []
+  },
+  {
+   "group": "Leaks and print",
+   "check": "comment-stripped staged submission.md (M4)",
+   "status": "PASS",
+   "counts": "795 comments in out/submission_v2.md (16 STUB-SPEC), 0 '<!--' left in the staged copy",
+   "details": []
+  },
+  {
+   "group": "Leaks and print",
+   "check": "staged bib has no % lines (N3)",
+   "status": "PASS",
+   "counts": "4 % lines in the v2 bib, 0 staged; 41 entries",
+   "details": []
+  },
+  {
+   "group": "Leaks and print",
+   "check": "stripping removed only comments (stripped build = unstripped build)",
+   "status": "PASS",
+   "counts": "rendered text identical (130172 chars); tables [16, 16]; math [412, 412]; listings [6, 6]",
+   "details": []
+  },
+  {
+   "group": "Leaks and print",
+   "check": "double-blind grep of the staged folder",
+   "status": "PASS",
+   "counts": "28 files; 5 identity tokens; url 0, identity 0, abs_path 0, hex 0, image_text 0",
+   "details": []
+  },
+  {
+   "group": "Leaks and print",
+   "check": "printed PDF written (US Letter), no identity strings in its text",
+   "status": "PASS",
+   "counts": "50 pages, 3.6 MB, page size 612 x 792 pts (letter)",
+   "details": []
+  },
+  {
+   "group": "Leaks and print",
+   "check": "staged folder zipped",
+   "status": "PASS",
+   "counts": "35 entries, top level ['submission_folder'], 2.3 MB",
+   "details": []
+  }
+ ],
+ "iframes": [
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_random_seed0.html",
+   "title": "Episode explorer: one random-policy episode of CHE at the held-out configuration",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 1100,
+   "final_height": 1212,
+   "content_height": 1212,
+   "http_status": 200,
+   "shortfall": 0,
+   "attr_deviation_pct": 9.2
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/composer_training_mixtures.html",
+   "title": "Training mixtures of ISO, ISO-4 and JOINT by episode type",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 442,
+   "final_height": 454,
+   "content_height": 454,
+   "http_status": 200,
+   "shortfall": 0,
+   "attr_deviation_pct": 2.6
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/opening_ladder.html",
+   "title": "Registered readings: Γ and Γ₄ on survival and completion",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 427,
+   "final_height": 439,
+   "content_height": 439,
+   "http_status": 200,
+   "shortfall": 0,
+   "attr_deviation_pct": 2.7
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/severity_explorer.html",
+   "title": "Severity explorer: spanning probability against ignition probability, and one fire at each locked level",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 528,
+   "final_height": 536,
+   "content_height": 536,
+   "http_status": 200,
+   "shortfall": 0,
+   "attr_deviation_pct": 1.5
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/coupling_a_explorer.html",
+   "title": "Coupling A explorer: collapse-seeded ignitions by severity, their share near agents, and the two Proposition 3 runs",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 736,
+   "final_height": 748,
+   "content_height": 748,
+   "http_status": 200,
+   "shortfall": 0,
+   "attr_deviation_pct": 1.6
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/floors_explorer.html",
+   "title": "Floors explorer: reproducibility floors per GPU, per artifact and per run length, and the confirmatory grid against its floor",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 472,
+   "final_height": 484,
+   "content_height": 484,
+   "http_status": 200,
+   "shortfall": 0,
+   "attr_deviation_pct": 2.5
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/ladder_registered_readings.html",
+   "title": "Registered readings in order: Gamma, Gamma4, Gamma4 prime and B-hat on both co-primaries",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 1012,
+   "final_height": 1024,
+   "content_height": 1024,
+   "http_status": 200,
+   "shortfall": 0,
+   "attr_deviation_pct": 1.2
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/gamma_t_final_half.html",
+   "title": "Gamma over the final half of training, completion and survival",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 503,
+   "final_height": 515,
+   "content_height": 515,
+   "http_status": 200,
+   "shortfall": 0,
+   "attr_deviation_pct": 2.3
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/simplex_secondary.html",
+   "title": "Secondary design on the triangle of training mixtures, with plane predictions beside measured contrasts",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 832,
+   "final_height": 844,
+   "content_height": 844,
+   "http_status": 200,
+   "shortfall": 0,
+   "attr_deviation_pct": 1.4
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_iso_s1_T1000_ep0.html",
+   "title": "Episode explorer, ISO policy, training seed 1",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 868,
+   "final_height": 912,
+   "content_height": 912,
+   "http_status": 200,
+   "shortfall": 0,
+   "attr_deviation_pct": 4.8
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_joint_s1_T1000_ep0.html",
+   "title": "Episode explorer, JOINT policy, training seed 1",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 872,
+   "final_height": 952,
+   "content_height": 952,
+   "http_status": 200,
+   "shortfall": 0,
+   "attr_deviation_pct": 8.4
+  }
+ ],
+ "overflow": {
+  "390": {
+   "page_scroll_width": 390,
+   "inner_width": 390,
+   "listings": [
+    {
+     "scroll": 638,
+     "client": 358
+    },
+    {
+     "scroll": 631,
+     "client": 358
+    },
+    {
+     "scroll": 602,
+     "client": 358
+    },
+    {
+     "scroll": 566,
+     "client": 358
+    },
+    {
+     "scroll": 595,
+     "client": 358
+    },
+    {
+     "scroll": 580,
+     "client": 358
+    }
+   ],
+   "widest": [
+    "mjx-math.MJX-TEX right=422",
+    "mjx-mtable right=422",
+    "mjx-table right=422",
+    "mjx-itable right=422",
+    "mjx-mtr right=422",
+    "mjx-mtd right=422",
+    "mjx-munder right=422",
+    "mjx-row right=422"
+   ],
+   "wide_math": [
+    {
+     "over_px": 48,
+     "scrolls": true,
+     "under": "3 The environment",
+     "tex": "Tθ(s′∣s,a)=TC(c′∣c,x)⏟collapseTHβ,κA(h′∣h,c,c′)⏟fire; Coupli"
+    },
+    {
+     "over_px": 111,
+     "scrolls": true,
+     "under": "3 The environment",
+     "tex": "R(s,a,s′)=Rtask(task(x),a,task(x′))−dp|{i:αi=1, αi′=0}|,"
+    },
+    {
+     "over_px": 147,
+     "scrolls": true,
+     "under": "5 Coupling A: collapse seeds the fire",
+     "tex": "E[BT]=λATχ(β)(1+o(1)),and in generalE[BT]≤λATχ(β),"
+    },
+    {
+     "over_px": 10,
+     "scrolls": true,
+     "under": "7 Communication denial: inert under this encoder at this scale",
+     "tex": "Pr[i→j open]=1[‖xi′−xj′‖∞≤Rcomm](1−δ),"
+    }
+   ]
+  },
+  "1024": {
+   "page_scroll_width": 1024,
+   "inner_width": 1024,
+   "listings": [
+    {
+     "scroll": 776,
+     "client": 776
+    },
+    {
+     "scroll": 776,
+     "client": 776
+    },
+    {
+     "scroll": 776,
+     "client": 776
+    },
+    {
+     "scroll": 776,
+     "client": 776
+    },
+    {
+     "scroll": 776,
+     "client": 776
+    },
+    {
+     "scroll": 776,
+     "client": 776
+    }
+   ],
+   "widest": [
+    "br right=1293"
+   ],
+   "wide_math": [
+    {
+     "over_px": 56,
+     "scrolls": true,
+     "under": "3 The environment",
+     "tex": "R(s,a,s′)=Rtask(task(x),a,task(x′))−dp|{i:αi=1, αi′=0}|,"
+    },
+    {
+     "over_px": 100,
+     "scrolls": true,
+     "under": "5 Coupling A: collapse seeds the fire",
+     "tex": "E[BT]=λATχ(β)(1+o(1)),and in generalE[BT]≤λATχ(β),"
+    }
+   ]
+  },
+  "1280": {
+   "page_scroll_width": 1280,
+   "inner_width": 1280,
+   "listings": [
+    {
+     "scroll": 1072,
+     "client": 1072
+    },
+    {
+     "scroll": 1072,
+     "client": 1072
+    },
+    {
+     "scroll": 1072,
+     "client": 1072
+    },
+    {
+     "scroll": 1072,
+     "client": 1072
+    },
+    {
+     "scroll": 1072,
+     "client": 1072
+    },
+    {
+     "scroll": 1072,
+     "client": 1072
+    }
+   ],
+   "widest": [
+    "br right=1325"
+   ],
+   "wide_math": []
+  }
+ },
+ "footnotes": [
+  {
+   "text": "We used the LLM assistant Claude as a tool: under our rulings it implemented the environment, training and analysis code, built the figures, helped search the literature, verified the citations, and drafted this text from our recorded rulings and results. We checked every word and are responsible for it.",
+   "marker_y": 656,
+   "marker_frac": 0.009,
+   "marker_number": "1",
+   "under_heading": "(before the first section heading)"
+  }
+ ]
+}

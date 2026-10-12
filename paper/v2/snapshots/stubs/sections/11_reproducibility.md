@@ -1,0 +1,16 @@
+<!-- PAPER V2 DRAFT (PAPER V2 ruling, 2026-10-11): builder-drafted, not owner-approved -->
+
+## 11 Reproducibility
+
+<!-- STUB-SPEC
+PURPOSE: What a reader can re-run and check without a link: what the code and records contain (stated as what exists, promising no release, N14); what is exact (ablations by construction; evaluation, the home of HW-2 and HW-3) and what is not (GPU training, which is why floors are measured); the cost of a run, and the throughput statement folded in from the demo's Appendix G; the checkpoint archives and their hashes; one look per stage (pointer to section 9.1).
+WRITER: W5. Also the alternate alt/11_reproducibility.supplement.md (the demo's supplement framing, for Q4e). BUDGET: 300 prose words (the demo's: 473).
+REQUIRED FACTS: HW-2 (four repeated evaluations of each of two checkpoints bit-identical on one GPU and identical to the grid's evaluations); HW-3 (across GPUs, 280 of 288 paired evaluations identical, largest absolute difference 2.44 × 10⁻⁴: write it in words or with \lvert\Delta\rvert, never with bare pipes, M1); DX-4 (518 to 521 s per 1000-update training run, 9 to 10 s per 512-episode evaluation, on one RTX 5090); DX-407 (Python 3.12.3, jax 0.11.0); DX-3 (32,768,000 environment steps per run); DX-2 (hyperparameters in Appendix B); DX-5 (GPU models); DX-408 (a re-verification matched every recorded archive hash; one floor set mostly unhashed, Appendix F). The throughput statement (demo Appendix G, sections/12_appendix.md:197): the paper states no environment-only throughput figure; any such figure would have to state which outputs its consumer reads; the only cost figures are training measurements (DX-4).
+CODE FACTS: every locked constant is reachable from a configuration and asserted by a test against the configurations and code defaults (che/tests/test_locks.py; CLAUDE.md locks rule); GPU training is not run-to-run reproducible because the compiler autotunes kernels by timing and some reductions use atomics (che/bench/results/phase4/phase4_report.md:637-639, read this session).
+FIGURES, LISTINGS, LATEX: none (Listing 3 may be referred to).
+HONESTY LINES AND REGISTERED STRINGS: none specific; never a size or venue limit (O-3, O-4 OPEN; SUP-1, SUP-2 are not to be stated); no URL; no commit hash; sha256 values allowed but none needed.
+FIX-LIST AND FINDINGS ITEMS OWNED: M1 (the home of the evaluation figure, without a pipe); N14 (class C: state what exists; the alternate describes a supplement); P3-U4 (evaluation reproducibility stated once, here); LEN (one look per stage in one sentence; the appendix list removed, since the appendix index replaces it, P2-h); Q4e, Q15.
+DEMO KEEPS (sections/11_reproducibility.md): what is exact and what is not; the cost of a re-run; the checkpoints paragraph; one look per stage. CHANGES: "What the anonymized code supplement contains" becomes a description of what exists; the M1 line rewritten; the throughput note added. DROPS: the appendix list; "the anonymized code supplement" as a promise.
+NOT HERE: any URL; "available on GitHub"; a size or a limit; "all code is released"; commit hashes; GPU addresses or UUIDs; dollar figures.
+DEPENDENCIES: section 3.4 (bitwise nesting); section 8 (why floors are measured); section 9.1 (one look); Appendix B (W5), Appendix F (W6).
+-->

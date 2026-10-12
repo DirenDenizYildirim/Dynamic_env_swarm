@@ -1,5 +1,61 @@
 # Related-work and bibliography verification
 
+> **2026-10-11, Paper v2 M2: the BibTeX blocks now carry Unicode, not TeX.**
+> *What changed.* Only the TeX inside the ```` ```bibtex ```` blocks: 41
+> field lines in 30 of the 40 entries. Accent macros became precomposed Unicode
+> (`{\"U}re` → Üre, `Sch{\"a}rli` → Schärli, `Rockt\"{a}schel` and
+> `Rockt{\"a}schel` → Rocktäschel, `Pe{\~n}a` → Peña, `J{\'e}z{\'e}quel,
+> Agla{\'e}` → Jézéquel, Aglaé, `C{\^o}t{\'e}` → Côté, `Alch\'{e}` → Alché);
+> `{\i}` → ı (`Nazım`, `Çakır`); `{\c{C}}` → Ç; `\dh` → ð (`Garðar`);
+> `\textquotesingle` → `'`; `\&` → `&`; TeX quotes → “ ”; every `--` → `–`
+> (22 page ranges, one month range); the case-protection braces of
+> `{VULCAN}`, `{MARL}` and `{M}arkov` were removed; and Kesten's
+> `$\frac{1}{2}$` became `1/2`, as Crossref's record gives the title
+> (`paper/v2/citations/C1_verification.md` §3). No key, field, record,
+> verification text or verdict changed. Part 4 (new, below) adds Garet &
+> Marchand (2004), with its `month` braced so that the kit's parser accepts
+> it (explained there).
+> *Why.* The kit's reference list and hover cards are rendered in the
+> reader's browser by Distill, whose `normalizeTag` (the author kit's
+> `template.v2.js:1976-1981`, kit sha256 `e531434b…bacc2d5`) only collapses
+> whitespace and reduces a `{\X c}` macro to the bare letter. So these
+> fields showed raw TeX on the page (`{VULCAN}`, `$\frac{1}{2}$`,
+> `Gar\dh ar`, `Rockt\"{a}schel`, `\&`, `--`), or lost their diacritic in
+> silence ("Scharli", "Cote", "Rocktaschel"), as found in
+> `paper/v2/review_of_demo.md` (M2). Distill does not change case, so the
+> case braces protected nothing and were shown literally.
+> *Consequence.* `paper/beyond_pdf/assets/bibliography/submission.bib` (the
+> current submission's copy) is untouched and is therefore no longer a
+> verbatim copy of these blocks. The verbatim copy of the corrected blocks
+> is `paper/v2/assets/bibliography/submission.bib`, checked entry by entry
+> against this file by `paper/v2/src/bib_diff.py`. Nothing enters the
+> submission before the owner approves.
+
+> **2026-10-12, Paper v2 fix round (review RM-5): two first authors written
+> surname-first.** *What changed.* In two BibTeX blocks only, and only the
+> first author's name order: `alomari2025macraftax` "Bassel Al Omari" →
+> "Al Omari, Bassel", and `dewitt2020ippo` "Christian Schroeder de Witt" →
+> "de Witt, Christian Schroeder". Spelling, the other authors, every other
+> field and every verdict are unchanged. *Why.* Distill takes the last word of
+> a name written "First Last" as the surname, so the kit's reference list and
+> hover cards showed "Omari, B.A." and "Witt, C.S.d.". With the comma form a
+> real kit build (2026-10-12) rendered "Al Omari, B." and "de Witt, C.S." in
+> both. The surname split follows how the paper cites the second work ("de
+> Witt et al.") and how the JaxMARL entry's own record writes the name ("de
+> Witt, Christian Schroeder"); the arXiv records give both names in "First
+> Last" order only. `paper/v2/assets/bibliography/submission.bib` was
+> regenerated from these blocks and checked by `paper/v2/src/bib_diff.py`.
+
+> **2026-10-12, Paper v2 fix round (review RM-24, M2): "Tramèr".**
+> *What changed.* In the `tramer2019multiple` block only, the first author's
+> surname "Tramer" → "Tramèr". *Why.* The paper's text and this file's own
+> verification text spell it Tramèr, while the reference list rendered
+> "Tramer, F."; the NeurIPS proceedings BibTeX the entry was copied from
+> writes it without the accent, and the arXiv record of the same paper
+> (arXiv:1904.13000, API query 2026-10-12) gives "Florian Tramèr". No other
+> field changed. The v2 bib was regenerated and checked by
+> `paper/v2/src/bib_diff.py`.
+
 **Date:** 2026-09-26
 **Scope:** the `[VERIFY]` relays in `paper/00_common_spine.md` §1/§2/§10 and
 `docs/theory_foundations.md` → References, the four LaTeX cite keys
@@ -86,7 +142,7 @@ one call succeeded). **IEEE Xplore was not queried.** That matters for item 4.
 
 ```bibtex
 @misc{liu2026vulcan,
-  title         = {{VULCAN}: Vision-Language-Model Enhanced Multi-Agent Cooperative Navigation for Indoor Fire-Disaster Response},
+  title         = {VULCAN: Vision-Language-Model Enhanced Multi-Agent Cooperative Navigation for Indoor Fire-Disaster Response},
   author        = {Shengding Liu and Qiben Yan},
   year          = {2026},
   eprint        = {2604.12831},
@@ -125,7 +181,7 @@ one call succeeded). **IEEE Xplore was not queried.** That matters for item 4.
 
 ```bibtex
 @inproceedings{agrawal2023multimodal,
-  title     = {Robustness to Multi-Modal Environment Uncertainty in {MARL} Using Curriculum Learning},
+  title     = {Robustness to Multi-Modal Environment Uncertainty in MARL Using Curriculum Learning},
   author    = {Agrawal, Aakriti and Aralikatti, Rohith and Sun, Yanchao and Huang, Furong},
   booktitle = {NeurIPS 2023 Workshops: MASEC},
   year      = {2023},
@@ -160,7 +216,7 @@ one call succeeded). **IEEE Xplore was not queried.** That matters for item 4.
 ```bibtex
 @article{erdem2025mixed,
   title   = {Learning to Balance Mixed Adversarial Attacks for Robust Reinforcement Learning},
-  author  = {Erdem, Mustafa and {\"U}re, Naz{\i}m Kemal},
+  author  = {Erdem, Mustafa and Üre, Nazım Kemal},
   journal = {Machine Learning and Knowledge Extraction},
   volume  = {7},
   number  = {4},
@@ -206,7 +262,7 @@ matches the repo's use.
 ```bibtex
 @inproceedings{keysers2020,
   title     = {Measuring Compositional Generalization: A Comprehensive Method on Realistic Data},
-  author    = {Keysers, Daniel and Sch{\"a}rli, Nathanael and Scales, Nathan and Buisman, Hylke and Furrer, Daniel and Kashubin, Sergii and Momchev, Nikola and Sinopalnikov, Danila and Stafiniak, Lukasz and Tihon, Tibor and Tsarkov, Dmitry and Wang, Xiao and van Zee, Marc and Bousquet, Olivier},
+  author    = {Keysers, Daniel and Schärli, Nathanael and Scales, Nathan and Buisman, Hylke and Furrer, Daniel and Kashubin, Sergii and Momchev, Nikola and Sinopalnikov, Danila and Stafiniak, Lukasz and Tihon, Tibor and Tsarkov, Dmitry and Wang, Xiao and van Zee, Marc and Bousquet, Olivier},
   booktitle = {International Conference on Learning Representations (ICLR)},
   year      = {2020},
   eprint    = {1912.09713},
@@ -221,12 +277,12 @@ Source: Crossref, doi:10.1287/moor.27.4.819.297 (journal-article, Nov 2002).
 
 ```bibtex
 @article{bernstein2002,
-  title   = {The Complexity of Decentralized Control of {M}arkov Decision Processes},
+  title   = {The Complexity of Decentralized Control of Markov Decision Processes},
   author  = {Bernstein, Daniel S. and Givan, Robert and Immerman, Neil and Zilberstein, Shlomo},
   journal = {Mathematics of Operations Research},
   volume  = {27},
   number  = {4},
-  pages   = {819--840},
+  pages   = {819–840},
   year    = {2002},
   doi     = {10.1287/moor.27.4.819.297}
 }
@@ -238,12 +294,12 @@ Source: Crossref, doi:10.1007/BF01197577 (Feb 1980).
 
 ```bibtex
 @article{kesten1980,
-  title   = {The critical probability of bond percolation on the square lattice equals $\frac{1}{2}$},
+  title   = {The critical probability of bond percolation on the square lattice equals 1/2},
   author  = {Kesten, Harry},
   journal = {Communications in Mathematical Physics},
   volume  = {74},
   number  = {1},
-  pages   = {41--59},
+  pages   = {41–59},
   year    = {1980},
   doi     = {10.1007/BF01197577}
 }
@@ -262,7 +318,7 @@ author as "P. Grassberger"; the initial is kept rather than expanded from memory
   journal = {Mathematical Biosciences},
   volume  = {63},
   number  = {2},
-  pages   = {157--172},
+  pages   = {157–172},
   year    = {1983},
   doi     = {10.1016/0025-5564(82)90036-0}
 }
@@ -303,7 +359,7 @@ journal-ref or venue comment is on the record. Cite as arXiv.
   title     = {Distributed Deep Reinforcement Learning for Fighting Forest Fires with a Network of Aerial Robots},
   author    = {Haksar, Ravi N. and Schwager, Mac},
   booktitle = {2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
-  pages     = {1067--1074},
+  pages     = {1067–1074},
   year      = {2018},
   doi       = {10.1109/IROS.2018.8593539}
 }
@@ -324,7 +380,7 @@ reading, but it is **not a sentence of the abstract**. Cite the specific result
   author  = {Pynadath, David V. and Tambe, Milind},
   journal = {Journal of Artificial Intelligence Research},
   volume  = {16},
-  pages   = {389--423},
+  pages   = {389–423},
   year    = {2002},
   doi     = {10.1613/jair.1024}
 }
@@ -343,10 +399,10 @@ The row should say "JAX RL/MARL environments and MARL libraries", or drop those 
 
 ```bibtex
 @inproceedings{rutherford2024jaxmarl,
-  author    = {Rutherford, Alexander and Ellis, Benjamin and Gallici, Matteo and Cook, Jonathan and Lupu, Andrei and Ingvarsson, Gar\dh ar and Willi, Timon and Hammond, Ravi and Khan, Akbir and de Witt, Christian Schroeder and Souly, Alexandra and Bandyopadhyay, Saptarashmi and Samvelyan, Mikayel and Jiang, Minqi and Lange, Robert and Whiteson, Shimon and Lacerda, Bruno and Hawes, Nick and Rockt\"{a}schel, Tim and Lu, Chris and Foerster, Jakob},
+  author    = {Rutherford, Alexander and Ellis, Benjamin and Gallici, Matteo and Cook, Jonathan and Lupu, Andrei and Ingvarsson, Garðar and Willi, Timon and Hammond, Ravi and Khan, Akbir and de Witt, Christian Schroeder and Souly, Alexandra and Bandyopadhyay, Saptarashmi and Samvelyan, Mikayel and Jiang, Minqi and Lange, Robert and Whiteson, Shimon and Lacerda, Bruno and Hawes, Nick and Rocktäschel, Tim and Lu, Chris and Foerster, Jakob},
   booktitle = {Advances in Neural Information Processing Systems},
   editor    = {A. Globerson and L. Mackey and D. Belgrave and A. Fan and U. Paquet and J. Tomczak and C. Zhang},
-  pages     = {50925--50951},
+  pages     = {50925–50951},
   publisher = {Curran Associates, Inc.},
   title     = {JaxMARL: Multi-Agent RL Environments and Algorithms in JAX},
   volume    = {37},
@@ -360,7 +416,7 @@ The row should say "JAX RL/MARL environments and MARL libraries", or drop those 
 ```bibtex
 @misc{alomari2025macraftax,
   title         = {Multi-Agent Craftax: Benchmarking Open-Ended Multi-Agent Reinforcement Learning at the Hyperscale},
-  author        = {Bassel Al Omari and Michael Matthews and Alexander Rutherford and Jakob Nicolaus Foerster},
+  author        = {Al Omari, Bassel and Michael Matthews and Alexander Rutherford and Jakob Nicolaus Foerster},
   year          = {2025},
   eprint        = {2511.04904},
   archivePrefix = {arXiv},
@@ -410,7 +466,7 @@ JMLR PDF https://www.jmlr.org/papers/volume25/23-1612/23-1612.pdf (seen in searc
   author  = {Bettini, Matteo and Prorok, Amanda and Moens, Vincent},
   journal = {Journal of Machine Learning Research},
   volume  = {25},
-  pages   = {1--10},
+  pages   = {1–10},
   year    = {2024},
   note    = {Machine Learning Open Source Software track},
   url     = {https://www.jmlr.org/papers/volume25/23-1612/23-1612.pdf}
@@ -429,7 +485,7 @@ Discovered policy optimisation". BibTeX below is from the NeurIPS proceedings fi
   author    = {Lu, Chris and Kuba, Jakub and Letcher, Alistair and Metz, Luke and Schroeder de Witt, Christian and Foerster, Jakob},
   booktitle = {Advances in Neural Information Processing Systems},
   editor    = {S. Koyejo and S. Mohamed and A. Agarwal and D. Belgrave and K. Cho and A. Oh},
-  pages     = {16455--16468},
+  pages     = {16455–16468},
   publisher = {Curran Associates, Inc.},
   title     = {Discovered Policy Optimisation},
   volume    = {35},
@@ -444,7 +500,7 @@ https://arxiv.org/bibtex/2011.09533 . No venue on the record.
 ```bibtex
 @misc{dewitt2020ippo,
   title         = {Is Independent Learning All You Need in the StarCraft Multi-Agent Challenge?},
-  author        = {Christian Schroeder de Witt and Tarun Gupta and Denys Makoviichuk and Viktor Makoviychuk and Philip H. S. Torr and Mingfei Sun and Shimon Whiteson},
+  author        = {de Witt, Christian Schroeder and Tarun Gupta and Denys Makoviichuk and Viktor Makoviychuk and Philip H. S. Torr and Mingfei Sun and Shimon Whiteson},
   year          = {2020},
   eprint        = {2011.09533},
   archivePrefix = {arXiv},
@@ -475,7 +531,7 @@ https://arxiv.org/bibtex/2011.09533 . No venue on the record.
 ```bibtex
 @misc{cakir2025jaxwildfire,
   title         = {JaxWildfire: A GPU-Accelerated Wildfire Simulator for Reinforcement Learning},
-  author        = {Ufuk {\c{C}}ak{\i}r and Victor-Alexandru Darvariu and Bruno Lacerda and Nick Hawes},
+  author        = {Ufuk Çakır and Victor-Alexandru Darvariu and Bruno Lacerda and Nick Hawes},
   year          = {2025},
   eprint        = {2512.06102},
   archivePrefix = {arXiv},
@@ -550,7 +606,7 @@ https://arxiv.org/bibtex/2011.09533 . No venue on the record.
   eprint        = {2507.10142},
   archivePrefix = {arXiv},
   primaryClass  = {cs.AI},
-  note          = {v1 (2025) titled ``Adaptability in Multi-Agent Reinforcement Learning: A Framework and Unified Review''; v2 (2026) retitled}
+  note          = {v1 (2025) titled “Adaptability in Multi-Agent Reinforcement Learning: A Framework and Unified Review”; v2 (2026) retitled}
 }
 ```
 
@@ -639,7 +695,7 @@ Zscheischler 2018 + Côté 2016.)
   author    = {Dennis, Michael and Jaques, Natasha and Vinitsky, Eugene and Bayen, Alexandre and Russell, Stuart and Critch, Andrew and Levine, Sergey},
   booktitle = {Advances in Neural Information Processing Systems},
   editor    = {H. Larochelle and M. Ranzato and R. Hadsell and M.F. Balcan and H. Lin},
-  pages     = {13049--13061},
+  pages     = {13049–13061},
   publisher = {Curran Associates, Inc.},
   title     = {Emergent Complexity and Zero-shot Transfer via Unsupervised Environment Design},
   volume    = {33},
@@ -648,9 +704,9 @@ Zscheischler 2018 + Côté 2016.)
 
 @inproceedings{jiang2021plr,
   title     = {Prioritized Level Replay},
-  author    = {Jiang, Minqi and Grefenstette, Edward and Rockt{\"a}schel, Tim},
+  author    = {Jiang, Minqi and Grefenstette, Edward and Rocktäschel, Tim},
   booktitle = {Proceedings of the 38th International Conference on Machine Learning},
-  pages     = {4940--4950},
+  pages     = {4940–4950},
   year      = {2021},
   editor    = {Meila, Marina and Zhang, Tong},
   volume    = {139},
@@ -659,10 +715,10 @@ Zscheischler 2018 + Côté 2016.)
 }
 
 @inproceedings{jiang2021robustplr,
-  author    = {Jiang, Minqi and Dennis, Michael and Parker-Holder, Jack and Foerster, Jakob and Grefenstette, Edward and Rockt\"{a}schel, Tim},
+  author    = {Jiang, Minqi and Dennis, Michael and Parker-Holder, Jack and Foerster, Jakob and Grefenstette, Edward and Rocktäschel, Tim},
   booktitle = {Advances in Neural Information Processing Systems},
   editor    = {M. Ranzato and A. Beygelzimer and Y. Dauphin and P.S. Liang and J. Wortman Vaughan},
-  pages     = {1884--1897},
+  pages     = {1884–1897},
   publisher = {Curran Associates, Inc.},
   title     = {Replay-Guided Adversarial Environment Design},
   volume    = {34},
@@ -671,9 +727,9 @@ Zscheischler 2018 + Côté 2016.)
 
 @inproceedings{parkerholder2022accel,
   title     = {Evolving Curricula with Regret-Based Environment Design},
-  author    = {Parker-Holder, Jack and Jiang, Minqi and Dennis, Michael and Samvelyan, Mikayel and Foerster, Jakob and Grefenstette, Edward and Rockt{\"a}schel, Tim},
+  author    = {Parker-Holder, Jack and Jiang, Minqi and Dennis, Michael and Samvelyan, Mikayel and Foerster, Jakob and Grefenstette, Edward and Rocktäschel, Tim},
   booktitle = {Proceedings of the 39th International Conference on Machine Learning},
-  pages     = {17473--17498},
+  pages     = {17473–17498},
   year      = {2022},
   editor    = {Chaudhuri, Kamalika and Jegelka, Stefanie and Song, Le and Szepesvari, Csaba and Niu, Gang and Sabato, Sivan},
   volume    = {162},
@@ -685,7 +741,7 @@ Zscheischler 2018 + Côté 2016.)
   title     = {Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World},
   author    = {Tobin, Josh and Fong, Rachel and Ray, Alex and Schneider, Jonas and Zaremba, Wojciech and Abbeel, Pieter},
   booktitle = {2017 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
-  pages     = {23--30},
+  pages     = {23–30},
   year      = {2017},
   doi       = {10.1109/IROS.2017.8202133}
 }
@@ -701,19 +757,19 @@ Zscheischler 2018 + Côté 2016.)
 
 @inproceedings{zhao2020simtoreal,
   title     = {Sim-to-Real Transfer in Deep Reinforcement Learning for Robotics: a Survey},
-  author    = {Zhao, Wenshuai and Pe{\~n}a Queralta, Jorge and Westerlund, Tomi},
+  author    = {Zhao, Wenshuai and Peña Queralta, Jorge and Westerlund, Tomi},
   booktitle = {2020 IEEE Symposium Series on Computational Intelligence (SSCI)},
-  pages     = {737--744},
+  pages     = {737–744},
   year      = {2020},
   doi       = {10.1109/SSCI47803.2020.9308468}
 }
 
 @article{kirk2023zsg,
   title   = {A Survey of Zero-shot Generalisation in Deep Reinforcement Learning},
-  author  = {Kirk, Robert and Zhang, Amy and Grefenstette, Edward and Rockt{\"a}schel, Tim},
+  author  = {Kirk, Robert and Zhang, Amy and Grefenstette, Edward and Rocktäschel, Tim},
   journal = {Journal of Artificial Intelligence Research},
   volume  = {76},
-  pages   = {201--264},
+  pages   = {201–264},
   year    = {2023},
   doi     = {10.1613/jair.1.14174}
 }
@@ -738,9 +794,9 @@ Zscheischler 2018 + Côté 2016.)
 }
 
 @inproceedings{tramer2019multiple,
-  author    = {Tramer, Florian and Boneh, Dan},
+  author    = {Tramèr, Florian and Boneh, Dan},
   booktitle = {Advances in Neural Information Processing Systems},
-  editor    = {H. Wallach and H. Larochelle and A. Beygelzimer and F. d\textquotesingle Alch\'{e}-Buc and E. Fox and R. Garnett},
+  editor    = {H. Wallach and H. Larochelle and A. Beygelzimer and F. d'Alché-Buc and E. Fox and R. Garnett},
   publisher = {Curran Associates, Inc.},
   title     = {Adversarial Training and Robustness for Multiple Perturbations},
   volume    = {32},
@@ -753,14 +809,14 @@ Zscheischler 2018 + Côté 2016.)
   booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
   month     = {June},
   year      = {2023},
-  pages     = {24658--24667}
+  pages     = {24658–24667}
 }
 
 @inproceedings{mendez2022composuite,
   title     = {CompoSuite: A Compositional Reinforcement Learning Benchmark},
   author    = {Mendez, Jorge A. and Hussing, Marcel and Gummadi, Meghna and Eaton, Eric},
   booktitle = {Proceedings of The 1st Conference on Lifelong Learning Agents},
-  pages     = {982--1003},
+  pages     = {982–1003},
   year      = {2022},
   editor    = {Chandar, Sarath and Pascanu, Razvan and Precup, Doina},
   volume    = {199},
@@ -774,18 +830,18 @@ Zscheischler 2018 + Côté 2016.)
   journal = {Nature Climate Change},
   volume  = {8},
   number  = {6},
-  pages   = {469--477},
+  pages   = {469–477},
   year    = {2018},
   doi     = {10.1038/s41558-018-0156-3}
 }
 
 @article{zscheischler2020typology,
   title   = {A typology of compound weather and climate events},
-  author  = {Zscheischler, Jakob and Martius, Olivia and Westra, Seth and Bevacqua, Emanuele and Raymond, Colin and Horton, Radley M. and van den Hurk, Bart and AghaKouchak, Amir and J{\'e}z{\'e}quel, Agla{\'e} and Mahecha, Miguel D. and Maraun, Douglas and Ramos, Alexandre M. and Ridder, Nina N. and Thiery, Wim and Vignotto, Edoardo},
-  journal = {Nature Reviews Earth \& Environment},
+  author  = {Zscheischler, Jakob and Martius, Olivia and Westra, Seth and Bevacqua, Emanuele and Raymond, Colin and Horton, Radley M. and van den Hurk, Bart and AghaKouchak, Amir and Jézéquel, Aglaé and Mahecha, Miguel D. and Maraun, Douglas and Ramos, Alexandre M. and Ridder, Nina N. and Thiery, Wim and Vignotto, Edoardo},
+  journal = {Nature Reviews Earth & Environment},
   volume  = {1},
   number  = {7},
-  pages   = {333--347},
+  pages   = {333–347},
   year    = {2020},
   doi     = {10.1038/s43017-020-0060-z}
 }
@@ -796,14 +852,14 @@ Zscheischler 2018 + Côté 2016.)
   journal = {Ecology Letters},
   volume  = {11},
   number  = {12},
-  pages   = {1304--1315},
+  pages   = {1304–1315},
   year    = {2008},
   doi     = {10.1111/j.1461-0248.2008.01253.x}
 }
 
 @article{cote2016stressors,
   title   = {Interactions among ecosystem stressors and their importance in conservation},
-  author  = {C{\^o}t{\'e}, Isabelle M. and Darling, Emily S. and Brown, Christopher J.},
+  author  = {Côté, Isabelle M. and Darling, Emily S. and Brown, Christopher J.},
   journal = {Proceedings of the Royal Society B: Biological Sciences},
   volume  = {283},
   number  = {1824},
@@ -938,7 +994,7 @@ learning and/or deployment processes".
   year    = {2015},
   volume  = {16},
   number  = {42},
-  pages   = {1437--1480},
+  pages   = {1437–1480},
   url     = {http://jmlr.org/papers/v16/garcia15a.html}
 }
 ```
@@ -989,12 +1045,12 @@ lethal, in full Craftax (agent's code read).
   title     = {Craftax: A Lightning-Fast Benchmark for Open-Ended Reinforcement Learning},
   author    = {Matthews, Michael and Beukman, Michael and Ellis, Benjamin and Samvelyan, Mikayel and Jackson, Matthew Thomas and Coward, Samuel and Foerster, Jakob Nicolaus},
   booktitle = {Proceedings of the 41st International Conference on Machine Learning},
-  pages     = {35104--35137},
+  pages     = {35104–35137},
   year      = {2024},
   editor    = {Salakhutdinov, Ruslan and Kolter, Zico and Heller, Katherine and Weller, Adrian and Oliver, Nuria and Scarlett, Jonathan and Berkenkamp, Felix},
   volume    = {235},
   series    = {Proceedings of Machine Learning Research},
-  month     = {21--27 Jul},
+  month     = {21–27 Jul},
   publisher = {PMLR},
   url       = {https://proceedings.mlr.press/v235/matthews24a.html}
 }
@@ -1020,3 +1076,84 @@ lethal, in full Craftax (agent's code read).
   reward in absorbing states (App. G.1), so a terminal-reward toy that reveals
   the corridor with positive probability is **not** shown Ω(H) by it:
   violating Assumption 1 means only that the upper bounds do not apply.
+
+---
+
+## Part 4 — Paper v2 citation, 2026-10-11 (full read)
+
+Transcribed 2026-10-11 by Paper v2 builder B2 from
+`paper/v2/citations/C1_verification.md` §2 (source S6) and §3, where the
+Paper v2 step-2 reviewer recorded a full read of the published version
+(Numdam, PS_2004__8__169_0) and of arXiv math/0304144v1 (2003, different
+title). Downloads stayed in that session's scratchpad. **This is an
+assistant read, not the owner's.** Quotes and locations are the reviewer's.
+
+### Garet & Marchand 2004 — VERIFIED (`garet2004chemical`); adopted by default for v2 C1(4); owner question Q4g
+
+- **Record (Crossref, doi:10.1051/ps:2004009):** *Asymptotic shape for the
+  chemical distance and first-passage percolation on the infinite Bernoulli
+  cluster*. Olivier Garet, Régine Marchand. ESAIM: Probability and
+  Statistics 8:169–199 (2004).
+- **Setup (p. 170):** bonds join points of ℤ^d at Euclidean distance 1 (the
+  von Neumann edges for d = 2); "p is assumed to satisfy to p ∈ (p_c, 1],
+  where p_c = p_c(d) is the critical probability for bond percolation on
+  ℤ^d"; "we introduce the conditional probability measure P̄_p on Ω_E by
+  P̄_p(A) = P_p(A ∩ {0 ∈ C∞}) / P_p(0 ∈ C∞)".
+- **p. 171:** "D(x, y) is thus, when it is finite, the minimal number of
+  open edges needed to link x and y in the environment ω."
+- **Corollary 4.2 (p. 186):** "The function µ associated to the chemical
+  distance in Bernoulli percolation with parameter p > p_c(d) is a norm on
+  ℝ^d."
+- **Corollary 5.4 (p. 188), "asymptotic shape for chemical distance in
+  supercritical Bernoulli percolation":** "Remember that on the event 'the
+  origin is in the infinite cluster', we denote by B_n the random set of
+  vertices in ℤ^d whose chemical distance from 0 is less or equal to n. For
+  every d ≥ 2 and p > p_c(d), there exists a deterministic convex compact
+  set A ⊂ ℝ^d with non-empty interior and invariant under permutations or
+  reflections of the coordinates in ℝ^d such that: B_n / n → A for the
+  Hausdorff topology P̄_p a.s."
+- **Introduction (p. 169):** Cox & Durrett showed the classical
+  first-passage shape theorem "under some moment conditions"; the paper
+  extends it to the infinite cluster.
+- **What it supports (the reviewer's verdict, `C1_verification.md` §2).**
+  With ι = 0 and one ignition, the region CHE's idealized kernel has burnt
+  by step t is the ball of chemical radius t in the open cluster of the
+  origin (the reviewer's derivation from Def. 3 and the Prop.-2 coupling,
+  `C1_verification.md` §2, "Derivation"). So, for β > ½ and conditioned on
+  the fire spreading indefinitely, the burnt region rescaled by time
+  converges almost surely, in Hausdorff distance, to a deterministic convex
+  compact set (Cor. 5.4). Three qualifications: the speed depends on
+  direction (1/µ(u), Cor. 4.2), so a single "front speed v(β)" is not what
+  is proved; the convergence is in the Hausdorff sense, and the burnt region
+  has holes where the cluster does; and the result is for ℤ² only, not the
+  finite arena or the kernel with Coupling A on. Separately, the theory
+  doc's Corollary 1(4) cites no source (a record item, reported to the
+  owner in `paper/v2/review_of_demo.md`).
+- **Status in v2:** adopted by default for Corollary 1(4) in v2 (fix-list
+  item C1), pending **owner question Q4g** (`paper/v2/review_of_demo.md`
+  Part 3): state (4) with this citation, or drop (4).
+
+Retrieved, Crossref by DOI (`https://doi.org/10.1051/ps:2004009`,
+Accept: application/x-bibtex), verbatim as recorded in
+`C1_verification.md` §3 (kept here as the record; it is not an entry):
+
+```text
+@article{Garet_2004, title={Asymptotic shape for the chemical distance and first-passage percolation on the infinite Bernoulli cluster}, volume={8}, ISSN={1262-3318}, url={http://dx.doi.org/10.1051/ps:2004009}, DOI={10.1051/ps:2004009}, journal={ESAIM: Probability and Statistics}, publisher={EDP Sciences}, author={Garet, Olivier and Marchand, Régine}, year={2004}, month=Sept, pages={169–199} }
+```
+
+The entry. Two changes from the record, and no other: the key follows the
+project's convention (as for `garcia2015safe`), and `month=Sept` is braced
+as `month={Sept}`. The record already carries Unicode (`Régine`) and an en
+dash in `pages`, so the M2 conversion changes nothing else. The brace is
+needed because the kit's BibTeX parser (bibtexParse 0.0.22 inside the
+author kit's `template.v2.js:1818-1833`) accepts a bare value only if it is
+a number or one of `jan` … `dec`. On the bare word `Sept` it throws "Value
+expected", and the whole bibliography then fails to load, so every citation
+on the page would lose its entry. Tested 2026-10-11 by B2 against the
+kit's own parser code, run in node in a scratch directory: `month=Sept`
+throws, while `month={Sept}` and `month=Dec` parse. Distill never renders
+`month`.
+
+```bibtex
+@article{garet2004chemical, title={Asymptotic shape for the chemical distance and first-passage percolation on the infinite Bernoulli cluster}, volume={8}, ISSN={1262-3318}, url={http://dx.doi.org/10.1051/ps:2004009}, DOI={10.1051/ps:2004009}, journal={ESAIM: Probability and Statistics}, publisher={EDP Sciences}, author={Garet, Olivier and Marchand, Régine}, year={2004}, month={Sept}, pages={169–199} }
+```
