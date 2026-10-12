@@ -1,4 +1,22 @@
-# HANDOFF — session state for the next model (rewritten 2026-09-27; updated 2026-09-28)
+# HANDOFF — session state for the next model (rewritten 2026-09-27; updated 2026-09-28; v3 pointer 2026-10-12)
+
+> **Start here (2026-10-12).** The next paper session is the **v3 rewrite**.
+> Paste `paper_v3_prompt.md` as its first message. That prompt is
+> self-contained and supersedes the older pointers below for paper work.
+>
+> **The rulings.** The rulings it rests on are the decision log's
+> *DEMONSTRATION DRAFT* and *PAPER V2* (2026-10-11) and *PAPER V3*
+> (2026-10-12). *PAPER V3* adopts a professor's review and switches to an
+> environment-first framing. It authorizes one eval-only interaction check,
+> whose scope is still OPEN. It defers ISO-4 at 2000 updates, and the code
+> ships.
+>
+> **The v2 output.** Paper v2 phase 1 is complete in `paper/v2/` (commit
+> `f744ae2`). Start with `paper/v2/HANDBACK.md` and
+> `paper/v2/OWNER_QUESTIONS.md`.
+>
+> **No GPU box exists.** The interaction check needs the owner to rent one
+> and restore the checkpoint archives.
 
 **Phase 6 is CLOSED. This is the writing phase.** Read, in order:
 

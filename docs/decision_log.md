@@ -6110,3 +6110,106 @@ runs as follows:
 `paper_v2_prompt.md`. Items 1–5 above are unchanged. A "decision" by the
 reviewer agent or a builder is a builder decision inside the owner's rulings.
 Anything that would change a ruling is put to the owner at step 4.5.
+
+
+## PAPER V3 — environment-first rewrite; a professor's review adopted; eval-only interaction check authorized; ISO-4 at 2000 updates deferred; the code ships (owner, 2026-10-12)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28). The
+owner gave these rulings in chat after phase 1 of PAPER V2 had handed back
+(`paper/v2/HANDBACK.md`, `paper/v2/OWNER_QUESTIONS.md`; work at `f744ae2`).
+They answer a professor's review of the v2 paper, which the owner relayed.
+**The review is not a ruling.** It binds only what the items below
+transcribe.
+
+1. **The professor's review, as relayed.**
+   - **(1) Composition cannot show at the test point.** At θ\*, Coupling B's
+     own survival effect is −0.03 points (CB-9: Medium, β = 0.49, which is
+     θ\*'s severity) and δ is inert. So the "A × B" under test is mostly A
+     alone. A pre-check is missing: evaluate fixed policies at θ\* under
+     neither coupling, A only, B only and both, and test for a non-additive
+     interaction.
+   - **(2) The effect is tiny.** It is about 0.11 of the 12 agents per
+     episode, it appears only in the last fifth of training, and completion
+     leans negative.
+   - **(3) The recommendation is thin.** The active share is μ_A + μ_B − p,
+     so matching it un-matches frequency. Two ways out: match exposure
+     counts (ISO-4 at 2000 updates), or vary coupling strength. The
+     fixed-frequency sweep is closer to the clean question.
+   - **(4) The paper reads like an audit log.** The abstract should give one
+     question, one result and one lesson. Dates, rulings and provenance
+     belong in a registration-timeline appendix. Theory that does no work
+     should go: Remark 1 is unused, and Prop. 4 is stated only in words, so
+     make it a remark or drop it. The main text should be about 12–15
+     printed pages.
+   - **(5) The pre-registration cannot be verified.** Add an anonymized code
+     supplement, and hashes or timestamps for the registration files if
+     they exist. Use a public registry (OSF) on future projects.
+2. **The builder's five decisions:** "all of them yes".
+   - **(a)** Eval-only runs for the interaction check are authorized. They
+     are labelled post hoc, with the cost derived before any run (item 5).
+   - **(b)** The exposure-matched ISO-4 run was answered "yes", then
+     superseded by item 4.
+   - **(c)** In the worked example, the secondary plane decomposition (SEC-1:
+     co-occurrence slope against fire-only-share slope) leads the results.
+     It is labelled non-verdict-bearing, as registered, and Γ stays the
+     registered test.
+   - **(d)** The 12–15-page restructure.
+   - **(e)** An anonymized code supplement: "we will ship the code".
+3. **Environment-first framing.** The owner: "I think as an environment
+   paper that birthed a null result the paper is stronger isn't it", then
+   "we need a rewrite of the paper in a new style".
+   - The paper leads with CHE as the contribution, and the pre-registered
+     test becomes the worked example.
+   - The registered results and strings stay in full, verbatim where
+     registered: "does not survive the inert-share correction"; "sign
+     unstable over the final half"; completion as an exclusion with its
+     bound. "Null" is at most an informal gloss.
+   - The paper states that its emphasis moved to the environment after the
+     result was known. The registered outcome branches
+     (`phase6_framing_branches.md`) stay the record of the original framing.
+4. **ISO-4 at 2000 updates is deferred to future work.** The owner: "I
+   confirm the decisions about your ISO-4 arm". The paper names it as the
+   experiment that would separate frequency from co-occurrence. **No
+   training run is authorized.**
+5. **Cost basis for item 2(a), derived this session from measured RTX 5090
+   timings.**
+   - The measurements:
+     - log:4378-4382: train T = 1000 at 519.35 s; eval of 512 episodes at
+       9.40 s;
+     - `che/bench/results/phase6/g1_t2000_5090/timings.txt`: train
+       T = 2000 at a mean of 1029.1 s (n = 8);
+     - `g1_t2000_5090/timings.txt` and `g1_iso4_5090/timings.txt`: evals at
+       a mean of 14.8 s.
+   - At θ\*: 4 conditions × 164 final checkpoints (ISO 72, JOINT 72, ISO-4
+     20) = 656 evals, or **1.7–2.7 GPU-h**.
+   - θ\* plus Low and High is roughly three times that, about **5–8 GPU-h**.
+   - **This is an estimate, not a trigger.** Realized time is read from the
+     run's own `timings.txt`.
+   - **The scope is OPEN:** θ\* only, or with Low and High. The owner decides
+     it before any run.
+   - **No GPU box exists** (HANDOFF). The owner rents one and restores the
+     checkpoint archives from the 2026-09-27 backup. The artifact-persistence
+     rule binds, and the analysis plan is committed before the run.
+6. **Disclosure.**
+   - **Who writes it.** The owner writes the LLM-use disclosure. It goes in
+     the `<d-footnote>` on the abstract (Q4f answered: "I will put it on the
+     footnote instead of page 1").
+   - **The starting point.** The builder's recommendation: a short footnote,
+     plus an appendix "How this paper was made" that states the division of
+     labour and that some proposals came from the assistant. In particular,
+     the inert-share bias and ISO-4 were first raised in an
+     assistant-drafted review and adopted by the owner. The owner said of
+     it: "I like this a lot I will change a couple things".
+7. **Commits.** The owner authorized commits this session: first "you may
+   commit to a different branch and push to that since I want the work not
+   lost", then "go ahead commit".
+   - Paper v2 phase 1 is at `f744ae2` on `claude/kind-cray-sskf8a`.
+   - It is backed up on `paper-v2-phase1-wip`.
+8. **Next.** The v3 rewrite starts from `paper_v3_prompt.md` in a fresh
+   session. Questions from `paper/v2/OWNER_QUESTIONS.md` that this entry does
+   not settle stay open, and are put to the owner at that session's step 4.5.
+
+**What changes, and what does not.** No constant, lock, test, registration
+or branch reading changes. Branch B stands. The framing change is editorial,
+and the paper discloses it. HANDOFF's "No GPU spend, and none to propose"
+(2026-09-26) is superseded only for item 2(a)'s eval-only block.
