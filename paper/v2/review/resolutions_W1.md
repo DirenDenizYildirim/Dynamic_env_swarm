@@ -37,3 +37,13 @@ Counts: **16 fixed, 2 declined, 5 owner.**
 | RM-8 (OWNER) | owner | RM's print measurement, with options (a)–(c), is now open item 1 in `provenance/00_abstract.md` and item 1 in `provenance/00_abstract.disclosure_line.md` (Q4f) |
 | RM-22 (SHOULD, class C) | owner | DESCRIPTION item 3 (log:5692-5693) requires the `description` to restate the abstract's opening. Changing that is Q4d; option B is recorded in the `description` table |
 | RM-23 (SHOULD) | declined | Not W1's field: `date` is B2's placeholder and the owner's decision (Q2) |
+
+## Re-check items
+
+Writer W1, 2026-10-12, from `review/RC1.md` "Re-check (draft2)". Counts: **3 fixed.**
+
+| finding ID | outcome (fixed / declined / owner) | what changed, or why not |
+|---|---|---|
+| RC1-R1 (SHOULD) | fixed | The reading note in `00_hero.md` and `alt/00_hero.ladder.md` is now "Captions carry a status. Recurring statuses: illustrative (grades nothing); …". It is two sentences, the second a labelled list, so "the recurring ones are illustrative" no longer reads as a predicate (provenance rows 9a/9b and 12a/12b). The note is 44 words |
+| RC1-R2 (SHOULD) | fixed | `alt/00_hero.ladder.md`: "Its “full ladder: §9.2” is Figure 11." became "The figure's “full ladder: §9.2” is Figure 11." To hold the 120-word cap, "Completion: both null; Γ₄ is a second exclusion bound" became "Completion: both null, Γ₄ a second exclusion bound" ("on both outcomes" is kept) |
+| RC1-R6 (SHOULD) | fixed | The footnote's "writing and running the code, analyses and figures" became "writing and running code and analyses, making figures", in the default and both abstract alternates. Figures are "made by the builder" (log:5789-5791). The footnote stays at 50 words, so it still fits the visible-line alternate's 50-word budget |

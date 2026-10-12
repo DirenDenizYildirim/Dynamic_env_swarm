@@ -18,7 +18,7 @@ NOT HERE: "certified inert"; that trained messages would also be useless; a poin
 DEPENDENCIES: sections 1 and 9.1 rely on "δ inert under this encoder at this scale" to define ISO's fire-only third; section 8.1 carries COM-5's lesson; Appendix A carries the toy's constants.
 -->
 
-The third stressor denies links between agents. In CHE, with a frozen message encoder, no measured effect of it cleared its bar (Figure 9).
+The third stressor denies links between agents. In CHE, under a frozen encoder, no measured effect of it cleared a valid bar (Figure 9; one threshold is VOID, §7.3).
 
 {% include figure.html path="assets/img/submission/fig06_comms.png" class="img-fluid" alt="Top left, courier success rate against perception attenuation in the two-agent toy, for free and for denied communication, with the predicted curve. Top right, the denial contrasts at medium severity with their bars. Bottom, the per-run values behind those contrasts." caption="Figure 9. Communication in the toy, and denial in CHE at Medium." %}
 
@@ -48,7 +48,7 @@ with $R_{\mathrm{comm}} = 16$<!-- N:COM-6 --> cells. Each agent emits a message 
         )
 ```
 
-No gradient crosses the channel, so the message head, a tanh-bounded dense layer on the shared trunk, stays at its initialization<!-- N:ENV-12 -->: an agent emits a frozen random projection of trunk features that are themselves trained. The receivers' weights on the message inputs are trained, which makes message use testable; what to say was never learned.
+No gradient crosses the channel, so the message head, a tanh-bounded dense layer on the trunk, stays at its initialization<!-- N:ENV-12 -->: an agent emits a frozen random projection of trunk features that are themselves trained. The receivers' weights on the message inputs are trained, which makes message use testable; what to say was never learned.
 
 ### 7.2 When communication should matter
 
@@ -70,10 +70,10 @@ CHE's agents meet one of Remark 2′(i)'s qualifiers: they are twelve<!-- N:ENV-
 
 In a content ablation at Medium ($\delta = 0$, $R_{\mathrm{comm}} = 8$<!-- N:COM-2 -->, two seeds<!-- N:COM-2 -->, 500 updates<!-- N:DX-305 -->), three arms of identical architecture pass live, zeroed or shuffled messages (the delivered aggregate set to zero with links kept; sender identities permuted within a step). No pair differs beyond a bar of twice<!-- N:COM-2 --> the earlier Medium floor, about 3 points<!-- N:COM-2 -->. The same ablation at High (three seeds<!-- N:DX-16 -->, $R_{\mathrm{comm}}$ = 8 and 16<!-- N:DX-16 -->) found that raising the mean alive out-degree from 1.01 to 2.99<!-- N:COM-3 --> changed nothing, ruling out "nobody was in range". The wider High floors put its bars at 10.44<!-- N:V4-3 --> (completion) and 12.43 points<!-- N:V4-3 --> (survival).
 
-In the denial study (Medium, four seeds<!-- N:COM-4 -->, $R_{\mathrm{comm}} = 16$<!-- N:COM-4 -->, message path live in both arms), completion is 0.38 points higher and survival 1.43 points lower with links open ($\delta = 0$) than with links denied ($\delta = 1$), against bars of 7.99 and 2.60 points<!-- N:COM-4 -->. Both bars are twice<!-- N:V4-2 --> the floor sd measured on the GPU that ran the study (Figure 9(b–d)). Every bar here is a post-hoc floor grading that a true effect of its size would clear only about half the time<!-- N:V4-1 --> (§8.2), so none of these results is a point null. A further condition, on danger-moment outcomes, is VOID: its threshold, chosen at implementation, sat below the quantity's own run-to-run nondeterminism (§8.1).
+In the denial study (Medium, four seeds<!-- N:COM-4 -->, $R_{\mathrm{comm}} = 16$<!-- N:COM-4 -->, message path live in both arms), completion is 0.38 points<!-- N:COM-4 --> higher and survival 1.43 points<!-- N:COM-4 --> lower with links open ($\delta = 0$) than with links denied ($\delta = 1$), against bars of 7.99<!-- N:COM-4 --> and 2.60 points<!-- N:COM-4 -->. Both bars are twice<!-- N:V4-2 --> the floor sd measured on the GPU that ran the study (Figure 9(b–d)). Every bar here is a post-hoc floor grading that a true effect of its size would clear only about half the time<!-- N:V4-1 --> (§8.2), so none of these results is a point null. A further condition, on danger-moment outcomes, is VOID: its threshold, chosen at implementation, sat below the quantity's own run-to-run nondeterminism (§8.1).
 
 The content ablations supply a mechanism: in the live arm a receiver can tell that it heard from someone without decoding anything; in the zeroed arm it cannot. That signal needs no encoder and went unused at both severities and, at High, at both ranges. The neglect is therefore on the demand side (the agents did not need the information) rather than the channel side (they could not read it), and the frozen encoder cannot account for it.
 
 Because deaths are priced, Remark 2′(i) leaves communication some value here, which the measurements find weak at this scale and this death price. Gradient-shaped messaging is untested, and a bound measured on a frozen random encoder does not strictly bound a trained one. We claim only that communication denial is inert under a frozen random-projection encoder at this scale.
 
-The composition §9 tests is thus, in effect, Coupling A × Coupling B, with $\delta = 1.0$<!-- N:COM-6 --> kept in $\theta^*$ for fidelity to the registration. The δ-only third<!-- N:DES-8 --> of ISO's training is fire-only, and §9.1 gives the consequence.
+The composition §9 tests is, in effect, Coupling A × Coupling B, with $\delta = 1.0$<!-- N:COM-6 --> kept in $\theta^*$ for fidelity to the registration. The δ-only third<!-- N:DES-8 --> of ISO's training is fire-only, and §9.1 gives the consequence.

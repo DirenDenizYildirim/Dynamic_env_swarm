@@ -1,13 +1,13 @@
 # Provenance: sections/14_appendix_plan_provenance.md
 
-Writer: W6. Checked against the section on 2026-10-11 (step 4, pass 1) and on 2026-10-12 after the pass-3 fixes.
+Writer: W6. Checked against the section on 2026-10-11 (step 4, pass 1) and on 2026-10-12 after the pass-3 fixes and the step-4.3 re-check items.
 `log` = `docs/decision_log.md`; `FB` = `phase6_framing_branches.md`.
 "Demo" is `paper/demo_beyond/sections/12_appendix.md` (its Appendices D–J).
 Every quotation in Appendix D was compared with its source this session at
 the lines given. The sentence column is the checker's normalized form.
 
 Word counts (P3's method, verbatim quotations and tables excluded), after
-pass 3: D 249, E 63, F 261, G 84, H 230, I 82 prose words, 969 in all
+the re-check items: D 248, E 63, F 260, G 84, H 230, I 82 prose words, 967 in all
 against about 850 (+14 %); Appendix D's quotations are 563 words; captions I1 and I2 within
 the 60-word cap each, notes included.
 
@@ -49,7 +49,7 @@ the 60-word cap each, notes included.
 | 34 | Quoted as an exclusion with X from the grid's own seed dispersion, never as an absence. […] | docs/decision_log.md:4144-4145 | kept (verbatim quotation; demo 12:138); pass 3: RC2-28: trailing "[…]" added (three further bullets follow in the source, paraphrased next) |
 | 35 | The same entry states that the readout "is NOT a held-out test", that a positive $\Gamma_H$ is "NOT separable from in-distribution advantage", and that a negative one is "exploratory". | docs/decision_log.md:4133, :4146, :4149 | kept (demo 12:140; quoted fragments) |
 | 36 | 7. | framing | kept |
-| 37 | The T = 2000 subsample (same ruling): | DES-15; docs/decision_log.md:4066 | edited: label shortened |
+| 37 | The 2000-update subsample (same ruling): | DES-15; docs/decision_log.md:4066 | edited: label shortened; re-check: RC2-R2 (orchestrator decision): label renamed "the 2000-update subsample"; the quotation below is unchanged |
 | 38 | What it may be cited for: whether the differential drift measured at T = 1000 (review §6 item 1: 0.01209 per 100 updates) visibly persists, closes or reverses. | docs/decision_log.md:4088-4090; DES-10 | kept (verbatim quotation; demo 12:144) |
 | 39 | What it may not be cited for: any claim that Γ "holds" or "vanishes" at T = 2000. | docs/decision_log.md:4090-4091 | kept (verbatim quotation; demo 12:144) |
 | 40 | 8. | framing | kept |
@@ -88,7 +88,7 @@ the 60-word cap each, notes included.
 | 73 | The confirmatory artifact holds all 72 seeds of ISO and JOINT on GPU 1: 76 runs executed there and seeds 13–46 copied from the grid. | HW-4; DX-30 | edited; class A, F5 ("unit" becomes GPU); the executed seed list (DX-4) cut (LEN) |
 | 74 | The superseded RTX PRO 6000 seeds enter only a descriptive diagnostic of the GPU effect. | docs/decision_log.md:4545-4546; che/bench/results/phase6/by_card/README.md:60 | edited; class A, F5: "card diagnostic" becomes "diagnostic of the GPU effect" |
 | 75 | Seeds 1–12 of the secondary arms were re-run on GPU 1 (96 runs), so every analysed secondary run is on GPU 1 and Γ₄′ is a same-GPU contrast. | DX-30; docs/decision_log.md:5010-5013 | edited; class A, F5; Γ₄′'s same-GPU status added (honesty line 8: App. F is its home) |
-| 76 | ISO-4 and the T = 2000 subsample trained on GPU 2, so Γ₄ and B̂ are across GPUs, and the post-unblind evaluations ran on GPU 3. | HW-4; docs/decision_log.md:4995-4997 | edited; class A, F5: "unit" becomes GPU; Γ₄ and B̂ across GPUs (honesty line 8) |
+| 76 | ISO-4 and the 2000-update subsample trained on GPU 2, so Γ₄ and B̂ are across GPUs, and the post-unblind evaluations ran on GPU 3. | HW-4; docs/decision_log.md:4995-4997 | edited; class A, F5: "unit" becomes GPU; Γ₄ and B̂ across GPUs (honesty line 8); re-check: RC2-R2 (orchestrator decision): "the 2000-update subsample" |
 | 77 | All arms share seed integers, and seed 0, the floor seed, never enters the grid. | DX-416 | edited (demo 12:191) |
 | 78 | Runs are ordered seed-major and chunks end on seed boundaries, so an interruption leaves a smaller balanced design and both arms of a seed share one GPU. | che/tests/test_p6_grid.py:173-197 | edited: "share a card" becomes "share one GPU" (F5); the test file's path cut from prose |
 | 79 | Every checkpoint archive's recorded sha256 matched on re-verification on 2026-09-27, 615 of 615. | DX-408 | edited: the archive procedure sentence shortened (LEN); no hash quoted |

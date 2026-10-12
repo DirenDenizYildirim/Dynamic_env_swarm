@@ -41,7 +41,7 @@ Registered or recorded before unblinding:
 Found after unblinding:
 
 - The survival effect does not survive the inert-share correction; the branch label stays B (§9.2). The correction excludes only a large composition effect and leaves open whether the active share or the per-coupling frequency carries the ISO-4 − ISO difference, which is reported without a test. The same-GPU replicate, proposed after Γ₄ was seen, agrees.
-- On both co-primaries Γ(t) is sign unstable over the final half, so Γ is a claim at matched compute only; the T = 2000<!-- N:RES-15 --> subsample, UNDERPOWERED by registration, cannot settle another budget (§9.2).
+- On both co-primaries Γ(t) is sign unstable over the final half, so Γ is a claim at matched compute only; the 2000<!-- N:RES-15 -->-update subsample, UNDERPOWERED by registration, cannot settle another budget (§9.2).
 - Completion is unresolved: its null is an exclusion with its bound, and it leans negative late in training (§9.2).
 - The registered mediator was blind to co-occurrence in mixed training, so mediation is VOID (§9.2).
 - The secondary analyses report many intervals, none family-corrected (Appendix H).

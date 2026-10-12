@@ -236,3 +236,134 @@ A last pair of unclear sentences, below SHOULD and with no row: `09:50` "GPU 1, 
   - code paths appear only in listing labels, App. H's arm-label table, App. B's code
     identifiers and the alternate §11;
   - App. D's omitted code version is explained, not quoted.
+
+## Re-check (draft2)
+
+RC2, step 4.3, 2026-10-12. I checked `paper/v2/snapshots/draft2/` (identical to the live
+`paper/v2/sections/`, checked with `diff -q`) against draft1, with
+`snapshots/diff_draft1_draft2.txt`, the resolutions files `review/resolutions_W1.md` to
+`resolutions_W6.md`, and the draft2 files for context. Line numbers below are draft2 lines.
+
+What I ran:
+- **App. D, re-run of the verbatim script** (`RC2/appd_quotes2.py`, `appd_table2.py`): all 10
+  quotations are still exact substrings of their sources, the 8 table rows are unchanged, and
+  the new trailing `[…]` marks sit at the three places RC2-28 named.
+- **`provenance_check.py --strict`**, on a scratch copy of draft2 (`--root RC2/v2copy`, so
+  nothing in `out/` was overwritten), over §8–§11, the alternate and the three appendix files:
+  every changed sentence has a row; 0 unsourced, 0 stale, 0 support problems.
+- **Consistency sweep of the changed lines across all sections**, as the coordinator asked:
+  - **The study name.** "The grid's launch floor study (2026-08-10)" is at §9.1:56, App. C
+    key :92 and App. D:49. "First floor study" occurs nowhere, and BRIEF §5.2 is corrected.
+  - **Proposition 4's name.** It is "A transfer bound for a fixed policy" at §9.1:34, §10:39
+    and App. A:42, and "a transfer bound for a fixed policy" at §1:55. No other name and no
+    "irreducible" occur.
+  - **§8.5 against §9.1.** §8.5:73's "four floor studies" matches §9.1:56's four readings:
+    M6.2b +0.0242 (V6-4), launch +0.01209, 2026-09-08 +0.0179 (all on an RTX PRO 6000) and
+    GPU 1 −0.0083. "The sign reverses on the grid GPU" still holds.
+  - **The M5.3 and M5.5 names.** "The content ablation at Medium", "the same ablation at
+    High" and "the denial study" now appear in §7, §8.1 and App. C (prose and key). "Message-use
+    test" and "communication-denial test" occur nowhere.
+  - **B̂ wording.** There is no verdict word for B̂ anywhere. §1:53 has "an estimate with no
+    registered test"; §9.2:83 and :95 and the Fig. 11 caption use "the ISO-4 − ISO difference";
+    §10:43 has "reported without a test". "Rise" and "raises" for B̂ are gone.
+- **F3 and F4 in the changed lines.** The abstract's reworded F3 sentence keeps the same
+  timeline as §1:40, §9.1:54 and §10:36 (found pre-grid, registered mid-grid, before
+  unblinding). §10's bullet now points to §9.1. The F4 sentences (abstract :28, §1:55, §9.3,
+  §10:49) still carry no "therefore" and no imperative outside §9.3's labelled
+  recommendation. The registered strings are intact in every changed line I read.
+
+### Verdicts on my draft1 findings
+
+| finding ID | outcome claimed | verdict | note |
+|---|---|---|---|
+| RC2-1 (MUST) | fixed (W5, W6; orchestrator decision 1) | OK | §9.1:56 and App. D:49 now read "the grid's launch floor study (2026-08-10)", matching App. C's key (:92). BRIEF §5.2's row is corrected. No "first floor study" is left anywhere. |
+| RC2-2 | fixed (W5) | OK | §11:73 and the alternate's :12 now point to "(Appendix F)", which holds DX-411 (`14:114`). |
+| RC2-3 | fixed (W6) | OK | §9.2:99 now has "(Figure 12; Appendix G gives every value)". |
+| RC2-4 | fixed (W6); declined in W3's files | OK | App. A:36 no longer says "Corollary 1(3)": the rate "rests on critical exponents the paper does not state (§4.1)". No change was needed in §4.1. |
+| RC2-5 | fixed (W4 §5.2; W6 App. A) | NOT OK (SHOULD) | App. A:36 says the four conditions each carry "a known sign", but the seed-age item gives only the saturation age, not a direction. §5.2:85 now says "boundary clipping, seed age and overlapping seeds each lower the measured slope (Appendix A)", so the pointer does not yet land for seed age. Record: `phase3_report.md:106-109` ("the horizon-256 age-averaging costs only ~7%"); TF:333-334. Required fix (W6): "seed age (seeds born late have not reached full mass, which lowers the measured slope; at β = 0.43 mass saturates by an age of about 64 steps)". |
+| RC2-6 | fixed (W6) | OK | §9.1:32: "as that ruling records … sat at or below the floors then measured". The attribution is restored, which settles the tension with §8.6; dropping my optional parenthesis is fine. |
+| RC2-7 | fixed (W6) | OK | §9.2:73 separates "the upper end of its interval" (0.66) from "its exclusion bound X" (3.29). |
+| RC2-8 | fixed (W5 §10; W6 Fig. 11) | OK | §10:43 reads "carries the ISO-4 − ISO difference, which is reported without a test"; the Fig. 11 caption reads "carries the ISO-4 − ISO difference". |
+| RC2-9 | fixed (W6) | OK | §9.1:54: "on our attestation, recorded with the ruling". This is accurate (log:3907-3909) and drops "owner". |
+| RC2-10 | fixed in part (W6) | OK | "The second registered caveat" is gone, and the forward reference now reads "the 2000-update subsample (§9.2)". Keeping the dates is sound: 2026-08-10 is part of the study's name under decision 1, and 2026-09-08 identifies the re-measured floor. The label question stays with RC2-34. |
+| RC2-11 | fixed (W5) | OK | §8.5:73 is its own paragraph, names the drift before the label and links it to the reporting ("so §9.1 reports every reading"). |
+| RC2-12 | fixed (W6) | OK | §9.1:52 now states GPU 1 before the "therefore". |
+| RC2-13 | fixed (W6) | OK | §9.1:54: "A question it set for reviewers", which matches `phase6_design_v2.md:418-433`. |
+| RC2-14 | fixed (W6) | OK | §9.1:60 is split into three sentences; the garden path is gone. |
+| RC2-15 | fixed (W6) | OK | §9.2:123: "about 0.11 of the 12 agents per episode". |
+| RC2-16 | fixed (W6) | OK | §9.3:133: "This follows from the comparison's design alone, as JOINT's threefold per-coupling frequency over ISO does." This now parses, with "follows from design" as the shared verb. Declining the extra contrast clause is sound under P3 §6. |
+| RC2-17 | fixed (W5) | OK | §8.1:33: "exceeded the threshold but not the noise". |
+| RC2-18 | fixed (W5) | OK | §8.5:69: "the alive agents' centroid drifted towards a wall (rendered-pixel centroids, a diagnostic)". The claim now matches the instrument. |
+| RC2-19 | fixed (W5, with RN2-1) | OK | §8.1:33 has "four bars with invented constants" and App. C:81 "four bars whose constants the ruling calls invented", both matching log:1248. App. C gives each bar's own defect, including "a bar set on that floor was out of reach" for the High re-siting. |
+| RC2-20 | fixed (W5); declined (W4) | OK | §7's names are kept and adopted in §8.1 and App. C. The key's header is now "plain name", and every key name occurs in the text (the refactor as "the refactor of the environment code", §8.1:37). |
+| RC2-21 | fixed (W5) | OK | App. C:81 uses no study codes in prose ("the High floor in the table", "the four-run Medium floor study on an RTX 5090"). |
+| RC2-22 | fixed (W5) | OK | §10:36 now holds the consequence and a pointer to §9.1, and "the branch label stays B" has moved to the found-after list (§10:43). |
+| RC2-23 | fixed (W2) | OK | The duplicate sentence is gone from §1:53. The "twice as often … always in combination" clause is folded into the Γ₄ sentence, and §9.2:97 remains the home. |
+| RC2-24 | fixed (W6) | OK | App. A:48: "The check that the denied arm under the no-idle schedule matches ½ + ½q passes …; the arm with free communication scores 1.0000". |
+| RC2-25 | fixed (W5) | OK | The Fig. 10 caption now glosses "tree" and "reps". |
+| RC2-26 | fixed (W5) | OK | §8 has no bold left in prose (0 `**` outside the STUB-SPEC); the H3s carry the rules. |
+| RC2-27 | fixed (W6) | OK | App. D:49 is split, says "design-stage" on both figures and closes with "§9.1 gives the realized power". |
+| RC2-28 | fixed (W6) | OK | App. D items 1, 4 and 6 end with "[…]". The quotations remain verbatim (script re-run). |
+| RC2-29 | fixed (W6) | OK | App. E:100: "founding registration, verbatim (Γ(θ\*) > 0)". The registered words are kept, and the gloss matches `phase6_framing_branches.md:106-109`. |
+| RC2-30 | fixed (W5) | OK | §10:23: "Coupling B's survival effect is at High". |
+| RC2-31 | fixed (W1) | OK | Abstract :26: "[+0.47, +1.44]". |
+| RC2-32 | fixed (W2) | OK | §1:61: "…the inert-share correction, which was registered before unblinding". "Which" now binds to the correction. |
+| RC2-33 | fixed (W6) | OK | §9.2:93 is split, with the subject first. |
+| RC2-34 (OWNER) | owner | OK | The label "bias (b)" is kept by default. The text is accurate: §8.5:73 names the drift before the label, and §9.1:56 no longer implies a "first" caveat. |
+| RC2-35 (OWNER) | owner | OK | App. A's references to "the formal specification" are unchanged and accurate. The choice remains Q4e/Q4k. |
+| note on `09:50` (draft1, below SHOULD) | fixed (W6, as RN2-13) | NOT OK (SHOULD) | Now: "GPU 1, the RTX 5090 that ran the rest of the grid and every confirmatory run". "Every confirmatory run" is too broad: seeds 1–12 of ISO and JOINT first ran on an RTX PRO 6000 and were superseded (App. F `14:110`; DX-30). Required fix (W6): "…ran the rest of the grid and every run in the confirmatory artifact". |
+| note on `08:35` (draft1, below SHOULD) | not listed | OK | My wording suggestion for "moved completion's 2.75-fold" was optional and is not taken; the line is accurate. Its changed neighbour is RC2-R1. |
+
+### New findings in changed lines
+
+| ID | severity | file:line (draft2) | quoted text (short) | problem | evidence | proposed fix | class |
+|---|---|---|---|---|---|---|---|
+| RC2-R1 | SHOULD | `08_methodology.md:35` | "so the exhibit cannot say which of them moved the completion floor" | Ambiguous antecedent, new in the fix round: "them" can be read as "the two studies" instead of the three factors (GPU, code version, configuration). | `provenance/08` row 21 (budget edit); METH-1 note | "…so the exhibit cannot say which of the three moved the completion floor." | A (clarity) |
+| RC2-R2 | SHOULD | `09_compositional_test.md:56, :110` against `10_limitations.md:44`, `14_appendix_plan_provenance.md:65, :110` | "the 2000-update subsample" (§9) against "the T = 2000 subsample" (§10, App. D's label, App. F) | One name per object is broken by a partial fix. W6 applied RM-17 in §9 and App. G only. W5 left §10 as it was, on the stated assumption that §9 still said "T = 2000". So the subsample now has two names, and the split even runs within W6's own files (App. F:110, App. D's item-7 label). | `resolutions_W5.md` (RM-17 row: "would leave §10 out of step with §9"); `resolutions_W6.md` (RM-17 "fixed (W6's files)") | Pick one name everywhere, outside registered quotations. Either apply "the 2000-update subsample" at §10:44, App. D:65 (W6's label, not quoted text) and App. F:110, or revert §9.1:56 and §9.2:110 to "T = 2000" until the owner rules RM-17. | A (consistency; RM-17 is class C) |
+| RC2-R3 | SHOULD | `09_compositional_test.md:58` | "are in Appendix E. Branch B (survival only) also needs a registered falsifier to pass." | The clause "rejection at z_α on each co-primary fixes which outcome holds" was cut (RN2-25 / LEN), so "also" now dangles: also in addition to what? | `provenance/09` row 55 | "…are in Appendix E. Besides rejecting on survival alone, branch B needs a registered falsifier to pass." | A (clarity) |
+
+**Count:** 37 verdicts: 35 OK and 2 NOT OK, both SHOULD (RC2-5; the `09:50` note). New
+findings: 0 MUST, 3 SHOULD (RC2-R1 to R3), 0 OWNER. No MUST is NOT OK, and there is no new MUST.
+
+## Final re-check (draft3)
+
+RC2, 2026-10-12. Checked against `paper/v2/snapshots/draft3/` (identical to the live
+`sections/`) with `snapshots/diff_draft2_draft3.txt` and the "Re-check items" in
+`review/resolutions_W*.md`. Line numbers are draft3 lines.
+
+Checks I ran this session:
+- **`provenance_check.py --strict`,** on a scratch copy of draft3 (`--root RC2/v3copy`), over
+  §8–§11, the alternate and App. A–I: 0 unsourced, 0 stale, 0 support problems.
+- **The App. D verbatim script** (`RC2/appd_quotes3.py`): all 10 quotations are still exact
+  substrings of their sources.
+- **A grep of every section's prose** for the subsample's name.
+- **The High readout's floor source:** `p6_post_analysis.py:99` and
+  `run_p6_post_unblind_evals.sh:44, :87-88` read `g1_floors_5090`, as App. C's corrected row
+  states.
+
+| finding ID | outcome claimed | verdict | note |
+|---|---|---|---|
+| RC2-5 (re-check) | fixed (W6) | OK | App. A:48: seed age now states its direction ("seeds born late have not reached full mass, which lowers the measured slope"), matching §5.2:85 and `phase3_report.md:106-109`. All four conditions now carry the sign the sentence promises. |
+| `09:50` note (re-check) | fixed (W6) | OK | §9.1:50: "the RTX 5090 that ran the rest of the grid and every run in the confirmatory artifact". This is exact against App. F:110 and DX-30. |
+| RC2-R1 | fixed (W5) | OK | §8.1:35: "which of the three moved the completion floor". The antecedent is now unambiguous. |
+| RC2-R2 | fixed (W5, W6; orchestrator decision) | OK | There is one name outside quotations. "The 2000-update subsample" appears at §9.1:56 (defined at first use as "(T = 2000 in the registration; §9.2)"), §9.2:110, §10:44, App. D:65 (label) and App. F:110. No other section uses "T = 2000" in prose. The only remaining instances are App. D:67's verbatim quotation and the table label "Γ(2000)". |
+| RC2-R3 | fixed (W6) | OK | §9.1:58: "Beyond a null completion contrast and a positive survival contrast, branch B needs a registered falsifier to pass". It agrees with App. E's row B, and the dangling "also" is gone. |
+
+**New findings in changed lines**
+
+| ID | severity | file:line (draft3) | quoted text (short) | problem | evidence | proposed fix | class |
+|---|---|---|---|---|---|---|---|
+| RC2-F1 | SHOULD | `09_compositional_test.md:56` | "The four floor studies that read it at 1000 updates gave +0.0242 …, +0.01209 … and +0.0179 …, all three on an RTX PRO 6000. On GPU 1 it read −0.0083." | The sentence names four studies as its subject but lists three values ("all three"); the fourth reading follows in the next sentence. A reader may count a mismatch. The facts are right, and §8.5:73's "four floor studies … at 1000 updates" agrees. | DES-10; V6-4; DES-13 | "Of the four floor studies that read it at 1000 updates, the three on an RTX PRO 6000 gave +0.0242 per 100 updates (the confirmatory arms' floor study), +0.01209 (the grid's launch floor study, 2026-08-10) and +0.0179 (the 2026-09-08 re-measured floor); the fourth, on GPU 1, gave −0.0083." | A (clarity) |
+
+The other changed lines in my scope are clean:
+- §8.5:73: "read it at 1000 updates before unblinding" now matches §9.1:56's definition, "over
+  the last 100 of 1000 training updates".
+- App. C's High readout row now names GPU 1's runs.
+- App. D:65 and App. F:110 change only the subsample's name.
+- The App. I iframe heights are mechanics, not claims.
+
+Whole-paper consistency of the front sections' changed lines also holds. §1:40's "none of the
+three severities has both couplings strongly live (§10)" agrees with §10 item 1, and §7's new
+opening ("one threshold is VOID, §7.3") agrees with §8.1.
+
+**Count:** 5 verdicts, 5 OK and 0 NOT OK. New findings: 0 MUST, 1 SHOULD (RC2-F1), 0 OWNER.

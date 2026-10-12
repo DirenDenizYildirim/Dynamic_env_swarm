@@ -72,7 +72,7 @@ A floor is the standard deviation of a metric over identical reruns at one seed,
 | G1.2 | RTX PRO 6000<!-- N:DES-5 -->, 1000<!-- N:DX-403 --> | ISO, JOINT, sweep at p = 0.5<!-- N:DX-28 --> | 8<!-- N:DX-403 --> | sd(Γ) at k = 40: completion 0.00504, survival 0.00310<!-- N:DES-5 --> | design-stage power |
 | re-measured, 2026-09-08<!-- N:DES-2 --> | RTX PRO 6000<!-- N:DES-2 -->, 1000<!-- N:DX-412 --> | ISO, JOINT, sweep at p = 0.5<!-- N:DX-28 --> | 8<!-- N:DX-403 --> | the seed rule gave k = 46<!-- N:DES-2 --> | the registered seed rule (§9.1) |
 | re-measured on GPU 1 | RTX 5090<!-- N:DX-35 -->, 1000<!-- N:DX-412 --> | ISO, JOINT, sweep at p = 0.5<!-- N:DX-28 --> | 8<!-- N:DX-35 --> | completion 0.0587, 0.0577; survival 0.0100, 0.0112<!-- N:DX-35 --> | the seed rule (k = 72<!-- N:DES-3 -->); the check against rerun noise |
-| High readout | the 2026-09-08 runs, evaluated on GPU 3<!-- N:V5-2 --> | ISO, JOINT at High | 8<!-- N:V5-2 --> | completion 0.0681, 0.0613; survival 0.0180, 0.0395<!-- N:V5-2 --> | the check against rerun noise at High (§9.2) |
+| High readout | GPU 1's runs, 1000<!-- N:DX-412 -->, evaluated on GPU 3<!-- N:V5-2 --> | ISO, JOINT at High | 8<!-- N:V5-2 --> | completion 0.0681, 0.0613; survival 0.0180, 0.0395<!-- N:V5-2 --> | the check against rerun noise at High (§9.2) |
 | evaluation | GPU 3<!-- N:HW-4 --> | two checkpoints<!-- N:HW-2 --> | 4<!-- N:HW-2 --> | bit-identical<!-- N:HW-2 --> | evaluation reproducibility (§11) |
 | partial, 2026-08-14<!-- N:DX-36 --> | not recorded<!-- N:DX-36 -->, 1000<!-- N:V5-3 --> | ISO, JOINT | 8 + 4<!-- N:DX-36 --> | none reported | provenance only |
 

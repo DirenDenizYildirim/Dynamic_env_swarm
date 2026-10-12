@@ -49,3 +49,14 @@ unsourced sentences, 0 stale rows and 0 support problems. Prose words (P3 method
 | RC2-34 | owner | Class C. With no "bias (a)" left, the label "(b)" is orphaned. §8.5 now names the drift before the label; whether to keep the record's label is the owner's call. |
 
 New ledger rows (`paper/v2/ledger_proposals/W5.md`): V5-2 (the High readout's floor: 8 reruns per arm and four floor values) and V5-3 (1000 updates for the 2026-08-14 set). V5-1 is corrected.
+
+## Re-check items (step 4.3, 2026-10-12)
+
+| finding ID | outcome | what changed, or why not |
+|---|---|---|
+| RN2-R1 (MUST) | fixed | The High readout's floor reruns are GPU 1's re-measured floor runs (RTX 5090, `g1_floors_5090`): `p6_post_analysis.py:99`, and `run_p6_post_unblind_evals.sh:44` and `:87-88`, identical at the shipped tree. The 2026-09-08 RTX PRO 6000 reruns were only what the plan named. App. C's cell now reads "GPU 1's runs, 1000, evaluated on GPU 3" (DX-412). V5-2's "what" and source are corrected, read this session and marked VERIFIED; the values are unchanged. This supersedes the description in the RN2-5 row above. |
+| RC2-R1 | fixed | §8.1: "which of them" → "which of the three", meaning the three factors. |
+| RN2-R3 | fixed | §8.5: "…the four floor studies that read it at 1000 updates before unblinding…" (tagged DES-13), matching W6's §9.1 wording. M6.2's 500-update reading falls outside that scope. |
+| RC2-R2 | fixed | §10: "the T = 2000 subsample" → "the 2000-update subsample" (orchestrator decision). No other prose use of "T = 2000" is in a W5 file. |
+
+After these fixes: `build_v2.py` reported 0 failures and 0 M1 flags. Its two final-only items are not in W5's files: the owner's date confirmation and the STUB-SPEC count. `provenance_check.py --strict` on all five files found 0 unsourced sentences, 0 stale rows and 0 support problems. §8 is 942 prose words; §10 is 744.

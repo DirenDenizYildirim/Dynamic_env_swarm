@@ -62,7 +62,7 @@ Design-stage power is therefore a ceiling. On the grid's launch floor study (an 
 
 The same entry states that the readout "is NOT a held-out test", that a positive $\Gamma_H$ is "NOT separable from in-distribution advantage", and that a negative one is "exploratory".
 
-**7. The T = 2000 subsample** (same ruling):
+**7. The 2000-update<!-- N:RES-15 --> subsample** (same ruling):
 
 > **What it may be cited for:** whether the differential drift measured at T = 1000 (review §6 item 1: 0.01209 per 100 updates<!-- N:DES-10 -->) visibly persists, closes or reverses. **What it may not be cited for:** any claim that Γ "holds" or "vanishes" at T = 2000.
 
@@ -107,7 +107,7 @@ The result is branch B, with the inert-share qualifier attached (§9.2).
 
 ### F Grid provenance and blinding
 
-The grid was 252 runs<!-- N:DX-30 --> from 2026-09-09 to 2026-09-22<!-- N:DES-12 -->. Seeds 1–12 of all ten arms (ISO, JOINT and eight secondary arms) ran on an RTX PRO 6000, then seeds 13–20 of all ten arms and 21–46 of ISO and JOINT on GPU 1<!-- N:DX-30 -->. The confirmatory artifact holds all 72 seeds of ISO and JOINT on GPU 1<!-- N:HW-4 -->: 76 runs executed there and seeds 13–46 copied from the grid<!-- N:DX-30 -->. The superseded RTX PRO 6000 seeds enter only a descriptive diagnostic of the GPU effect. Seeds 1–12 of the secondary arms were re-run on GPU 1 (96 runs<!-- N:DX-30 -->), so every analysed secondary run is on GPU 1 and Γ₄′ is a same-GPU contrast. ISO-4 and the T = 2000 subsample trained on GPU 2, so Γ₄ and B̂ are across GPUs, and the post-unblind evaluations ran on GPU 3<!-- N:HW-4 -->.
+The grid was 252 runs<!-- N:DX-30 --> from 2026-09-09 to 2026-09-22<!-- N:DES-12 -->. Seeds 1–12 of all ten arms (ISO, JOINT and eight secondary arms) ran on an RTX PRO 6000, then seeds 13–20 of all ten arms and 21–46 of ISO and JOINT on GPU 1<!-- N:DX-30 -->. The confirmatory artifact holds all 72 seeds of ISO and JOINT on GPU 1<!-- N:HW-4 -->: 76 runs executed there and seeds 13–46 copied from the grid<!-- N:DX-30 -->. The superseded RTX PRO 6000 seeds enter only a descriptive diagnostic of the GPU effect. Seeds 1–12 of the secondary arms were re-run on GPU 1 (96 runs<!-- N:DX-30 -->), so every analysed secondary run is on GPU 1 and Γ₄′ is a same-GPU contrast. ISO-4 and the 2000-update subsample trained on GPU 2, so Γ₄ and B̂ are across GPUs, and the post-unblind evaluations ran on GPU 3<!-- N:HW-4 -->.
 
 All arms share seed integers, and seed 0, the floor seed, never enters the grid<!-- N:DX-416 -->. Runs are ordered seed-major and chunks end on seed boundaries, so an interruption leaves a smaller balanced design and both arms of a seed share one GPU. Every checkpoint archive's recorded sha256 matched on re-verification on 2026-09-27, 615 of 615<!-- N:DX-408 -->. A partial re-measurement of floors on another rented GPU on 2026-08-14<!-- N:DX-36 --> is provenance only.
 

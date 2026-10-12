@@ -34,3 +34,17 @@ These are the findings in RC1, RC2, RN1, RN2 and RM that touch `sections/01_intr
 | RM-24 | declined (not in my files) | §2 already spells it "Tramèr". The reference list's "Tramer" is B2's fix, at `related_work_verification.md` and the bib (M2). |
 | RM-26 | fixed | 01:40's pointer now goes to the home, "(§6.4)", with "(§10)" for the limitation; this was combined with the RC1-15 fix. |
 | Decision 2 | fixed | 01:55 (now two sentences) reads "Proposition 4 (§9.1), a transfer bound for a fixed policy, bounds only what isolated training can be guaranteed to transfer." This is the C3 wording, with no "irreducible". |
+
+## Re-check items
+
+These were applied 2026-10-12 against RC1's "Re-check (draft2)".
+- **Build:** `build_v2.py` reports 0 failures, 0 warnings and 0 M1 flags.
+- **Provenance:** `provenance_check.py --strict 01_introduction 02_related_work` passes with 69 of 69 and 66 of 66 rows.
+- **Words:** §1 is at 1,172 and §2 at 1,314.
+- **Ledger:** no new rows.
+
+| finding ID | outcome (fixed / declined / owner) | what changed, or why not |
+|---|---|---|
+| RC1-R3 | fixed | 02:47 now reads "…before anything distinguishes the candidate MDPs, but that construction does not cover Theorem 1." Provenance/02 row 51 is updated. |
+| RC1-R5 | fixed | Provenance/02's Open item 1 (Q4a) is rewritten. It now lists all six owner sentences that change in substance, each with its exact owner text at `paper/finale.md` line and the current v2 text:<br>• the OI-4 sentence, row 16;<br>• the RC1-24 pair, row 35 and a cut;<br>• the OI-3 clause in the first Erdem & Üre sentence, rows 41 and 43;<br>• N15, row 42;<br>• "every arm is perturbed throughout", rows 43–44.<br>Its last line now reads "settle all six". A new section after the open items compares every one of the owner's 85 §2 sentences with the v2 text, by row: verbatim, editorial edit, cut or Q4a. Row 54, which the orchestrator split in two (54/54b) after B2's splitter fix, is renumbered 54/55 with its content unchanged. |
+| RC1-R7 | fixed | 01:40 now reads "…and none of the three severities has both couplings strongly live (§10)". This replaces "by the project's own locks", which was internal vocabulary in process voice. The record's statement is "no severity at which both couplings are strongly behaviourally live" (log:4158-4160). Provenance/01 row 37 is updated; "three" carries a CAL-3 tag. |

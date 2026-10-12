@@ -32,7 +32,7 @@ GPU training is not reproducible run to run: the compiler chooses kernels by tim
 
 No acceptance threshold enters an analysis script without a measured floor for the quantity it grades, or an explicit UNDERPOWERED flag. A threshold below its instrument's noise cannot pass under the null, so its output is void, and a void test voids a PASS as it voids a FAIL. The rule followed four<!-- N:V5-1 --> bars with invented constants (Appendix C). In one, the denial study of §7 graded a condition with a 20 %<!-- N:COM-5 --> threshold, chosen at implementation, against a quantity whose rerun nondeterminism is 27.2 %<!-- N:COM-5 -->. Since the threshold sits below the noise, the condition is VOID; the observed 23.2 %<!-- N:COM-5 --> exceeded the threshold but not the noise.
 
-Floors are facts per metric and per GPU. Re-measuring the Medium floor moved completion's 2.75-fold<!-- N:METH-1 --> and left survival's unchanged, 0.0129<!-- N:METH-1 --> against 0.0130<!-- N:METH-1 -->. The two studies differ in GPU, code version and configuration, so the exhibit cannot say which of them moved the completion floor. The floor is measured on the GPU that runs the grid.
+Floors are facts per metric and per GPU. Re-measuring the Medium floor moved completion's 2.75-fold<!-- N:METH-1 --> and left survival's unchanged, 0.0129<!-- N:METH-1 --> against 0.0130<!-- N:METH-1 -->. The two studies differ in GPU, code version and configuration, so the exhibit cannot say which of the three moved the completion floor. The floor is measured on the GPU that runs the grid.
 
 Floors are facts per artifact. In a refactor of the environment code, the rerun floor measured on the reference version read zero, so two<!-- N:METH-2 --> diagnostic channels that differed between the versions looked like a semantic change. The refactored version then differed from itself 1 time in 4<!-- N:METH-2 --> on the same channels. An equivalence claim between A and B needs A against A and B against B as well as A against B.
 
@@ -70,7 +70,7 @@ A differenced test sees asymmetry and nothing else. A condition of the form "no 
 
 Measuring is not grading. A recorded channel becomes evidence only inside a registered analysis family, with a floor measured on its artifact. Position-drift diagnostics added before the grid are recorded for every grid run. They are recorded, not graded: adding them to the registered family after registration would have enlarged it and inflated its correction.
 
-The differential drift between the arms, bias (b) of §9.1, changed sign between the four<!-- N:DES-10 --><!-- N:V6-4 --> floor studies that read it before unblinding, so §9.1 reports every reading.
+The differential drift between the arms, bias (b) of §9.1, changed sign between the four<!-- N:DES-10 --><!-- N:V6-4 --> floor studies that read it at 1000<!-- N:DES-13 --> updates before unblinding, so §9.1 reports every reading.
 
 ### 8.6 Where this paper falls short of its own rules
 

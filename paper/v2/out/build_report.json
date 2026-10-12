@@ -105,7 +105,7 @@
   "paper/v2/ledger_proposals/W6.md"
  ],
  "ledger_ids_distinct": 172,
- "ledger_tags": 791,
+ "ledger_tags": 805,
  "cite_tags_keys": 54,
  "cite_keys_distinct": 39,
  "cited_keys_in_order": [
@@ -238,7 +238,7 @@
   {
    "section": "00_abstract.md",
    "line": 24,
-   "text": "We used the LLM assistant Claude under our direction; its uses included drafting design documents and reviews, proposing options for our decisions, writing and running the code, analyses and figures, helping with literature search and citations, and drafting this text from our records. The authors are responsible for every word."
+   "text": "We used the LLM assistant Claude under our direction; its uses included drafting design documents and reviews, proposing options for our decisions, writing and running code and analyses, making figures, helping with literature search and citations, and drafting this text from our records. The authors are responsible for every word."
   }
  ],
  "toc": [
@@ -464,7 +464,7 @@
    "from": "01_introduction.md:40",
    "kind": "section",
    "label": "6.4",
-   "context": "r three                seeds (§6.4), and by the project's own lo",
+   "context": "r three                seeds (§6.4), and none of the three      ",
    "target": "06_coupling_b.md:72",
    "target_text": "6.4 Survival cost at High severity"
   },
@@ -769,6 +769,14 @@
    "kind": "theorem",
    "label": "1",
    "context": "ating, with bounded diameter. Theorem 1 (§6) is kin to the constructi",
+   "target": "06_coupling_b.md:56",
+   "target_text": "**Theorem 1 (Memorization gap, and its erosion by Coupling B).** Consider the two-corridor"
+  },
+  {
+   "from": "02_related_work.md:47",
+   "kind": "theorem",
+   "label": "1",
+   "context": "t construction does not cover Theorem 1. That construction obtains a ",
    "target": "06_coupling_b.md:56",
    "target_text": "**Theorem 1 (Memorization gap, and its erosion by Coupling B).** Consider the two-corridor"
   },
@@ -1338,7 +1346,7 @@
    "label": "6",
    "context": "gure 1 to step between them); Figure 6 counts them under trained pol",
    "target": "05_coupling_a.md:25",
-   "target_text": "<figcaption><strong>Figure 6.</strong> Coupling A under trained policies, and the two Prop"
+   "target_text": "<figcaption><strong>Figure 6.</strong> Coupling A under trained policies, and the Proposit"
   },
   {
    "from": "05_coupling_a.md:24",
@@ -1354,13 +1362,13 @@
    "label": "6",
    "context": "<figcaption><strong>Figure 6.</strong> Coupling A under trai",
    "target": "05_coupling_a.md:25",
-   "target_text": "<figcaption><strong>Figure 6.</strong> Coupling A under trained policies, and the two Prop"
+   "target_text": "<figcaption><strong>Figure 6.</strong> Coupling A under trained policies, and the Proposit"
   },
   {
    "from": "05_coupling_a.md:25",
    "kind": "proposition",
    "label": "3",
-   "context": "ained policies, and the two Proposition 3 runs. <em>Top:</em> collapse-se",
+   "context": "r trained policies, and the Proposition 3 runs. <em>Top:</em> collapse-se",
    "target": "05_coupling_a.md:77",
    "target_text": "**Proposition 3 (Collapse events dominate hazard exposure).** Work in the subcritical regi"
   },
@@ -1370,7 +1378,7 @@
    "label": "6",
    "context": " caption=\"Static companion of Figure 6 for the printed PDF.\" %}",
    "target": "05_coupling_a.md:25",
-   "target_text": "<figcaption><strong>Figure 6.</strong> Coupling A under trained policies, and the two Prop"
+   "target_text": "<figcaption><strong>Figure 6.</strong> Coupling A under trained policies, and the Proposit"
   },
   {
    "from": "05_coupling_a.md:29",
@@ -1622,9 +1630,17 @@
   },
   {
    "from": "07_comms.md:21",
+   "kind": "section",
+   "label": "7.3",
+   "context": "ure 9; one threshold is VOID, §7.3).",
+   "target": "07_comms.md:67",
+   "target_text": "7.3 In CHE the channel carries nothing measurable"
+  },
+  {
+   "from": "07_comms.md:21",
    "kind": "figure",
    "label": "9",
-   "context": "effect of it cleared its bar (Figure 9).",
+   "context": "ct of it cleared a valid bar (Figure 9; one threshold is VOID, §7.3)",
    "target": "07_comms.md:23",
    "target_text": "{% include figure.html path=\"assets/img/submission/fig06_comms.png\" class=\"img-fluid\" alt="
   },
@@ -1776,7 +1792,7 @@
    "from": "07_comms.md:79",
    "kind": "section",
    "label": "9",
-   "context": "The composition §9 tests is thus, in effect, Cou",
+   "context": "The composition §9 tests is, in effect, Coupling",
    "target": "09_compositional_test.md:3",
    "target_text": "9 The pre-registered compositional test"
   },
@@ -1896,7 +1912,7 @@
    "from": "08_methodology.md:73",
    "kind": "section",
    "label": "9.1",
-   "context": "read it before unblinding, so §9.1 reports every reading.",
+   "context": "updates before unblinding, so §9.1 reports every reading.",
    "target": "09_compositional_test.md:24",
    "target_text": "9.1 Design"
   },
@@ -2080,7 +2096,7 @@
    "from": "09_compositional_test.md:56",
    "kind": "section",
    "label": "9.2",
-   "context": "In the 2000-update subsample (§9.2), the differential training-l",
+   "context": "T = 2000 in the registration; §9.2), the differential training-l",
    "target": "09_compositional_test.md:62",
    "target_text": "9.2 Results"
   },
@@ -2088,7 +2104,7 @@
    "from": "09_compositional_test.md:58",
    "kind": "appendix",
    "label": "E",
-   "context": "ded before unblinding, are in Appendix E. Branch B (survival only) als",
+   "context": "ded before unblinding, are in Appendix E. Beyond a null completion con",
    "target": "14_appendix_plan_provenance.md:94",
    "target_text": "E The registered outcome branches"
   },
@@ -2200,7 +2216,7 @@
    "from": "09_compositional_test.md:110",
    "kind": "section",
    "label": "9.1",
-   "context": "          , as over 500–1000 (§9.1). The drift it measures has n",
+   "context": "er 500–1000                  (§9.1). The drift it measures has n",
    "target": "09_compositional_test.md:24",
    "target_text": "9.1 Design"
   },

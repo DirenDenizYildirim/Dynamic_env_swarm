@@ -71,3 +71,25 @@ sentence's provenance row names its finding ID.
 | §9 | 2,398 (9.1 1,199; 9.2 1,094; 9.3 105) | 2,100 (+14 %) |
 | index + App. A | 953 | about 800 |
 | App. D–I | 969 (quotations excluded) | about 850 |
+
+## Re-check items
+
+Step 4.3, 2026-10-12, from the "Re-check (draft2)" sections of RN2 and RC2. Line numbers are draft2's.
+
+| finding ID | outcome (fixed / declined / owner) | what changed, or why not |
+|---|---|---|
+| RN2-R2 | fixed | MUST. §9.1:56: the "1000" now carries DES-13, which holds T\* = 1000. The four floor studies' budgets are cited in the provenance row: `m62b_report.md:1, :22`, `g1_2_report.md:5`, and `provenance.txt:7` in both `g1_floors_2026-09-08` and `g1_floors_5090`. §9.2:110: "500–1000" now carries DES-11. |
+| RN2-R3 | fixed | §9.1:56: bias (b) is now "JOINT − ISO completion drift over the last 100 of 1000 training updates", and "the four floor studies that read it at 1000 updates" give the three RTX PRO 6000 readings in one sentence. GPU 1's −0.0083 follows on its own. M6.2's 500-update reading therefore falls outside the definition, matching §8.5. |
+| RC2-5 (re-check) | fixed | App. A:48: seed age now states its direction, "seeds born late have not reached full mass, which lowers the measured slope" (TF:333-334; `phase3_report.md:106-109`). This matches §5.2:85, so all four signs stated in App. A are known. The 74-word sentence is split after "a known sign". |
+| RC2 note on `09:50` (re-check) | fixed | "every confirmatory run" becomes "every run in the confirmatory artifact", because seeds 1–12 first ran on an RTX PRO 6000 (App. F; DX-30). |
+| RC2-R2 | fixed | Orchestrator decision applied. §9.1:56 defines the subsample at first use as "the 2000-update subsample (T = 2000 in the registration; §9.2)", with 2000 tagged RES-15. App. D:65's label is now "The 2000-update subsample", and App. F:110 reads "ISO-4 and the 2000-update subsample". The quoted registered text (App. D:67) and the table's Γ(2000) label are unchanged. |
+| RC2-R3 | fixed | §9.1:58: "Beyond a null completion contrast and a positive survival contrast, branch B needs a registered falsifier to pass", following App. E's row B (completion null, survival +). |
+
+**Counts (re-check):** 6 fixed, 0 declined, 0 owner. No new ledger rows; the new tags use DES-13, DES-11 and RES-15.
+
+**Budget after the re-check:** §9 2,420 words (9.1 1,221; 9.2 1,094; 9.3 105) against 2,100 (+15 %). Index + App. A 965 (about 800). App. D–I 967, quotations excluded (about 850).
+
+| finding ID | outcome (fixed / declined / owner) | what changed, or why not |
+|---|---|---|
+| RN2-F1 | fixed | MUST, from RN2's final re-check (draft3). App. D:65: "The 2000-update<!-- N:RES-15 --> subsample". RES-15 (`paper/numbers_ledger.md:154`, "T = 2000, descriptive"; Γ(2000) on 4 seeds) holds the subsample's 2000. Only a comment tag was added, so the sentence text and its provenance row are unchanged. |
+| RC2-F1 | fixed | From RC2's final re-check (draft3). §9.1:56: GPU 1's reading is back in the same sentence: "The four floor studies that read it at 1000 updates gave +0.0242 …, +0.01209 … and +0.0179 …, all three on an RTX PRO 6000, but −0.0083 on GPU 1." The count and the four values are now read together. The rows are unchanged (V6-4, DES-10, DES-5, DES-13). The sentence's provenance row is updated, and the row for the removed sentence "On GPU 1 it read −0.0083." is dropped. |

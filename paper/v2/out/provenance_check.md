@@ -6,7 +6,7 @@
 
 ## sections/00_hero.md
 
-9 sentences, 9 rows: 0 without a row, 0 stale, 0 support problems.
+10 sentences, 10 rows: 0 without a row, 0 stale, 0 support problems.
 
 ## sections/01_introduction.md
 
@@ -42,7 +42,7 @@
 
 ## sections/09_compositional_test.md
 
-156 sentences, 156 rows: 0 without a row, 0 stale, 0 support problems.
+155 sentences, 155 rows: 0 without a row, 0 stale, 0 support problems.
 
 ## sections/10_limitations.md
 
@@ -54,7 +54,7 @@
 
 ## sections/12_appendix.md
 
-66 sentences, 66 rows: 0 without a row, 0 stale, 0 support problems.
+67 sentences, 67 rows: 0 without a row, 0 stale, 0 support problems.
 
 ## sections/13_appendix_locks_floors.md
 
@@ -74,7 +74,7 @@
 
 ## sections/alt/00_hero.ladder.md
 
-12 sentences, 12 rows: 0 without a row, 0 stale, 0 support problems.
+13 sentences, 13 rows: 0 without a row, 0 stale, 0 support problems.
 
 ## sections/alt/04_severity.no_item4.md
 

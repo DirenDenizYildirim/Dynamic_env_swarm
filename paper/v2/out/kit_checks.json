@@ -1,11 +1,11 @@
 {
  "summary": {
-  "pass": 34,
-  "fail": 1,
+  "pass": 35,
+  "fail": 0,
   "info": 5
  },
  "run": {
-  "run_name": "kit_run_20261012_072946_2118",
+  "run_name": "kit_run_20261012_074823_10939",
   "root": "v2",
   "sha256": "e531434b698e04dc9e07e4100c8eb21f3a5a9caca873c102b589af4e9bacc2d5",
   "sha_ok": true,
@@ -204,13 +204,10 @@
   {
    "group": "Links and frames",
    "check": "iframe height attributes within 5 % of the height at 60 s, 1280 px (P2 §7.2)",
-   "status": "FAIL",
-   "counts": "8 of 11 within 5 %",
+   "status": "PASS",
+   "counts": "11 of 11 within 5 %",
    "details": [
-    "explorer_thetastar_random_seed0.html: attr 1100, height at 60 s 700 (-57.1 %)",
-    "explorer_thetastar_iso_s1_T1000_ep0.html: attr 868, height at 60 s 700 (-24.0 %)",
-    "explorer_thetastar_joint_s1_T1000_ep0.html: attr 872, height at 60 s 700 (-24.6 %)",
-    "all: explorer_thetastar_random_seed0.html: attr 1100, height at 60 s 700 (-57.1 %); composer_training_mixtures.html: attr 442, height at 60 s 454 (2.6 %); opening_ladder.html: attr 427, height at 60 s 439 (2.7 %); severity_explorer.html: attr 528, height at 60 s 536 (1.5 %); coupling_a_explorer.html: attr 736, height at 60 s 748 (1.6 %); floors_explorer.html: attr 472, height at 60 s 484 (2.5 %); ladder_registered_readings.html: attr 1012, height at 60 s 1024 (1.2 %); gamma_t_final_half.html: attr 503, height at 60 s 515 (2.3 %); simplex_secondary.html: attr 832, height at 60 s 844 (1.4 %); explorer_thetastar_iso_s1_T1000_ep0.html: attr 868, height at 60 s 700 (-24.0 %); explorer_thetastar_joint_s1_T1000_ep0.html: attr 872, height at 60 s 700 (-24.6 %)"
+    "all: explorer_thetastar_random_seed0.html: attr 700, height at 60 s 700 (0.0 %); composer_training_mixtures.html: attr 442, height at 60 s 454 (2.6 %); opening_ladder.html: attr 427, height at 60 s 439 (2.7 %); severity_explorer.html: attr 528, height at 60 s 536 (1.5 %); coupling_a_explorer.html: attr 736, height at 60 s 748 (1.6 %); floors_explorer.html: attr 472, height at 60 s 484 (2.5 %); ladder_registered_readings.html: attr 1012, height at 60 s 1024 (1.2 %); gamma_t_final_half.html: attr 503, height at 60 s 515 (2.3 %); simplex_secondary.html: attr 832, height at 60 s 844 (1.4 %); explorer_thetastar_iso_s1_T1000_ep0.html: attr 700, height at 60 s 700 (0.0 %); explorer_thetastar_joint_s1_T1000_ep0.html: attr 700, height at 60 s 700 (0.0 %)"
    ]
   },
   {
@@ -315,7 +312,7 @@
    "group": "Leaks and print",
    "check": "comment-stripped staged submission.md (M4)",
    "status": "PASS",
-   "counts": "829 comments in out/submission_v2.md (16 STUB-SPEC), 0 '<!--' left in the staged copy",
+   "counts": "843 comments in out/submission_v2.md (16 STUB-SPEC), 0 '<!--' left in the staged copy",
    "details": []
   },
   {
@@ -329,7 +326,7 @@
    "group": "Leaks and print",
    "check": "stripping removed only comments (stripped build = unstripped build)",
    "status": "PASS",
-   "counts": "rendered text identical (130978 chars); tables [16, 16]; math [413, 413]; listings [6, 6]",
+   "counts": "rendered text identical (131247 chars); tables [16, 16]; math [413, 413]; listings [6, 6]",
    "details": []
   },
   {
@@ -360,12 +357,12 @@
    "title": "Episode explorer: one random-policy episode of CHE at the held-out configuration",
    "loaded": true,
    "same_origin": true,
-   "attr_height": 1100,
+   "attr_height": 700,
    "final_height": 700,
    "content_height": 700,
    "http_status": 200,
    "settled_height_1280": 700,
-   "attr_deviation_pct": -57.1
+   "attr_deviation_pct": 0.0
   },
   {
    "src": "/tmlr-beyond-pdf/assets/html/submission/composer_training_mixtures.html",
@@ -468,24 +465,24 @@
    "title": "Episode explorer, ISO policy, training seed 1",
    "loaded": true,
    "same_origin": true,
-   "attr_height": 868,
+   "attr_height": 700,
    "final_height": 700,
    "content_height": 700,
    "http_status": 200,
    "settled_height_1280": 700,
-   "attr_deviation_pct": -24.0
+   "attr_deviation_pct": 0.0
   },
   {
    "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_joint_s1_T1000_ep0.html",
    "title": "Episode explorer, JOINT policy, training seed 1",
    "loaded": true,
    "same_origin": true,
-   "attr_height": 872,
+   "attr_height": 700,
    "final_height": 700,
    "content_height": 700,
    "http_status": 200,
    "settled_height_1280": 700,
-   "attr_deviation_pct": -24.6
+   "attr_deviation_pct": 0.0
   }
  ],
  "growth": [
@@ -981,7 +978,7 @@
  },
  "footnotes": [
   {
-   "text": "We used the LLM assistant Claude under our direction; its uses included drafting design documents and reviews, proposing options for our decisions, writing and running the code, analyses and figures, helping with literature search and citations, and drafting this text from our records. The authors are responsible for every word.",
+   "text": "We used the LLM assistant Claude under our direction; its uses included drafting design documents and reviews, proposing options for our decisions, writing and running code and analyses, making figures, helping with literature search and citations, and drafting this text from our records. The authors are responsible for every word.",
    "marker_y": 656,
    "marker_frac": 0.009,
    "marker_number": "1",

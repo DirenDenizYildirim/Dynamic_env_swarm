@@ -228,3 +228,115 @@ From `out/kit_checks.md:95-96`, this session's B2 build, which I did not run:
 - the footnote text prints on page 47 of 50.
 
 The default therefore does not put the disclosure text on the first page in print. That is still Q4f, not a new finding.
+
+## Re-check (draft2)
+
+RC1, step 4.3, 2026-10-12. Snapshot `paper/v2/snapshots/draft2/`; the live `sections/` equals it (checked by `diff -rq`).
+
+**Method**
+- For each finding above, I read its outcome in `review/resolutions_W1.md`–`W6.md` and checked the new line in draft2 against the record. The record's lines read for this pass:
+  - log:4153-4162 ("at Medium B is quiet … no severity at which both couplings are strongly behaviourally live");
+  - log:5321 ("Survival is learned through two **hazard-blind** routes");
+  - `severity_lock.md:30-37` ("outrunnable, barely"; "escape is possible in principle");
+  - TF:328-340 (the signs of the Proposition 3 finite-protocol corrections);
+  - `RWV`:948, :1042-1053.
+- I reviewed every changed line in my scope, read from `diff_draft1_draft2.txt` with a word-level diff script (scratch `RC1/wdiff.py`), opening draft2 for context. That covers the abstract, the footnote, the hero, the alternates, §1–§7, and §2's provenance, where the Q4a list now lives.
+- Not in my lane: the ledger rows and the newly tagged numbers (V3-1, V4-3 and the others).
+
+### Verdicts on the original findings
+
+| finding ID | outcome claimed | verdict | note |
+|---|---|---|---|
+| RC1-1 (MUST) | fixed (W1) | OK | The footnote now reads "its uses included …", so it is not a complete list, and it adds design documents and reviews and the proposing of options. Each item has record support (provenance row 2), it names the tool and not the author, and provenance withdraws the "lists every use" claim. Two wording points remain. "running … figures" is a zeugma (RC1-R6). The record's "Decided jointly (owner + RA)" entries (`severity_lock.md:3`; log:233, :1065) appear only as "proposing options for our decisions"; that is accurate under "included", and the scope stays with the owner as Q16 (provenance open item 2) |
+| RC1-2 (MUST) | fixed (W1) | OK | "The authors are responsible for every word." is true now. Mirrored in both abstract alternates (diff checked) |
+| RC1-3 (OWNER) | owner (W1, W2, W6) | OK | Recorded for Q4h and Q16 in `provenance/00_abstract.md` open item 2(a), `provenance/01_introduction.md` open item 7, and W6's resolutions. The default text ("A review of the registered design identified the bias") neither says nor denies who wrote the review, so it remains accurate |
+| RC1-4 | fixed | OK | "…and switching it off reproduces the nested model's trajectories bit for bit" is the owner's §1 wording. The incomplete inference is gone |
+| RC1-5 | fixed | OK | "Joint and isolated training are run …" and "a third". Not adding the arm labels to sentence 1 is a sound choice: they would push it past the 40-word limit |
+| RC1-6 | fixed | OK | The presupposition is gone. "outside the two confirmatory tests" matches the hero's note, and keeping "unblinding" was allowed |
+| RC1-7 | fixed | OK | "[+0.47, +1.44]" in the abstract and both alternates |
+| RC1-8 | fixed | OK | "under our direction"; "from our records" |
+| RC1-9 (MUST) | fixed | OK | "Only the selected agent's three panels concern perception: … those cells' true state, for comparison, …" The true-state panel is no longer called perception |
+| RC1-10 | fixed | OK | "The held-out configuration θ\*, episode key, policy and stochastic actions were fixed before rendering." |
+| RC1-11 | fixed (W1); declined (W3, W4: not their files) | OK | The "recurring ones" wording no longer implies a closed list. The new punctuation creates a garden path (RC1-R1) |
+| RC1-12 | fixed | OK | "JOINT trains on all stressors together, ISO on each alone" is clear. The new "Its “full ladder: §9.2” is Figure 11." is ambiguous (RC1-R2) |
+| RC1-13 | fixed | OK | T2 now says "a pre-registered test in which joint training's survival gain …" (191 characters, as stated). T4 now uses the ratified wording (133 characters, as stated) |
+| RC1-14 | fixed | OK | "…for survival and task completion under a lethal fire" (DES-13) |
+| RC1-15 | fixed | OK | It now states the consequence in the record's words (log:4157-4160), with the pointer to §6.4. One small F5 point: "locks" is used before §4 defines it (RC1-R7) |
+| RC1-16 | fixed | OK | The restatement is cut, and the concession now ends the Γ₄ sentence, where it reads correctly |
+| RC1-17 | fixed | OK | "…that trains its isolated arm on a mixture of single stressors and matches that arm to the joint one on this share". This now agrees with §2's "No arm trains on a mixture of single-type attacks" and with RWV:883-887 |
+| RC1-18 | declined in §1 (W2); fixed in §9.1 (W6) | OK | §9.1:32 no longer defines the founding hypothesis. §1, §9.1 and App. E now agree |
+| RC1-19 | fixed | OK | "Under the measurement protocol of §8, acceptance bars come with floors …" |
+| RC1-20 | fixed | OK | "…which was registered before unblinding" |
+| RC1-21 | fixed (W2); declined (W1: not its file) | OK | The registered string now qualifies the gain ("the gain “does not survive the inert-share correction” (Γ₄ null)"), and "X₄, on the completion row". Verbatim string kept |
+| RC1-22 | fixed | OK | Glossed at its first use in §1 (01:38) |
+| RC1-23 | fixed | OK | "No attacked arm schedules clean steps, so none has a counterpart …" matches RWV:1044. The provenance's Q4a list was not updated to match (RC1-R5) |
+| RC1-24 | fixed | OK | "generally the most effective, which the authors hypothesize is due to the combinations it covers" matches RWV:948, and the implied contrast is cut. Flagged Q4a in rows 35–36 |
+| RC1-25 | fixed | OK | The restored premise matches RWV:1050-1053 and `finale.md:335-339`. The inserted relative clause leaves "but it is not covered by it" ambiguous (RC1-R3) |
+| RC1-26 | fixed | OK | The owner's word order |
+| RC1-27 | fixed | OK | "fire and structure differ only far from every agent, which pins the alive transition equal" matches `test_reward_independence.py:8-13` |
+| RC1-28 | fixed (W3); declined for §5–§7 (W4) | OK | §4:50 now reads "fixed on 2026-07-19, before the main experiment", which matches DX-401. The definition belongs in §4, so W4's decline is sound |
+| RC1-29 | fixed in part; "two hazard-blind routes" declined | OK | The cuts and rewrites are correct. The decline is sound: the phrase is the DEF. 2 WORDING RULING's own (log:5321) |
+| RC1-30 | fixed | OK | "Their range brackets …"; "escape is possible in principle" (`severity_lock.md:36-37`). Note: "barely" was also the record's word (`severity_lock.md:31`), so my "aphoristic" label overstated it, but the replacement is accurate |
+| RC1-31 | fixed | OK | "Status: top, trained policies, 500 updates, seed ranges; bottom, no agents". The same caption now has an unclear phrase (RC1-R4) |
+| RC1-32 | fixed | OK | All three rewrites are as proposed, and accurate |
+| RC1-33 | fixed | OK | The uncited clause is cut |
+| RC1-34 | fixed | OK | "6.4 Survival cost at High severity" |
+| RC1-35 | fixed | OK | "In CHE, with a frozen message encoder, no measured effect of it cleared its bar (Figure 9)." |
+| RC1-36 | fixed | OK | The direction now matches `phase5_report.md:975-978` (δ = 0 minus δ = 1) |
+| RC1-37 | fixed | OK | "…leaves communication some value here, which the measurements find weak at this scale and this death price" is the record's "weak" (log:1086-1088) |
+| RC1-38 | fixed / fixed in part (W1–W4) | OK | ", so" clauses in my scope fell from 44 to 28 (recounted on draft2), all three priority sites included. The ones I sampled (§2:35, :45 ×2; §6:62; §7:35 ×2) each state a real inference |
+| RC1-39 | fixed (W6) | OK | App. A:48 no longer cites "Corollary 1(3)" |
+
+Not a finding, recorded for the owner: the abstract grew to 384 words (W1's count; 386 by mine) against a budget of 360, and §1 grew to 1,174 words against 950. Both increases are recorded under Q20 with their causes.
+
+### New findings on changed lines
+
+| ID | severity | file:line (draft2) | quoted text (short) | problem | evidence | proposed fix | class |
+|---|---|---|---|---|---|---|---|
+| RC1-R1 | SHOULD | `00_hero.md:25`; `alt/00_hero.ladder.md:18` | "Captions carry a status; the recurring ones are illustrative (grades nothing); registered (…); …" | Garden path: on first reading "the recurring ones are illustrative" is a predicate, as if the recurring statuses were illustrative. | — | "Captions carry a status. The recurring ones are: illustrative (grades nothing); registered (…); …". Adds no words (the semicolon becomes a full stop, plus a colon). | — |
+| RC1-R2 | SHOULD | `alt/00_hero.ladder.md:11` | "Not shown: Γ is sign unstable over the final half on both outcomes (Figure 12). Its “full ladder: §9.2” is Figure 11." | "Its" could refer to Γ, the previous subject. | — | "The figure's “full ladder: §9.2” is Figure 11." That is one more word; cut "on both outcomes" to "on both" if the 120-word cap needs it. | — |
+| RC1-R3 | SHOULD | `02_related_work.md:47` | "…before anything distinguishes the candidate MDPs, but it is not covered by it." | Two pronouns with different referents (Theorem 1; the construction) follow a relative clause about MDPs. The clause reads as garbled. | `paper/finale.md:335` ("kin to that construction but not covered by it") | "…before anything distinguishes the candidate MDPs, but that construction does not cover it." | — |
+| RC1-R4 | SHOULD | `05_coupling_a.md:25` (Figure 6 caption) | "the second (v2, a revised suite test) has no committed data file and is shown as values" | It is unclear what "is shown as values" means; draft1's "its panel gives values" was clearer. | `05_coupling_a.md:90`; CA-3 ("report text only, no JSON") | "…has no committed data file, so its panel prints the reported values only". | — |
+| RC1-R5 | SHOULD | `provenance/02_related_work.md:111-133` (open item 1, Q4a) | "Five sentences change … row 43 … now 'one is an unattacked baseline, and in each of the others an attack is computed at every step, with no scheduled clean steps' … would settle all three." | The list the owner will decide Q4a from is out of date in three ways. Its quote of row 43 is draft1's text (the clean-steps clause moved to row 44). Row 44 also departs from the owner's final text ("their design has no counterpart …", `finale.md:310-312`) and is marked Q4a in its own row, but the list omits it. And "settle all three" should now be "all six". | `provenance/02_related_work.md` rows 43–44 (draft2); `sections/02_related_work.md:45` | Quote row 43's draft2 text, add row 44 with the owner's wording, and change "all three" to "all six" (or the final count). | B (provenance must match the text the owner checks) |
+| RC1-R6 | SHOULD | `00_abstract.md:24` (footnote); `alt/00_abstract.no_recommendation.md:9`; `alt/00_abstract.disclosure_line.md:15` | "writing and running the code, analyses and figures" | Zeugma: "running … figures". | FIGURES (log:5789-5791: figures "made by the builder") | "writing and running the code and analyses, making the figures". One more word; the footnote stays within its one-or-two-sentence form. Mirror the change in both alternates. | — |
+| RC1-R7 | SHOULD | `01_introduction.md:40` | "and by the project's own locks no severity has both couplings strongly live (§10)" | "Locks" is internal vocabulary used before §4.2 defines it, and "the project's" is process voice. | BRIEF §5.2 rows "lock, locked" and "Phase-N" (process vocabulary); `04_severity.md:50` (where it is defined) | "and none of the three severities has both couplings strongly live (§10)". | A (F5) |
+
+**Count (re-check):** 39 original findings: 39 OK, 0 NOT OK. Of these, 38 are fixed (RC1-29 only in part; its declined part is sound) and 1 is owner (RC1-3). New findings: 0 MUST, 0 OWNER, 7 SHOULD.
+
+Checked and clean on the changed lines:
+- the abstract's registered strings are verbatim, and its F2 order is unchanged;
+- F3 timeline unchanged (abstract, §1:40, §7);
+- F4: no "therefore" was introduced;
+- the abstract alternates differ from the default only as before;
+- `front_matter.yaml` is unchanged;
+- the §2 Q4a sentences themselves (rows 16, 35, 36, 42, 43, 44) are accurate to RWV:948, :1039-1045;
+- §5:88's new correction signs match TF:328-340;
+- §6:80's "two GPUs, 1.29 and 1.30 points" matches METH-1 and §8;
+- §1:55's narrowed novelty sentence is consistent with §2 and RWV:883-887.
+
+## Final re-check (draft3)
+
+RC1, 2026-10-12. Snapshot `paper/v2/snapshots/draft3/`; the live `sections/` equals it (checked by `diff -rq`).
+
+**Method:** I read each fix in draft3 against the outcome claimed under "Re-check items" in `resolutions_W1.md`, `W2.md` and `W4.md`, and reviewed every changed line in my scope from `diff_draft2_draft3.txt`. I checked the quotes in the Q4a list against `paper/finale.md` at the cited lines.
+
+| finding ID | outcome claimed | verdict | note |
+|---|---|---|---|
+| RC1-R1 | fixed (W1) | OK | `00_hero.md:25` and `alt/00_hero.ladder.md:18` now read "Captions carry a status. Recurring statuses: illustrative (grades nothing); …". The garden path is gone |
+| RC1-R2 | fixed (W1) | OK | `alt/00_hero.ladder.md:11` now reads "The figure's “full ladder: §9.2” is Figure 11." The trim to "Completion: both null, Γ₄ a second exclusion bound" keeps the registered string "second exclusion bound" |
+| RC1-R3 | fixed (W2) | OK | `02_related_work.md:47`: "…but that construction does not cover Theorem 1." The referents are now explicit, and the clause still agrees with `finale.md:335` and RWV:1050-1053 |
+| RC1-R4 | fixed (W4) | OK | `05_coupling_a.md:25`: "…has no committed data file, so its panel gives the reported values." The "Bottom" clause still says "the two runs, kept apart", so "the second" still has its referent |
+| RC1-R5 | fixed (W2) | OK | Open item 1 in `provenance/02_related_work.md` now lists six sentences, each with the owner's exact text and the current v2 text, and ends "settle all six". I spot-checked the five quotes against `finale.md:214-218, :281-286, :299-303, :305-307, :310-312`; all match. The v2 quotes match draft3 rows 16, 35, 41–44 |
+| RC1-R6 | fixed (W1) | OK | "writing and running code and analyses, making figures" in the default footnote (`00_abstract.md:24`) and both abstract alternates. It is still a non-exhaustive "included" list, names the tool and not the author, and ends "The authors are responsible for every word." |
+| RC1-R7 | fixed (W2) | OK | `01_introduction.md:40`: "…and none of the three severities has both couplings strongly live (§10)". This matches log:4158-4160 ("no severity at which both couplings are strongly behaviourally live") |
+
+**Other changed lines in scope, reviewed:**
+- `07_comms.md:21` now reads "under a frozen encoder, no measured effect of it cleared a valid bar (Figure 9; one threshold is VOID, §7.3)". This is accurate: only the void condition (iii)'s 20 % threshold was exceeded, and the observation stayed below its 27.2 % nondeterminism (COM-5). The full encoder phrase stands in §7.3.
+- `07_comms.md:51` ("the trunk") and `:79` ("is, in effect,") are wording only.
+- Tag-only edits (`06_coupling_b.md:78`, `07_comms.md:73`) are in the numbers lane.
+- The hero iframe height (1100 → 700) is mechanics, in RM's lane.
+- Registered strings, F3 and F4 are unchanged in the abstract, §1 and the alternates.
+
+No new findings.
+
+**Count (final re-check):** 7 of 7 re-check items OK, 0 NOT OK. New findings (RC1-F): 0 MUST, 0 OWNER, 0 SHOULD.

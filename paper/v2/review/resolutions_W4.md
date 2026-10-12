@@ -47,3 +47,19 @@ Not applicable to my files (checked): orchestrator decisions 1 and 2 (neither th
 - `build_v2.py`: 0 failures, 0 warnings, 0 M1 flags; listings 6/6 identical.
 - `provenance_check.py --strict 05_coupling_a 06_coupling_b 07_comms`: 55, 68 and 48 sentences, all with a row, 0 stale, 0 support problems. The checker now splits four pass-1 rows that it previously joined (§5 rows 13, 15, 17; §6 row 54); each gained a second row.
 - Prose words (P3's counter): §5 935 (budget 850, +10.0 %), §6 1,145 (1,050, +9.0 %), §7 877 (800, +9.6 %). Captions: Fig. 6 120 (cap 120), Fig. 7 78, Fig. 8 64, Fig. 9 80 (caps 80).
+
+## Re-check items
+
+From the "Re-check (draft2)" sections of RN1 and RC1 (2026-10-12). **4 fixed.**
+
+| finding ID | outcome (fixed / declined / owner) | what changed, or why not |
+|---|---|---|
+| RN1-R1 (MUST) | fixed | §6.4: "−6.87 and −10.66 points [tag DX-13] for the grid's two seeds [tag DX-40] and −4.70 points for a same-seed retrain [tag DX-13]". Each value now carries the row that holds it, and DX-40 tags only "two seeds" |
+| RN1-R2 (SHOULD) | fixed | §7.3: COM-4 now tags 0.38, 1.43, 7.99 and 2.60 each at the number |
+| RN1-R3 (SHOULD) | fixed | §7 opening: "In CHE, under a frozen encoder, no measured effect of it cleared a valid bar (Figure 9; one threshold is VOID, §7.3)." This uses only existing rows (COM-2 to COM-5, DX-16, V4-1, V4-3); "message" was dropped from "frozen message encoder" to stay within budget |
+| RC1-R4 (SHOULD) | fixed | Fig. 6 caption: "and is shown as values" → "so its panel gives the reported values". To stay at the 120-word cap, "the two Proposition 3 runs" → "the Proposition 3 runs" in the caption's first sentence, and "a revised suite test" → "a revised test" |
+
+**Checks after the re-check fixes:**
+- `build_v2.py`: 0 failures, 0 warnings, 0 M1 flags. Its two final-only items, the front-matter date and the STUB-SPEC blocks, are not in my files.
+- `provenance_check.py --strict 05_coupling_a 06_coupling_b 07_comms`: 55, 68 and 48 sentences, 0 unsourced, 0 stale, 0 support problems.
+- Words: §5 935, §6 1,145, §7 880, all within the ±10 % tolerance. The Fig. 6 caption block is 120 words, at its cap.

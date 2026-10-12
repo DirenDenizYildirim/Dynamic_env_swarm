@@ -167,3 +167,114 @@ used matches its committed source. The MUST items fall into three groups:
 - The iframe heights in scope differ from BRIEF §16's table: Figure 1 is 1100 against 720, Figure 2 442 against 430, Figure 3 427 against 400, Figure 5 528 against 520, Figure 6 736 against 680. This is RM's lane (P2-5).
 - The abstract is 372 words against a 360 budget, which W1 disclosed.
 - "Completion shows no detectable change" (abstract and §1) is for the claims lane to judge against BRIEF §6.3, "not 'completion is unaffected'".
+
+## Re-check (draft2)
+
+RN1, step 4.3, 2026-10-12. Reviewed state: `paper/v2/snapshots/draft2/`, which
+equals the live `paper/v2/sections/` and `ledger_proposals/` (checked with
+`diff -r` this session). Line numbers below are draft2 lines.
+
+**Method (run this session).**
+- **Changed lines.** I took the in-scope hunks from
+  `snapshots/diff_draft1_draft2.txt` (13 files) and turned them into a word
+  diff (`scratchpad/RN1/wdiff.py`). Every changed line was read in full in
+  draft2.
+- **Tags.** I re-ran the tag extractor on draft2 (`extract2.py`): 343 tags,
+  98 IDs, 0 unresolved. Against draft1 there are 24 added tags and 0 removed,
+  apart from one DX-16 that moved within §7.3. Each added tag was checked
+  against its row.
+- **Untagged numbers.** I re-ran the untagged-numeral scan on the changed
+  lines only (`untagged3.py`).
+- **Interval signs.** I checked the `+` signs on every interval end in the
+  abstract, its two alternates and §1 by grep.
+- **Abstract alternates.** The tag sequences of the abstract and both
+  alternates are identical to each other and to draft1 (md5).
+- **Provenance.** I ran `provenance_check.py` on a scratch copy of draft2,
+  so no repository file was written: 13 of 13 in-scope files, 0 sentences
+  without a row, 0 stale rows, 0 support problems.
+- **Title candidates.** I recomputed the lengths with `len()`: T2 191 and T4
+  133 (both changed), T1 109, T1s 75, T3 172. All match `provenance/00_abstract.md`.
+  The title and `description` in `front_matter.yaml` are unchanged and
+  contain no numerals.
+
+### Verdicts on my findings
+
+| finding ID | outcome claimed | verdict | note |
+|---|---|---|---|
+| RN1-1 (MUST) | fixed (W3) | OK | `03_environment.md:161` now reads "in every configuration reported here except the $d_p$ ablation below (the code's default is 0)". The d_p = 0 runs it excepts are ENV-2's (`phase2_report.md:29`). In scope, no other CHE configuration with d_p ≠ 0.5 is reported (§4.4 is at d_p = 0.5, DX-203; M3.5, M4.4 and M5.x are at 0.5, DX-40, DX-305, COM-4). |
+| RN1-2 (MUST) | fixed (W4) | OK | `07_comms.md:71`: "put its bars at 10.44<!-- N:V4-3 --> (completion) and 12.43 points<!-- N:V4-3 --> (survival)". V4-3 is checked at its source below. 10.44 and 12.43 are 0.1044 and 0.1243 × 100. Not using my "excludes only effects larger than" wording is sound, because the stub forbids it for post-hoc bars. |
+| RN1-3 (MUST) | fixed (W4) | OK | `05_coupling_a.md:100`: "nine<!-- N:CA-6 -->" (CA-6 note: "9 cells"). "three<!-- N:CAL-3 --> severities" was also tagged. |
+| RN1-4 (MUST) | fixed (W4) | OK | `05_coupling_a.md:102`: "on two seeds per arm<!-- N:CA-7 -->" (CA-7 note: "2 seeds per arm"). |
+| RN1-5 (MUST) | fixed (W4) | OK | `06_coupling_b.md:76`: "three replicates<!-- N:DX-13 -->". DX-13 lists the three contrasts. |
+| RN1-6 (MUST) | fixed (W4) | **NOT OK** | The four tags are right: "two seeds<!-- N:DX-40 -->" (DX-40: 2 seeds at High), "one run per cell<!-- N:DX-13 -->", "two seeds<!-- N:CB-6 -->" and "two-seed<!-- N:DX-38 -->". So is the extra "three<!-- N:DX-13 --> replicate contrasts". However, the DX-40 tag now sits right after "−6.87 and −10.66 points for the grid's two seeds", so the nearest tag to those two values is a row that does not contain them. See **RN1-R1** for the required fix. |
+| RN1-7 (MUST) | fixed (W4) | OK | `06_coupling_b.md:80`: "a three-seed<!-- N:CB-9 --> spread" (CB-9 note: "3-seed σ_seed"). |
+| RN1-8 (MUST) | fixed (W4) | OK | `07_comms.md:71`: "twice<!-- N:COM-2 -->" (COM-2 note: "Bar = 2 × the M5.1e floor"). "Tripling" became "raising … from 1.01 to 2.99<!-- N:COM-3 -->", so no ratio word is left. The extra tags "three seeds<!-- N:DX-16 -->" (DX-16: 3 seeds) and "four seeds<!-- N:COM-4 -->" (COM-4: 4 seeds) are right. |
+| RN1-9 (MUST) | fixed (W3) | OK | `03_environment.md:128`: "one<!-- N:V3-1 -->". V3-1 is checked at its source below. |
+| RN1-10 (MUST) | fixed (W1) | OK | "CI [+0.47, +1.44]" appears at `00_abstract.md:26`, `alt/00_abstract.disclosure_line.md:11` and `alt/00_abstract.no_recommendation.md:11`. Every positive interval end in the abstract, its alternates and §1 now carries `+` (grep). The only unsigned "[0.47, 1.44]" left is inside `00_abstract.md`'s STUB-SPEC (`:8`), which is not prose and is stripped at staging. |
+| RN1-11 (SHOULD) | fixed (W4) | OK | "(from unrounded counts)" at `05_coupling_a.md:94`: 4.0527 / 0.8398 = 4.826 → 4.83. "(ratios of unrounded shares; …)" at `06_coupling_b.md:82`: 118.31 / 22.47 / 15.55 → 118, 22, 16 (`m44_analysis.json:587, :599, :611`). |
+| RN1-12 (SHOULD) | fixed (W4) | OK | `07_comms.md:73`: "measured on the GPU that ran the study". V4-2's corrected source, `m55/verdict.txt:3`, says "2x the floor measured on THIS card", and `phase5_report.md:955` names an RTX PRO 6000. |
+| RN1-13 (SHOULD) | fixed (W4) | OK | `06_coupling_b.md:80`: "on two<!-- N:METH-1 --> GPUs, are 1.29 and 1.30 points<!-- N:METH-1 -->". METH-1 gives survival 0.0129 (M5.1e, RTX 5090) and 0.0130 (M5.5, RTX PRO 6000); see `phase5_report.md:1012-1015`. Both were measured after M4.4. |
+| RN1-14 (SHOULD) | fixed (W1) | OK | "(Šidák-corrected CI [−0.68, +0.63])" now appears in the abstract and both alternates. That matches RES-6 and `post_gamma4_t2000.md:5` ("Šidák m = 2 … as the family"). |
+| RN1-15 (SHOULD) | fixed (W3, W4); declined (W2) | OK | Tags added: `04_severity.md:22` (and `alt/04_severity.no_item4.md:11`) "three<!-- N:CAL-3 -->"; `06_coupling_b.md:66` "three-condition<!-- N:CB-4 -->" (source `phase4_report.md:85-87`, "three-condition gate"); `06_coupling_b.md:70` "three<!-- N:DX-301 --> bands"; `05_coupling_a.md:100` "three<!-- N:CAL-3 -->". The §6.3 heading stays bare. W2's decline (keep §1:25's tag and tag the others instead) is sound and gives the consistency I asked for. |
+| RN1-16 (OWNER) | owner (W2, W3) | OK | The text is unchanged where it matters. §2:45's "all six cells, one a tie" and "six training arms" match `related_work_verification.md:1038-1043`, as verified in pass 1. §2:47's rewritten sentence adds no cited-work numeral beyond "two-corridor", which is definitional. The question is recorded in provenance/02 and /03 for the owner. |
+
+### New and corrected ledger rows in my lane
+
+| row | verdict | check (this session) |
+|---|---|---|
+| V3-1 | OK | `che/env/env.py:241-243` reads `fire_cell = jax.random.randint(k_fire, (2,), minval=0, maxval=ll)`; `hazard = jnp.full((ll, ll), FUEL, …)`; `hazard = hazard.at[fire_cell[0], fire_cell[1]].set(BURNING)`. That is one Burning cell, at a uniformly random position, on an all-Fuel grid. `git status` shows `env.py` unmodified against HEAD. The row is a configured value (VERIFIED), so it needs no derivation. The frozen branch (`:244-251`) burns in from the same single ignition, and §3:54 says no reported configuration uses it, so "every episode" holds for the reported runs. |
+| V4-3 | OK | `phase5_report.md:877-880` (the "bar = 2×" table: completion 0.0522 → 0.1044, survival_rate 0.0621 → 0.1243) and `:870-871` (RTX PRO 6000; "4 floor runs") match the row. Points: 0.1044 × 100 = 10.44 and 0.1243 × 100 = 12.43. The factor of 2 checks against the unrounded floors: 2 × 0.0521805 = 0.1044 and 2 × 0.0621459 = 0.1243 (`m53b/reproducibility_floor_high.json:4, :17`). The rounded floor gives 2 × 0.0621 = 0.1242, so the row could add one clause on this, as V4-2 does for 0.0799 (optional). |
+
+### New findings on changed lines
+
+| ID | severity | file:line | quoted text (short) | problem | evidence | proposed fix | class |
+|---|---|---|---|---|---|---|---|
+| RN1-R1 | MUST | `06_coupling_b.md:78` | "They are −6.87 and −10.66 points for the grid's two seeds<!-- N:DX-40 --> and −4.70 points for a same-seed retrain<!-- N:DX-13 -->" | The fix for RN1-6 put the DX-40 tag right after "−6.87 and −10.66 points for the grid's two seeds". The nearest tag to those two values is now DX-40, whose row (the M4.4/M3.5/M5.3b protocols) does not hold them. Their row, DX-13, follows only "−4.70". In draft1 the single DX-13 tag at the end of the list covered all three values. | DX-13 (`ledger_supplement.md:48`: −0.0687, −0.1066, −0.0470); DX-40 (`ledger_supplement.md:75`: protocols only); BRIEF §10 ("right after it") | "−6.87 and −10.66 points<!-- N:DX-13 --> for the grid's two seeds<!-- N:DX-40 --> and −4.70 points for a same-seed retrain<!-- N:DX-13 -->" | B |
+| RN1-R2 | SHOULD | `07_comms.md:73` | "completion is 0.38 points higher and survival 1.43 points lower with links open ($\delta = 0$) than with links denied ($\delta = 1$), against bars of 7.99 and 2.60 points<!-- N:COM-4 -->" | The rewritten sentence moves 0.38 and 1.43 away from their only tag. δ values and the bars now sit between them and the COM-4 tag at the end. The values themselves are right: COM-4 Δ = (δ = 0) − (δ = 1) is +0.0038 completion and −0.0143 survival, so "higher" and "lower with links open" are correct, and the bar order is completion 7.99, survival 2.60. Same row, so this is not a misattribution; but W4 tagged each count individually elsewhere in the same section. | COM-4 (`numbers_ledger.md:99`); `phase5_report.md:976-977` (δ 0: 0.7396 / 0.9188; δ 1: 0.7358 / 0.9331), `:979-980`; Figure 9(b) axis "Δ = (δ = 0) − (δ = 1)" | "0.38 points<!-- N:COM-4 --> higher and survival 1.43 points<!-- N:COM-4 --> lower …" | B |
+| RN1-R3 | SHOULD | `07_comms.md:21` | "In CHE, with a frozen message encoder, no measured effect of it cleared its bar (Figure 9)." | The new sentence is a numerical comparison, and it holds only for valid bars. Completion 0.38 < 7.99 and survival 1.43 < 2.60 points; the content ablations stayed at most 0.79× (Medium) and 0.65× (High) of their bars. But the denial study's danger-moment condition measured 23.2 % against its registered 20 % threshold, so the verdict as produced was "NOT INERT". That threshold is VOID because it is finer than its 27.2 % floor, and the effect does not clear the re-graded floor. §7.3 says VOID, but this opening sentence does not hint that one registered threshold was exceeded. | `phase5_report.md:964-965` ("threshold 20 % < instrument floor 27.2 % … 23.2 % < 27.2 %, not resolvable"), `:969-970` ("The verdict **as produced** (`m55/verdict.txt`, 'NOT INERT') stands unedited"); `:864` (M5.3, "The largest here is 0.79 of it"); `:898` (M5.3b, "0.65× the bar") | Write "no measured effect of it cleared a valid bar (one registered threshold is VOID; §7.3)", or keep the sentence and rely on §7.3 if the owner prefers the shorter opening | B |
+
+Arithmetic redone for changed lines: 10.44 / 12.43 (above); 0.38 / 1.43 /
+7.99 / 2.60 (COM-4 × 100); 1.29 / 1.30 (METH-1 × 100); 4.83 and 118 / 22 / 16
+from unrounded inputs (above). The §4.3 claim that the estimators' range
+[0.480, 0.513] "brackets Kesten's ½" holds. §4.3's front of 0.83 cells per
+step is below the agents' 1 cell per step, so "escape is possible in
+principle" holds. The date 2026-07-19 (DX-401; `locks.yaml:64, :74, :85`;
+`severity_lock.md:3`) precedes the main experiment. All checks hold.
+
+**Counts (re-check):** 15 OK, 1 NOT OK (RN1-6, through RN1-R1). V3-1 OK and
+V4-3 OK. New findings: 1 MUST, 2 SHOULD, 0 OWNER.
+
+## Final re-check (draft3)
+
+RN1, 2026-10-12. Reviewed state: `paper/v2/snapshots/draft3/`, which equals
+the live `sections/` (checked with `diff -r`). Lines are draft3 lines.
+
+**Method (run this session).**
+- **Changed lines.** I read every in-scope hunk of
+  `snapshots/diff_draft2_draft3.txt`: abstract, hero, §1, §2, §5, §6, §7, and
+  the three alternates. No hunk touches §3 or §4.
+- **Tags.** The extractor on draft3 found 348 tags and 0 unresolved IDs. The
+  +5 against draft2 are exactly the tags described below: DX-13 at §6:78,
+  three COM-4 at §7:73, and CAL-3 at §1:40.
+- **Provenance.** `provenance_check.py` on a scratch copy of the 10 changed
+  in-scope files found 0 sentences without a row, 0 stale rows and 0 support
+  problems.
+- **Ledger.** The ledger diff (W5 and W6 notes) adds no row in my lane.
+
+| finding ID | outcome claimed | verdict | note |
+|---|---|---|---|
+| RN1-R1 (MUST) | fixed (W4) | OK | `06_coupling_b.md:78`: "−6.87 and −10.66 points<!-- N:DX-13 --> for the grid's two seeds<!-- N:DX-40 --> and −4.70 points for a same-seed retrain<!-- N:DX-13 -->". Each value now sits next to the row that holds it (DX-13: −0.0687, −0.1066, −0.0470), and DX-40 tags only the seed count. |
+| RN1-R2 (SHOULD) | fixed (W4) | OK | `07_comms.md:73`: 0.38, 1.43, 7.99 and 2.60 each carry COM-4 at the number. The values and signs are unchanged and correct (COM-4 × 100; Δ = (δ = 0) − (δ = 1)). |
+| RN1-R3 (SHOULD) | fixed (W4) | OK | `07_comms.md:21`: "no measured effect of it cleared a valid bar (Figure 9; one threshold is VOID, §7.3)". This matches the record: completion and survival stay inside their bars, the content ablations reach at most 0.79× and 0.65× of theirs, and the danger-moment threshold is VOID (`phase5_report.md:864, :898, :964-965`). "One threshold" counts a condition, so I treat it as definitional (no tag needed). It refers to the single VOID condition named in §7.3. |
+
+**New problems on changed lines.** None.
+- `01_introduction.md:40` "none of the three<!-- N:CAL-3 --> severities": the
+  tag is correct (three locked levels), as at §1:25 and §4:22.
+- The abstract and alternate footnotes, the hero status line, §2:47, the
+  Figure 6 caption ("the Proposition 3 runs"; "its panel gives the reported
+  values"), §7:51, §7:79 and the hero-ladder caption change wording only;
+  they add, drop or alter no number.
+- The hero iframe height (1100 → 700; BRIEF §16 lists 720) is markup, which
+  is RM's lane, so it carries no severity here.
+
+**Counts (final re-check):** 3 OK, 0 NOT OK; new findings: 0 MUST, 0 SHOULD, 0 OWNER.

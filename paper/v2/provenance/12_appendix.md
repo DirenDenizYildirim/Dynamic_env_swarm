@@ -1,14 +1,14 @@
 # Provenance: sections/12_appendix.md
 
-Writer: W6. Checked against the section on 2026-10-11 (step 4, pass 1) and on 2026-10-12 after the pass-3 fixes.
+Writer: W6. Checked against the section on 2026-10-11 (step 4, pass 1) and on 2026-10-12 after the pass-3 fixes and the step-4.3 re-check items.
 `TF` = `docs/theory_foundations.md`. "Demo" is
 `paper/demo_beyond/sections/12_appendix.md`. The sentence column is the
 checker's normalized form (it drops `*`, so "θ^*" reads "θ^").
 
-Word counts (P3's method): the index 49 prose words, Appendix A 904
-(target for this file about 800: index about 80, proofs about 720); 953 in
-all after pass 3, 19 % over (the four corrections' signs, RC2-5, added
-about 30 words; the plain names for the toy's arms, RC2-24, about 15). The proofs are kept whole; the overrun is the Proposition 3
+Word counts (P3's method): the index 49 prose words, Appendix A 916
+(target for this file about 800: index about 80, proofs about 720); 965 in
+all after the re-check items, 21 % over (the four corrections' signs, RC2-5, added
+about 30 words, and the seed-age direction at the re-check 12 more; the plain names for the toy's arms, RC2-24, about 15). The proofs are kept whole; the overrun is the Proposition 3
 finite-protocol details moved here from §5.2 (W4) and the Remark 2′
 constants moved here from §7 (W4), as their stubs direct.
 
@@ -54,32 +54,33 @@ constants moved here from §7 (W4), as their stubs direct.
 | 38 | By linearity of expectation over the Binomial or Poisson number of seeds, the total expected burnt area is $\lambda_A T \chi(\beta)$ when clusters are disjoint; overlaps only remove double counting, which gives the upper bound in general. | docs/theory_foundations.md:315-318 | edited; class A, C1: the demo's "The divergence rate is Corollary 1(3)." removed |
 | 39 | $\blacksquare$ | framing | kept |
 | 40 | The formal specification adds a divergence rate near the critical point, which rests on critical exponents the paper does not state (§4.1). | docs/theory_foundations.md:309-311, :318, :217-225 | new; class A, C1 and P3-N5: the departure from TF stated (Q4k default: the paper departs and says so in App. A); pass 3: RC2-4, RC1-39 and RM-12: "Corollary 1(3)" removed (the paper's Corollary 1 has no item 3); the rate is described as resting on critical exponents the paper does not state (§4.1) |
-| 41 | The equality is approached only when four conditions are matched, each with a known sign: an unconditional cluster-mass reference (a spanning-conditioned one underestimates it), seed location (boundary clipping lowers the mass of uniformly placed seeds), seed age (cluster mass at β = 0.43 saturates by an age of about 64 steps), and sparsity (sibling seeds and cluster overlap deflate the measured slope). | docs/theory_foundations.md:326-339; CAL-3; DX-409 | edited; pass 3, RC2-5: each condition now carries its known sign, as TF:328-339 states them, so §5.2's pointer "(Appendix A)" lands on the signs |
-| 42 | In the Proposition 3 measurements (§5.2) the four factors compose to the observed slope within Monte Carlo error. | docs/theory_foundations.md:335-339 | edited (demo 12:25: "at both of M3.3's grid sizes"); class A, F5 (study code removed) |
-| 43 | Theorem 1. Statement in §6.2; items (1)–(3) below refer to it. | framing | edited: name dropped |
-| 44 | Proof. | framing | kept |
-| 45 | (1) With zero slack, the only decision is the corridor choice at $b$; waiting or probing is impossible within $T$. | docs/theory_foundations.md:405-406 | edited: "and, vacuously, the path to b" cut (LEN) |
-| 46 | If informed (probability $q$), taking the corridor other than $Z$ succeeds with probability 1; if not, both corridors are exchangeable given the history, and any choice succeeds with probability $\tfrac12$. | docs/theory_foundations.md:407-409 | kept |
-| 47 | Hence $J^ = q + (1-q)\tfrac12 = \tfrac12 + \tfrac{q}{2}$, and no policy exceeds this, since success requires information or a lucky guess. | docs/theory_foundations.md:409-411 | kept |
-| 48 | (2) In the fixed-map environment the signal is uninformative, so the signal-blind policy is among the optimal ones there; on $E_{2C}$ it succeeds if and only if $Z = z_0$, with probability $\tfrac12$. | docs/theory_foundations.md:412-414 | kept (the demo's "among the optimal ones"; P3-N11 is class C, Q23) |
-| 49 | (3) Each factor $(1 - e^{-\kappa_B j})$ is continuous and strictly increasing in $\kappa_B$ on $(0, \infty)$, so the finite product is too, and $q$ is continuous and strictly decreasing. | docs/theory_foundations.md:415-417 | kept |
-| 50 | The product tends to 0 as $\kappa_B \to 0$ and to 1 as $\kappa_B \to \infty$. | docs/theory_foundations.md:417-419 | edited: shortened |
-| 51 | $\blacksquare$ | framing | kept |
-| 52 | Proposition 4 (A transfer bound for a fixed policy). Statement in §9.1. | framing | edited; class A, C3 (pass 1); pass 3, orchestrator decision 2: the proposition's one name used here too |
-| 53 | Proof idea. | framing | edited; class A, C3/P3-N7: "Proof" becomes "Proof idea" (no constant is derived here); no closing square |
-| 54 | The difference between the two returns is bounded by telescoping the evaluation operators of the two models along the trajectory distribution; the observation term enters because the policy acts through the observation. | docs/theory_foundations.md:627-630 | edited: demo "The value-difference bound is the standard simulation lemma: telescope the Bellman evaluation operators …" (lemma not cited by name, P3-N7) |
-| 55 | Every configuration in $\Theta_{\mathrm{iso}}$ differs from $\theta^$ where both couplings act at once. | docs/theory_foundations.md:619-622, :630-631 | edited (demo 12:33: "ε_min > 0 holds because …"); class A, C3: no ε_min constant |
-| 56 | Take a state with a collapse increment next to Fuel and an agent within attenuation range. | docs/theory_foundations.md:631-632 | kept, split (sentence length) |
-| 57 | There $T_{\theta^}$ places mass of order $\kappa_A$ on ignition transitions that a configuration with $\kappa_A = 0$ places elsewhere, and the observation kernels differ when $\kappa_B$ differs. | docs/theory_foundations.md:632-634 | kept |
-| 58 | The formal specification displays the bound with an explicit constant and concludes more about ISO's slack than an upper bound can show; the paper states the bound in words and draws no such conclusion (§9.1). | docs/theory_foundations.md:610-625; paper_v2_prompt.md:146-150 (C3) | new; class A, C3 with N6 (record item, Q4i, Q4k): the departure from TF stated without the word "irreducible" (NOT HERE list). Replaces the demo's "As §9.1 states, the proposition bounds what ISO can be guaranteed to transfer, not what happens: it does not lower-bound the realized Γ." (pointer only, N16) |
-| 59 | Remark 2′. Stated in §7.2, after Pynadath and Tambe. | pynadath2002; paper/related_work_verification.md:953 | kept (demo 12:37) |
-| 60 | One step is not spelled out in §7. | framing | edited: split (sentence length) |
-| 61 | Let $\tilde q$ be the probability of being informed under the best idling schedule. | docs/theory_foundations.md:497-501 | kept |
-| 62 | The commitment draws have different optical depths, so as $\kappa_B \to \infty$ the lowest-depth draw dominates both products and $\tilde q / q \to 1$. | docs/theory_foundations.md:509-514 | kept |
-| 63 | The correction peaks at moderate $\kappa_B$, and its relative bite on the value of communication is largest at low $\kappa_B$, where $q$ is near 1. | docs/theory_foundations.md:514-518 | edited: demo "the idling correction is not asymptotic, and its relative bite …" ("peaks at moderate κ_B" is TF's wording) |
-| 64 | In the two-agent toy, which is not CHE (4096 episodes and 8192 Monte Carlo draws per point), $\tilde q / q$ is 1.126 at $\kappa_B = 1.0$ and peaks at 1.235 near $\kappa_B = 2$. | DX-15 | new: moved from §7 (W4 stub: the toy's constants go to Appendix A; LEN) |
-| 65 | The correction removes 79 %, 54 % and 7 % of $\mathrm{VoC}_{\mathrm{gated}}$ at $\kappa_B$ = 0.5, 1.0 and 3.0. | DX-15 | new: moved from §7 |
-| 66 | The check that the denied arm under the no-idle schedule matches $\tfrac12 + \tfrac12 q$ passes (largest absolute z 0.44; χ² 0.51 on 8 degrees of freedom), and the arm with free communication scores 1.0000 at every $\kappa_B$. | DX-15; che/bench/results/phase5/phase5_report.md:540-555 | new (pass 1, moved from §7); pass 3, RC2-24: "handshake gate", "pinned arm" and "free arm" replaced by what they are (the no-idle denied arm against ½ + q/2; the arm with free communication) |
+| 41 | The equality is approached only when four conditions are matched, each with a known sign. | docs/theory_foundations.md:326-339 | edited; pass 3, RC2-5: each condition now carries its known sign, as TF:328-339 states them, so §5.2's pointer "(Appendix A)" lands on the signs; re-check: RC2-5 (NOT OK): the seed-age condition now states its direction, as §5.2 does: seeds born late have not reached full mass, which lowers the measured slope (TF:333-334, "uniformly-born seeds are age-averaged"; che/bench/results/phase3/phase3_report.md:106-109, the age-averaging "costs" about 7 %); the sentence split after "a known sign" (length, 74 words) |
+| 42 | They are an unconditional cluster-mass reference (a spanning-conditioned one underestimates it), seed location (boundary clipping lowers the mass of uniformly placed seeds), seed age (seeds born late have not reached full mass, which lowers the measured slope; at β = 0.43 mass saturates by an age of about 64 steps), and sparsity (sibling seeds and cluster overlap deflate the measured slope). | docs/theory_foundations.md:326-339; che/bench/results/phase3/phase3_report.md:106-109; CAL-3; DX-409 | edited; pass 3, RC2-5: each condition with its sign (TF:328-339); re-check, RC2-5 (NOT OK): seed age now states its direction, as §5.2 does (seeds born late have not reached full mass, which lowers the measured slope; TF:333-334; che/bench/results/phase3/phase3_report.md:106-109); split from the previous sentence (length) |
+| 43 | In the Proposition 3 measurements (§5.2) the four factors compose to the observed slope within Monte Carlo error. | docs/theory_foundations.md:335-339 | edited (demo 12:25: "at both of M3.3's grid sizes"); class A, F5 (study code removed) |
+| 44 | Theorem 1. Statement in §6.2; items (1)–(3) below refer to it. | framing | edited: name dropped |
+| 45 | Proof. | framing | kept |
+| 46 | (1) With zero slack, the only decision is the corridor choice at $b$; waiting or probing is impossible within $T$. | docs/theory_foundations.md:405-406 | edited: "and, vacuously, the path to b" cut (LEN) |
+| 47 | If informed (probability $q$), taking the corridor other than $Z$ succeeds with probability 1; if not, both corridors are exchangeable given the history, and any choice succeeds with probability $\tfrac12$. | docs/theory_foundations.md:407-409 | kept |
+| 48 | Hence $J^ = q + (1-q)\tfrac12 = \tfrac12 + \tfrac{q}{2}$, and no policy exceeds this, since success requires information or a lucky guess. | docs/theory_foundations.md:409-411 | kept |
+| 49 | (2) In the fixed-map environment the signal is uninformative, so the signal-blind policy is among the optimal ones there; on $E_{2C}$ it succeeds if and only if $Z = z_0$, with probability $\tfrac12$. | docs/theory_foundations.md:412-414 | kept (the demo's "among the optimal ones"; P3-N11 is class C, Q23) |
+| 50 | (3) Each factor $(1 - e^{-\kappa_B j})$ is continuous and strictly increasing in $\kappa_B$ on $(0, \infty)$, so the finite product is too, and $q$ is continuous and strictly decreasing. | docs/theory_foundations.md:415-417 | kept |
+| 51 | The product tends to 0 as $\kappa_B \to 0$ and to 1 as $\kappa_B \to \infty$. | docs/theory_foundations.md:417-419 | edited: shortened |
+| 52 | $\blacksquare$ | framing | kept |
+| 53 | Proposition 4 (A transfer bound for a fixed policy). Statement in §9.1. | framing | edited; class A, C3 (pass 1); pass 3, orchestrator decision 2: the proposition's one name used here too |
+| 54 | Proof idea. | framing | edited; class A, C3/P3-N7: "Proof" becomes "Proof idea" (no constant is derived here); no closing square |
+| 55 | The difference between the two returns is bounded by telescoping the evaluation operators of the two models along the trajectory distribution; the observation term enters because the policy acts through the observation. | docs/theory_foundations.md:627-630 | edited: demo "The value-difference bound is the standard simulation lemma: telescope the Bellman evaluation operators …" (lemma not cited by name, P3-N7) |
+| 56 | Every configuration in $\Theta_{\mathrm{iso}}$ differs from $\theta^$ where both couplings act at once. | docs/theory_foundations.md:619-622, :630-631 | edited (demo 12:33: "ε_min > 0 holds because …"); class A, C3: no ε_min constant |
+| 57 | Take a state with a collapse increment next to Fuel and an agent within attenuation range. | docs/theory_foundations.md:631-632 | kept, split (sentence length) |
+| 58 | There $T_{\theta^}$ places mass of order $\kappa_A$ on ignition transitions that a configuration with $\kappa_A = 0$ places elsewhere, and the observation kernels differ when $\kappa_B$ differs. | docs/theory_foundations.md:632-634 | kept |
+| 59 | The formal specification displays the bound with an explicit constant and concludes more about ISO's slack than an upper bound can show; the paper states the bound in words and draws no such conclusion (§9.1). | docs/theory_foundations.md:610-625; paper_v2_prompt.md:146-150 (C3) | new; class A, C3 with N6 (record item, Q4i, Q4k): the departure from TF stated without the word "irreducible" (NOT HERE list). Replaces the demo's "As §9.1 states, the proposition bounds what ISO can be guaranteed to transfer, not what happens: it does not lower-bound the realized Γ." (pointer only, N16) |
+| 60 | Remark 2′. Stated in §7.2, after Pynadath and Tambe. | pynadath2002; paper/related_work_verification.md:953 | kept (demo 12:37) |
+| 61 | One step is not spelled out in §7. | framing | edited: split (sentence length) |
+| 62 | Let $\tilde q$ be the probability of being informed under the best idling schedule. | docs/theory_foundations.md:497-501 | kept |
+| 63 | The commitment draws have different optical depths, so as $\kappa_B \to \infty$ the lowest-depth draw dominates both products and $\tilde q / q \to 1$. | docs/theory_foundations.md:509-514 | kept |
+| 64 | The correction peaks at moderate $\kappa_B$, and its relative bite on the value of communication is largest at low $\kappa_B$, where $q$ is near 1. | docs/theory_foundations.md:514-518 | edited: demo "the idling correction is not asymptotic, and its relative bite …" ("peaks at moderate κ_B" is TF's wording) |
+| 65 | In the two-agent toy, which is not CHE (4096 episodes and 8192 Monte Carlo draws per point), $\tilde q / q$ is 1.126 at $\kappa_B = 1.0$ and peaks at 1.235 near $\kappa_B = 2$. | DX-15 | new: moved from §7 (W4 stub: the toy's constants go to Appendix A; LEN) |
+| 66 | The correction removes 79 %, 54 % and 7 % of $\mathrm{VoC}_{\mathrm{gated}}$ at $\kappa_B$ = 0.5, 1.0 and 3.0. | DX-15 | new: moved from §7 |
+| 67 | The check that the denied arm under the no-idle schedule matches $\tfrac12 + \tfrac12 q$ passes (largest absolute z 0.44; χ² 0.51 on 8 degrees of freedom), and the arm with free communication scores 1.0000 at every $\kappa_B$. | DX-15; che/bench/results/phase5/phase5_report.md:540-555 | new (pass 1, moved from §7); pass 3, RC2-24: "handshake gate", "pinned arm" and "free arm" replaced by what they are (the no-idle denied arm against ½ + q/2; the arm with free communication) |
 
 ## Findings
 
