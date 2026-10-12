@@ -186,7 +186,7 @@ Per-coupling frequency, co-occurrence and active share cannot all be held fixed 
 Figures I1 and I2 show one episode of each confirmatory arm, separately, chosen by a rule fixed before any render: θ\*, episode key 0, stochastic actions, training seed 1 at update 1000<!-- N:ENV-13 -->. Each opens at step 128 of 256<!-- N:DX-410 --><!-- N:ENV-6 -->. They illustrate the environment under a trained policy and grade nothing.
 
 <figure class="l-page">
-  <iframe src="{{ 'assets/html/submission/explorer_thetastar_iso_s1_T1000_ep0.html' | relative_url }}" width="100%" height="868" style="border:none" title="Episode explorer, ISO policy, training seed 1" loading="lazy"></iframe>
+  <iframe src="{{ 'assets/html/submission/explorer_thetastar_iso_s1_T1000_ep0.html' | relative_url }}" width="100%" height="700" style="border:none" title="Episode explorer, ISO policy, training seed 1" loading="lazy"></iframe>
   <figcaption><strong>Figure I1.</strong> One episode of the ISO policy at θ&#42;. The map is environment state, the smoke field ρ included. Selecting an agent shows its observation as produced (labelled obs v3: the masking observation, §6.1), the true cells, and the probability τ that each was seen. It cannot compare training protocols. <span class="figure-note">Status: illustrative · grades nothing · Interact: play, step, click an agent.</span></figcaption>
 </figure>
 
@@ -197,7 +197,7 @@ Figures I1 and I2 show one episode of each confirmatory arm, separately, chosen 
 Figure I2 shows the JOINT policy's episode under the same rule. One episode of one seed cannot carry a contrast that §9.2 measures over 72 seeds per arm and 512 evaluation episodes<!-- N:DES-3 --><!-- N:DES-13 -->.
 
 <figure class="l-page">
-  <iframe src="{{ 'assets/html/submission/explorer_thetastar_joint_s1_T1000_ep0.html' | relative_url }}" width="100%" height="872" style="border:none" title="Episode explorer, JOINT policy, training seed 1" loading="lazy"></iframe>
+  <iframe src="{{ 'assets/html/submission/explorer_thetastar_joint_s1_T1000_ep0.html' | relative_url }}" width="100%" height="700" style="border:none" title="Episode explorer, JOINT policy, training seed 1" loading="lazy"></iframe>
   <figcaption><strong>Figure I2.</strong> One episode of the JOINT policy at θ&#42;, with the layers and panels of Figure I1; only the observation panel shows what the selected agent perceives. It cannot compare training protocols. <span class="figure-note">Status: illustrative · grades nothing · Interact: as Figure I1.</span></figcaption>
 </figure>
 

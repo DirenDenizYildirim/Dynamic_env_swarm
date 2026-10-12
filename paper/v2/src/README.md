@@ -15,7 +15,7 @@ negative controls, are in `VALIDATION.md`.
 | `provenance_check.py` | compares each section's sentences with its `provenance/<section>.md` rows |
 | `snapshot.sh` | snapshots of `sections/` and `provenance/`, and the lines that changed between two |
 | `distill_port.py` | Python ports of the kit's Distill reference rendering, kramdown's header ids and Jekyll's `slugify` (shared) |
-| `kit_styles.css` | the page CSS that `build_v2.py` puts in the YAML `_styles` field (comments stripped) |
+| `kit_styles.css` | the page CSS that `build_v2.py` puts in the YAML `_styles` field (comments stripped): print companions, listings, wide math, print overflow, and the explorer height pins |
 | `kit_preview.css`, `preview_extra.css` | the preview's look (the kit's Distill CSS, carried from the demo, plus preview-only additions) |
 
 ## What you need
@@ -43,12 +43,12 @@ From the repository root:
 $PY paper/v2/src/build_v2.py                    # draft build of paper/v2; exit 1 on a hard failure
 $PY paper/v2/src/build_v2.py --final            # also fail on M1 flags, STUB-SPEC blocks, placeholders,
                                                 #   unresolved cross-references and warnings
-$PY paper/v2/src/build_v2.py --alt ladder       # swap in every sections/alt/*.ladder.md
+$PY paper/v2/src/build_v2.py --alt no_item4     # swap in every sections/alt/*.no_item4.md
 $PY paper/v2/src/build_v2.py --alt 00_abstract.disclosure_line
 $PY paper/v2/src/build_v2.py --copy-assets      # also copy the assets into out/ to open the preview from disk
 
 PY=$PY paper/v2/src/kit_build.sh --scratch <session scratchpad>/B2     # the real-kit build of paper/v2
-PY=$PY paper/v2/src/kit_build.sh --scratch <dir> --final --alt ladder  # flags pass through to build_v2.py
+PY=$PY paper/v2/src/kit_build.sh --scratch <dir> --final --alt no_item4  # flags pass through to build_v2.py
 
 $PY paper/v2/src/bib_diff.py                    # check the v2 bib (exit 1 on any difference)
 $PY paper/v2/src/bib_diff.py --write            # regenerate it from related_work_verification.md, then check
@@ -142,6 +142,13 @@ Hard failures (exit 1):
   a warning (INTERFACE).
 - **Comments.** A comment containing `<!--`, or an unmatched `<!--` or `-->`,
   fails: comments do not nest, so the rest would show on the page.
+- **Alternates that a file swap cannot build.** `--alt 00_hero.ladder` (and
+  `--alt ladder`) fails with a message: that file is a caption draft for hero
+  option B, which also needs §1's ladder block moved to the hero slot, the
+  explorer moved to the head of §3 and Figures 1 and 3 swapped throughout
+  (review RM-6). Every other alternate swaps its whole file.
+- **`date_confirmed`** in `front_matter.yaml`, if present, must be `true` or
+  `false`.
 
 Reported (fail only with `--final`):
 
@@ -152,6 +159,9 @@ Reported (fail only with `--final`):
   Each flag is labelled `prose`, `inline-math` or `display-math`. Table rows
   whose cell count differs from their header's are flagged too (a pipe inside
   a cell). Write `$\lvert x \rvert$`, `\mid`, or words.
+- **The date gate** (review RM-23): `--final` fails until `front_matter.yaml`
+  has `date_confirmed: true`, which the owner sets once the date is decided.
+  The field never reaches the kit source.
 - **STUB-SPEC count**, **placeholders** in `front_matter.yaml`,
   **unresolved cross-references**, and every **warning** (for example `$`
   inside raw HTML, which the kit would turn into display math there; a lone
@@ -159,7 +169,10 @@ Reported (fail only with `--final`):
   inside a comment; an HTML comment inside inline code, which staging would
   strip from the shown code; `<br>` in prose; and the **M2 source lint**, which lists
   every cited entry whose Distill rendering would show raw TeX or drop an
-  accent).
+  accent, and every cited author written "First … Last" with a particle such
+  as "de" or "Al" before the last word, which Distill would split wrongly).
+  The sentence splitter of `provenance_check.py` treats "p.", "pp." and "No."
+  as abbreviations only before a number, so "a step." ends a sentence.
 - **Cross-references** (`out/crossrefs.md`). Every "§N", "§N.k", "Section N",
   "Figure N", "Table N", "Listing N", "Appendix X", "Definition N",
   "Proposition N", "Theorem N", "Corollary N" and "Remark N" in the prose,
@@ -167,7 +180,9 @@ Reported (fail only with `--final`):
   `**Figure N.**`, `<strong>Figure N.</strong>` or `caption="Figure N. …"`,
   and headings as `## N …`, `### N.k …` and appendix `### X …`. A label after
   "their" or a possessive ("their Table 5", "Chen et al.'s Theorem 4") is a
-  cited work's numbering and is listed as `external`, unchecked. The list
+  cited work's numbering and is listed as `external`, unchecked. A list after
+  the first label stays in its kind: "(Figure 2, §1)" is Figure 2 and §1, and
+  a section list needs "§" after a comma ("§9.2, 4.83-fold" is §9.2 only). The list
   shows *where* each reference points; whether that is the *right* target is
   the mechanics review's call.
 
@@ -209,15 +224,25 @@ Each line is PASS, FAIL or INFO, with counts.
   yet." while `submitted_date` is unset). PASS: the rendered title and
   description equal the front matter (a broken JS string would not).
 - **Links and frames.** Every `toc` link and every in-page `#` link resolves to
-  an element id. Every iframe loads, same-origin, after it is scrolled into
-  view (they are lazy). Each iframe's document fits its frame after the
-  figure sizes itself (shortfall per frame, in the details). Each iframe's
-  `height` attribute is within 5 % of the self-sized height at 1280 px
-  (`plans/P2.md` §7.2: a low attribute shifts the page as frames load, and
-  is all a cross-origin viewer would get). Every image loads.
+  an element id. Every iframe loads (HTTP 200, same-origin) after it is
+  scrolled into view (they are lazy). Every image loads. Then, in a fresh page
+  at each of 1280, 1024 and 390 px (run in parallel, about 60 s):
+  - **heights stable:** each iframe's height 5 s and 60 s after load are equal.
+    This catches a figure that keeps resizing its own frame (review RM-4);
+  - **no clipping:** at 60 s each frame is at least as tall as its document's
+    `body.scrollHeight`;
+  - **attributes:** each `height` attribute is within 5 % of the frame's
+    height at 60 s at 1280 px (`plans/P2.md` §7.2: a low attribute shifts the
+    page as frames load, and is all a cross-origin viewer would get).
 - **Print.** Print companions hidden on screen; shown in print media with
   their images; iframes hidden in print; `.interact` notes hidden in print,
-  if the text uses them.
+  if the text uses them. **Nothing is cut in print** (reviews RM-1 to RM-3):
+  at the US Letter width (816 px) in print media, no table, MathJax container
+  or `pre` may be wider than its box or than the article, and the article may
+  not overflow. Paper cannot scroll, so anything wider is lost from the
+  archival PDF. The details also count listing lines that wrap in print, in
+  print media and in the printed PDF's text (reported, not graded; review
+  RM-25).
 - **Requests.** 0 failed requests (network errors or HTTP ≥ 400) over the whole
   inspection. A request aborted while the page re-lays out and then loaded is
   not counted (it happens to the lazy iframes in some runs). INFO: console and
@@ -279,7 +304,8 @@ are blind to"):
 2. Before the review lanes start: `snapshot.sh <label>`. After the fixes:
    `snapshot.sh diff <label> current` gives the lines to re-check.
 3. The final pass: `PY=$PY paper/v2/src/kit_build.sh --scratch <session
-   scratchpad>/B2 --final` (about 3 minutes once the gems are cached). Every
+   scratchpad>/B2 --final` (about 4 minutes once the gems are cached; the
+   growth check waits 60 s). Every
    check must PASS. `--final` also fails while a STUB-SPEC block or
    placeholder remains, so for the owner's review, before the STUB-SPEC
    blocks are removed, run it without `--final` and read the build line.
@@ -299,10 +325,12 @@ questions (`paper/v2/review_of_demo.md` Part 3).
    what OpenReview receives. The repository copies keep them. If the owner
    wants them kept in the upload, that is a one-line change; the default
    follows the reviewer's recommendation.
-2. **Q2 (M3), `date` and `submitted_date`.** Placeholder `date: 2026-10-11`.
-   The kit build shows `year = {October 11, 2026}` in the "cite this work" box.
-   With `submitted_date` unset the byline reads "Not submitted yet."; what it
-   reads when set is in `VALIDATION.md` (run 3).
+2. **Q2 (M3), `date` and `submitted_date`.** Placeholder `date: 2026-10-11`,
+   with `date_confirmed: false`: `build_v2.py --final` fails until the owner
+   sets the date and changes it to `true` (review RM-23). The kit build shows
+   `year = {October 11, 2026}` in the "cite this work" box. With
+   `submitted_date` unset the byline reads "Not submitted yet."; set, it reads
+   "Oct. 11, 2026" (`VALIDATION.md`).
 3. **Q4f (N1), the disclosure footnote.** Measured in the kit build: the
    `<d-footnote>` marker renders on screen with a hover box, and its text is
    listed only in the footnote list at the end of the page (96 % down). In the
@@ -321,31 +349,43 @@ questions (`paper/v2/review_of_demo.md` Part 3).
    page". The visible first-page line (B1's
    `sections/alt/00_abstract.disclosure_line.md`) does, if the abstract reaches
    page 1. Which, and whether to apply the print rule, is the owner's choice.
+   (On draft1, with a shorter abstract in several paragraphs, review RM-8 found
+   the marker on page 1 and the text on page 47 of 50.)
 4. **The Garet & Marchand entry differs from its record in one more place than
    the key.** Crossref returns `month=Sept`, a bare word the kit's parser
    rejects: verbatim, it emptied every citation and the reference list in a
    real kit build (`VALIDATION.md`, M2b). The entry braces it, `month={Sept}`,
    and `related_work_verification.md` Part 4 keeps the record verbatim beside
    it and says why. Alternative: drop `month` (Distill never shows it).
-5. **Two author names render wrongly in Distill, with no TeX involved.**
-   Distill takes the last word of a "First Last" name as the surname:
-   `dewitt2020ippo` reads "Witt, C.S.d." and `alomari2025macraftax` reads
-   "Omari, B.A.". Writing the records' names as "Schroeder de Witt, Christian"
-   and "Al Omari, Bassel" would fix both, but that edits author fields beyond
-   the M2 Unicode pass, so it is not done. Both entries are cited in the
-   demo.
+5. **Author names, fixed in the fix round (reviews RM-5, RM-24).** Distill
+   took the last word of a "First Last" name as the surname
+   ("Witt, C.S.d.", "Omari, B.A."). Both first authors are now written
+   "Last, First" at the source ("de Witt, Christian Schroeder", "Al Omari,
+   Bassel"), following the paper's "de Witt et al." and the JaxMARL record, and
+   a real kit build renders "de Witt, C.S." and "Al Omari, B.". "Tramèr" is
+   entered with its accent, as the arXiv record gives it. Each change has a
+   dated note in `related_work_verification.md`. `build_v2.py` now warns on any
+   cited "First … Last" name with a particle before the last word. The
+   remaining owner point: the same author appears as "de Witt, C.S." and as
+   "Schroeder de Witt, C." (`lu2022dpo`), because the two records split his
+   name differently.
 6. **The current submission's bib.** `paper/beyond_pdf/assets/bibliography/submission.bib`
    is untouched, so it is no longer a verbatim copy of
    `related_work_verification.md`. It should be re-copied (from the v2 bib)
    when the owner approves.
-7. **Wide display math.** The first kit build cut off display math wider than
-   its column, with no scrollbar (Proposition 4's display lost 298 px at
-   1280 px; four displays at 1024 px; six at 390 px). `kit_styles.css` now lets
-   such a display scroll inside itself, the same remedy class as the listing
-   overflow the fix list names. In the printed PDF a wide display still
-   cannot scroll, so the writers should keep displays short (P2 already moves
-   Proposition 4's display to the appendix). Revert by deleting one rule.
-8. **Iframe height attributes.** On the demo content 4–5 of 11 attributes sit
-   more than 5 % below the height the figure sizes itself to at 1280 px (the
-   hero: 720 against about 825). The writers should set each attribute to the
-   measured height that `out/kit_checks.md` lists.
+7. **Wide display math, tables and listings.** On screen a display wider than
+   its column scrolls inside itself. In print (reviews RM-1 to RM-3, RM-25),
+   tables, displays and listings now take the page column (594 px, against
+   472 px for text), tables print at 10 px with wrapping cells, and listings at
+   9 px. On draft1 this CSS alone removed all 7 print cuts and all 46 wrapped
+   listing lines. A display wider than 594 px would still be cut, and the
+   print-overflow check would fail on it.
+8. **Iframe heights.** The three episode explorers resized their own frames
+   without bound (review RM-4). `kit_styles.css` pins them with `!important`,
+   per Distill grid width: 700 px from 1180 px, 764 px for 1000–1179, 1248 px
+   for 768–999, and 1360 px below 768 (the explorers' measured
+   `body.scrollHeight` plus 23–26 px). Their `height` attributes should equal
+   the 1280 px value, 700. The other eight frames size themselves stably; set
+   each attribute to its height at 60 s from `out/kit_checks.md`. The pins work
+   only while the explorer files are unchanged: a rebuilt explorer needs its
+   heights re-measured.

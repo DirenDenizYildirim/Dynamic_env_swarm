@@ -227,3 +227,66 @@ scroll (0 cut off). The INFO line measures this in every run.
   the check reads the staged file back (12 → 0 on the old bib).
 - **Footnote placement, byline text, math counts and console errors** are INFO
   by design: they report, they do not grade.
+
+---
+
+## Fix round, 2026-10-12 (step 4, pass 3; mechanics review RM)
+
+New and changed checks, each with its negative control. "draft1" is a
+scratch root made from `paper/v2/snapshots/draft1/` (sections and ledger
+proposals) with the v2 front matter, supplement and bib; its old-CSS runs use
+`--styles` with a copy of `kit_styles.css` as it stood at draft1. The
+iframe rows of the table above ("iframe document fits its frame", and the
+attribute check against an early, still-growing height) are superseded by the
+growth, clipping and attribute checks below.
+
+| check | negative control: FAIL | after the fix: PASS |
+|---|---|---|
+| **nothing is cut in print** (RM-1 to RM-3) | draft1, old CSS: **7 cut of 434 checked**, exactly RM's seven: Def. 2's display (64 px), Prop. 3's display (105 px), and the tables of §3.4 (163 px), §9.1 (78 px), App. B (12 px), App. C (265 px) and App. H (57 px) | draft1, new CSS: **0 of 434**. In the printed PDF, Prop. 3's "≤ λ_A T χ(β)" and App. C's "floor" and "use" columns are now present (pages 50 → 45). Current tree: 0 of 435 |
+| listing lines wrapped in print (RM-25; reported, not graded) | draft1, old CSS: 46 lines, per listing [24, 6, 5, 5, 2, 4], counted both in print media and as listing lines not intact on one line of the printed PDF | draft1 and the current tree, new CSS: 0 by both counts |
+| **iframe heights stable** (5 s = 60 s after load; RM-4) | draft1, old CSS: **9 frames grew**, the three explorers at all three widths (hero 1228 → 2300 px at 1280; 1236 → 2352 at 1024; 1282 → 2374 at 390) | draft1 and the current tree, new CSS: 0 grew |
+| **no iframe clips its document** | draft1 with the pins set to 400 px (`--styles`): **FAIL, 9 problems** (frame 400 px against body 677, 717–739 and 1150 px) | the real pins: 0 problems at 1280, 1024 and 390 px |
+| iframe attributes within 5 % (now of the 60-s height) | draft1, old CSS: the explorers read 52–56 % low against their grown frames | current tree: **FAIL, 8 of 11**: the three explorer attributes (1100, 868, 872) against their pinned 700 px. The attributes still have to be set |
+| build: surname split (RM-5 lint) | the pre-fix bib: 2 warnings, `alomari2025macraftax` ("Omari") and `dewitt2020ippo` ("Witt") | the fixed bib: 0 warnings, and no false positive among the 41 entries |
+| build: `--final` date gate (RM-23) | `date_confirmed: false`: `--final` FAILS ("date is not confirmed by the owner"); `date_confirmed: maybe`: hard FAIL | `true`: the gate passes (the sections' STUB-SPEC blocks still fail `--final`); the default build is unaffected, and the field never reaches the kit source |
+| build: hero option-B alternate (RM-6) | `--alt 00_hero.ladder` and `--alt ladder` FAIL, with the explanation | other alternates (`--alt disclosure_line`) build as before |
+| cross-reference tails (W6 quirk) | the old tail on the scratch regression cases: "(Figure 2, §1)" gave a phantom Figure 1, and "§9.2, 4.83-fold" a phantom §4.83 | 6 of 6 cases right (`B2/fix2/tests/test_tools.py`); draft1's list went from 338 to 335 references |
+| sentence splitter ("p." abbreviation) | the old splitter kept "Each agent takes one step. The fire spreads." as one sentence (it matched "p." inside "step."); on the current tree it had merged one pair in §2, which the coordinator has since split into provenance rows 54/54b | 6 of 6 regression cases right; `provenance_check.py --strict` clean on the current tree |
+
+**Explorer heights, how they were measured.** The heights are the explorers'
+content, `body.scrollHeight`. It was read in the draft1 kit build at viewport
+widths from 300 to 1440 px (steps of 5–100 px), with the frames held small
+so that they could not grow during the sweep. The content height depends on
+the frame width, and that width changes only at Distill's grid breakpoints,
+because the explorers sit in the page column:
+
+| viewport | frame width | body.scrollHeight (3 explorers) | pin |
+|---|---|---|---|
+| ≥ 1180 px | 1072 | 677 | 700 |
+| 1000–1179 | 776 | 717, 739, 739 | 764 |
+| 768–999 | 594 | 1224 | 1248 |
+| < 768 | screen − 32 | 1113–1334; at most 1334, at frame width 700 (viewport 732), where the explorer's own layout switches | 1360 |
+
+So at 1280 px the frame is 700 px for 677 px of content (23 px under the
+figure). The 1360 px pin applies only below 768 px. Between 733 and 767 px
+the explorer is back in its wide layout (about 730 px of content), so that
+narrow band shows about 630 px of blank space. A tighter breakpoint there
+would depend on the scrollbar width of the reader's browser, and it could
+clip on a phone. The current tree's run confirmed every pin against the
+content: 700/677 at 1280, 764/717–739 at 1024, and 1360/1150 at 390.
+
+**Names in the real kit (RM-5, RM-24).** A test build with the two first
+authors written "Last, First" rendered "Al Omari, B." and "de Witt, C.S." in
+both the reference list and the hover cards. The change was then made at the
+source, and the current tree's build shows those two names and "Tramèr, F."
+(list and hover). `bib_diff.py`: PASS, 41 of 41 entries. Each change has a
+dated note at the top of `related_work_verification.md`.
+
+**The current tree** (sections as snapshotted at draft2, all writers done).
+`build_v2.py`: OK, 0 failures and 0 warnings; the two `--final`-only items
+are the 16 STUB-SPEC blocks and the date gate; 6 of 6 listings identical;
+16 tables, 413 math, 342 cross-references, 0 unresolved.
+`provenance_check.py --strict`: clean. `kit_build.sh`: **34 PASS, 1 FAIL,
+5 INFO**. The FAIL is the explorer attributes above. The footnote marker
+prints on page 1 and its text on page 43 of 46, and no server was left
+running.

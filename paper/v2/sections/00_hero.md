@@ -14,7 +14,7 @@ KEEP THE BLOCK MOVABLE: no prose elsewhere may say "above" or "below" about it (
 -->
 
 <figure class="l-page">
-  <iframe src="{{ 'assets/html/submission/explorer_thetastar_random_seed0.html' | relative_url }}" width="100%" height="1100" style="border:none" title="Episode explorer: one random-policy episode of CHE at the held-out configuration" loading="lazy"></iframe>
+  <iframe src="{{ 'assets/html/submission/explorer_thetastar_random_seed0.html' | relative_url }}" width="100%" height="700" style="border:none" title="Episode explorer: one random-policy episode of CHE at the held-out configuration" loading="lazy"></iframe>
   <figcaption><strong>Figure 1.</strong> One episode of CHE. The map is environment state: fire, the smoke field ρ, weak and collapsed floor, food, agents alive and dead, and ignitions seeded by collapse. Only the selected agent's three panels concern perception: its observation as produced (labelled obs v3, the masking observation), those cells' true state, for comparison, and P(seen) = τ, the transmittance through smoke. The held-out configuration θ&#42;, episode key, policy and stochastic actions were fixed before rendering<!-- N:ENV-13 -->. <span class="figure-note">Status: illustrative · random policy · grades nothing · Interact: play, scrub, jump to events, toggle layers, pick agents.</span></figcaption>
 </figure>
 
