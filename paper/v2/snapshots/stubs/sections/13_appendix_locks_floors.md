@@ -1,0 +1,17 @@
+<!-- PAPER V2 DRAFT (PAPER V2 ruling, 2026-10-11): builder-drafted, not owner-approved -->
+
+### B Locks and hyperparameters
+
+<!-- STUB-SPEC
+PURPOSE: Appendix B: every locked constant with its value, ruling date and record, then the training hyperparameters and the budget. Appendix C: every reproducibility floor the paper uses, with its GPU, run length, artifact and number of identical reruns, and the key to the study codes (the one place the codes appear, F5). These files continue the appendix after W6's Appendix A; they open with an H3 by design (STRUCTURE.md section 13).
+WRITER: W5 (moved from W6 for load and because Appendix C holds the exhibits of section 8: STRUCTURE.md section 10). BUDGET: about 350 prose words across both, plus the tables.
+APPENDIX B REQUIRED FACTS: the environment locks (CAL-1 with its O-2 caveat: the lock record's value, the committed estimators beside it; CAL-3; CA-1; CB-1; COM-6; ENV-1; DX-401 for every ruling date and for the weak-floor smoothing passes and the observation version; DX-1 for σ_s, η, ι, not locked, held by convention); the analysis constants (DES-1, DES-3, DES-13, DES-4 for the 0.03 band, DX-402 for every date, METH-6 for the retired convergence check's constants, which grade nothing); the hyperparameters (DX-2: learning rate 3e-4 constant; γ 0.99; GAE λ 0.95; clip 0.2; entropy 0.01; value 0.5; gradient-norm clip 0.5; Adam ε 1e-5; 256 environments; 128 steps; 4 minibatches; 4 epochs; checkpoint every 50 updates) and the budget (DX-3). The demo's tables (sections/12_appendix.md:39-81) are the template; keep code identifiers such as K_CONFIRMATORY only as table labels, with a plain description beside each.
+APPENDIX C REQUIRED FACTS: each floor row of the demo's table (sections/12_appendix.md:83-102) with its IDs: METH-1, DX-403, DX-412, COM-5, CB-7, DX-40, METH-2, DX-5, DX-34, METH-5, DES-1, DES-5, DES-2, DES-10, DX-35, DES-3, HW-2, HW-4, DX-36; the ±40 % uncertainty of a four-run floor (DX-403 or DX-303); the overlap of the RTX 5090 and RTX PRO 6000 intervals and that no claim is made that either GPU is less reproducible (DX-35). Add a key mapping each study code to its plain name as sections 5 to 9 use it (for example, the four-run Medium floor study on an RTX 5090, the Coupling-B calibration grid); add, in one or two sentences each, the exhibit details section 8 moved here (the refactor exhibit's two code versions; the run-length exhibit's two machines).
+FIGURES, LISTINGS, LATEX: none; tables only (no pipes inside math in a cell).
+HONESTY LINES AND REGISTERED STRINGS: "reference scale (cross-artifact)" for the High floor's use beside the Coupling-B grid; floors are per metric, per GPU and per artifact; the partial re-measurement of 2026-08-14 is provenance only and grades nothing.
+FIX-LIST AND FINDINGS ITEMS OWNED: F5 (the key; "card" to GPU; "unit" to GPU n; "rep" to identical rerun; launch batch to "the first floor study"; G1.2 named in plain words); LEN (the demo's App. C ratios paragraph already moved; keep it to the table and the key); OI-5 (never "different hardware" for M5.3's floor); Q20.
+DEMO KEEPS (sections/12_appendix.md:39-102): both lock tables, the hyperparameter table, the floors table and the overlap sentence. CHANGES: jargon to plain names with the key; GPU naming. DROPS: nothing.
+NOT HERE: GPU addresses or UUIDs; commit hashes; any number not in the ledger or the supplement.
+-->
+
+### C Floors

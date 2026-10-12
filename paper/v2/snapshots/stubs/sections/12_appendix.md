@@ -1,0 +1,18 @@
+<!-- PAPER V2 DRAFT (PAPER V2 ruling, 2026-10-11): builder-drafted, not owner-approved -->
+
+## Appendices
+
+<!-- STUB-SPEC
+PURPOSE: The appendix opening and Appendix A. First an appendix index, one line per appendix A to I (it replaces section 11's list, P2-h). Then the proofs, each stated once: the statements stay in the body ("Statement: §3.1" and so on; claims review C-34), and Appendix A says where it departs from the formal specification.
+WRITER: W6. BUDGET (this file): about 800 prose words (index about 80; proofs about 720). The appendix as a whole: 2,000 prose words excluding verbatim quotations and tables (STRUCTURE.md section 6), split 800 here, 350 in W5's B and C, 850 in D to I.
+INDEX (appendix headings and letters, STRUCTURE.md section 2): A Proofs; B Locks and hyperparameters; C Floors; D The frozen analysis plan; E The registered outcome branches; F Grid provenance; G Gamma over the final half of training; H The secondary design; I Trained-policy episodes. B and C are W5's file; D to I are W6's next file. Plain text cross-references (INTERFACE).
+APPENDIX A CONTENT: Proposition 1's proof, once (the demo's sections/12_appendix.md:11 with the reachable-set argument), with the departure note (the formal specification says S and Ω_i are finite; with the real-valued smoke field that holds only on the reachable states, which is all the argument uses: OI-2). Proposition 2's proof (the coupling) and the implementation-exactness paragraph (home: che/env/hazard.py:8-16; grassberger1983). Proposition 3's proof without "The divergence rate is Corollary 1(3)" (C1), and the finite-protocol details (DX-409: cluster mass at β = 0.43 saturates by an age of about 64 steps; the four measured factors compose to the observed slope within Monte Carlo error at both grid sizes). Theorem 1's proof (home; the demo's 12:29). Proposition 4, by its new name: the proof idea without a constant (the return difference is bounded by telescoping the evaluation operators of the two models along the trajectory distribution; the observation term enters because the policy acts through the observation), and why every ISO configuration differs from θ* on the states where both couplings act at once (a collapse increment next to Fuel with an agent within attenuation range); no display with the constant or with the per-agent maximum, no ISO-against-JOINT contrast, no lemma cited by name (C3, N6, P3-N7; Q4i); a pointer to section 9.1's honesty note. Remark 2′: the extra step (the idling correction is largest at low κ_B and tends to 1 as κ_B grows) and the toy's constants moved from section 7 (DX-15).
+REQUIRED FACTS: DX-15, DX-409, CAL-3. No other record number belongs here.
+CITATIONS: grassberger1983, pynadath2002 (Remark 2′ pointer).
+FIGURES, LISTINGS: none. LATEX: MathJax per BRIEF section 14; proofs end with \blacksquare; no \label; absolute values with \lvert \rvert.
+FIX-LIST AND FINDINGS ITEMS OWNED: C1 (Prop. 3's proof), C3 (Prop. 4's name and content), OI-2 (the departure note), P2-9 (Prop. 1's proof once), P2-h (index, slug-safe headings), LEN (no restated statements: C-34), P3-N7, N6, Q4i, Q4k.
+DEMO KEEPS (sections/12_appendix.md:5-37): the proofs of Props. 1 to 3 and Thm. 1; the Prop. 1 departure note; the Remark 2′ step. CHANGES: "Statement: §n" in place of restated statements; Prop. 3's rate line out; Prop. 4 renamed, no constant. DROPS: "irreducible"; the divergence-rate line.
+NOT HERE: any statement already in the body, restated; any number outside the ledger and the supplement; a reinterpretation of a theorem's hypotheses (Q13, Q23 are the owner's).
+-->
+
+### A Proofs

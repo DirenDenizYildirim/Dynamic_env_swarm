@@ -1,0 +1,18 @@
+<!-- PAPER V2 DRAFT (PAPER V2 ruling, 2026-10-11): builder-drafted, not owner-approved -->
+
+<!-- STUB-SPEC
+ALTERNATE FOR OWNER CHOICE Q8 (P2 section 3, option B): the opening ladder as the hero, directly under the abstract, in place of the explorer. The block below is carried from the demo's section 1 Figure 3 (sections/01_introduction.md:26-33). In the full option-B page (STRUCTURE.md section 9) this block is Figure 1, the explorer moves to the head of section 3 as Figure 3, and section 1 no longer carries the ladder; that block move and the 1 and 3 renumbering are a requested B2 build flag, not prose.
+CAPTION FOR THE HERO POSITION (P2 section 3, caption obligations under option B): at most 120 words; the first line states that the figure prints rates and the text quotes points (× 100); the registered verdicts first, with "does not survive the inert-share correction" beside the gain; it cannot show Γ(t), so it carries "sign unstable over the final half" with a pointer to Figure 12; ISO-4 is a sensitivity arm outside the confirmatory family, across GPUs (the figure prints this, so the caption need not repeat it); no number the figure prints is repeated; it glosses "unit 1", "cross-unit", "rung" and "full ladder: §9.2". Required facts as for section 1's Figure 3 (RES-1, RES-2, RES-6, DES-1, DES-3, DES-13, DES-15, HW-4).
+WRITER: W1. Number it Figure 1 in this file.
+-->
+
+<!-- FIGURE BLOCK carried from demo (sections/01_introduction.md:26-33); writer checks caption against the caption rules in this stub and keeps the block self-contained -->
+
+<figure class="l-page">
+  <iframe src="{{ 'assets/html/submission/opening_ladder.html' | relative_url }}" width="100%" height="400" style="border:none" title="Registered readings: Γ and Γ₄ on survival and completion" loading="lazy"></iframe>
+  <figcaption><strong>Figure 3.</strong> Survival: Γ REJECT; beneath it, Γ₄ null, “does not survive the inert-share correction”. Completion: Γ null; Γ₄ null, “second exclusion bound, X₄ = 0.0488<!-- N:RES-6 -->” (X₄ is Γ₄'s 80 %<!-- N:METH-7 -->-power minimum detectable effect). Γ is JOINT − ISO (k = 72<!-- N:DES-3 --> per arm, one GPU unit<!-- N:HW-4 -->); Γ₄ is JOINT − ISO-4 (k = 72 / 20<!-- N:DES-13 -->, cross-unit<!-- N:HW-4 -->), and ISO-4 is a sensitivity arm outside the confirmatory family. Estimates are rate differences at θ&#42; and matched compute (T&#42; = 1000<!-- N:DES-13 --> updates); the text quotes them × 100, as points. Intervals are Šidák-corrected 95 %<!-- N:DES-13 --> (m = 2<!-- N:DES-13 -->), conditional on one common evaluation draw; Γ₄'s completion interval, [−0.0481, +0.0228]<!-- N:RES-6 -->, is drawn but not printed. k = 72<!-- N:DES-3 --> is a recorded deviation from the registered cap of 60<!-- N:DES-1 -->. The figure cannot show how Γ moved during training (sign unstable over the final half; Figure 12); the full ladder is Figure 11 (§9.2). <span class="figure-note">Status: registered (Šidák-corrected 95 %, k = 72<!-- N:DES-3 -->) for Γ · sensitivity arm, outside the confirmatory family, for Γ₄ · Interact: none; a fixed reading of two rungs, which Figure 11 steps through with the rest.</span></figcaption>
+</figure>
+
+<div class="print-companion">
+{% include figure.html path="assets/img/submission/opening_ladder.png" class="img-fluid" alt="Joint minus isolated training and joint minus ISO-4, for survival and completion, each with its Šidák-corrected interval and registered verdict; the survival gain is shown beside the ISO-4 contrast, labelled does not survive the inert-share correction." caption="Static companion of Figure 3 for the printed PDF." %}
+</div>
