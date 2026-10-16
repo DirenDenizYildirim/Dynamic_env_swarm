@@ -18,7 +18,7 @@ changed here.** `PLAN.md`, the configs and the scripts stay as approved (log:
 The 1(b) figures are not ledger rows. If the paper uses them, each gets a VERIFIED
 row first, with this derivation. One small misstatement in the review, W4(c):
 "fire deaths per danger step were 23 % higher with links open". The verdict file
-gives 0.00744 with links open against 0.00571 denied (`verdict.txt:7-8`). That is
+gives 0.00744 with links open against 0.00571 denied (`verdict.txt:8-9`). That is
 30 % higher open, or 23.2 % lower denied, the base the file uses.
 
 ## 2. The interaction plan: options before the run
