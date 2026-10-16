@@ -36,7 +36,7 @@ CHE is a functional JAX environment: `reset(key, cfg)` returns observations and 
 
 In the anonymized code supplement, `uv run pytest -q che/tests` runs the CPU tests, and `uv run python -m che.train.ippo` and `uv run python -m che.eval.harness` train and evaluate. On one RTX 5090<!-- N:DX-5 -->, a 1000-update run took 518–521 s and a 512-episode evaluation 9–10 s<!-- N:DX-4 -->.
 
-The supplement holds the package, configurations, tests, registration documents, analysis scripts with the committed outputs they read, and a sha256 manifest; its README recomputes the registered analyses on a CPU. The post hoc interaction check's analysis needs version history, so it does not run there. Checkpoints ship only as hashes.
+The supplement holds the package, configurations, tests, registration documents, analysis scripts with the committed outputs they read, and a sha256 manifest; its README recomputes the registered analyses on a CPU. For the post hoc interaction check, whose analysis needs version history, a verification mode checks the plan's hash against the run's record and recomputes the report there. Checkpoints ship only as hashes.
 
 <!-- OWNER-PENDING:V3Q16 -->
 <!-- what else ships is the owner's call (RM-OWNER-1): the supplement builder ships docs/theory_foundations.md and the four lock records by default (paper/v3/supplement/README.md, rules D3, D4), while DISPOSITIONS V3Q16's default ships the hash manifest only; if they ship, add "the theory document and the records of how each fixed constant was measured" to the list above. Decision-log excerpts are off by default (V3-V1 owner decision). The supplement's size and TMLR's limit wait for rows X5-1 and X5-2 (PENDING; V3Q24, V3Q25) and are not stated. -->

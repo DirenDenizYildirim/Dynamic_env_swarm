@@ -32,7 +32,9 @@ This study was carried out by its authors with an LLM assistant, Claude (Anthrop
 
 <!-- PLAN_OK resolved 2026-10-16: the owner's approval is transcribed (docs/decision_log.md, PLAN OK) -->
 
-The analysis plan of the post hoc interaction check was written by the assistant, and the authors approved it unchanged before the run. The assistant implemented the code and tests to these decisions, ran analyses on the authors' instruction, drafted reports, figures and reviews of the design, proposed options for the authors to accept or reject, and drafted this paper's text section by section.
+<!-- OWNER-PENDING:PLAN_OK_AMENDED the owner chose the amendment's content (log: PLAN AMENDMENT, 2026-10-17); the OK of the amended plan's committed text is owed before the run (item 7). Once given, the second sentence below may end "and approved the amended plan" -->
+
+The analysis plan of the post hoc interaction check was written by the assistant, and the authors approved it before the run. After a review of this paper's draft questioned the plan's design, the authors chose an amendment, which the assistant wrote into the plan before any evaluation ran. The assistant implemented the code and tests to these decisions, ran analyses on the authors' instruction, drafted reports, figures and reviews of the design, proposed options for the authors to accept or reject, and drafted this paper's text section by section.
 
 Some proposals came from the assistant. In particular, the inert-share bias in the isolated arm and the correcting arm ISO-4 were first raised in an assistant-drafted review of the registered design, and the authors adopted both and registered them before unblinding (Appendix D).
 

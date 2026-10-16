@@ -1,5 +1,52 @@
 # Paper v3, phase 1: hand-back to the owner (step 4.5)
 
+## Update, 2026-10-17 (local session): no run yet; the blind review ran; the plan is amended
+
+- **The run has not happened.** The first rental was released before any eval
+  (log: *BOX HANDOVER*, addendum). No result exists.
+- **The blind review ran**, fully blind, off-repository:
+  `review/blind_review.md`. Its verdict: major revision, confidence 4/5. Its
+  checkable claims W4b, W6, W9 and W10 were verified (all confirmed; W6's
+  reasoning corrected). The options for its six interaction-plan concerns are
+  in `review/blind_review_checks.md`. Its other points (W1–W3, W5, W7, W8,
+  W11–W13, the unclear sentences) are not yet dispositioned.
+- **The plan is amended before the run** (log: *PLAN AMENDMENT*; you chose all
+  six recommendations). What changed:
+  - **Plan:** a fifth condition, θ\* with the links intact (δ = 0), and its
+    contrast D, read in its own family of 8. The run grows to 865 evals.
+  - **Readings:** a disagreement rule for the headline, and a context table
+    (I and D beside A, B and Γ).
+  - **Views:** a descriptive logit-scale I.
+  - **Verification:** a `--verify` mode that needs no git.
+  - **Timestamps:** OpenTimestamps of the plan before the run and of the
+    results after it.
+  - **Fix:** the plan's commit time is now recorded in UTC, so no time zone
+    reaches the shipped report.
+  - **Paper:** §6.2, §6.4, §8, App. G and App. J were updated, with their
+    provenance and the IC design rows (now VERIFIED at `ab50d53`).
+- **Checks run:**
+  - Full CPU suite, one capped process per file: 612 passed, 3 skipped,
+    1 failed (the known C1).
+  - `test_interaction_check.py`: 31 of 31.
+  - `ruff` on `che/` and `paper/v3/supplement/`: pass.
+  - `provenance_check.py --strict`: every section and alternate, 0 problems.
+  - v3 terms, dates and caveats: PASS.
+- **Not run here:** the real-kit build (log: *KIT BUILD IN THE CLOUD*), so the
+  page count is not re-measured. §6.4 grew by about 45 words.
+- **Waiting on you:**
+  1. Your OK of the amended `PLAN.md` text (sha256 `0d7a866d…`; *PLAN
+     AMENDMENT* item 7).
+  2. After it, the builder stamps the plan; the run waits until the stamp is
+     confirmed in a Bitcoin block.
+  3. A new rental. The tree tarball must be rebuilt at the new commit; the
+     checkpoint tarball stays valid.
+  4. Q1–Q10 and C1–C6, as before.
+- **New record items:**
+  - The old provenance rows cited `p6_joint.yaml:40-41` for JOINT's
+    components; the lines are 36-37 (fixed in the regenerated table).
+  - `package.py --out <dir outside the repo>` crashes after writing the zip.
+  - `ruff` fails on `paper/v2/src/` and `paper/v3/src/` (long lines, older).
+
 Orchestrator, 2026-10-16. Phase 1 ran every step of `paper_v3_prompt.md`
 except the GPU run, which is yours. **Nothing is approved or adopted:**
 `paper/finale.md`, `paper/beyond_pdf/` and `paper/v2/` are untouched. Work is

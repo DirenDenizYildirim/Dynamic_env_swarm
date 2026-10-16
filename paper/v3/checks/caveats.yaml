@@ -333,7 +333,7 @@ caveats:
   # ---- the interaction check (§6.4) and the lesson (§6.5) ---------------
   - id: C25
     name: interaction_blind_to
-    statement: What the interaction check is blind to (θ* only; fixed policies; additive scale; one draw; δ held at 1; no cross-arm test; post hoc; arms' training conditions differ). The full list once.
+    statement: What the interaction check is blind to (θ* only; fixed policies; additive scale; one draw; δ held at 1 except in the fifth, links-intact condition (PLAN AMENDMENT, 2026-10-17); no cross-arm test; post hoc; arms' training conditions differ). The full list once.
     note: other files say "cannot see" rather than "blind to" (e.g. §5's rule on differenced tests).
     rows: [IC-*]
     home: 08_interaction_check.md
