@@ -6333,3 +6333,57 @@ exists.** The run waits for a new rental. The laptop keeps both shipped
 files with their hashes (outside the repository). The next rental restarts
 at the box checks of `RUNBOOK.md` §1. Item 1's handover covers this run on
 a new box only if the owner says so again.
+
+
+## BLIND REVIEW BEFORE RESULTS — the blind review runs now, on the build without the interaction results; one sentence added to its prompt; the builder launches it (owner, 2026-10-16)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before it is acted on. After the box was released (*BOX HANDOVER*,
+addendum), the owner asked: "can we run the blind agents before the results
+from the box". The builder gave the facts below and the owner chose, in a
+two-question form, "Add one sentence (Recommended)" and "You launch it from
+here".
+
+1. **The review runs now.** It reviews the paper as built, without the
+   interaction check's results, which do not exist yet. Of the
+   result-dependent text, only the check's result is missing: the seven
+   `HOLE:INTERACTION` markers are stripped from the build, so a reader sees
+   the check's design and no result.
+2. **The three files** (`paper/v3/BLIND_REVIEW.md` §1), staged in a folder
+   outside the repository, with no `CLAUDE.md` in it or any parent folder,
+   no global `CLAUDE.md`, and no user-level skill or agent that names the
+   project:
+   - `submission_v3_print.pdf`, sha256 `c47769c5…`, and
+     `submission_folder.zip`, sha256 `0b278f1e…`, are the committed outputs
+     of the last real-kit build (`4f7bd44`). The paper source has changed
+     since in one sentence only (App. J, plan approval; `ab78b27`). The
+     laptop cannot rebuild them: the kit build needs Ruby, Bundler and
+     Chromium, which it lacks.
+   - `che_supplement.zip` was rebuilt on the laptop by
+     `paper/v3/supplement/package.py`. It is byte-identical to the checked
+     build: sha256 `4a73c89b…`, the value in `paper/v3/out/build_summary.json`.
+3. **The prompt** is `BLIND_REVIEW.md` §3, verbatim, plus this sentence at
+   its end: "The results of the post hoc interaction check (§6.4,
+   Appendix G) are not yet in this draft; review its design, and do not
+   count the missing results against the submission."
+4. **Where it runs.** The builder launches a separate Claude Code process
+   (`claude -p`) whose working folder is the staged folder. That keeps
+   `CLAUDE.md` and this project's memory out of its context. This
+   session's `CLAUDE*` environment variables are cleared, so it is not
+   linked to this session. It has no MCP servers and no web tools, and the
+   prompt forbids web search. It is allowed Bash, Read, Write, Edit, Glob
+   and Grep, so it can unpack and run the supplement. It runs in a systemd
+   scope capped at 4 CPUs and 3.5 GB of memory: the laptop has 7 GB of
+   RAM, and an uncapped test-suite run crashed it on 2026-07-28. A test
+   killed at that cap is a limit of the laptop, not a defect of the
+   supplement.
+   - claude.ai, the protocol's first choice, was not used: the 37.7 MB
+     supplement is over its per-file upload limit, as the builder
+     understands that limit.
+5. **The output** is saved as `paper/v3/review/blind_review.md`, headed by
+   a line that says where it ran and whether it was fully blind
+   (`BLIND_REVIEW.md` §4).
+6. **Not ruled.** The builder recommended a second, fresh blind review
+   after the results are filled in. That is not decided.
+
+No constant, lock, test, registration or branch reading changes.
