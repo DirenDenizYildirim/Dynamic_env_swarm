@@ -6431,3 +6431,62 @@ script's Node default (`/opt/node22`) is a cloud-session path. The owner:
    `run_checks.sh` run is not decided.
 
 No constant, lock, test, registration or branch reading changes.
+
+
+## PLAN AMENDMENT — the interaction plan is amended before the run on the blind review's design concerns; a links-open condition is added; the plan and results get public timestamps (owner, 2026-10-17)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before it is acted on. The builder verified the blind review's checkable
+claims and set out options for its six concerns about the interaction plan
+(`paper/v3/review/blind_review_checks.md` §2). The owner, in chat: "all
+recommended". That selects 1(c), 2(c), 3(b), 4(b), 5(b) and 6(b).
+
+1. **1(c), a disagreement rule.** The pooled pair stays the headline. If the
+   three arms' readings differ in sign or in detectability, the headline
+   says the answer depends on how the policy was trained. The pooled number
+   is then reported only as an average over the arms' different exposures.
+2. **2(c), context instead of a new threshold.** Every reading, detectable or
+   not, is reported beside the main effects A and B and beside Γ, in the same
+   units. No smallest effect of interest is introduced.
+3. **3(b), a descriptive logit scale.** The interaction is also computed on
+   the logit of each condition's per-policy mean, with the same interval
+   form. It is outside the family and has no reading rule.
+4. **4(b), a links-open condition.** This answers owner question Q9.
+   - **The condition** is "both, links open": θ\* with δ = 0, both couplings
+     at θ\*'s values. All 164 final checkpoints are evaluated in it, plus
+     its own self-floor copies (3 checkpoints × 3 repeats).
+   - **The run grows** from 692 evals to 865, eval-only, at θ\* only. The
+     estimate is 2.3–3.6 GPU-h, from the measured 9.4–14.8 s per eval; it is
+     not a trigger. No training is authorized, and neither are Low or High.
+   - **The δ contrast** is D = J(both, δ = 0) − J(both, δ = 1), per arm and
+     pooled. It is read in its own Šidák family of 8 intervals, under the
+     interaction's reading rule (detectable, or an exclusion with its bound).
+     It is labelled post hoc, with the same familiarity caveat: ISO's
+     single-coupling components trained at δ = 0, and JOINT only at δ = 1.
+5. **5(b), verification without git.** The analysis gets a verification mode
+   that needs no version history. It checks the plan's sha256 against the
+   hash the run recorded, says that the git checks are unavailable, and
+   recomputes the report from the shipped evals and compares it with the
+   committed report. The supplement ships what that mode needs.
+6. **6(b), public timestamps.**
+   - The owner's OK covers installing the OpenTimestamps command-line
+     client on the laptop. It is a tool, not a project dependency.
+   - The amended plan is stamped before the run, and the run waits until
+     the stamp is confirmed in a Bitcoin block.
+   - `SHA256_RESULTS.txt` is stamped right after the results return.
+   - Only hashes leave the laptop, to the public calendar servers.
+7. **What this supersedes.**
+   - The amended plan replaces the one *PLAN OK* approved (sha256
+     `c3ec2dd1…`).
+   - Under this ruling, and for this amendment only, the builder edits:
+     `PLAN.md`, `RUNBOOK.md`, the config generator, a new config and its
+     `docs/locks.yaml` entry, the run and analysis scripts, their test, and
+     the supplement's packaging rules.
+   - The run waits for three things: the amended plan committed, its
+     timestamp confirmed, and the owner's OK of the committed text (as for
+     *PLAN OK*).
+8. **Labels unchanged.** The check is post hoc and outside every registered
+   family. It changes no registered reading and no branch. The interaction
+   family stays at 8 intervals.
+
+No constant, lock, test threshold, registration or branch reading changes.
