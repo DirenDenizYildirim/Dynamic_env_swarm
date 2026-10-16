@@ -11,7 +11,7 @@ committed on `claude/fervent-newton-ws5yub` (log: *PAPER V3 PHASE 1 START*,
 | what | where |
 |---|---|
 | **Your decisions (one page)** | `paper/v3/OWNER_QUESTIONS.md` |
-| The built page (private artifact) | ARTIFACT_LINK |
+| The built page | Not published. The bundle is in `paper/v3/out/artifact/` (entry `index.html`). The author kit gives it TMLR branding and a citation block that, out of context, reads like a publication record, so whether it gets a private link is your call. |
 | Printed PDF (real-kit build) | `paper/v3/out/submission_v3_print.pdf` |
 | Staged submission (comments stripped) | `paper/v3/out/submission_folder.zip` |
 | Code supplement (37.7 MB; not in git) | `paper/v3/out/che_supplement.zip`; contents, rules and checks in `paper/v3/supplement/README.md` |
