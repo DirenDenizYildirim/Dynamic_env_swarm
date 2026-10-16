@@ -5,7 +5,7 @@
   "info": 6
  },
  "run": {
-  "run_name": "kit_run_20261016_161541_10896",
+  "run_name": "kit_run_20261016_163435_19156",
   "root": "v3",
   "sha256": "e531434b698e04dc9e07e4100c8eb21f3a5a9caca873c102b589af4e9bacc2d5",
   "sha_ok": true,
@@ -432,7 +432,7 @@
    "group": "Leaks and print",
    "check": "stripping removed only comments (stripped build = unstripped build)",
    "status": "PASS",
-   "counts": "rendered text identical (109729 chars); tables [17, 17]; math [341, 341]; listings [6, 6]",
+   "counts": "rendered text identical (109728 chars); tables [17, 17]; math [341, 341]; listings [6, 6]",
    "details": []
   },
   {

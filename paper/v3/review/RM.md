@@ -1008,3 +1008,44 @@ No new findings in my lane. Two items are carried open:
 - **RM-OWNER-3:** the legibility FAIL.
 
 RM-13 is the supplement builder's and was not re-checked in this step.
+
+---
+
+## Rebuild (double-blind fix)
+
+2026-10-16. The orchestrator's pre-publication read found a leak in App. D.1:
+"(dates in the committer's local time, UTC+3)" named the author's time
+zone. The text now reads "(calendar dates as the commits record them)"
+(`16_appendix_timeline.md:38`). Nothing else was changed.
+
+**Re-run**, into `paper/v3/out/`, exactly as in "Final build (final1)":
+
+- `kit_build.sh` (run `kit_run_20261016_163435_19156`);
+- then `artifact_bundle.py` into `paper/v3/out/artifact/`.
+
+**Results:**
+
+- Kit: **40 PASS, 1 FAIL (legibility, 13 of 13; RM-OWNER-3), 6 INFO**,
+  unchanged.
+- Pages: **14.698 from page 1, 13.265 from §1**, both PASS, holes still
+  empty.
+- v3 checks: terms, dates and caveats PASS.
+- `build_v3.py`: 0 failures, 0 warnings, 0 M1 flags, 264 cross-references
+  with 0 unresolved, 9 final-only items as before.
+- Artifact: `paper/v3/out/artifact/index.html` (191,574 B), 133 files,
+  6,558,202 B.
+
+**Grep for "UTC", "+0300" and "+03:00".** All matches in the staged folder
+and the bundle are false positives; the paper text has none.
+
+| target | hits | what they are |
+|---|---|---|
+| staged folder, from `submission_folder.zip`: `submission.md` | 0 | — |
+| staged folder: assets | 1 file | `explorer_thetastar_iso_s1_T1000_ep0.html`: the letters "UTC" inside a base64 data string ("…BwUTCQsS…"). That file is byte-identical to its committed figure source, unchanged from v2 |
+| printed PDF text (`pdftotext`) | 0 | — |
+| artifact `index.html` | 0 | — |
+| artifact: other files | 3 files | the same explorer file, and Distill's `template.v2.js` and `transforms.v2.js`, which call JavaScript's `getUTCMonth`, `getUTCHours` and the like (library code) |
+
+"local time", "time zone" and "GMT" have 0 hits in `submission.md` and in
+the PDF text. The kit's double-blind grep of the staged folder and its PDF
+identity scan both PASS.
