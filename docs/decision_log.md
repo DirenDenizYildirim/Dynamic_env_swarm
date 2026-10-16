@@ -6270,3 +6270,23 @@ fast-forwarded locally from `main` to `7a5e009` at the session's start.
    asks, resumes from here, to the same branch.
 
 No constant, lock, test threshold, registration or branch reading changes.
+
+
+## PLAN OK — the interaction check's analysis plan is approved as committed (owner, 2026-10-16)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before it is acted on. The owner, in chat, on
+`che/bench/results/phase6/post_v3_interaction/PLAN.md`: "I think the plan
+is a greenlight".
+
+1. **Approved unchanged:** the plan as committed at `415b784`, sha256
+   `c3ec2dd147479b6b88ff36c30002d8e6e30873e997798b92935d8c40b2a1b809`. No edit is made to it.
+2. **What it authorizes:** the eval-only run that the plan and its runbook
+   (`RUNBOOK.md`) describe, at θ\* only (PAPER V3 item 2(a); PAPER V3 PHASE 1
+   START item 2). That is 692 evals: 656 main and 36 floor. The owner runs it
+   on a rented RTX 5090. No training is authorized, and neither are Low or
+   High.
+3. **Labels unchanged:** the check is post hoc and outside every registered
+   family. Its reading rules and blind spots are the plan's §7 and §8.
+
+No constant, lock, test, registration or branch reading changes.
