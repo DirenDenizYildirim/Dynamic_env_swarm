@@ -16,7 +16,7 @@ read only: every rewrite happens in a temporary staged copy.
 | `rules.py` | the selection rules (`INCLUDE`), the scrub rules (`SCRUBS`), and what the scrub check forbids (`FORBIDDEN`, `WARN`) |
 | `check_scrub.py` | (a) unpacks the zip; any identifying string is a FAIL |
 | `check_size.py` | (b) zip size against TMLR's verified limit |
-| `check_tests.py` | (c) unpack into a fresh directory, `uv sync --python 3.12 --group dev --locked`, then `pytest -q -rs che/tests` |
+| `check_tests.py` | (c) unpack into a fresh directory, `uv sync --python 3.12 --group dev --locked`, then `pytest -vv -rs che/tests`, killed and FAILED after `--timeout-s` (default 7200 s) |
 | `check_manifest.py` | (d) every file against `SHA256SUMS`, with no file missing or extra |
 | `check_reproduce.py` | (e, extra) inside the unpacked supplement, re-runs the registered instruments and compares with the committed outputs |
 | `run_checks.sh` | package, then all five checks: `bash paper/v3/supplement/run_checks.sh WORKDIR [package switches]` |
@@ -32,7 +32,11 @@ Outputs in `paper/v3/out/` (none of them ships):
   identifying strings.**
 - `package_console.txt` and `checks_summary.txt`.
 
-**Re-run at phase end** (from the repository root; about 15–25 min on CPU):
+**Re-run at phase end** (from the repository root). Allow about 1–1.5 h on
+this 4-core box. Packaging takes about 2 min and the scrub check about 2 min;
+the test suite took 55.6 min (2026-10-14, with a second suite sharing the
+CPU). `check_tests.py` kills the suite after `--timeout-s` (default 7200 s)
+and FAILS; see F4.
 
     bash paper/v3/supplement/run_checks.sh <fresh scratch dir>
 
@@ -79,7 +83,7 @@ private repository". Without the deny entry it would ship under R1.
 | other `.jsonl` training/bench logs | 595 | 505 MB | no paper-number script reads them; size |
 | other phase-6 `.npz` (floors, grid secondary arms, Γ(t) and High re-evals) | 2245 | 103 MB | every number taken from them is in their eval JSON, which ships; size |
 | renders and figures (`.gif`, `.png`) | 78 | 95 MB | paper-side; size |
-| `paper/` | 547 | 39 MB | the paper ships separately. Its figure scripts read only shipped JSON/NPZ |
+| `paper/` | 821 | 80 MB | the paper ships separately. Its figure scripts read only shipped JSON/NPZ |
 | `phase2_results/` | 35 | 4.7 MB | byte-identical duplicate of `che/bench/results/phase2/` (`diff -rq`) |
 | `docs/decision_log.md` | 1 | 0.3 MB | quotes the owner; only through the switch |
 | `CLAUDE.md`, `HANDOFF.md`, repo `README.md`, prompts, `phase6_design_v1.md`, red-team files, `docs/architecture_*`, venue reviews, other docs | 24 | 0.3 MB | not code, registration or a paper-number input. `CLAUDE.md` names the venue plan and "solo-researcher" |
@@ -114,8 +118,9 @@ The rules apply in order to every staged text file (`rules.SCRUBS`):
 | IPV4 | dotted quads (port optional); **`uv.lock` exempt**, because its four-part package versions such as `12.9.2.10` look like IPs and redacting them breaks the lock | `<host>` |
 | INSTANCE-ID | `id <7–10 digits>`, `instance id …` | `<instance-id>` |
 | SSH-HOST | `root@<ip>` and similar | `<user@host>` |
-| COMMIT | a 7–40-hex token that prefixes a commit in `git rev-list --all --reflog` | `COMMIT_REDACTED_NN` |
-| COMMIT-CTX | a 40-hex token in a git context (`git`, `commit`, `shipped`, `HEAD`, `rev`, `sha`) even if this checkout lacks the commit. The phases 2–5 provenance commits are not in local history | `COMMIT_REDACTED_NN` |
+| COMMIT | a 7–40-hex token (bounded by non-alphanumerics, so `_abc1234` counts) that prefixes a commit in `git rev-list --all --reflog` | `COMMIT_REDACTED_NN` |
+| COMMIT-CTX | a 40-hex token in a git context (`git`, `commit`, `shipped`, `HEAD`, `rev`, `sha`), even when this checkout lacks the commit. This is a fallback: on 2026-10-14 the shallow checkout lacked the phase 2–5 provenance commits (36 rewrites), and with full history (221 commits, 2026-10-16) it fires 0 times | `COMMIT_REDACTED_NN` |
+| PATH-COMMIT | a commit hash inside a **file name** (`phase5/m51j/requirement_fa32113.{txt,json}`). The same placeholder is used in the name and in the text that cites it | `requirement_COMMIT_REDACTED_NN.*` |
 
 The same commit always maps to the same placeholder, so cross-references stay
 legible. `che/scripts/run_p6_s7_blocks.sh` and `che/tests/test_p6_s7_blocks.py`
@@ -179,7 +184,11 @@ may want to see them; editing that file is not in this step's scope.
 5. **Commit placeholders.** The provenance in every result file now reads
    `COMMIT_REDACTED_NN`. A reviewer cannot check a result against a commit.
    This is the price of anonymity. The registration statement (V3-V2) should
-   not imply that the supplement lets reviewers verify dates by commit.
+   not imply that the supplement lets reviewers verify dates by commit. The
+   archival job scripts that pin an old commit
+   (`run_p5_pretask_high_kb0.sh`: `git checkout COMMIT_REDACTED_NN`; and
+   `run_m51j_rowb_diagnostic.sh`: `OLD_REF`) no longer run as written. They
+   could not run without `.git` anyway.
 
 ## Findings for the record (reported, not fixed)
 
@@ -207,6 +216,105 @@ may want to see them; editing that file is not in this step's scope.
   (`_git` returns "UNKNOWN"). That is documented in `SHIPPED_README.md`, and
   the outputs record it.
 
+- **F4. The CPU suite hung once, in `che/tests/test_pbt.py::test_population_resume`.**
+  - It hung in one of three complete suite runs in an unpacked supplement
+    (run 4, 2026-10-16). The other two runs passed this test.
+  - `py-spy dump` showed where. The main thread was blocked in
+    `jax.block_until_ready` (`che/train/pbt.py:219`), on the resumed call
+    (`test_pbt.py:102`). The first call's orbax checkpoint had been written
+    at 16:54:18.
+  - All 28 threads were in `futex_do_wait`, at 0 % CPU, for over 30 min. The
+    suite was killed at 72 min.
+  - This looks like an intermittent XLA-CPU/orbax deadlock on restore, not a
+    packaging effect: the same code passed this test in runs 1 and 5.
+  - It was not seen or tested in the repository's own venv in this step.
+  - `check_tests.py` now has a wall-time limit (`--timeout-s`, default
+    7200 s) and a `-vv` log, so a hang FAILS and names its test instead of
+    blocking the phase.
+  - **For the orchestrator:** decide whether this needs an owner-visible note
+    (a reviewer running the suite could hit it). Fixing it is outside this
+    step's scope: no tests or `che/` code are edited here.
+
 ## Check results
 
-Filled in from the run of `run_checks.sh` on 2026-10-14 (see below).
+All runs were made from the repository root with
+`bash paper/v3/supplement/run_checks.sh <fresh scratch dir>`, on this 4-core
+CPU container. Raw logs are in `paper/v3/out/`.
+
+### Final build (2026-10-16): all five checks PASS
+
+The zip was built at 16:12 UTC, after the coordinator's freeze of the paper,
+configs and scripts. No file under a shipped root changed after it
+(`find … -newer che_supplement.zip` is empty).
+
+- `paper/v3/out/che_supplement.zip`: **37,702,298 bytes**, sha256
+  `4a73c89b57b923a0a13576fb9b0ac2f5184126ec55c5d205ce302a7ec4edcbfb`.
+- 4,167 files (213.03 MB unpacked): 3,519 selected, plus 635
+  `.manifest/*.done`, 11 `RECONSTRUCTED.txt`, `README.md` and `SHA256SUMS`.
+- Rules hit: C1 160, C2 2, C3 1, D1 1, D2 2, D3 1, D4 4, R1 2,888, R2 119,
+  R3 172, R4 168, R5 1 (`PLAN.md`; `RUNBOOK.md` is denied).
+- **Scrub rewrites: 190.** By rule: COMMIT 153, ABS-REPO 26, IPV4 3,
+  PATH-COMMIT 2, INSTANCE-ID 2, NAME-HANDLE 1, REPO 1, BRANCH 1, GPU-UUID 1.
+  53 distinct commits became placeholders.
+  - With full history (221 commits), COMMIT-CTX fired 0 times.
+  - `PLAN.md` had **no** rewrite, so its bytes, and hence its sha256, match
+    the source.
+  - The complete before/after list is `paper/v3/out/scrub_log.tsv`.
+
+| check | result | what it measured |
+|---|---|---|
+| (a) scrub | **PASS** | 4,167 files scanned (291 binary, `.npz` members decompressed) and every path. 0 FAIL, 0 WARN. Info only: URL domains are `files.pythonhosted.org` 800, `pypi.org` 70 (`uv.lock`), and `astral.sh` 1 / `docs.astral.sh` 1 (install hints). There is 1 `/workspace` mention, 10 "vast" (the GPU provider) mentions, and 653 hidden files (646 in `.manifest/`, 7 `.remote_sha256.txt`) |
+| (b) size | **PASS** | 37.70 MB = **37.7 %** of 100 × 10⁶ bytes (TMLR, verified; see above). The zip integrity test passed |
+| (c) tests | **PASS** (run 5) | fresh unpack, `uv sync --python 3.12 --group dev --locked` in 1.2 s (warm uv cache), Python 3.12.3, jax 0.11.0. **605 tests: 601 passed, 0 failed, 0 errors, 4 skipped.** Pytest wall time **3,119.0 s (52.0 min)**, with the box otherwise idle (load ≈ 2) |
+| (d) manifest | **PASS** | `SHA256SUMS` lists 4,166 files; the tree has 4,166. 0 missing, 0 unlisted, 0 mismatched |
+| (e) reproduce | **PASS** (runs 4 and 5) | inside the unpacked supplement: `p6_unblind`, `p6_post_analysis` (gamma4 t2000; evalfloor gamma_t high) and `p6_secondary` all exit 0. **8 of 8** outputs are identical to the committed ones outside their provenance fields: `unblind.json`/`report.md`, `post_gamma4_t2000.{json,md}`, `post_evalfloor_gamma_t_high.{json,md}`, `secondary.{json,md}` |
+
+**The 4 skips (c):**
+
+- `test_p6_s7_blocks::test_science_tree_identical_to_the_frozen_base` skips
+  with "no .git here". It is git-only by design.
+- `test_locks::test_pending_config_*` (×3) skip with "got empty parameter
+  set". No config has role `theta_star_pending`.
+- The three "archival" skips of the interaction configs seen on 2026-10-14
+  (RM-16) are gone, now that `interaction_check` is in `CALIBRATED_ROLES`.
+
+**How the final results were obtained.** Run 4 (`run_checks.sh`, all five
+checks) built the zip and passed (a), (b), (d) and (e). Its suite **hung**
+(F4) and was killed after 72 min, so run 4 reports overall FAIL
+(`paper/v3/out/checks_summary_run4.txt`). Run 5 re-ran (c) and (e) on **the
+same zip** (same sha256), in a fresh directory
+(`paper/v3/out/checks_tests_reproduce_run5.txt`, `check_tests_run5.json`).
+Run 5 used `check_tests.py` with `-v`. The file now passes `-vv`, a
+log-verbosity change only.
+
+**Shipped-README timing (RM-14).** The shipped text says the suite "took
+about 56 minutes" on a 4-core machine "also running another CPU job", and to
+budget an hour. That is the 2026-10-14 measurement (3,335.8 s). Run 5's
+52.0 min on an idle box is consistent with it, so the zip was not rebuilt to
+change the sentence.
+
+### Earlier runs (superseded)
+
+| run | date | zip | result |
+|---|---|---|---|
+| 1 | 2026-10-14 | 37,705,078 B (shipped `RUNBOOK.md`) | all five PASS. Tests: 605 = 598 passed + 7 skipped, 3,335.8 s, with a second suite running on the same CPU. This is the run RM-13 refers to |
+| 2 | 2026-10-14 | 37,701,842 B (RUNBOOK denied) | (a), (b), (d) PASS. The suite was interrupted by the session's usage limit; no result |
+| 3 | 2026-10-16 | — | stopped by me after packaging, when the file-name commit hash (PATH-COMMIT) was found |
+
+### Changes since the reviewer's look (RM-13/14/15)
+
+- **RM-13.** This section is now filled in.
+- **RM-14.** The shipped README now states the measured time and its
+  conditions, and says to budget an hour. It also lists the 4 skips and
+  their reasons.
+- **RM-15.** `post_v3_interaction/RUNBOOK*` is on a deny list checked before
+  every include rule. Without it, the file would ship under R1 (`*.md`) even
+  if R5 excluded it. It is now absent from the zip, and
+  `excluded_summary.txt` lists it.
+- **Also fixed while re-running.**
+  - A commit hash in two **file names** (`phase5/m51j/requirement_fa32113.*`)
+    shipped unscrubbed. Before the fix, the scrub check scanned paths only
+    for names and URLs. Now `package.py` rewrites commit hashes in paths
+    (PATH-COMMIT), and `check_scrub.py` fails on any commit hash in a path.
+  - `HEX_TOKEN` now treats `_` as a boundary, so `requirement_<hash>` in text
+    is caught too.

@@ -64,7 +64,6 @@ committed on `claude/fervent-newton-ws5yub` (log: *PAPER V3 PHASE 1 START*,
   Fixing it needs figure rebuilds, which need your agreement (Q6).
 - **Owner-marked items** (28 `OWNER-PENDING` markers): defaults are in the
   text; each is in `OWNER_QUESTIONS.md`.
-- **RM-13**: STATUS_RM13
 - **CA-9's scale clause** (RN1-8): did not fit §3's budget; the stray
   punctuation it left is fixed. A 12-word restore is possible if you accept
   the overrun.
@@ -82,7 +81,7 @@ committed on `claude/fervent-newton-ws5yub` (log: *PAPER V3 PHASE 1 START*,
 | Artifact bundle in headless Chromium | 0 failed requests; 341 of 341 math; 10 of 10 iframes; 13 of 13 images |
 | Step-0 tests (`test_interaction_check.py`, incl. a real CPU end-to-end run) | PASS |
 | Full CPU suite | 598 passed, 6 skipped, 1 failed: the frozen-base test, which fails on the untouched `7a5e009` too (record item C1) |
-| Supplement: scrub, size, manifest | PASS, PASS (37.7 of 100 MB), PASS; tests inside the unpacked supplement: STATUS_SUPP |
+| Supplement: scrub, size, manifest | PASS, PASS (37.7 of 100 MB), PASS; tests inside the unpacked supplement 601 passed, 4 skipped, 0 failed (on a re-run: the first run hung in `test_pbt.py::test_population_resume`, an intermittent JAX wait after a checkpoint restore, record item C6); the registered analyses reproduce 8 of 8 outputs |
 | Reviews | 5 lanes; 92 findings (9 MUST, 73 SHOULD, 10 OWNER). The 8 MUSTs on draft1 were fixed and re-checked OK by their reviewers (one after a reopen and a final pass); the 1 MUST the re-check found (a stray ",." in §3) was fixed in the final pass and confirmed by the final build, not by a reviewer |
 
 **Not checked:** TMLR's site, the OpenReview upload, the kit's web editor;

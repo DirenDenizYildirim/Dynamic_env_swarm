@@ -1,0 +1,59 @@
+uv sync: exit 0 in 1 s
+che/tests/test_phase6_configs.py ....................................... [ 76%]
+..........................................                               [ 83%]
+che/tests/test_positional_drift.py .........                             [ 85%]
+che/tests/test_prop3.py ....                                             [ 85%]
+che/tests/test_reward_independence.py ..                                 [ 86%]
+che/tests/test_rowb_probe.py ......                                      [ 87%]
+che/tests/test_run_manifest.py ..........                                [ 88%]
+che/tests/test_scaffold.py .....                                         [ 89%]
+che/tests/test_step_metrics.py .....                                     [ 90%]
+che/tests/test_structure_weak.py ........                                [ 91%]
+che/tests/test_theta_golden.py .......................                   [ 95%]
+che/tests/test_traced_theta.py .............                             [ 97%]
+che/tests/test_uint8_obs.py ..............                               [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/tensorflow_probability/python/internal/backend/jax/ops.py:684
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: <scratch>/run5/junit.xml -
+=========================== short test summary info ============================
+SKIPPED [1] che/tests/test_locks.py:257: got empty parameter set for (path)
+SKIPPED [1] che/tests/test_locks.py:269: got empty parameter set for (path)
+SKIPPED [1] che/tests/test_locks.py:283: got empty parameter set for (path)
+SKIPPED [1] che/tests/test_p6_s7_blocks.py:93: no .git here — identity is asserted before shipping
+============ 601 passed, 4 skipped, 1 warning in 3102.76s (0:51:42) ============
+{
+ "uv_sync_exit": 0,
+ "uv_sync_s": 1.2,
+ "pytest_exit": 0,
+ "pytest_wall_s": 3119.0,
+ "tests": 605,
+ "failures": 0,
+ "errors": 0,
+ "skipped": 4,
+ "passed": 601,
+ "failed": []
+}
+skips:
+    che.tests.test_locks::test_pending_config_does_not_load[NOTSET]: got empty parameter set for (path)
+    che.tests.test_locks::test_pending_config_has_every_other_lock_written_out[NOTSET]: got empty parameter set for (path)
+    che.tests.test_locks::test_pending_key_matches_an_unmeasured_constant[NOTSET]: got empty parameter set for (path)
+    che.tests.test_p6_s7_blocks::test_science_tree_identical_to_the_frozen_base: no .git here — identity is asserted before shipping
+TESTS CHECK: PASS
+
+real	52m2.466s
+user	101m52.695s
+sys	3m6.059s
+che.scripts.p6_unblind --artifact --floors --card-diag --unblind --allow-dirty: exit 0
+che.scripts.p6_post_analysis --sections gamma4 t2000 --allow-dirty: exit 0
+che.scripts.p6_post_analysis --sections evalfloor gamma_t high --allow-dirty: exit 0
+che.scripts.p6_secondary --allow-dirty: exit 0
+  unblind/unblind.json: identical (provenance fields excluded)
+  unblind/report.md: identical (provenance fields excluded)
+  post_unblind_analysis/post_gamma4_t2000.json: identical (provenance fields excluded)
+  post_unblind_analysis/post_gamma4_t2000.md: identical (provenance fields excluded)
+  post_unblind_analysis/post_evalfloor_gamma_t_high.json: identical (provenance fields excluded)
+  post_unblind_analysis/post_evalfloor_gamma_t_high.md: identical (provenance fields excluded)
+  secondary/secondary.json: identical (provenance fields excluded)
+  secondary/secondary.md: identical (provenance fields excluded)
+REPRODUCE CHECK: PASS

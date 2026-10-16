@@ -1,5 +1,14 @@
-# HANDOFF — session state for the next model (rewritten 2026-09-27; updated 2026-09-28; v3 pointer 2026-10-12)
+# HANDOFF — session state for the next model (rewritten 2026-09-27; updated 2026-09-28; v3 pointers 2026-10-12, 2026-10-16)
 
+> **Start here (2026-10-16).** Paper v3 phase 1 is handed back on branch
+> `claude/fervent-newton-ws5yub`. Read `paper/v3/HANDBACK.md` and the one-page
+> `paper/v3/OWNER_QUESTIONS.md`. Two things wait on the owner: the OK on the
+> interaction-check plan (`che/bench/results/phase6/post_v3_interaction/PLAN.md`,
+> committed) and the GPU run (`RUNBOOK.md` there). After the results return, a
+> session verifies them, runs `che.scripts.interaction_analysis` once, fills
+> the 7 `HOLE:INTERACTION` markers, Figure 9 and the IC rows, and rebuilds.
+> Nothing from v3 is in `paper/finale.md` until the owner rules.
+>
 > **Start here (2026-10-12).** The next paper session is the **v3 rewrite**.
 > Paste `paper_v3_prompt.md` as its first message. That prompt is
 > self-contained and supersedes the older pointers below for paper work.

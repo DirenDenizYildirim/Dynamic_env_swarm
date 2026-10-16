@@ -1,0 +1,18 @@
+{
+ "uv_sync_exit": 0,
+ "uv_sync_s": 1.2,
+ "pytest_exit": 0,
+ "pytest_wall_s": 3119.0,
+ "tests": 605,
+ "failures": 0,
+ "errors": 0,
+ "skipped": 4,
+ "passed": 601,
+ "skips": [
+  "che.tests.test_locks::test_pending_config_does_not_load[NOTSET]: got empty parameter set for (path)",
+  "che.tests.test_locks::test_pending_config_has_every_other_lock_written_out[NOTSET]: got empty parameter set for (path)",
+  "che.tests.test_locks::test_pending_key_matches_an_unmeasured_constant[NOTSET]: got empty parameter set for (path)",
+  "che.tests.test_p6_s7_blocks::test_science_tree_identical_to_the_frozen_base: no .git here \u2014 identity is asserted before shipping"
+ ],
+ "failed": []
+}

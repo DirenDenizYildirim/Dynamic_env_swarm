@@ -13,7 +13,7 @@ before it is acted on.
 - **Q1. What the supplement ships (V3Q16).** Default now: the code, tests, configs,
   registered documents, analysis scripts and committed outputs, **plus the theory
   document and the lock records** (App. A refers to the theory document as shipped).
-  Decision-log excerpts: off by default (they quote you). Options: drop the theory
+  Decision-log excerpts and the confirmatory training logs (+23 MB): off by default. Options: drop the theory
   document (then App. A's four departure sentences lose their referent); add log
   excerpts (then App. D's log quotations become checkable).
 
@@ -62,6 +62,7 @@ before it is acted on.
   co-occurrence from frequency; it separates it from the *active share* only.
 - **C4.** A builder edit to an existing test: `test_locks.py` now grades the
   interaction configs' β (role added to `CALIBRATED_ROLES`). Keep or revert.
+- **C6.** `che/tests/test_pbt.py::test_population_resume` hung once (72 min, all threads idle) and passed on re-runs: an intermittent JAX/orbax wait after a restore. Also: `.gitignore`'s `*.manifest` keeps the grid's `.manifest/` entries out of git, so the registered scripts cannot run on a fresh clone (the supplement rebuilds them from `SHA256_CKPT.txt`).
 - **C5.** Older items: `README.md` is stale; `LICENSE` names you (the supplement
   ships it with the name scrubbed to "Anonymous Authors"); `phase6_framing_branches.md:69, :75, :82` overclaim (not copied).
 

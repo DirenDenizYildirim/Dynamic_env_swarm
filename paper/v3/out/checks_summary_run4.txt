@@ -1,0 +1,55 @@
+== check_scrub.py
+scanned 4167 files (291 binary) from che_supplement.zip
+URL domains (info): {'docs.astral.sh': 1, 'astral.sh': 1, 'pypi.org': 70, 'files.pythonhosted.org': 800}
+'/workspace' occurrences (info; container default dir, not identifying): 1
+'vast' mentions (info; GPU rental provider named in reports): 10
+hidden files (info): 653 in {'.manifest': 646, 'g1_conf_5090': 1, 'g1_floors_2026-09-08': 1, 'g1_floors_5090': 1, 'g1_grid': 1, 'g1_iso4_5090': 1, 'g1_sec_s1_12_5090': 1, 'g1_t2000_5090': 1}
+WARN (0; review by hand):
+SCRUB CHECK: PASS
+== check_size.py
+zip: che_supplement.zip  37702298 bytes (37.70 MB); 4167 files, 213.03 MB unpacked
+limit: 100000000 bytes (100 MB), source: https://jmlr.org/tmlr/author-guide.html (read 2026-10-14)
+used: 37.7% of the limit
+SIZE CHECK: PASS
+== check_manifest.py
+SHA256SUMS lists 4166 files; tree has 4166 (excluding SHA256SUMS)
+missing: 0
+unlisted: 0
+hash mismatch: 0
+MANIFEST CHECK: PASS
+== check_tests.py --workdir <scratch>/run4
+uv sync: exit 0 in 1 s
+........................................................................ [ 11%]
+........................................................................ [ 23%]
+........................................................................ [ 35%]
+.........................sss............................................ [ 47%]
+........................................................................ [ 59%]
+.........s...................................................
+Traceback (most recent call last):
+  File "/home/user/Dynamic_env_swarm/paper/v3/supplement/check_tests.py", line 132, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/user/Dynamic_env_swarm/paper/v3/supplement/check_tests.py", line 96, in main
+    suite = ET.parse(junit).getroot()
+            ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/xml/etree/ElementTree.py", line 1204, in parse
+    tree.parse(source, parser)
+  File "/usr/lib/python3.12/xml/etree/ElementTree.py", line 558, in parse
+    source = open(source, "rb")
+             ^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '<scratch>/run4/junit.xml'
+== check_reproduce.py --workdir <scratch>/run4
+che.scripts.p6_unblind --artifact --floors --card-diag --unblind --allow-dirty: exit 0
+che.scripts.p6_post_analysis --sections gamma4 t2000 --allow-dirty: exit 0
+che.scripts.p6_post_analysis --sections evalfloor gamma_t high --allow-dirty: exit 0
+che.scripts.p6_secondary --allow-dirty: exit 0
+  unblind/unblind.json: identical (provenance fields excluded)
+  unblind/report.md: identical (provenance fields excluded)
+  post_unblind_analysis/post_gamma4_t2000.json: identical (provenance fields excluded)
+  post_unblind_analysis/post_gamma4_t2000.md: identical (provenance fields excluded)
+  post_unblind_analysis/post_evalfloor_gamma_t_high.json: identical (provenance fields excluded)
+  post_unblind_analysis/post_evalfloor_gamma_t_high.md: identical (provenance fields excluded)
+  secondary/secondary.json: identical (provenance fields excluded)
+  secondary/secondary.md: identical (provenance fields excluded)
+REPRODUCE CHECK: PASS
+== overall: FAIL

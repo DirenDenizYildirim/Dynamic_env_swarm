@@ -4,8 +4,10 @@
 
 Unzips into DIR (must not exist), builds a fresh environment from the SHIPPED
 pyproject.toml/uv.lock (`uv sync --python 3.12 --group dev --locked`), and runs
-`pytest -q -rs che/tests` there. Records pass/fail/skip counts, every skip
-reason, and wall times in DIR/check_tests.json and the console. DIR is kept so
+`pytest -vv -rs che/tests` there; a run still going after --timeout-s is
+killed and FAILS, naming the test it hung in. Records pass/fail/skip counts,
+every skip reason, and wall times in DIR/check_tests.json and the console.
+DIR is kept so
 check_reproduce.py can reuse the environment.
 
 Exit 0 = PASS (no failure, no error), 1 = FAIL.
@@ -16,6 +18,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -43,6 +46,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     ap.add_argument("--workdir", type=Path, required=True)
     ap.add_argument("--pytest-args", nargs="*", default=[])
+    ap.add_argument(
+        "--timeout-s",
+        type=int,
+        default=7200,
+        help="kill the suite after this wall time and FAIL (a hang is a finding)",
+    )
     a = ap.parse_args(argv)
     if a.workdir.exists():
         raise SystemExit(f"--workdir {a.workdir} exists; give a fresh path")
@@ -68,30 +77,57 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     junit = a.workdir / "junit.xml"
+    out_txt = a.workdir / "pytest_output.txt"
+    cmd = [
+        "uv",
+        "run",
+        "--no-sync",
+        "pytest",
+        "-vv",  # pyproject addopts has -q; -vv nets one test per line
+        "-rs",
+        "-p",
+        "no:cacheprovider",
+        f"--junitxml={junit}",
+        "che/tests",
+        *a.pytest_args,
+    ]
     t0 = time.time()
-    run = subprocess.run(
-        [
-            "uv",
-            "run",
-            "--no-sync",
-            "pytest",
-            "-q",
-            "-rs",
-            "-p",
-            "no:cacheprovider",
-            f"--junitxml={junit}",
-            "che/tests",
-            *a.pytest_args,
-        ],
-        cwd=root,
-        env=env,
-        capture_output=True,
-        text=True,
-    )
+    with open(out_txt, "w") as fh:
+        proc = subprocess.Popen(
+            cmd,
+            cwd=root,
+            env=env,
+            stdout=fh,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+        )
+        try:
+            rc = proc.wait(timeout=a.timeout_s)
+            hung = False
+        except subprocess.TimeoutExpired:
+            os.killpg(proc.pid, signal.SIGKILL)
+            proc.wait()
+            rc, hung = -9, True
     t_test = time.time() - t0
-    (a.workdir / "pytest_output.txt").write_text(run.stdout + "\n" + run.stderr)
-    tail = [ln for ln in run.stdout.splitlines() if ln.strip()][-40:]
-    print("\n".join(tail))
+    lines = [ln for ln in out_txt.read_text().splitlines() if ln.strip()]
+    print("\n".join(lines[-25:]))
+    if hung or not junit.is_file():
+        running = next((ln for ln in reversed(lines) if "test_" in ln), "?")
+        rec = {
+            "pytest_wall_s": round(t_test, 1),
+            "hung": hung,
+            "exit": rc,
+            "last_test_line": running,
+            "tests_reported_done": sum(
+                " PASSED" in ln or " SKIPPED" in ln or " FAILED" in ln for ln in lines
+            ),
+        }
+        (a.workdir / "check_tests.json").write_text(json.dumps(rec, indent=1) + "\n")
+        print(json.dumps(rec, indent=1))
+        why = f"no exit within {a.timeout_s} s" if hung else "no junit report"
+        print(f"TESTS CHECK: FAIL ({why})")
+        return 1
+    run = subprocess.CompletedProcess(cmd, rc)
 
     suite = ET.parse(junit).getroot()
     suite = suite if suite.tag == "testsuite" else suite.find("testsuite")
