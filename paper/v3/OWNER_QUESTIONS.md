@@ -22,10 +22,11 @@ before it is acted on.
 - **Q2. Title (V3Q1).** Default T5, "A multi-agent fire environment with exact stressor
   ablations" (60 characters). Others: T1 (118 characters, 7 printed lines), T1s, T2–T4,
   T6 (`provenance/00_abstract.md`). Also: CHE named in the abstract (B3, default yes).
-- **Q3. Page measure (V3Q2).** The printed main text is **PAGES_P1 pages from page 1**
-  (ceiling 15; fails) and **PAGES_S1 from §1**, with the interaction results still
-  to add (about 0.3 page). Prose is within budget everywhere. (a) Rule the §1
-  reading; (b) move Figure 5 to App. C; (c) both.
+- **Q3. Page measure (V3Q2).** The final kit build prints the main text at **14.70 pages
+  from page 1** and **13.27 from §1** (ceiling 15), with the interaction results still
+  to add. That leaves about 0.3 page at the page-1 reading, which may not hold Figure 9.
+  Prose is within budget everywhere. (a) Rule the §1 reading; (b) default: keep page 1
+  and, if the results overflow, move Figure 5 to App. C.
 - **Q4. Theorem 1 (V3Q5, V3Q23).** The paper's closed form does not describe the
   tested toy (`che/env/e2c.py`; App. A). Default: state Thm. 1 for per-step optical
   depths, proof unchanged (matches the code). Alternate: keep the theory document's

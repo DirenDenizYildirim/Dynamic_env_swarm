@@ -1,0 +1,1289 @@
+{
+ "summary": {
+  "pass": 40,
+  "fail": 1,
+  "info": 6
+ },
+ "run": {
+  "run_name": "kit_run_20261016_161541_10896",
+  "root": "v3",
+  "sha256": "e531434b698e04dc9e07e4100c8eb21f3a5a9caca873c102b589af4e9bacc2d5",
+  "sha_ok": true,
+  "build_rc": 0,
+  "merge_rc": 0,
+  "bundle_rc": 0,
+  "jekyll_rc": 0,
+  "control_jekyll_rc": 0,
+  "gems": "github-pages (232) jekyll (3.10.0) kramdown (2.4.0) kramdown-parser-gfm (1.1.0)"
+ },
+ "checks": [
+  {
+   "group": "Pipeline",
+   "check": "build_v3.py (source checks)",
+   "status": "PASS",
+   "counts": "0 failures, 0 warnings, 23 STUB-SPEC blocks, 0 M1 source flags",
+   "details": []
+  },
+  {
+   "group": "Pipeline",
+   "check": "kit zip sha256",
+   "status": "PASS",
+   "counts": "e531…",
+   "details": []
+  },
+  {
+   "group": "Pipeline",
+   "check": "kit merge_files() and jekyll build --future",
+   "status": "PASS",
+   "counts": "merge 0, jekyll 0, control jekyll 0; github-pages (232) jekyll (3.10.0) kramdown (2.4.0) kramdown-parser-gfm (1.1.0)",
+   "details": []
+  },
+  {
+   "group": "Math and Liquid",
+   "check": "MathJax errors",
+   "status": "PASS",
+   "counts": "0 errors in 341 rendered expressions (source count 341)",
+   "details": []
+  },
+  {
+   "group": "Math and Liquid",
+   "check": "no raw $ or TeX in rendered text",
+   "status": "PASS",
+   "counts": "0 hits",
+   "details": []
+  },
+  {
+   "group": "Math and Liquid",
+   "check": "math count, source against rendered",
+   "status": "INFO",
+   "counts": "source 341, rendered 341",
+   "details": []
+  },
+  {
+   "group": "Math and Liquid",
+   "check": "0 Liquid left",
+   "status": "PASS",
+   "counts": "0 left",
+   "details": []
+  },
+  {
+   "group": "Tables (M1)",
+   "check": "kit table count equals the source's",
+   "status": "PASS",
+   "counts": "kit 17 against source 17; build's M1 source scan flagged 0 line(s)",
+   "details": []
+  },
+  {
+   "group": "References (M2)",
+   "check": "no raw LaTeX or -- in Distill's reference list",
+   "status": "PASS",
+   "counts": "0 of 30 entries",
+   "details": []
+  },
+  {
+   "group": "References (M2)",
+   "check": "rendered authors and titles equal the bib's Unicode fields",
+   "status": "PASS",
+   "counts": "0 mismatches in 30 entries",
+   "details": []
+  },
+  {
+   "group": "References (M2)",
+   "check": "every d-cite resolves",
+   "status": "PASS",
+   "counts": "30 d-cite tags, 0 unresolved",
+   "details": []
+  },
+  {
+   "group": "References (M2)",
+   "check": "reference list has one entry per cited key",
+   "status": "PASS",
+   "counts": "30 entries, 30 cited keys",
+   "details": []
+  },
+  {
+   "group": "References (M2)",
+   "check": "hover cards show no raw TeX",
+   "status": "PASS",
+   "counts": "30 hover cards, 0 problems",
+   "details": []
+  },
+  {
+   "group": "Citation box (M3)",
+   "check": "the cite-this-work box has a year",
+   "status": "PASS",
+   "counts": "year = {October 11, 2026}",
+   "details": [
+    "@inproceedings{anonymous2026amultiagentfire,\n  author = {Anonymous, },\n  title = {A multi-agent fire environment with exact stressor ablations},\n  booktitle = {TMLR Beyond PDF},\n  year = {October 11, 2026}\n}",
+    "Anonymous, \"A multi-agent fire environment with exact stressor ablations\", TMLR Beyond PDF, 2026."
+   ]
+  },
+  {
+   "group": "Byline",
+   "check": "what the byline shows for Submitted",
+   "status": "INFO",
+   "counts": "'Not submitted yet.' (front matter submitted_date: None)",
+   "details": []
+  },
+  {
+   "group": "Byline",
+   "check": "title and description render intact (heading, byline, cite box)",
+   "status": "PASS",
+   "counts": "4 of 4 hold",
+   "details": []
+  },
+  {
+   "group": "Links and frames",
+   "check": "every toc link resolves",
+   "status": "PASS",
+   "counts": "10 of 10 resolve (source toc 10)",
+   "details": []
+  },
+  {
+   "group": "Links and frames",
+   "check": "every in-page # link resolves",
+   "status": "PASS",
+   "counts": "10 of 10",
+   "details": []
+  },
+  {
+   "group": "Links and frames",
+   "check": "every iframe loads (same origin)",
+   "status": "PASS",
+   "counts": "10 of 10 loaded (source 10)",
+   "details": []
+  },
+  {
+   "group": "Links and frames",
+   "check": "iframe heights stable: 5 s and 60 s after load equal (1280, 1024, 390 px)",
+   "status": "PASS",
+   "counts": "0 frames grew, widths [1280, 1024, 390]",
+   "details": [
+    "1280 px: explorer_thetastar_random_seed0.html: frame 700 → 700 px, body 677 px",
+    "1280 px: severity_explorer.html: frame 536 → 536 px, body 448 px",
+    "1280 px: coupling_a_explorer.html: frame 748 → 748 px, body 724 px",
+    "1280 px: composer_training_mixtures.html: frame 454 → 454 px, body 422 px",
+    "1280 px: simplex_secondary.html: frame 844 → 844 px, body 761 px",
+    "1280 px: ladder_registered_readings.html: frame 1024 → 1024 px, body 684 px",
+    "1280 px: floors_explorer.html: frame 484 → 484 px, body 386 px",
+    "1280 px: gamma_t_final_half.html: frame 515 → 515 px, body 491 px",
+    "1280 px: explorer_thetastar_iso_s1_T1000_ep0.html: frame 700 → 700 px, body 677 px",
+    "1280 px: explorer_thetastar_joint_s1_T1000_ep0.html: frame 700 → 700 px, body 677 px",
+    "1024 px: explorer_thetastar_random_seed0.html: frame 764 → 764 px, body 717 px",
+    "1024 px: severity_explorer.html: frame 536 → 536 px, body 384 px",
+    "1024 px: coupling_a_explorer.html: frame 748 → 748 px, body 638 px",
+    "1024 px: composer_training_mixtures.html: frame 468 → 468 px, body 456 px",
+    "1024 px: simplex_secondary.html: frame 844 → 844 px, body 679 px",
+    "1024 px: ladder_registered_readings.html: frame 1024 → 1024 px, body 581 px",
+    "1024 px: floors_explorer.html: frame 484 → 484 px, body 398 px",
+    "1024 px: gamma_t_final_half.html: frame 515 → 515 px, body 422 px",
+    "1024 px: explorer_thetastar_iso_s1_T1000_ep0.html: frame 764 → 764 px, body 739 px",
+    "1024 px: explorer_thetastar_joint_s1_T1000_ep0.html: frame 764 → 764 px, body 739 px",
+    "390 px: explorer_thetastar_random_seed0.html: frame 1360 → 1360 px, body 1150 px",
+    "390 px: severity_explorer.html: frame 688 → 688 px, body 680 px",
+    "390 px: coupling_a_explorer.html: frame 1052 → 1052 px, body 1040 px",
+    "390 px: composer_training_mixtures.html: frame 683 → 683 px, body 671 px",
+    "390 px: simplex_secondary.html: frame 1191 → 1191 px, body 1179 px",
+    "390 px: ladder_registered_readings.html: frame 1056 → 1056 px, body 1044 px",
+    "390 px: floors_explorer.html: frame 484 → 484 px, body 319 px",
+    "390 px: gamma_t_final_half.html: frame 793 → 793 px, body 781 px",
+    "390 px: explorer_thetastar_iso_s1_T1000_ep0.html: frame 1360 → 1360 px, body 1150 px",
+    "390 px: explorer_thetastar_joint_s1_T1000_ep0.html: frame 1360 → 1360 px, body 1150 px"
+   ]
+  },
+  {
+   "group": "Links and frames",
+   "check": "no iframe clips its document: frame ≥ body.scrollHeight at 60 s (1280, 1024, 390 px)",
+   "status": "PASS",
+   "counts": "0 problems, widths [1280, 1024, 390]",
+   "details": []
+  },
+  {
+   "group": "Links and frames",
+   "check": "iframe height attributes within 5 % of the height at 60 s, 1280 px (P2 §7.2)",
+   "status": "PASS",
+   "counts": "10 of 10 within 5 %",
+   "details": [
+    "all: explorer_thetastar_random_seed0.html: attr 700, height at 60 s 700 (0.0 %); severity_explorer.html: attr 528, height at 60 s 536 (1.5 %); coupling_a_explorer.html: attr 736, height at 60 s 748 (1.6 %); composer_training_mixtures.html: attr 442, height at 60 s 454 (2.6 %); simplex_secondary.html: attr 832, height at 60 s 844 (1.4 %); ladder_registered_readings.html: attr 1012, height at 60 s 1024 (1.2 %); floors_explorer.html: attr 472, height at 60 s 484 (2.5 %); gamma_t_final_half.html: attr 503, height at 60 s 515 (2.3 %); explorer_thetastar_iso_s1_T1000_ep0.html: attr 700, height at 60 s 700 (0.0 %); explorer_thetastar_joint_s1_T1000_ep0.html: attr 700, height at 60 s 700 (0.0 %)"
+   ]
+  },
+  {
+   "group": "Links and frames",
+   "check": "images load",
+   "status": "PASS",
+   "counts": "13 of 13 (source includes 13)",
+   "details": []
+  },
+  {
+   "group": "Print",
+   "check": "print companions hidden on screen",
+   "status": "PASS",
+   "counts": "10 of 10 hidden",
+   "details": []
+  },
+  {
+   "group": "Print",
+   "check": "print companions shown in print media, images loaded",
+   "status": "PASS",
+   "counts": "10 of 10",
+   "details": []
+  },
+  {
+   "group": "Print",
+   "check": "iframes hidden in print media",
+   "status": "PASS",
+   "counts": "10 of 10 hidden",
+   "details": []
+  },
+  {
+   "group": "Print",
+   "check": "nothing is cut in print: tables, math and listings fit at US Letter width",
+   "status": "PASS",
+   "counts": "0 cut of 364 checked (text column 472 px)",
+   "details": [
+    "wrapped listing lines in print (not graded): [0, 0, 0, 0, 0, 0] (total 0) in print media; listing lines not intact on one line of the printed PDF: [0, 0, 0, 0, 0, 0] (total 0)"
+   ]
+  },
+  {
+   "group": "Print",
+   "check": "'Interact' notes hidden in print",
+   "status": "PASS",
+   "counts": "9 of 9",
+   "details": []
+  },
+  {
+   "group": "Requests",
+   "check": "0 failed requests",
+   "status": "PASS",
+   "counts": "0 failed of 152 (10 aborted during re-layout and then loaded, not counted)",
+   "details": []
+  },
+  {
+   "group": "Requests",
+   "check": "console errors",
+   "status": "INFO",
+   "counts": "0 console, 1 page errors",
+   "details": [
+    "Error: Invalid repo: \"\""
+   ]
+  },
+  {
+   "group": "Listings and overflow",
+   "check": "listings in the built page equal their committed lines byte for byte",
+   "status": "PASS",
+   "counts": "6 of 6 identical",
+   "details": []
+  },
+  {
+   "group": "Listings and overflow",
+   "check": "no listing cut at 1024 or 1280 px; no page overflow at any width",
+   "status": "PASS",
+   "counts": "listing font 12px",
+   "details": [
+    "1024 px: listings scrolling inside their block none (worst 0 px); page horizontal overflow 0 px",
+    "1280 px: listings scrolling inside their block none (worst 0 px); page horizontal overflow 0 px",
+    "390 px: listings scrolling inside their block [1, 2, 3, 4, 5, 6] (worst 280 px); page horizontal overflow 0 px"
+   ]
+  },
+  {
+   "group": "Listings and overflow",
+   "check": "display math wider than the column (reported, not graded)",
+   "status": "INFO",
+   "counts": "3 instances over three widths, 0 cut off with no scrollbar",
+   "details": [
+    "390 px: display math 48 px too wide, scrolls, under '3 The environment': 'Tθ(s′∣s,a)=TC(c′∣c,x)THβ,κA(h′∣h,c,c′)Tρ(ρ′∣ρ,h′)×TX(x′∣x,a,'",
+    "390 px: display math 10 px too wide, scrolls, under '3 The environment': 'Pr[i→j\\xa0open]=1[‖xi′−xj′‖∞≤Rcomm](1−δ),'",
+    "390 px: display math 12 px too wide, scrolls, under '6 Worked example: training on stressors together or apart': 'I=J(both)−J(A only)−J(B only)+J(neither).'"
+   ]
+  },
+  {
+   "group": "Footnote (N1)",
+   "check": "where <d-footnote> text lands, on screen and in print",
+   "status": "INFO",
+   "counts": "no <d-footnote> in the source",
+   "details": [
+    "Printed page 1 holds: 'A multi-agent fire environment with exact stressor ablations A pure-JAX multi-agent environment in which collapse seeds fire, smoke attenuates perception and ev' … The abstract starts on page 1."
+   ]
+  },
+  {
+   "group": "v3 main text",
+   "check": "main-text printed pages <= 15 (graded reading: from page 1)",
+   "status": "PASS",
+   "counts": "from page 1 14.698; from '1 Introduction' 13.265; to 'Appendices' (PDF 38 pages)",
+   "details": [
+    "end heading at {'page': 15, 'y': 552.7, 'height': 13.8, 'lines': 1}",
+    "first numbered H2 at {'page': 2, 'y': 342.65, 'height': 13.8, 'lines': 1}"
+   ]
+  },
+  {
+   "group": "v3 main text",
+   "check": "no internal code or private-vocabulary term (appendix exempt)",
+   "status": "PASS",
+   "counts": "0 hits; 73 terms (paper/v3/checks/terms.txt); 2 registered-exempt, 13 glossed, 1 in listings (not graded)",
+   "details": []
+  },
+  {
+   "group": "v3 main text",
+   "check": "no date outside the allow-list (appendix exempt)",
+   "status": "PASS",
+   "counts": "0 dates outside the allow-list; 0 allowed (paper/v3/checks/dates_allow.txt)",
+   "details": []
+  },
+  {
+   "group": "v3 main text",
+   "check": "each caveat in its one home (one-home map)",
+   "status": "PASS",
+   "counts": "0 of 39 entries fail (paper/v3/checks/caveats.yaml)",
+   "details": []
+  },
+  {
+   "group": "v3 main text",
+   "check": "HOLE:INTERACTION and OWNER-PENDING markers (reported until step 0.5 and the owner's rulings)",
+   "status": "INFO",
+   "counts": "7 HOLE:INTERACTION, 28 OWNER-PENDING; 7 tags on PENDING ledger rows",
+   "details": [
+    "HOLE:INTERACTION 00_abstract.md:44",
+    "HOLE:INTERACTION 01_introduction.md:49",
+    "HOLE:INTERACTION 08_interaction_check.md:39",
+    "HOLE:INTERACTION 08_interaction_check.md:42",
+    "HOLE:INTERACTION 09_example_lesson.md:33",
+    "HOLE:INTERACTION 12_conclusion.md:20",
+    "HOLE:INTERACTION 19_appendix_interaction.md:32",
+    "OWNER-PENDING 00_abstract.md:39:V3Q1",
+    "OWNER-PENDING 00_abstract.md:39:B3",
+    "OWNER-PENDING 00_abstract.md:41:V3Q7",
+    "OWNER-PENDING 00_abstract.md:45:V3Q7",
+    "OWNER-PENDING 02_related_work.md:31:v2C1",
+    "OWNER-PENDING 02_related_work.md:35:v2C1",
+    "OWNER-PENDING 02_related_work.md:35:v2C1",
+    "OWNER-PENDING 04_calibration.md:46:v2D2",
+    "OWNER-PENDING 04_calibration.md:96:V3Q14",
+    "OWNER-PENDING 04_calibration.md:98:V3Q4",
+    "OWNER-PENDING 06_example_design.md:53:wording",
+    "OWNER-PENDING 06_example_design.md:64:A1(ii)",
+    "OWNER-PENDING 06_example_design.md:69:V3Q21",
+    "OWNER-PENDING 11_using_che.md:41:V3Q16",
+    "OWNER-PENDING 11_using_che.md:44:V3_V2",
+    "OWNER-PENDING 13_appendix_proofs.md:50:V3Q16",
+    "OWNER-PENDING 13_appendix_proofs.md:50:V3Q23",
+    "OWNER-PENDING 13_appendix_proofs.md:209:V3Q5",
+    "OWNER-PENDING 13_appendix_proofs.md:235:V3Q4",
+    "OWNER-PENDING 13_appendix_proofs.md:241:V3Q3",
+    "OWNER-PENDING 16_appendix_timeline.md:39:V3Q16",
+    "OWNER-PENDING 16_appendix_timeline.md:67:A1(ii)",
+    "OWNER-PENDING 16_appendix_timeline.md:99:V3Q22",
+    "OWNER-PENDING 16_appendix_timeline.md:182:F1",
+    "OWNER-PENDING 16_appendix_timeline.md:185:V3Q19",
+    "OWNER-PENDING 20_appendix_episodes.md:20:V3Q10",
+    "OWNER-PENDING 21_appendix_making.md:28:A1",
+    "OWNER-PENDING 21_appendix_making.md:33:PLAN_OK",
+    "PENDING row: 08_interaction_check.md:37 IC-4 (paper/v3/ledger_proposals/IC.md:21)",
+    "PENDING row: 19_appendix_interaction.md:24 IC-1 (paper/v3/ledger_proposals/IC.md:18)",
+    "PENDING row: 19_appendix_interaction.md:24 IC-2 (paper/v3/ledger_proposals/IC.md:19)",
+    "PENDING row: 19_appendix_interaction.md:26 IC-4 (paper/v3/ledger_proposals/IC.md:21)",
+    "PENDING row: 19_appendix_interaction.md:26 IC-5 (paper/v3/ledger_proposals/IC.md:22)",
+    "PENDING row: 19_appendix_interaction.md:28 IC-3 (paper/v3/ledger_proposals/IC.md:20)",
+    "PENDING row: 19_appendix_interaction.md:28 IC-3 (paper/v3/ledger_proposals/IC.md:20)"
+   ]
+  },
+  {
+   "group": "v3 main text",
+   "check": "figure images legible in print: a 8 pt label prints at >= 7 pt (estimate)",
+   "status": "FAIL",
+   "counts": "13 of 13 printed images fail",
+   "details": [
+    "FAIL p2 explorer_thetastar_random_seed0_static.png: printed 3.27 in, drawn 9.2 in, label 2.84 pt",
+    "FAIL p5 fig01_schematic.png: printed 3.27 in, drawn 10.52 in, label 2.49 pt",
+    "FAIL p8 severity_explorer.png: printed 3.27 in, drawn 10.4 in, label 2.52 pt",
+    "FAIL p9 coupling_a_explorer.png: printed 3.27 in, drawn 10.4 in, label 2.52 pt",
+    "FAIL p9 fig04_coupling_b.png: printed 3.27 in, drawn 6.08 in, label 4.3 pt",
+    "FAIL p12 composer_training_mixtures.png: printed 3.27 in, drawn 9.6 in, label 2.73 pt",
+    "FAIL p12 simplex_secondary.png: printed 3.27 in, drawn 10.4 in, label 2.52 pt",
+    "FAIL p13 ladder_registered_readings.png: printed 3.27 in, drawn 10.4 in, label 2.52 pt",
+    "FAIL p24 floors_explorer.png: printed 3.27 in, drawn 10.4 in, label 2.52 pt",
+    "FAIL p30 gamma_t_final_half.png: printed 3.27 in, drawn 10.0 in, label 2.62 pt",
+    "FAIL p31 fig06_comms.png: printed 3.27 in, drawn 6.06 in, label 4.32 pt",
+    "FAIL p34 explorer_thetastar_iso_s1_T1000_ep0_static.png: printed 3.27 in, drawn 9.2 in, label 2.84 pt",
+    "FAIL p35 explorer_thetastar_joint_s1_T1000_ep0_static.png: printed 3.27 in, drawn 9.2 in, label 2.84 pt"
+   ]
+  },
+  {
+   "group": "YAML",
+   "check": "title and description: one line, no double quote, YAML-safe",
+   "status": "PASS",
+   "counts": "staged front matter parses; no problems",
+   "details": []
+  },
+  {
+   "group": "Leaks and print",
+   "check": "comment-stripped staged submission.md (M4)",
+   "status": "PASS",
+   "counts": "788 comments in submission_v3.md (23 STUB-SPEC), 0 '<!--' left in the staged copy",
+   "details": []
+  },
+  {
+   "group": "Leaks and print",
+   "check": "staged bib has no % lines (N3)",
+   "status": "PASS",
+   "counts": "4 % lines in the bib, 0 staged; 41 entries",
+   "details": []
+  },
+  {
+   "group": "Leaks and print",
+   "check": "stripping removed only comments (stripped build = unstripped build)",
+   "status": "PASS",
+   "counts": "rendered text identical (109729 chars); tables [17, 17]; math [341, 341]; listings [6, 6]",
+   "details": []
+  },
+  {
+   "group": "Leaks and print",
+   "check": "double-blind grep of the staged folder",
+   "status": "PASS",
+   "counts": "25 files; 5 identity tokens; url 0, identity 0, abs_path 0, hex 0, image_text 0",
+   "details": []
+  },
+  {
+   "group": "Leaks and print",
+   "check": "printed PDF written (US Letter), no identity strings in its text",
+   "status": "PASS",
+   "counts": "38 pages, 3.3 MB, page size 612 x 792 pts (letter)",
+   "details": []
+  },
+  {
+   "group": "Leaks and print",
+   "check": "staged folder zipped",
+   "status": "PASS",
+   "counts": "32 entries, top level ['submission_folder'], 2.2 MB",
+   "details": []
+  }
+ ],
+ "iframes": [
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_random_seed0.html",
+   "title": "Episode explorer: one random-policy episode of CHE at the test configuration",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 700,
+   "final_height": 700,
+   "content_height": 700,
+   "http_status": 200,
+   "settled_height_1280": 700,
+   "attr_deviation_pct": 0.0
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/severity_explorer.html",
+   "title": "Severity explorer: spanning probability against ignition probability, and one fire at each locked level",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 528,
+   "final_height": 536,
+   "content_height": 536,
+   "http_status": 200,
+   "settled_height_1280": 536,
+   "attr_deviation_pct": 1.5
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/coupling_a_explorer.html",
+   "title": "Coupling A explorer: collapse-seeded ignitions by severity, their share near agents, and the two Proposition 3 runs",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 736,
+   "final_height": 748,
+   "content_height": 748,
+   "http_status": 200,
+   "settled_height_1280": 748,
+   "attr_deviation_pct": 1.6
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/composer_training_mixtures.html",
+   "title": "Training mixtures of ISO, ISO-4 and JOINT by episode type",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 442,
+   "final_height": 454,
+   "content_height": 454,
+   "http_status": 200,
+   "settled_height_1280": 454,
+   "attr_deviation_pct": 2.6
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/simplex_secondary.html",
+   "title": "Secondary design on the triangle of training mixtures, with plane predictions beside measured contrasts",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 832,
+   "final_height": 844,
+   "content_height": 844,
+   "http_status": 200,
+   "settled_height_1280": 844,
+   "attr_deviation_pct": 1.4
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/ladder_registered_readings.html",
+   "title": "Registered readings in order: Gamma, Gamma4, Gamma4 prime and B-hat on both co-primaries",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 1012,
+   "final_height": 1024,
+   "content_height": 1024,
+   "http_status": 200,
+   "settled_height_1280": 1024,
+   "attr_deviation_pct": 1.2
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/floors_explorer.html",
+   "title": "Floors explorer: reproducibility floors per GPU, per artifact and per run length, and the confirmatory grid against its floor",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 472,
+   "final_height": 484,
+   "content_height": 484,
+   "http_status": 200,
+   "settled_height_1280": 484,
+   "attr_deviation_pct": 2.5
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/gamma_t_final_half.html",
+   "title": "Gamma over the final half of training, completion and survival",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 503,
+   "final_height": 515,
+   "content_height": 515,
+   "http_status": 200,
+   "settled_height_1280": 515,
+   "attr_deviation_pct": 2.3
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_iso_s1_T1000_ep0.html",
+   "title": "Episode explorer, ISO policy, training seed 1",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 700,
+   "final_height": 700,
+   "content_height": 700,
+   "http_status": 200,
+   "settled_height_1280": 700,
+   "attr_deviation_pct": 0.0
+  },
+  {
+   "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_joint_s1_T1000_ep0.html",
+   "title": "Episode explorer, JOINT policy, training seed 1",
+   "loaded": true,
+   "same_origin": true,
+   "attr_height": 700,
+   "final_height": 700,
+   "content_height": 700,
+   "http_status": 200,
+   "settled_height_1280": 700,
+   "attr_deviation_pct": 0.0
+  }
+ ],
+ "growth": [
+  {
+   "width": 1280,
+   "at5": [
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_random_seed0.html",
+     "h": 700,
+     "body": 677
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/severity_explorer.html",
+     "h": 536,
+     "body": 448
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/coupling_a_explorer.html",
+     "h": 748,
+     "body": 724
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/composer_training_mixtures.html",
+     "h": 454,
+     "body": 422
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/simplex_secondary.html",
+     "h": 844,
+     "body": 761
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/ladder_registered_readings.html",
+     "h": 1024,
+     "body": 684
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/floors_explorer.html",
+     "h": 484,
+     "body": 386
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/gamma_t_final_half.html",
+     "h": 515,
+     "body": 491
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_iso_s1_T1000_ep0.html",
+     "h": 700,
+     "body": 677
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_joint_s1_T1000_ep0.html",
+     "h": 700,
+     "body": 677
+    }
+   ],
+   "at60": [
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_random_seed0.html",
+     "h": 700,
+     "body": 677
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/severity_explorer.html",
+     "h": 536,
+     "body": 448
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/coupling_a_explorer.html",
+     "h": 748,
+     "body": 724
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/composer_training_mixtures.html",
+     "h": 454,
+     "body": 422
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/simplex_secondary.html",
+     "h": 844,
+     "body": 761
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/ladder_registered_readings.html",
+     "h": 1024,
+     "body": 684
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/floors_explorer.html",
+     "h": 484,
+     "body": 386
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/gamma_t_final_half.html",
+     "h": 515,
+     "body": 491
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_iso_s1_T1000_ep0.html",
+     "h": 700,
+     "body": 677
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_joint_s1_T1000_ep0.html",
+     "h": 700,
+     "body": 677
+    }
+   ]
+  },
+  {
+   "width": 1024,
+   "at5": [
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_random_seed0.html",
+     "h": 764,
+     "body": 717
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/severity_explorer.html",
+     "h": 536,
+     "body": 384
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/coupling_a_explorer.html",
+     "h": 748,
+     "body": 638
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/composer_training_mixtures.html",
+     "h": 468,
+     "body": 456
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/simplex_secondary.html",
+     "h": 844,
+     "body": 679
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/ladder_registered_readings.html",
+     "h": 1024,
+     "body": 581
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/floors_explorer.html",
+     "h": 484,
+     "body": 398
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/gamma_t_final_half.html",
+     "h": 515,
+     "body": 422
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_iso_s1_T1000_ep0.html",
+     "h": 764,
+     "body": 739
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_joint_s1_T1000_ep0.html",
+     "h": 764,
+     "body": 739
+    }
+   ],
+   "at60": [
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_random_seed0.html",
+     "h": 764,
+     "body": 717
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/severity_explorer.html",
+     "h": 536,
+     "body": 384
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/coupling_a_explorer.html",
+     "h": 748,
+     "body": 638
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/composer_training_mixtures.html",
+     "h": 468,
+     "body": 456
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/simplex_secondary.html",
+     "h": 844,
+     "body": 679
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/ladder_registered_readings.html",
+     "h": 1024,
+     "body": 581
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/floors_explorer.html",
+     "h": 484,
+     "body": 398
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/gamma_t_final_half.html",
+     "h": 515,
+     "body": 422
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_iso_s1_T1000_ep0.html",
+     "h": 764,
+     "body": 739
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_joint_s1_T1000_ep0.html",
+     "h": 764,
+     "body": 739
+    }
+   ]
+  },
+  {
+   "width": 390,
+   "at5": [
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_random_seed0.html",
+     "h": 1360,
+     "body": 1150
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/severity_explorer.html",
+     "h": 688,
+     "body": 680
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/coupling_a_explorer.html",
+     "h": 1052,
+     "body": 1040
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/composer_training_mixtures.html",
+     "h": 683,
+     "body": 671
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/simplex_secondary.html",
+     "h": 1191,
+     "body": 1179
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/ladder_registered_readings.html",
+     "h": 1056,
+     "body": 1044
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/floors_explorer.html",
+     "h": 484,
+     "body": 319
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/gamma_t_final_half.html",
+     "h": 793,
+     "body": 781
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_iso_s1_T1000_ep0.html",
+     "h": 1360,
+     "body": 1150
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_joint_s1_T1000_ep0.html",
+     "h": 1360,
+     "body": 1150
+    }
+   ],
+   "at60": [
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_random_seed0.html",
+     "h": 1360,
+     "body": 1150
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/severity_explorer.html",
+     "h": 688,
+     "body": 680
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/coupling_a_explorer.html",
+     "h": 1052,
+     "body": 1040
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/composer_training_mixtures.html",
+     "h": 683,
+     "body": 671
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/simplex_secondary.html",
+     "h": 1191,
+     "body": 1179
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/ladder_registered_readings.html",
+     "h": 1056,
+     "body": 1044
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/floors_explorer.html",
+     "h": 484,
+     "body": 319
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/gamma_t_final_half.html",
+     "h": 793,
+     "body": 781
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_iso_s1_T1000_ep0.html",
+     "h": 1360,
+     "body": 1150
+    },
+    {
+     "src": "/tmlr-beyond-pdf/assets/html/submission/explorer_thetastar_joint_s1_T1000_ep0.html",
+     "h": 1360,
+     "body": 1150
+    }
+   ]
+  }
+ ],
+ "v3_pages": {
+  "pdf": "paper/v3/out/submission_v3_print.pdf",
+  "pages_in_pdf": 38,
+  "page_height_pt": 792.0,
+  "start_heading": "1 Introduction",
+  "end_heading": "Appendices",
+  "max_pages": 15.0,
+  "grade": "page1",
+  "notes": [],
+  "end": {
+   "page": 15,
+   "y": 552.7,
+   "height": 13.8,
+   "lines": 1
+  },
+  "start": {
+   "page": 2,
+   "y": 342.65,
+   "height": 13.8,
+   "lines": 1
+  },
+  "from_page1": 14.698,
+  "from_section1": 13.265,
+  "graded_pages": 14.698,
+  "status": "PASS"
+ },
+ "v3_legibility": {
+  "pdf": "paper/v3/out/submission_v3_print.pdf",
+  "label_pt": 8.0,
+  "min_pt": 7.0,
+  "images": [
+   {
+    "pdf_page": 2,
+    "pdf_px": [
+     800,
+     600
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "main",
+    "source": "paper/figures/interactive/out/img/explorer_thetastar_random_seed0_static.png",
+    "source_line": 100,
+    "source_in": 9.2,
+    "scale": 0.355,
+    "label_pt_printed": 2.84,
+    "status": "FAIL"
+   },
+   {
+    "pdf_page": 5,
+    "pdf_px": [
+     800,
+     329
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "main",
+    "source": "paper/figures/out/img/fig01_schematic.png",
+    "source_line": 259,
+    "source_in": 10.52,
+    "scale": 0.311,
+    "label_pt_printed": 2.49,
+    "status": "FAIL"
+   },
+   {
+    "pdf_page": 8,
+    "pdf_px": [
+     800,
+     331
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "main",
+    "source": "paper/figures/interactive/out/img/severity_explorer.png",
+    "source_line": 464,
+    "source_in": 10.4,
+    "scale": 0.314,
+    "label_pt_printed": 2.52,
+    "status": "FAIL"
+   },
+   {
+    "pdf_page": 9,
+    "pdf_px": [
+     800,
+     508
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "main",
+    "source": "paper/figures/interactive/out/img/coupling_a_explorer.png",
+    "source_line": 479,
+    "source_in": 10.4,
+    "scale": 0.314,
+    "label_pt_printed": 2.52,
+    "status": "FAIL"
+   },
+   {
+    "pdf_page": 9,
+    "pdf_px": [
+     800,
+     478
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "main",
+    "source": "paper/figures/out/img/fig04_coupling_b.png",
+    "source_line": 490,
+    "source_in": 6.08,
+    "scale": 0.537,
+    "label_pt_printed": 4.3,
+    "status": "FAIL"
+   },
+   {
+    "pdf_page": 12,
+    "pdf_px": [
+     800,
+     300
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "main",
+    "source": "paper/figures/interactive/out/img/composer_training_mixtures.png",
+    "source_line": 618,
+    "source_in": 9.6,
+    "scale": 0.341,
+    "label_pt_printed": 2.73,
+    "status": "FAIL"
+   },
+   {
+    "pdf_page": 12,
+    "pdf_px": [
+     800,
+     431
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "main",
+    "source": "paper/figures/interactive/out/img/simplex_secondary.png",
+    "source_line": 673,
+    "source_in": 10.4,
+    "scale": 0.314,
+    "label_pt_printed": 2.52,
+    "status": "FAIL"
+   },
+   {
+    "pdf_page": 13,
+    "pdf_px": [
+     800,
+     569
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "main",
+    "source": "paper/figures/interactive/out/img/ladder_registered_readings.png",
+    "source_line": 704,
+    "source_in": 10.4,
+    "scale": 0.314,
+    "label_pt_printed": 2.52,
+    "status": "FAIL"
+   },
+   {
+    "pdf_page": 24,
+    "pdf_px": [
+     800,
+     538
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "appendix",
+    "source": "paper/figures/interactive/out/img/floors_explorer.png",
+    "source_line": 1284,
+    "source_in": 10.4,
+    "scale": 0.314,
+    "label_pt_printed": 2.52,
+    "status": "FAIL"
+   },
+   {
+    "pdf_page": 30,
+    "pdf_px": [
+     800,
+     400
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "appendix",
+    "source": "paper/figures/interactive/out/img/gamma_t_final_half.png",
+    "source_line": 1505,
+    "source_in": 10.0,
+    "scale": 0.327,
+    "label_pt_printed": 2.62,
+    "status": "FAIL"
+   },
+   {
+    "pdf_page": 31,
+    "pdf_px": [
+     800,
+     713
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "appendix",
+    "source": "paper/figures/out/img/fig06_comms.png",
+    "source_line": 1554,
+    "source_in": 6.06,
+    "scale": 0.54,
+    "label_pt_printed": 4.32,
+    "status": "FAIL"
+   },
+   {
+    "pdf_page": 34,
+    "pdf_px": [
+     800,
+     600
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "appendix",
+    "source": "paper/figures/interactive/out/img/explorer_thetastar_iso_s1_T1000_ep0_static.png",
+    "source_line": 1684,
+    "source_in": 9.2,
+    "scale": 0.355,
+    "label_pt_printed": 2.84,
+    "status": "FAIL"
+   },
+   {
+    "pdf_page": 35,
+    "pdf_px": [
+     800,
+     600
+    ],
+    "xppi": 245.0,
+    "printed_in": 3.27,
+    "part": "appendix",
+    "source": "paper/figures/interactive/out/img/explorer_thetastar_joint_s1_T1000_ep0_static.png",
+    "source_line": 1697,
+    "source_in": 9.2,
+    "scale": 0.355,
+    "label_pt_printed": 2.84,
+    "status": "FAIL"
+   }
+  ],
+  "failing": 13,
+  "status": "FAIL"
+ },
+ "print_overflow": {
+  "checked": 364,
+  "flagged": [],
+  "article_overflow": 0,
+  "text_column": 472,
+  "listing_wrapped_lines": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "overflow": {
+  "390": {
+   "page_scroll_width": 390,
+   "inner_width": 390,
+   "listings": [
+    {
+     "scroll": 566,
+     "client": 358
+    },
+    {
+     "scroll": 631,
+     "client": 358
+    },
+    {
+     "scroll": 638,
+     "client": 358
+    },
+    {
+     "scroll": 595,
+     "client": 358
+    },
+    {
+     "scroll": 602,
+     "client": 358
+    },
+    {
+     "scroll": 580,
+     "client": 358
+    }
+   ],
+   "widest": [
+    "mjx-math.MJX-TEX right=422",
+    "mjx-mtable right=422",
+    "mjx-table right=422",
+    "mjx-itable right=422",
+    "mjx-mtr right=422",
+    "mjx-mtd right=422",
+    "mjx-mi.mjx-i right=393",
+    "mjx-c.mjx-c1D70C right=393"
+   ],
+   "wide_math": [
+    {
+     "over_px": 48,
+     "scrolls": true,
+     "under": "3 The environment",
+     "tex": "Tθ(s′∣s,a)=TC(c′∣c,x)THβ,κA(h′∣h,c,c′)Tρ(ρ′∣ρ,h′)×TX(x′∣x,a,"
+    },
+    {
+     "over_px": 10,
+     "scrolls": true,
+     "under": "3 The environment",
+     "tex": "Pr[i→j open]=1[‖xi′−xj′‖∞≤Rcomm](1−δ),"
+    },
+    {
+     "over_px": 12,
+     "scrolls": true,
+     "under": "6 Worked example: training on stressors together or apart",
+     "tex": "I=J(both)−J(A only)−J(B only)+J(neither)."
+    }
+   ]
+  },
+  "1024": {
+   "page_scroll_width": 1024,
+   "inner_width": 1024,
+   "listings": [
+    {
+     "scroll": 776,
+     "client": 776
+    },
+    {
+     "scroll": 776,
+     "client": 776
+    },
+    {
+     "scroll": 776,
+     "client": 776
+    },
+    {
+     "scroll": 776,
+     "client": 776
+    },
+    {
+     "scroll": 776,
+     "client": 776
+    },
+    {
+     "scroll": 776,
+     "client": 776
+    }
+   ],
+   "widest": [],
+   "wide_math": []
+  },
+  "1280": {
+   "page_scroll_width": 1280,
+   "inner_width": 1280,
+   "listings": [
+    {
+     "scroll": 1072,
+     "client": 1072
+    },
+    {
+     "scroll": 1072,
+     "client": 1072
+    },
+    {
+     "scroll": 1072,
+     "client": 1072
+    },
+    {
+     "scroll": 1072,
+     "client": 1072
+    },
+    {
+     "scroll": 1072,
+     "client": 1072
+    },
+    {
+     "scroll": 1072,
+     "client": 1072
+    }
+   ],
+   "widest": [],
+   "wide_math": []
+  }
+ },
+ "footnotes": []
+}

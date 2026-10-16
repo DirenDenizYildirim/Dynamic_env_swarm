@@ -816,3 +816,195 @@ reads correctly.
   - caveats PASS;
   - pages FAIL from page 1, PASS from §1 (13.548);
   - legibility FAIL.
+
+---
+
+## Final build (final1)
+
+Step 4.4, 2026-10-16, on the live tree at commit `3b85a6e` (snapshot
+`final1`; `diff -rq paper/v3/sections paper/v3/snapshots/final1/sections`
+shows no differences). The build wrote into `paper/v3/out/`. It changed
+only its own outputs: `build_report.json`, `crossrefs.md`, `files.json`,
+`index.html`, `kit_checks.{md,json}`, `kit_screens/`, `submission_v3.md`,
+`submission_folder.zip`, `submission_v3_print.pdf` and `artifact/`. It did
+not touch the supplement builder's files (`che_supplement.zip`,
+`build_summary.json`, `*_log.tsv`, `checks_summary.txt`,
+`package_console.txt`, `excluded_summary.txt`, `provenance_check.md`).
+
+**Commands**, with `PY=.venv/bin/python` and `S=<scratchpad>/RM`:
+
+1. `PY=$PY paper/v3/src/kit_build.sh --scratch $S/kitscratch --out paper/v3/out`
+   - exit 1, because of the legibility FAIL;
+   - run directory `$S/kitscratch/kit_run_20261016_161541_10896`;
+   - console at `$S/kit_console_final.txt`.
+2. `$PY paper/v3/src/artifact_bundle.py $S/kitscratch/kit_run_20261016_161541_10896 paper/v3/out/artifact`
+3. The bundle served with `http-server` and inspected in headless Chromium
+   (playwright, `$S/artcheck/check.cjs`; result in
+   `$S/artcheck/result.json`):
+   - at 1280 px;
+   - every iframe scrolled into view;
+   - 8 s settle.
+4. `$PY paper/v3/src/build_v3.py --out $S/final3 --final`
+
+### Kit build: 40 PASS, 1 FAIL, 6 INFO
+
+- **Kit:** sha256 `e531434b…bacc2d5`, verified.
+- **Toolchain:** github-pages 232, jekyll 3.10.0, kramdown 2.4.0.
+- **Build summary:**
+  - 23 sections, toc 10;
+  - 175 ledger IDs (667 tags);
+  - 30 citation keys;
+  - listings 6 of 6 identical;
+  - 17 tables, 341 math expressions, 23 assets;
+  - 0 M1 flags;
+  - 264 cross-references, 0 unresolved.
+- **Outputs:**
+  - PDF: 38 pages, US Letter, 3,302,448 B;
+  - `submission_folder.zip`: 2,156,989 B, 32 entries, `submission_folder/`
+    its only top-level entry.
+
+| group | check | result | counts |
+|---|---|---|---|
+| Pipeline | build_v3.py (source checks) | **PASS** | 0 failures, 0 warnings, 23 STUB-SPEC blocks, 0 M1 source flags |
+| Pipeline | kit zip sha256 | **PASS** | e531… |
+| Pipeline | kit merge_files() and jekyll build --future | **PASS** | merge 0, jekyll 0, control jekyll 0; github-pages (232) jekyll (3.10.0) kramdown (2.4.0) kramdown-parser-gfm (1.1.0) |
+| Math and Liquid | MathJax errors | **PASS** | 0 errors in 341 rendered expressions (source count 341) |
+| Math and Liquid | no raw $ or TeX in rendered text | **PASS** | 0 hits |
+| Math and Liquid | math count, source against rendered | **INFO** | source 341, rendered 341 |
+| Math and Liquid | 0 Liquid left | **PASS** | 0 left |
+| Tables (M1) | kit table count equals the source's | **PASS** | kit 17 against source 17; build's M1 source scan flagged 0 line(s) |
+| References (M2) | no raw LaTeX or -- in Distill's reference list | **PASS** | 0 of 30 entries |
+| References (M2) | rendered authors and titles equal the bib's Unicode fields | **PASS** | 0 mismatches in 30 entries |
+| References (M2) | every d-cite resolves | **PASS** | 30 d-cite tags, 0 unresolved |
+| References (M2) | reference list has one entry per cited key | **PASS** | 30 entries, 30 cited keys |
+| References (M2) | hover cards show no raw TeX | **PASS** | 30 hover cards, 0 problems |
+| Citation box (M3) | the cite-this-work box has a year | **PASS** | year = {October 11, 2026} |
+| Byline | what the byline shows for Submitted | **INFO** | 'Not submitted yet.' (front matter submitted_date: None) |
+| Byline | title and description render intact (heading, byline, cite box) | **PASS** | 4 of 4 hold |
+| Links and frames | every toc link resolves | **PASS** | 10 of 10 resolve (source toc 10) |
+| Links and frames | every in-page # link resolves | **PASS** | 10 of 10 |
+| Links and frames | every iframe loads (same origin) | **PASS** | 10 of 10 loaded (source 10) |
+| Links and frames | iframe heights stable: 5 s and 60 s after load equal (1280, 1024, 390 px) | **PASS** | 0 frames grew, widths [1280, 1024, 390] |
+| Links and frames | no iframe clips its document: frame ≥ body.scrollHeight at 60 s (1280, 1024, 390 px) | **PASS** | 0 problems, widths [1280, 1024, 390] |
+| Links and frames | iframe height attributes within 5 % of the height at 60 s, 1280 px (P2 §7.2) | **PASS** | 10 of 10 within 5 % |
+| Links and frames | images load | **PASS** | 13 of 13 (source includes 13) |
+| Print | print companions hidden on screen | **PASS** | 10 of 10 hidden |
+| Print | print companions shown in print media, images loaded | **PASS** | 10 of 10 |
+| Print | iframes hidden in print media | **PASS** | 10 of 10 hidden |
+| Print | nothing is cut in print: tables, math and listings fit at US Letter width | **PASS** | 0 cut of 364 checked (text column 472 px) |
+| Print | 'Interact' notes hidden in print | **PASS** | 9 of 9 |
+| Requests | 0 failed requests | **PASS** | 0 failed of 152 (10 aborted during re-layout and then loaded, not counted) |
+| Requests | console errors | **INFO** | 0 console, 1 page errors |
+| Listings and overflow | listings in the built page equal their committed lines byte for byte | **PASS** | 6 of 6 identical |
+| Listings and overflow | no listing cut at 1024 or 1280 px; no page overflow at any width | **PASS** | listing font 12px |
+| Listings and overflow | display math wider than the column (reported, not graded) | **INFO** | 3 instances over three widths, 0 cut off with no scrollbar |
+| Footnote (N1) | where <d-footnote> text lands, on screen and in print | **INFO** | no <d-footnote> in the source |
+| v3 main text | main-text printed pages <= 15 (graded reading: from page 1) | **PASS** | from page 1 14.698; from '1 Introduction' 13.265; to 'Appendices' (PDF 38 pages) |
+| v3 main text | no internal code or private-vocabulary term (appendix exempt) | **PASS** | 0 hits; 73 terms (paper/v3/checks/terms.txt); 2 registered-exempt, 13 glossed, 1 in listings (not graded) |
+| v3 main text | no date outside the allow-list (appendix exempt) | **PASS** | 0 dates outside the allow-list; 0 allowed (paper/v3/checks/dates_allow.txt) |
+| v3 main text | each caveat in its one home (one-home map) | **PASS** | 0 of 39 entries fail (paper/v3/checks/caveats.yaml) |
+| v3 main text | HOLE:INTERACTION and OWNER-PENDING markers (reported until step 0.5 and the owner's rulings) | **INFO** | 7 HOLE:INTERACTION, 28 OWNER-PENDING; 7 tags on PENDING ledger rows |
+| v3 main text | figure images legible in print: a 8 pt label prints at >= 7 pt (estimate) | **FAIL** | 13 of 13 printed images fail |
+| YAML | title and description: one line, no double quote, YAML-safe | **PASS** | staged front matter parses; no problems |
+| Leaks and print | comment-stripped staged submission.md (M4) | **PASS** | 788 comments in submission_v3.md (23 STUB-SPEC), 0 '<!--' left in the staged copy |
+| Leaks and print | staged bib has no % lines (N3) | **PASS** | 4 % lines in the bib, 0 staged; 41 entries |
+| Leaks and print | stripping removed only comments (stripped build = unstripped build) | **PASS** | rendered text identical (109729 chars); tables [17, 17]; math [341, 341]; listings [6, 6] |
+| Leaks and print | double-blind grep of the staged folder | **PASS** | 25 files; 5 identity tokens; url 0, identity 0, abs_path 0, hex 0, image_text 0 |
+| Leaks and print | printed PDF written (US Letter), no identity strings in its text | **PASS** | 38 pages, 3.3 MB, page size 612 x 792 pts (letter) |
+| Leaks and print | staged folder zipped | **PASS** | 32 entries, top level ['submission_folder'], 2.2 MB |
+
+### Page counts (main text, printed PDF)
+
+| reading | pages | ceiling 15 |
+|---|---|---|
+| from the top of page 1 to "Appendices" (graded default, V3Q2) | **14.698** | PASS |
+| from "1 Introduction" (p. 2, y 343) to "Appendices" (p. 15, y 553) | **13.265** | PASS |
+
+Both readings are still measured with the **7 HOLE:INTERACTION markers
+empty**. The §6.4 result paragraph, Figure 9 and the sentences in the
+abstract, §1, §6.5 and §9 will add to both. At the page-1 reading, 0.30
+page is left, which is likely too little for Figure 9's block and print
+companion. RM-1 therefore stays open on the page-1 reading until the holes
+are filled and the PDF is re-measured, or until V3Q2 rules the §1 reading
+(1.73 pages left).
+
+### v3 checks
+
+- **pages:** PASS from page 1 (14.698), PASS from §1 (13.265).
+- **terms:** PASS (0 hits; 73 terms; 2 registered-exempt, 13 glossed, 1 in
+  listings).
+- **dates:** PASS (0 outside the allow-list).
+- **caveats:** PASS (0 of 39 entries fail).
+- **legibility:** **FAIL** (13 of 13 printed images; an 8 pt label prints at
+  2.5–4.3 pt). This waits on V3Q8 and V3Q11 (RM-OWNER-3).
+- **markers:** INFO, 7 HOLE:INTERACTION, 28 OWNER-PENDING and 7 tags on
+  PENDING IC rows.
+
+### `build_v3.py --final` (exit 1): what blocks it
+
+1. `front_matter.yaml`: `date_confirmed` is not true (owner Q2;
+   RM-OWNER-4).
+2. 7 tags on PENDING IC rows:
+   - `08_interaction_check.md:37` IC-4;
+   - `19_appendix_interaction.md:24` IC-1 and IC-2;
+   - `:26` IC-4 and IC-5;
+   - `:28` IC-3 (twice).
+3. 23 STUB-SPEC blocks.
+
+That is 9 final-only items in all, all of them expected. There are 0 hard
+failures and 0 warnings, so nothing else blocks the final build.
+
+### Private-artifact bundle
+
+- **Location:** `paper/v3/out/artifact/`. The entry is `index.html`
+  (191,577 B), and every other file is supporting, published at its relative
+  path.
+- **Size:** 133 files, 6,558,205 B in all, under the 16 MB page limit.
+- **Not published.** The orchestrator publishes.
+
+What the bundler did:
+
+- rewrote the `/tmlr-beyond-pdf/` paths to relative ones;
+- vendored the non-Google stylesheets and their fonts under `vendor/`;
+- vendored the MathJax 3.2.0 CHTML woff-v2 fonts locally;
+- removed the utteranc.es widget (0 left);
+- dropped the doctype/head wrapper and set `<title>` "CHE Paper v3".
+
+**Headless Chromium on the bundle** (`$S/artcheck/result.json`):
+
+- **0 failed requests** (no network error and no HTTP ≥ 400), and 0 page
+  errors.
+- **Math:** 341 `mjx-container`s (source 341), 0 `mjx-merror`, 0 raw `$$`,
+  `\(` or `\[` in the article text.
+- **MathJax fonts:** 9 requested, all from `vendor/mathjax-fonts/`.
+- **Iframes:** 10 of 10 load with a body. Their heights are the kit's pinned
+  values (700, 536, 748, 454, 844, 1024, 484, 515, 700, 700), each at least
+  its document's height.
+- **Images:** 13 of 13 load. All 30 d-cite tags are present. The comment
+  widget is absent.
+- **External hosts requested:**
+  - fonts.googleapis.com and fonts.gstatic.com (allowed);
+  - cdnjs.cloudflare.com and cdn.jsdelivr.net (pinned scripts, allowed);
+  - **distill.pub**.
+
+**INFO, distill.pub:** Distill's `template.v2.js` fetches
+`https://distill.pub/third-party/katex/katex.min.css` and `katex.min.js`.
+Locally both load. The Artifact viewer's CSP admits scripts only from the
+listed CDNs and stylesheets only from Google Fonts, so it will refuse these
+two requests and log a console error.
+
+The paper uses no `<d-math>`, and all math is MathJax, which renders (341 of
+341). So nothing visible depends on these requests; this is my reading of
+the template, not tested on the host. If the orchestrator wants a clean
+console, `artifact_bundle.py` could vendor the two files, or strip the
+reference. That would be a tool change, not done here.
+
+### Findings from the final build
+
+No new findings in my lane. Two items are carried open:
+
+- **RM-1:** PASS at both readings now, but 0.30 page of headroom at the
+  page-1 reading with the holes still empty.
+- **RM-OWNER-3:** the legibility FAIL.
+
+RM-13 is the supplement builder's and was not re-checked in this step.

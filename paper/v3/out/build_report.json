@@ -1,0 +1,3581 @@
+{
+ "root": "paper/v3",
+ "out": "paper/v3/out",
+ "kit_source": "submission_v3.md",
+ "status_line": "<!-- PAPER V3 DRAFT (PAPER V3 ruling, 2026-10-12): builder-drafted, not owner-approved -->",
+ "bib": "paper/v3/assets/bibliography/submission.bib",
+ "bib_entries": 41,
+ "front_matter": {
+  "layout": "distill",
+  "title": "A multi-agent fire environment with exact stressor ablations",
+  "description": "A pure-JAX multi-agent environment in which collapse seeds fire, smoke attenuates perception and every stressor switches off exactly, with a pre-registered test as a worked example.",
+  "date": "2026-10-11",
+  "date_confirmed": false,
+  "htmlwidgets": true,
+  "authors": [
+   {
+    "name": "Anonymous",
+    "affiliations": {
+     "name": "Anonymous"
+    }
+   }
+  ],
+  "bibliography": "submission.bib"
+ },
+ "byline_submitted": "Not submitted yet.",
+ "cite_box": "@inproceedings{anonymous2026amultiagentfire,\n  author = {Anonymous, },\n  title = {A multi-agent fire environment with exact stressor ablations},\n  booktitle = {TMLR Beyond PDF},\n  year = {October 11, 2026}\n}",
+ "sections": [
+  {
+   "name": "00_abstract.md",
+   "file": "paper/v3/sections/00_abstract.md"
+  },
+  {
+   "name": "00_hero.md",
+   "file": "paper/v3/sections/00_hero.md"
+  },
+  {
+   "name": "01_introduction.md",
+   "file": "paper/v3/sections/01_introduction.md"
+  },
+  {
+   "name": "02_related_work.md",
+   "file": "paper/v3/sections/02_related_work.md"
+  },
+  {
+   "name": "03_environment.md",
+   "file": "paper/v3/sections/03_environment.md"
+  },
+  {
+   "name": "04_calibration.md",
+   "file": "paper/v3/sections/04_calibration.md"
+  },
+  {
+   "name": "05_measurement.md",
+   "file": "paper/v3/sections/05_measurement.md"
+  },
+  {
+   "name": "06_example_design.md",
+   "file": "paper/v3/sections/06_example_design.md"
+  },
+  {
+   "name": "07_example_results.md",
+   "file": "paper/v3/sections/07_example_results.md"
+  },
+  {
+   "name": "08_interaction_check.md",
+   "file": "paper/v3/sections/08_interaction_check.md"
+  },
+  {
+   "name": "09_example_lesson.md",
+   "file": "paper/v3/sections/09_example_lesson.md"
+  },
+  {
+   "name": "10_limitations.md",
+   "file": "paper/v3/sections/10_limitations.md"
+  },
+  {
+   "name": "11_using_che.md",
+   "file": "paper/v3/sections/11_using_che.md"
+  },
+  {
+   "name": "12_conclusion.md",
+   "file": "paper/v3/sections/12_conclusion.md"
+  },
+  {
+   "name": "13_appendix_proofs.md",
+   "file": "paper/v3/sections/13_appendix_proofs.md"
+  },
+  {
+   "name": "14_appendix_locks.md",
+   "file": "paper/v3/sections/14_appendix_locks.md"
+  },
+  {
+   "name": "15_appendix_floors.md",
+   "file": "paper/v3/sections/15_appendix_floors.md"
+  },
+  {
+   "name": "16_appendix_timeline.md",
+   "file": "paper/v3/sections/16_appendix_timeline.md"
+  },
+  {
+   "name": "17_appendix_results.md",
+   "file": "paper/v3/sections/17_appendix_results.md"
+  },
+  {
+   "name": "18_appendix_secondary.md",
+   "file": "paper/v3/sections/18_appendix_secondary.md"
+  },
+  {
+   "name": "19_appendix_interaction.md",
+   "file": "paper/v3/sections/19_appendix_interaction.md"
+  },
+  {
+   "name": "20_appendix_episodes.md",
+   "file": "paper/v3/sections/20_appendix_episodes.md"
+  },
+  {
+   "name": "21_appendix_making.md",
+   "file": "paper/v3/sections/21_appendix_making.md"
+  }
+ ],
+ "alt_available": [
+  "13_appendix_proofs.no_prop4.md",
+  "13_appendix_proofs.thm1_tf.md"
+ ],
+ "alt_used": {},
+ "stub_spec_blocks": 23,
+ "ledger_sources": [
+  "paper/numbers_ledger.md",
+  "paper/v2/ledger_supplement.md",
+  "paper/v2/ledger_proposals/W3.md",
+  "paper/v2/ledger_proposals/W4.md",
+  "paper/v2/ledger_proposals/W5.md",
+  "paper/v2/ledger_proposals/W6.md",
+  "paper/v3/ledger_proposals/IC.md",
+  "paper/v3/ledger_proposals/W2.md",
+  "paper/v3/ledger_proposals/W4.md",
+  "paper/v3/ledger_proposals/W5.md"
+ ],
+ "ledger_ids_distinct": 175,
+ "ledger_tags": 667,
+ "cite_tags_keys": 38,
+ "cite_keys_distinct": 30,
+ "cited_keys_in_order": [
+  "crain2008stressors",
+  "cote2016stressors",
+  "zscheischler2018compound",
+  "zscheischler2020typology",
+  "kirk2023zsg",
+  "gao2024composition",
+  "dewitt2020ippo",
+  "haksar2018",
+  "cakir2025jaxwildfire",
+  "garcia2015safe",
+  "liu2026vulcan",
+  "raut2026psps",
+  "rutherford2024jaxmarl",
+  "alomari2025macraftax",
+  "hinckeldey2025assistax",
+  "tobin2017dr",
+  "muratore2022drreview",
+  "dennis2020paired",
+  "jiang2021plr",
+  "jiang2021robustplr",
+  "parkerholder2022accel",
+  "keysers2020",
+  "erdem2025mixed",
+  "hu2025adaptablemarl",
+  "grassberger1983",
+  "kesten1980",
+  "lu2022dpo",
+  "garet2004chemical",
+  "pynadath2002",
+  "chen2022understandingdr"
+ ],
+ "listings": [
+  {
+   "section": "03_environment.md",
+   "line": 80,
+   "info": "python",
+   "ok": true,
+   "path": "che/env/structure.py",
+   "start": 83,
+   "end": 102,
+   "header": "# che/env/structure.py:83-102 (verbatim)",
+   "text": "def coupling_a_seed_mask(\n    key: jax.Array,\n    collapse_increment: jax.Array,\n    *,\n    kappa_A: float,\n    r_seed: int,\n) -> jax.Array:\n    \"\"\"Coupling A (Def. 5): each cell in the seeding neighborhood N_A of a\n    new collapse (Chebyshev radius r_seed) ignites independently w.p.\n    kappa_A. `collapse_increment` is the boolean mask of c' - c, i.e. cells\n    that collapsed *this step* — T_H reads the increment, not the stock.\n    Returns the candidate ignition mask; `hazard.seed_ignitions` applies it\n    to Fuel cells only.\n    \"\"\"\n    chex.assert_rank(collapse_increment, 2)\n    chex.assert_type(collapse_increment, jnp.bool_)\n    # Invariant #3: uniforms drawn even when kappa_A == 0.\n    u = jax.random.uniform(key, collapse_increment.shape)\n    near_new_collapse = dilate(collapse_increment, r_seed)\n    return near_new_collapse & (u < kappa_A)",
+   "max_len": 75
+  },
+  {
+   "section": "03_environment.md",
+   "line": 148,
+   "info": "python",
+   "ok": true,
+   "path": "che/env/tasks.py",
+   "start": 31,
+   "end": 43,
+   "header": "# che/env/tasks.py:31-43 (verbatim)",
+   "text": "def task_step(food: jax.Array, occupancy: jax.Array) -> tuple[jax.Array, jax.Array]:\n    \"\"\"Collection: an occupied food cell yields +1 team reward and empties.\n\n    Multiple agents on one food cell still collect a single item (+1).\n    Returns (food', team_reward). Reads task variables and agent occupancy\n    only — no hazard/smoke/structure arguments, by design (Def. 2).\n    \"\"\"\n    chex.assert_type(food, jnp.uint8)\n    chex.assert_equal_shape([food, occupancy])\n    collected = (food == 1) & occupancy\n    reward = collected.sum().astype(jnp.float32)\n    food_new = jnp.where(collected, jnp.uint8(0), food).astype(jnp.uint8)\n    return food_new, reward",
+   "max_len": 84
+  },
+  {
+   "section": "13_appendix_proofs.md",
+   "line": 67,
+   "info": "python",
+   "ok": true,
+   "path": "che/env/env.py",
+   "start": 298,
+   "end": 358,
+   "header": "# che/env/env.py:298-358 (verbatim)",
+   "text": "    k_struct, k_seed, k_fire = jax.random.split(key, 3)\n\n    # 1. c' ~ T_C(c, x): reads *pre-step* occupancy.\n    occ_pre = occupancy_grid(state.agent_pos, state.agent_alive, cfg.grid_size)\n    structure_new = structure_step(\n        k_struct,\n        state.structure,\n        state.weak,\n        occ_pre.astype(jnp.float32),\n        lambda_0=th.lambda_0,\n        lambda_load=th.lambda_load,\n    )\n    collapse_increment = (structure_new == COLLAPSED) & (state.structure == INTACT)\n\n    # 2. h' ~ T_H(h, c, c'): CA spread, then the Coupling A impulse from the\n    # collapse increment (seeded cells are Burning in h', spread next step).\n    seed_mask = coupling_a_seed_mask(\n        k_seed, collapse_increment, kappa_A=tl.kappa_A, r_seed=th.r_seed\n    )\n    hazard_ca = hazard_step(k_fire, state.hazard, beta=tl.beta, iota=th.iota)\n    if cfg.hazard_mode == \"frozen\":\n        # M1.3: h is frozen — the CA/seed draws above still happen and are\n        # discarded, so dynamic<->frozen with the same key share every\n        # other stream bitwise (invariant #3). Frozen Burning cells stay\n        # Burning: lethal and smoke-emitting, but never spread or burn out.\n        hazard_new = state.hazard\n        seeded_ignitions = jnp.zeros_like(seed_mask)\n    else:\n        hazard_new = seed_ignitions(hazard_ca, seed_mask)\n        seeded_ignitions = hazard_ca != hazard_new  # Fuel cells Coupling A lit\n\n    # 3. rho' from h' (Def. 6; smoke outlives flame).\n    smoke_new = smoke_step(state.smoke, hazard_new, sigma_s=th.sigma_s, eta=th.eta)\n\n    # 4. x' ~ T_X + task dynamics. M1.1: lethality/blocking against h'/c'.\n    # DECISION: an agent disabled this step does not collect food this step\n    # (it died before/on arrival) — occupancy filters on the post-death\n    # alive vector, keeping \"dead agents never collect\" exact.\n    pos_new, alive_new, deaths_fire, deaths_collapse, blocked_moves = agent_step(\n        state.agent_pos,\n        state.agent_alive,\n        actions,\n        hazard_new,\n        structure_new,\n        collapse_increment,\n        cfg.grid_size,\n    )\n    occ_post = occupancy_grid(pos_new, alive_new, cfg.grid_size)\n    food_new, task_reward = task_step(state.food, occ_post)\n    # Def.-2-compliant death penalty: reads only the alpha transition (an X\n    # variable) — never hazard/smoke/structure directly.\n    reward = task_reward - th.death_penalty * (deaths_fire + deaths_collapse).astype(\n        jnp.float32\n    )\n\n    # 5. k' ~ T_K(x'): comms channel (Def. 7, M5.0). Reads post-step\n    # positions/aliveness only — never h', rho' or c' — and draws from its\n    # own fold_in stream, so delta cannot perturb any kernel above.\n    links, links_in_range = _comms_obs(\n        jax.random.fold_in(key, _COMMS_STREAM), pos_new, alive_new, cfg, tl.delta\n    )",
+   "max_len": 85
+  },
+  {
+   "section": "13_appendix_proofs.md",
+   "line": 139,
+   "info": "python",
+   "ok": true,
+   "path": "che/env/observation.py",
+   "start": 300,
+   "end": 310,
+   "header": "# che/env/observation.py:300-310 (verbatim)",
+   "text": "        tau = transmittance(\n            state.smoke, state.agent_pos, kappa_B=state.theta_live.kappa_B, k=k\n        )\n        reveal = jax.random.uniform(key, tau.shape) < tau  # P(seen) = tau\n        grid = jnp.concatenate(\n            [\n                grid * reveal[..., None].astype(jnp.float32),\n                reveal[..., None].astype(jnp.float32),\n            ],\n            axis=-1,\n        )",
+   "max_len": 79
+  },
+  {
+   "section": "13_appendix_proofs.md",
+   "line": 159,
+   "info": "python",
+   "ok": true,
+   "path": "che/tests/test_coupling_b.py",
+   "start": 131,
+   "end": 142,
+   "header": "# che/tests/test_coupling_b.py:131-142 (verbatim)",
+   "text": "def test_kappa_b_zero_bitwise_recovers_obs_v2():\n    \"\"\"Nesting (M4.1): obs v3 at kappa_B = 0 is the pre-masking env plus a\n    constant all-ones visibility plane — state trajectories, rewards, and\n    content planes bitwise identical to obs v2 under the same keys.\"\"\"\n    theta = dataclasses.replace(_HOT, kappa_B=0.0)\n    cfg3 = EnvConfig(grid_size=L, n_agents=4, horizon=64, theta=theta)\n    cfg2 = dataclasses.replace(cfg3, obs_version=2)\n    a = _traj(theta, cfg=cfg3)\n    b = _traj(theta, cfg=cfg2)\n    _assert_bitwise_equal(\n        a, b, (\"hazard\", \"smoke\", \"structure\", \"food\", \"pos\", \"alive\", \"reward\")\n    )",
+   "max_len": 80
+  },
+  {
+   "section": "14_appendix_locks.md",
+   "line": 76,
+   "info": "python",
+   "ok": true,
+   "path": "che/train/ippo.py",
+   "start": 323,
+   "end": 329,
+   "header": "# che/train/ippo.py:323-329 (verbatim)",
+   "text": "        # Messages emitted this step are delivered next step. Nothing crosses\n        # an episode boundary (autoreset), and stop_gradient states in code\n        # what the batch-storage already implies: the channel is not a\n        # differentiable path (Q3 ruling; networks.py docstring).\n        messages = jax.lax.stop_gradient(\n            jnp.where(done[:, None, None], 0.0, emitted)\n        )",
+   "max_len": 77
+  }
+ ],
+ "m1_flags": [],
+ "tables_source": {
+  "markdown": 17,
+  "html": 0,
+  "total": 17
+ },
+ "math_source": 341,
+ "liquid": {
+  "include": 13,
+  "relative_url": 10
+ },
+ "footnotes": [],
+ "toc": [
+  {
+   "name": "1 Introduction",
+   "id": "1-introduction"
+  },
+  {
+   "name": "2 Related work",
+   "id": "2-related-work"
+  },
+  {
+   "name": "3 The environment",
+   "id": "3-the-environment"
+  },
+  {
+   "name": "4 What each stressor does",
+   "id": "4-what-each-stressor-does"
+  },
+  {
+   "name": "5 Measurement protocol",
+   "id": "5-measurement-protocol"
+  },
+  {
+   "name": "6 Worked example: training on stressors together or apart",
+   "id": "6-worked-example-training-on-stressors-together-or-apart"
+  },
+  {
+   "name": "7 Limitations and scope",
+   "id": "7-limitations-and-scope"
+  },
+  {
+   "name": "8 Using CHE and reproducing the paper",
+   "id": "8-using-che-and-reproducing-the-paper"
+  },
+  {
+   "name": "9 Conclusion",
+   "id": "9-conclusion"
+  },
+  {
+   "name": "Appendices",
+   "id": "appendices"
+  }
+ ],
+ "crossrefs": [
+  {
+   "from": "00_hero.md:22",
+   "kind": "section",
+   "label": "6",
+   "context": "t the test configuration of §6. The map shows environment stat",
+   "target": "06_example_design.md:3",
+   "target_text": "6 Worked example: training on stressors together or apart"
+  },
+  {
+   "from": "00_hero.md:22",
+   "kind": "figure",
+   "label": "1",
+   "context": "<figcaption><strong>Figure 1.</strong> One random-policy epi",
+   "target": "00_hero.md:22",
+   "target_text": "<figcaption><strong>Figure 1.</strong> One random-policy episode at the test configuration"
+  },
+  {
+   "from": "00_hero.md:26",
+   "kind": "figure",
+   "label": "1",
+   "context": " caption=\"Static companion of Figure 1 for the printed PDF.\" %}",
+   "target": "00_hero.md:22",
+   "target_text": "<figcaption><strong>Figure 1.</strong> One random-policy episode at the test configuration"
+  },
+  {
+   "from": "00_hero.md:29",
+   "kind": "figure",
+   "label": "1",
+   "context": "Figure 1 is illustrative: it shows one",
+   "target": "00_hero.md:22",
+   "target_text": "<figcaption><strong>Figure 1.</strong> One random-policy episode at the test configuration"
+  },
+  {
+   "from": "01_introduction.md:45",
+   "kind": "section",
+   "label": "4.1",
+   "context": "asured percolation threshold (§4.1). Two stressors are coupled t",
+   "target": "04_calibration.md:38",
+   "target_text": "4.1 Severity, placed by a measured threshold"
+  },
+  {
+   "from": "01_introduction.md:45",
+   "kind": "section",
+   "label": "3.2",
+   "context": "ation denial, is independent (§3.2). The fire is an ambient haza",
+   "target": "03_environment.md:65",
+   "target_text": "3.2 The stressors"
+  },
+  {
+   "from": "01_introduction.md:45",
+   "kind": "section",
+   "label": "3.3",
+   "context": " prices every death the same (§3.3). Switching a stressor off re",
+   "target": "03_environment.md:128",
+   "target_text": "3.3 A hazard-blind reward"
+  },
+  {
+   "from": "01_introduction.md:45",
+   "kind": "section",
+   "label": "3.4",
+   "context": "he code against closed forms (§3.4). Section 5 describes how we ",
+   "target": "03_environment.md:169",
+   "target_text": "3.4 Exact nesting, and theory checked as tests"
+  },
+  {
+   "from": "01_introduction.md:45",
+   "kind": "section",
+   "label": "5",
+   "context": " against closed forms (§3.4). Section 5 describes how we measure the ",
+   "target": "05_measurement.md:3",
+   "target_text": "5 Measurement protocol"
+  },
+  {
+   "from": "01_introduction.md:45",
+   "kind": "figure",
+   "label": "1",
+   "context": "agent reinforcement learning (Figure 1). A cellular-automaton fire b",
+   "target": "00_hero.md:22",
+   "target_text": "<figcaption><strong>Figure 1.</strong> One random-policy episode at the test configuration"
+  },
+  {
+   "from": "01_introduction.md:47",
+   "kind": "section",
+   "label": "6.2",
+   "context": "ation neither arm trained on (§6.2). Joint training raises survi",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "01_introduction.md:47",
+   "kind": "section",
+   "label": "6.3",
+   "context": "r the final half of training (§6.3). The survival gain does not ",
+   "target": "07_example_results.md:3",
+   "target_text": "6.3 Results"
+  },
+  {
+   "from": "01_introduction.md:47",
+   "kind": "section",
+   "label": "6.3",
+   "context": "tectable survival difference (§6.3). Keeping them was a design e",
+   "target": "07_example_results.md:3",
+   "target_text": "6.3 Results"
+  },
+  {
+   "from": "01_introduction.md:47",
+   "kind": "section",
+   "label": "6.2",
+   "context": "utcome contrast was computed (§6.2).",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "01_introduction.md:49",
+   "kind": "section",
+   "label": "6.1",
+   "context": "ial had no detectable effect (§6.1). A post hoc interaction chec",
+   "target": "06_example_design.md:49",
+   "target_text": "6.1 What was registered, and what changed"
+  },
+  {
+   "from": "01_introduction.md:49",
+   "kind": "section",
+   "label": "6.4",
+   "context": "ects on trained policies add (§6.4).                            ",
+   "target": "08_interaction_check.md:3",
+   "target_text": "6.4 A post hoc interaction check"
+  },
+  {
+   "from": "01_introduction.md:49",
+   "kind": "section",
+   "label": "4.4",
+   "context": "mmetrically across stressors (§4.4). The isolated arm and its co",
+   "target": "04_calibration.md:94",
+   "target_text": "4.4 Communication denial"
+  },
+  {
+   "from": "01_introduction.md:49",
+   "kind": "section",
+   "label": "6.2",
+   "context": " link, a train/test mismatch (§6.2). Every learned policy comes ",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "01_introduction.md:53",
+   "kind": "section",
+   "label": "3",
+   "context": "1. CHE and its code (§3, §8).",
+   "target": "03_environment.md:3",
+   "target_text": "3 The environment"
+  },
+  {
+   "from": "01_introduction.md:53",
+   "kind": "section",
+   "label": "8",
+   "context": "1. CHE and its code (§3, §8).",
+   "target": "11_using_che.md:3",
+   "target_text": "8 Using CHE and reproducing the paper"
+  },
+  {
+   "from": "01_introduction.md:54",
+   "kind": "section",
+   "label": "4",
+   "context": "f 3                contrasts (§4).",
+   "target": "04_calibration.md:3",
+   "target_text": "4 What each stressor does"
+  },
+  {
+   "from": "01_introduction.md:55",
+   "kind": "section",
+   "label": "6.5",
+   "context": "itself isolate co-occurrence (§6.5).",
+   "target": "09_example_lesson.md:3",
+   "target_text": "6.5 What the example teaches"
+  },
+  {
+   "from": "02_related_work.md:21",
+   "kind": "table",
+   "label": "1",
+   "context": "**Table 1.** Where the hazard enters th",
+   "target": "02_related_work.md:21",
+   "target_text": "**Table 1.** Where the hazard enters the learning or planning problem."
+  },
+  {
+   "from": "02_related_work.md:31",
+   "kind": "section",
+   "label": "3.2",
+   "context": "stand changes collapse rates (§3.2). For Coupling B, VULCAN degr",
+   "target": "03_environment.md:65",
+   "target_text": "3.2 The stressors"
+  },
+  {
+   "from": "02_related_work.md:35",
+   "kind": "table",
+   "label": "3",
+   "context": "aneous attacks on both (their Tables 3–4). Their attacked runs schedul",
+   "target": "external",
+   "target_text": "a cited work's own numbering ('their' or a possessive before it); not checked"
+  },
+  {
+   "from": "02_related_work.md:35",
+   "kind": "table",
+   "label": "4",
+   "context": "aneous attacks on both (their Tables 3–4). Their attacked runs schedul",
+   "target": "external",
+   "target_text": "a cited work's own numbering ('their' or a possessive before it); not checked"
+  },
+  {
+   "from": "02_related_work.md:35",
+   "kind": "appendix",
+   "label": "F",
+   "context": "d while co-occurrence varies (Appendix F).                            ",
+   "target": "18_appendix_secondary.md:3",
+   "target_text": "F The secondary design"
+  },
+  {
+   "from": "02_related_work.md:37",
+   "kind": "appendix",
+   "label": "I",
+   "context": "n none found by the search of Appendix I.",
+   "target": "21_appendix_making.md:3",
+   "target_text": "I How the literature search ran"
+  },
+  {
+   "from": "03_environment.md:32",
+   "kind": "figure",
+   "label": "2",
+   "context": "s forages while a fire burns (Figure 2).",
+   "target": "03_environment.md:61",
+   "target_text": "{% include figure.html path=\"assets/img/submission/fig01_schematic.png\" class=\"img-fluid\" "
+  },
+  {
+   "from": "03_environment.md:36",
+   "kind": "definition",
+   "label": "1",
+   "context": "**Definition 1 (Compound Hostile Environment",
+   "target": "03_environment.md:36",
+   "target_text": "**Definition 1 (Compound Hostile Environment).** A CHE is a Dec-POMDP $\\mathcal{M}_\\theta "
+  },
+  {
+   "from": "03_environment.md:36",
+   "kind": "definition",
+   "label": "3",
+   "context": "appa_A, \\kappa_B, \\delta)$ of Definitions 3, 5, 6 and 7. Its state $s = (x, h, \\rho, ",
+   "target": "03_environment.md:49",
+   "target_text": "**Definition 3 (Fire and smoke).** Each cell is Fuel, Burning or Burnt. At each step, inde"
+  },
+  {
+   "from": "03_environment.md:36",
+   "kind": "definition",
+   "label": "5",
+   "context": "appa_A, \\kappa_B, \\delta)$ of Definitions 3, 5, 6 and 7. Its state $s = (x, h, \\rho, ",
+   "target": "03_environment.md:67",
+   "target_text": "**Definition 5 (Coupling A, as implemented).** Weak terrain $w(g) \\in \\{0, 1\\}$ marks a cl"
+  },
+  {
+   "from": "03_environment.md:36",
+   "kind": "definition",
+   "label": "6",
+   "context": "appa_A, \\kappa_B, \\delta)$ of Definitions 3, 5, 6 and 7. Its state $s = (x, h, \\rho, ",
+   "target": "03_environment.md:106",
+   "target_text": "**Definition 6 (Coupling B, as implemented).** For agent $i$ at $x_i$ and a cell $y$ of it"
+  },
+  {
+   "from": "03_environment.md:36",
+   "kind": "definition",
+   "label": "7",
+   "context": "appa_A, \\kappa_B, \\delta)$ of Definitions 3, 5, 6 and 7. Its state $s = (x, h, \\rho, ",
+   "target": "03_environment.md:118",
+   "target_text": "**Definition 7 (Communication denial, as implemented).** After the agents move, each direc"
+  },
+  {
+   "from": "03_environment.md:47",
+   "kind": "appendix",
+   "label": "A",
+   "context": "By Proposition 1 (Appendix A), $\\mathcal{M}_\\theta$ is a w",
+   "target": "13_appendix_proofs.md:48",
+   "target_text": "A Proofs and formal statements"
+  },
+  {
+   "from": "03_environment.md:47",
+   "kind": "appendix",
+   "label": "B",
+   "context": "he main experiment (values in Appendix B, dates in Appendix D).",
+   "target": "14_appendix_locks.md:3",
+   "target_text": "B Locked constants and hyperparameters"
+  },
+  {
+   "from": "03_environment.md:47",
+   "kind": "appendix",
+   "label": "D",
+   "context": "alues in Appendix B, dates in Appendix D).",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "03_environment.md:47",
+   "kind": "proposition",
+   "label": "1",
+   "context": "By Proposition 1 (Appendix A), $\\mathcal{M}_\\t",
+   "target": "13_appendix_proofs.md:54",
+   "target_text": "**Proposition 1 (Well-posedness and Markov closure).** For every $\\theta$, the process $s_"
+  },
+  {
+   "from": "03_environment.md:49",
+   "kind": "definition",
+   "label": "3",
+   "context": "**Definition 3 (Fire and smoke).** Each cell",
+   "target": "03_environment.md:49",
+   "target_text": "**Definition 3 (Fire and smoke).** Each cell is Fuel, Burning or Burnt. At each step, inde"
+  },
+  {
+   "from": "03_environment.md:57",
+   "kind": "section",
+   "label": "4.1",
+   "context": ",kesten1980\"></d-cite>, which §4.1 uses to place severity.",
+   "target": "04_calibration.md:38",
+   "target_text": "4.1 Severity, placed by a measured threshold"
+  },
+  {
+   "from": "03_environment.md:57",
+   "kind": "appendix",
+   "label": "A",
+   "context": "ility $\\beta$ (Proposition 2, Appendix A)<d-cite key=\"grassberger1983,",
+   "target": "13_appendix_proofs.md:48",
+   "target_text": "A Proofs and formal statements"
+  },
+  {
+   "from": "03_environment.md:57",
+   "kind": "proposition",
+   "label": "2",
+   "context": "ith edge probability $\\beta$ (Proposition 2, Appendix A)<d-cite key=\"gras",
+   "target": "13_appendix_proofs.md:175",
+   "target_text": "**Proposition 2 (Bond percolation).** Under Definition 3 with $\\iota = 0$ and a single ign"
+  },
+  {
+   "from": "03_environment.md:61",
+   "kind": "figure",
+   "label": "2",
+   "context": "th no hazard input.\" caption=\"Figure 2. One environment step of CHE.",
+   "target": "03_environment.md:61",
+   "target_text": "{% include figure.html path=\"assets/img/submission/fig01_schematic.png\" class=\"img-fluid\" "
+  },
+  {
+   "from": "03_environment.md:67",
+   "kind": "definition",
+   "label": "5",
+   "context": "**Definition 5 (Coupling A, as implemented).",
+   "target": "03_environment.md:67",
+   "target_text": "**Definition 5 (Coupling A, as implemented).** Weak terrain $w(g) \\in \\{0, 1\\}$ marks a cl"
+  },
+  {
+   "from": "03_environment.md:77",
+   "kind": "listing",
+   "label": "1",
+   "context": "**Listing 1.** Coupling A's seeding mask:",
+   "target": "03_environment.md:77",
+   "target_text": "**Listing 1.** Coupling A's seeding mask: its uniforms are drawn before $\\kappa_A$ is read"
+  },
+  {
+   "from": "03_environment.md:104",
+   "kind": "appendix",
+   "label": "A",
+   "context": "s other than the locked ones; Appendix A).",
+   "target": "13_appendix_proofs.md:48",
+   "target_text": "A Proofs and formal statements"
+  },
+  {
+   "from": "03_environment.md:104",
+   "kind": "proposition",
+   "label": "3",
+   "context": "inearly in the collapse rate (Proposition 3, checked in two              ",
+   "target": "13_appendix_proofs.md:190",
+   "target_text": "**Proposition 3 (Collapse events dominate hazard exposure).** Work in the subcritical regi"
+  },
+  {
+   "from": "03_environment.md:106",
+   "kind": "definition",
+   "label": "6",
+   "context": "**Definition 6 (Coupling B, as implemented).",
+   "target": "03_environment.md:106",
+   "target_text": "**Definition 6 (Coupling B, as implemented).** For agent $i$ at $x_i$ and a cell $y$ of it"
+  },
+  {
+   "from": "03_environment.md:112",
+   "kind": "listing",
+   "label": "4",
+   "context": "B = 0$ gives $\\tau \\equiv 1$ (Listing 4, Appendix A).",
+   "target": "13_appendix_proofs.md:136",
+   "target_text": "**Listing 4.** Coupling B in the observation kernel: the reveal draw is made whatever $\\ka"
+  },
+  {
+   "from": "03_environment.md:112",
+   "kind": "appendix",
+   "label": "A",
+   "context": "s $\\tau \\equiv 1$ (Listing 4, Appendix A).",
+   "target": "13_appendix_proofs.md:48",
+   "target_text": "A Proofs and formal statements"
+  },
+  {
+   "from": "03_environment.md:116",
+   "kind": "appendix",
+   "label": "A",
+   "context": " $\\kappa_B$ grows (Theorem 1, Appendix A); this concerns optimal value",
+   "target": "13_appendix_proofs.md:48",
+   "target_text": "A Proofs and formal statements"
+  },
+  {
+   "from": "03_environment.md:116",
+   "kind": "theorem",
+   "label": "1",
+   "context": " to zero as $\\kappa_B$ grows (Theorem 1, Appendix A); this concerns o",
+   "target": "13_appendix_proofs.md:211",
+   "target_text": "**Theorem 1 (Memorization gap, and its erosion by Coupling B).** Consider the corridor toy"
+  },
+  {
+   "from": "03_environment.md:118",
+   "kind": "definition",
+   "label": "7",
+   "context": "**Definition 7 (Communication denial, as imp",
+   "target": "03_environment.md:118",
+   "target_text": "**Definition 7 (Communication denial, as implemented).** After the agents move, each direc"
+  },
+  {
+   "from": "03_environment.md:124",
+   "kind": "appendix",
+   "label": "B",
+   "context": "mly initialized message head (Appendix B) arrive one step later as the",
+   "target": "14_appendix_locks.md:3",
+   "target_text": "B Locked constants and hyperparameters"
+  },
+  {
+   "from": "03_environment.md:130",
+   "kind": "definition",
+   "label": "2",
+   "context": "**Definition 2 (Ambient hazard).** The hazar",
+   "target": "03_environment.md:130",
+   "target_text": "**Definition 2 (Ambient hazard).** The hazard is *ambient* if (i) the reward reads task va"
+  },
+  {
+   "from": "03_environment.md:145",
+   "kind": "listing",
+   "label": "2",
+   "context": "**Listing 2.** The task reward's signatur",
+   "target": "03_environment.md:145",
+   "target_text": "**Listing 2.** The task reward's signature admits the food and occupancy grids only."
+  },
+  {
+   "from": "03_environment.md:167",
+   "kind": "section",
+   "label": "4.1",
+   "context": "ed survival at High severity (§4.1) from 0.575 to 0.866         ",
+   "target": "04_calibration.md:38",
+   "target_text": "4.1 Severity, placed by a measured threshold"
+  },
+  {
+   "from": "03_environment.md:167",
+   "kind": "appendix",
+   "label": "B",
+   "context": "575 to 0.866                 (Appendix B). Survival thus enters learni",
+   "target": "14_appendix_locks.md:3",
+   "target_text": "B Locked constants and hyperparameters"
+  },
+  {
+   "from": "03_environment.md:173",
+   "kind": "listing",
+   "label": "5",
+   "context": "y bit for bit on one backend; Listing 5 (Appendix A) is the test for ",
+   "target": "13_appendix_proofs.md:156",
+   "target_text": "**Listing 5.** With $\\kappa_B = 0$, trajectories and rewards are bitwise those of the envi"
+  },
+  {
+   "from": "03_environment.md:173",
+   "kind": "appendix",
+   "label": "A",
+   "context": "it on one backend; Listing 5 (Appendix A) is the test for $\\kappa_B = ",
+   "target": "13_appendix_proofs.md:48",
+   "target_text": "A Proofs and formal statements"
+  },
+  {
+   "from": "03_environment.md:177",
+   "kind": "proposition",
+   "label": "2",
+   "context": "Propositions 2 and 3, Corollary 1 and Theorem 1 ar",
+   "target": "13_appendix_proofs.md:175",
+   "target_text": "**Proposition 2 (Bond percolation).** Under Definition 3 with $\\iota = 0$ and a single ign"
+  },
+  {
+   "from": "03_environment.md:177",
+   "kind": "proposition",
+   "label": "3",
+   "context": "Propositions 2 and 3, Corollary 1 and Theorem 1 ar",
+   "target": "13_appendix_proofs.md:190",
+   "target_text": "**Proposition 3 (Collapse events dominate hazard exposure).** Work in the subcritical regi"
+  },
+  {
+   "from": "03_environment.md:177",
+   "kind": "theorem",
+   "label": "1",
+   "context": "ions 2 and 3, Corollary 1 and Theorem 1 are exact results that the co",
+   "target": "13_appendix_proofs.md:211",
+   "target_text": "**Theorem 1 (Memorization gap, and its erosion by Coupling B).** Consider the corridor toy"
+  },
+  {
+   "from": "03_environment.md:177",
+   "kind": "corollary",
+   "label": "1",
+   "context": "Propositions 2 and 3, Corollary 1 and Theorem 1 are exact resul",
+   "target": "13_appendix_proofs.md:181",
+   "target_text": "**Corollary 1 (Phase structure).** On $\\mathbb{Z}^2$ with the von Neumann neighbourhood, t"
+  },
+  {
+   "from": "03_environment.md:179",
+   "kind": "table",
+   "label": "2",
+   "context": "**Table 2.** Properties of CHE with the",
+   "target": "03_environment.md:179",
+   "target_text": "**Table 2.** Properties of CHE with the listing (3–5 in Appendix A), test (`che/tests/test"
+  },
+  {
+   "from": "03_environment.md:179",
+   "kind": "appendix",
+   "label": "A",
+   "context": " CHE with the listing (3–5 in Appendix A), test (                     ",
+   "target": "13_appendix_proofs.md:48",
+   "target_text": "A Proofs and formal statements"
+  },
+  {
+   "from": "03_environment.md:183",
+   "kind": "definition",
+   "label": "1",
+   "context": "| step order of Definition 1 (Prop. 1) | 3 |         ,    ",
+   "target": "03_environment.md:36",
+   "target_text": "**Definition 1 (Compound Hostile Environment).** A CHE is a Dec-POMDP $\\mathcal{M}_\\theta "
+  },
+  {
+   "from": "03_environment.md:191",
+   "kind": "section",
+   "label": "5",
+   "context": "per metric, GPU and artifact (§5) | — | — | C1 |",
+   "target": "05_measurement.md:3",
+   "target_text": "5 Measurement protocol"
+  },
+  {
+   "from": "03_environment.md:197",
+   "kind": "appendix",
+   "label": "B",
+   "context": "itic policy                  (Appendix B) with the independent PPO of ",
+   "target": "14_appendix_locks.md:3",
+   "target_text": "B Locked constants and hyperparameters"
+  },
+  {
+   "from": "04_calibration.md:40",
+   "kind": "definition",
+   "label": "4",
+   "context": "**Definition 4 (Severity regimes).** For an ",
+   "target": "04_calibration.md:40",
+   "target_text": "**Definition 4 (Severity regimes).** For an arena of side $L$, let $\\xi(\\beta)$ be the typ"
+  },
+  {
+   "from": "04_calibration.md:46",
+   "kind": "figure",
+   "label": "3",
+   "context": "fire alone on all-fuel grids (Figure 3), measuring the spanning prob",
+   "target": "04_calibration.md:60",
+   "target_text": "<figcaption><strong>Figure 3.</strong> Severity as a measured phase. Left: the spanning pr"
+  },
+  {
+   "from": "04_calibration.md:46",
+   "kind": "appendix",
+   "label": "A",
+   "context": "ical\"></d-cite>; Corollary 1, Appendix A). The agreement checks the im",
+   "target": "13_appendix_proofs.md:48",
+   "target_text": "A Proofs and formal statements"
+  },
+  {
+   "from": "04_calibration.md:46",
+   "kind": "corollary",
+   "label": "1",
+   "context": "garet2004chemical\"></d-cite>; Corollary 1, Appendix A). The agreement c",
+   "target": "13_appendix_proofs.md:181",
+   "target_text": "**Corollary 1 (Phase structure).** On $\\mathbb{Z}^2$ with the von Neumann neighbourhood, t"
+  },
+  {
+   "from": "04_calibration.md:54",
+   "kind": "section",
+   "label": "6",
+   "context": "Medium, the test severity of §6, lies between the 64         ",
+   "target": "06_example_design.md:3",
+   "target_text": "6 Worked example: training on stressors together or apart"
+  },
+  {
+   "from": "04_calibration.md:54",
+   "kind": "definition",
+   "label": "4",
+   "context": "and the fixed critical point. Definition 4 also expected outcomes to var",
+   "target": "04_calibration.md:40",
+   "target_text": "**Definition 4 (Severity regimes).** For an arena of side $L$, let $\\xi(\\beta)$ be the typ"
+  },
+  {
+   "from": "04_calibration.md:60",
+   "kind": "figure",
+   "label": "3",
+   "context": "<figcaption><strong>Figure 3.</strong> Severity as a measure",
+   "target": "04_calibration.md:60",
+   "target_text": "<figcaption><strong>Figure 3.</strong> Severity as a measured phase. Left: the spanning pr"
+  },
+  {
+   "from": "04_calibration.md:64",
+   "kind": "figure",
+   "label": "3",
+   "context": " caption=\"Static companion of Figure 3 for the printed PDF.\" %}",
+   "target": "04_calibration.md:60",
+   "target_text": "<figcaption><strong>Figure 3.</strong> Severity as a measured phase. Left: the spanning pr"
+  },
+  {
+   "from": "04_calibration.md:69",
+   "kind": "section",
+   "label": "5",
+   "context": "ith no reproducibility floor (§5).",
+   "target": "05_measurement.md:3",
+   "target_text": "5 Measurement protocol"
+  },
+  {
+   "from": "04_calibration.md:69",
+   "kind": "figure",
+   "label": "4",
+   "context": "164 and 0.203                (Figure 4). Where Coupling A costs surv",
+   "target": "04_calibration.md:75",
+   "target_text": "<figcaption><strong>Figure 4.</strong> Coupling A. Top: collapse-seeded ignitions and thei"
+  },
+  {
+   "from": "04_calibration.md:74",
+   "kind": "proposition",
+   "label": "3",
+   "context": "re near agents, and the two Proposition 3 runs\" loading=\"lazy\"></iframe>",
+   "target": "13_appendix_proofs.md:190",
+   "target_text": "**Proposition 3 (Collapse events dominate hazard exposure).** Work in the subcritical regi"
+  },
+  {
+   "from": "04_calibration.md:75",
+   "kind": "figure",
+   "label": "4",
+   "context": "<figcaption><strong>Figure 4.</strong> Coupling A. Top: coll",
+   "target": "04_calibration.md:75",
+   "target_text": "<figcaption><strong>Figure 4.</strong> Coupling A. Top: collapse-seeded ignitions and thei"
+  },
+  {
+   "from": "04_calibration.md:75",
+   "kind": "proposition",
+   "label": "3",
+   "context": ". Bottom: the two checks of Proposition 3, the second labelled “handshake",
+   "target": "13_appendix_proofs.md:190",
+   "target_text": "**Proposition 3 (Collapse events dominate hazard exposure).** Work in the subcritical regi"
+  },
+  {
+   "from": "04_calibration.md:79",
+   "kind": "figure",
+   "label": "4",
+   "context": " caption=\"Static companion of Figure 4 for the printed PDF.\" %}",
+   "target": "04_calibration.md:75",
+   "target_text": "<figcaption><strong>Figure 4.</strong> Coupling A. Top: collapse-seeded ignitions and thei"
+  },
+  {
+   "from": "04_calibration.md:79",
+   "kind": "proposition",
+   "label": "3",
+   "context": "them near agents, and the two Proposition 3 runs shown separately.\" capti",
+   "target": "13_appendix_proofs.md:190",
+   "target_text": "**Proposition 3 (Collapse events dominate hazard exposure).** Work in the subcritical regi"
+  },
+  {
+   "from": "04_calibration.md:84",
+   "kind": "figure",
+   "label": "5",
+   "context": " burning cell is in the crop (Figure 5(a)). At High, survival is low",
+   "target": "04_calibration.md:90",
+   "target_text": "{% include figure.html path=\"assets/img/submission/fig04_coupling_b.png\" class=\"img-fluid\""
+  },
+  {
+   "from": "04_calibration.md:84",
+   "kind": "figure",
+   "label": "5",
+   "context": "ive and ungraded. The band in Figure 5(b), a High survival floor of ",
+   "target": "04_calibration.md:90",
+   "target_text": "{% include figure.html path=\"assets/img/submission/fig04_coupling_b.png\" class=\"img-fluid\""
+  },
+  {
+   "from": "04_calibration.md:90",
+   "kind": "figure",
+   "label": "5",
+   "context": "n another artifact.\" caption=\"Figure 5. Coupling B: where the maskin",
+   "target": "04_calibration.md:90",
+   "target_text": "{% include figure.html path=\"assets/img/submission/fig04_coupling_b.png\" class=\"img-fluid\""
+  },
+  {
+   "from": "04_calibration.md:96",
+   "kind": "section",
+   "label": "5",
+   "context": "ty floor on that study's GPU (§5), and an effect as large as a",
+   "target": "05_measurement.md:3",
+   "target_text": "5 Measurement protocol"
+  },
+  {
+   "from": "04_calibration.md:98",
+   "kind": "section",
+   "label": "4.2",
+   "context": "inert, so Coupling A at High (§4.2) and Coupling B at Low and Me",
+   "target": "04_calibration.md:67",
+   "target_text": "4.2 Coupling A"
+  },
+  {
+   "from": "04_calibration.md:98",
+   "kind": "section",
+   "label": "4.3",
+   "context": "Coupling B at Low and Medium (§4.3) count as active although eac",
+   "target": "04_calibration.md:82",
+   "target_text": "4.3 Coupling B"
+  },
+  {
+   "from": "04_calibration.md:98",
+   "kind": "section",
+   "label": "6.2",
+   "context": ", Coupling A with Coupling B (§6.2).                            ",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "04_calibration.md:98",
+   "kind": "appendix",
+   "label": "A",
+   "context": "                   Remark 2′ (Appendix A) refines Pynadath & Tambe<d-c",
+   "target": "13_appendix_proofs.md:48",
+   "target_text": "A Proofs and formal statements"
+  },
+  {
+   "from": "04_calibration.md:98",
+   "kind": "remark",
+   "label": "2′",
+   "context": ").                            Remark 2′ (Appendix A) refines Pynadath",
+   "target": "13_appendix_proofs.md:229",
+   "target_text": "**Remark 2′ (Value of communication).** Extend the corridor toy of Theorem 1 with a second"
+  },
+  {
+   "from": "05_measurement.md:28",
+   "kind": "appendix",
+   "label": "C",
+   "context": "every comparison has a floor (Appendix C).",
+   "target": "15_appendix_floors.md:3",
+   "target_text": "C Floors"
+  },
+  {
+   "from": "05_measurement.md:36",
+   "kind": "section",
+   "label": "6.3",
+   "context": "n limit X an exclusion bound (§6.3).",
+   "target": "07_example_results.md:3",
+   "target_text": "6.3 Results"
+  },
+  {
+   "from": "06_example_design.md:54",
+   "kind": "appendix",
+   "label": "D",
+   "context": " record of the original plan (Appendix D).",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "06_example_design.md:56",
+   "kind": "section",
+   "label": "4.3",
+   "context": "spread, not a measured floor (§4.3), and communication denial ha",
+   "target": "04_calibration.md:82",
+   "target_text": "4.3 Coupling B"
+  },
+  {
+   "from": "06_example_design.md:56",
+   "kind": "section",
+   "label": "4.4",
+   "context": "ial had no detectable effect (§4.4), so the test point may have ",
+   "target": "04_calibration.md:94",
+   "target_text": "4.4 Communication denial"
+  },
+  {
+   "from": "06_example_design.md:56",
+   "kind": "section",
+   "label": "6.4",
+   "context": "eraction check measures this (§6.4).",
+   "target": "08_interaction_check.md:3",
+   "target_text": "6.4 A post hoc interaction check"
+  },
+  {
+   "from": "06_example_design.md:62",
+   "kind": "section",
+   "label": "4.4",
+   "context": "h communication denial inert (§4.4), the active share equals $\\m",
+   "target": "04_calibration.md:94",
+   "target_text": "4.4 Communication denial"
+  },
+  {
+   "from": "06_example_design.md:62",
+   "kind": "figure",
+   "label": "6",
+   "context": "                             (Figure 6). No contrast in this design ",
+   "target": "06_example_design.md:76",
+   "target_text": "<figcaption><strong>Figure 6.</strong> Each bar splits one arm's training mixture into epi"
+  },
+  {
+   "from": "06_example_design.md:67",
+   "kind": "section",
+   "label": "6.4",
+   "context": "e post hoc interaction check (§6.4) holds δ at 1 and cannot addr",
+   "target": "08_interaction_check.md:3",
+   "target_text": "6.4 A post hoc interaction check"
+  },
+  {
+   "from": "06_example_design.md:70",
+   "kind": "appendix",
+   "label": "D",
+   "context": ", so no direction is claimed (Appendix D).",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "06_example_design.md:76",
+   "kind": "figure",
+   "label": "6",
+   "context": "<figcaption><strong>Figure 6.</strong> Each bar splits one a",
+   "target": "06_example_design.md:76",
+   "target_text": "<figcaption><strong>Figure 6.</strong> Each bar splits one arm's training mixture into epi"
+  },
+  {
+   "from": "06_example_design.md:80",
+   "kind": "figure",
+   "label": "6",
+   "context": " caption=\"Static companion of Figure 6 for the printed PDF.\" %}",
+   "target": "06_example_design.md:76",
+   "target_text": "<figcaption><strong>Figure 6.</strong> Each bar splits one arm's training mixture into epi"
+  },
+  {
+   "from": "07_example_results.md:41",
+   "kind": "appendix",
+   "label": "F",
+   "context": "nd fire-only share estimable (Appendix F).",
+   "target": "18_appendix_secondary.md:3",
+   "target_text": "F The secondary design"
+  },
+  {
+   "from": "07_example_results.md:43",
+   "kind": "section",
+   "label": "6.2",
+   "context": "\\mu$ as m and $\\nu$ as n). By §6.2's identity, the plane separat",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "07_example_results.md:43",
+   "kind": "figure",
+   "label": "7",
+   "context": "4.19, −0.57]                 (Figure 7, which prints $\\mu$ as m and ",
+   "target": "07_example_results.md:49",
+   "target_text": "<figcaption><strong>Figure 7.</strong> Left: training mixtures in p and ν, with the arms a"
+  },
+  {
+   "from": "07_example_results.md:43",
+   "kind": "table",
+   "label": "3",
+   "context": " , far above the measured Γ₄ (Table 3): it does not extrapolate to ",
+   "target": "07_example_results.md:64",
+   "target_text": "**Table 3.** Arm means (rates) and registered contrasts (points, rate × 100) at θ\\*, with "
+  },
+  {
+   "from": "07_example_results.md:49",
+   "kind": "figure",
+   "label": "7",
+   "context": "<figcaption><strong>Figure 7.</strong> Left: training mixtur",
+   "target": "07_example_results.md:49",
+   "target_text": "<figcaption><strong>Figure 7.</strong> Left: training mixtures in p and ν, with the arms a"
+  },
+  {
+   "from": "07_example_results.md:53",
+   "kind": "figure",
+   "label": "7",
+   "context": " caption=\"Static companion of Figure 7 for the printed PDF.\" %}",
+   "target": "07_example_results.md:49",
+   "target_text": "<figcaption><strong>Figure 7.</strong> Left: training mixtures in p and ν, with the arms a"
+  },
+  {
+   "from": "07_example_results.md:56",
+   "kind": "figure",
+   "label": "8",
+   "context": "           : REJECT (Table 3; Figure 8 prints rates). On completion ",
+   "target": "07_example_results.md:80",
+   "target_text": "<figcaption><strong>Figure 8.</strong> The registered contrasts in order, one step per row"
+  },
+  {
+   "from": "07_example_results.md:56",
+   "kind": "table",
+   "label": "3",
+   "context": ".44]                : REJECT (Table 3; Figure 8 prints rates). On c",
+   "target": "07_example_results.md:64",
+   "target_text": "**Table 3.** Arm means (rates) and registered contrasts (points, rate × 100) at θ\\*, with "
+  },
+  {
+   "from": "07_example_results.md:56",
+   "kind": "appendix",
+   "label": "D",
+   "context": "ifier passes                 (Appendix D).",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "07_example_results.md:58",
+   "kind": "appendix",
+   "label": "D",
+   "context": "me no longer holds as worded (Appendix D).",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "07_example_results.md:60",
+   "kind": "appendix",
+   "label": "E",
+   "context": "d leans negative, unresolved (Appendix E).",
+   "target": "17_appendix_results.md:3",
+   "target_text": "E Additional results"
+  },
+  {
+   "from": "07_example_results.md:64",
+   "kind": "table",
+   "label": "3",
+   "context": "**Table 3.** Arm means (rates) and regi",
+   "target": "07_example_results.md:64",
+   "target_text": "**Table 3.** Arm means (rates) and registered contrasts (points, rate × 100) at θ\\*, with "
+  },
+  {
+   "from": "07_example_results.md:80",
+   "kind": "figure",
+   "label": "8",
+   "context": "<figcaption><strong>Figure 8.</strong> The registered contra",
+   "target": "07_example_results.md:80",
+   "target_text": "<figcaption><strong>Figure 8.</strong> The registered contrasts in order, one step per row"
+  },
+  {
+   "from": "07_example_results.md:84",
+   "kind": "figure",
+   "label": "8",
+   "context": " caption=\"Static companion of Figure 8 for the printed PDF.\" %}",
+   "target": "07_example_results.md:80",
+   "target_text": "<figcaption><strong>Figure 8.</strong> The registered contrasts in order, one step per row"
+  },
+  {
+   "from": "08_interaction_check.md:31",
+   "kind": "section",
+   "label": "6.1",
+   "context": "what composition θ\\* offered (§6.1), we added a post hoc, evalua",
+   "target": "06_example_design.md:49",
+   "target_text": "6.1 What was registered, and what changed"
+  },
+  {
+   "from": "08_interaction_check.md:31",
+   "kind": "section",
+   "label": "3.4",
+   "context": "w with common random numbers (§3.4). Per policy and co-primary, ",
+   "target": "03_environment.md:169",
+   "target_text": "3.4 Exact nesting, and theory checked as tests"
+  },
+  {
+   "from": "08_interaction_check.md:31",
+   "kind": "appendix",
+   "label": "G",
+   "context": "side the confirmatory family (Appendix G). The final checkpoint of eve",
+   "target": "19_appendix_interaction.md:3",
+   "target_text": "G The interaction check in full"
+  },
+  {
+   "from": "08_interaction_check.md:37",
+   "kind": "appendix",
+   "label": "G",
+   "context": "asured evaluation self-floor (Appendix G).",
+   "target": "19_appendix_interaction.md:3",
+   "target_text": "G The interaction check in full"
+  },
+  {
+   "from": "08_interaction_check.md:45",
+   "kind": "appendix",
+   "label": "G",
+   "context": "ions differently in training (Appendix G), so each arm's $I$ also refl",
+   "target": "19_appendix_interaction.md:3",
+   "target_text": "G The interaction check in full"
+  },
+  {
+   "from": "09_example_lesson.md:31",
+   "kind": "section",
+   "label": "6.2",
+   "context": "By the identity of §6.2, holding the active share fix",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "09_example_lesson.md:31",
+   "kind": "section",
+   "label": "6.3",
+   "context": "ncy along with co-occurrence (§6.3). The plane's co-occurrence s",
+   "target": "07_example_results.md:3",
+   "target_text": "6.3 Results"
+  },
+  {
+   "from": "09_example_lesson.md:36",
+   "kind": "section",
+   "label": "6.1",
+   "context": "re both couplings are strong (§6.1).",
+   "target": "06_example_design.md:49",
+   "target_text": "6.1 What was registered, and what changed"
+  },
+  {
+   "from": "10_limitations.md:30",
+   "kind": "section",
+   "label": "1",
+   "context": "§1 lists the largest limitations",
+   "target": "01_introduction.md:3",
+   "target_text": "1 Introduction"
+  },
+  {
+   "from": "10_limitations.md:30",
+   "kind": "section",
+   "label": "6.1",
+   "context": "raction check measured there (§6.1, §6.4); the coarse and unevenly app",
+   "target": "06_example_design.md:49",
+   "target_text": "6.1 What was registered, and what changed"
+  },
+  {
+   "from": "10_limitations.md:30",
+   "kind": "section",
+   "label": "6.4",
+   "context": "raction check measured there (§6.1, §6.4); the coarse and unevenly app",
+   "target": "08_interaction_check.md:3",
+   "target_text": "6.4 A post hoc interaction check"
+  },
+  {
+   "from": "10_limitations.md:30",
+   "kind": "section",
+   "label": "4.4",
+   "context": "bel for communication denial (§4.4); the communication setting t",
+   "target": "04_calibration.md:94",
+   "target_text": "4.4 Communication denial"
+  },
+  {
+   "from": "10_limitations.md:30",
+   "kind": "section",
+   "label": "6.2",
+   "context": "aining and test for two arms (§6.2); and one learner, one map an",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "10_limitations.md:30",
+   "kind": "section",
+   "label": "1",
+   "context": "r, one map and one team size (§1).",
+   "target": "01_introduction.md:3",
+   "target_text": "1 Introduction"
+  },
+  {
+   "from": "10_limitations.md:32",
+   "kind": "section",
+   "label": "6.2",
+   "context": " nothing about other budgets (§6.2). No theorem in this paper sa",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "10_limitations.md:32",
+   "kind": "section",
+   "label": "6.2",
+   "context": " the two training severities (§6.2). The hazard is simple, with ",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "10_limitations.md:32",
+   "kind": "section",
+   "label": "3.1",
+   "context": "n and no wind or uneven fuel (§3.1). The only ablation of the de",
+   "target": "03_environment.md:34",
+   "target_text": "3.1 State, step order, fire and smoke"
+  },
+  {
+   "from": "10_limitations.md:32",
+   "kind": "section",
+   "label": "3.3",
+   "context": " the fire as the only hazard (§3.3). The task needs no coordinat",
+   "target": "03_environment.md:128",
+   "target_text": "3.3 A hazard-blind reward"
+  },
+  {
+   "from": "10_limitations.md:32",
+   "kind": "section",
+   "label": "1",
+   "context": "cripted baseline is reported (§1). We compare fixed training d",
+   "target": "01_introduction.md:3",
+   "target_text": "1 Introduction"
+  },
+  {
+   "from": "10_limitations.md:32",
+   "kind": "section",
+   "label": "6.3",
+   "context": " are marked where they occur (§6.3).",
+   "target": "07_example_results.md:3",
+   "target_text": "6.3 Results"
+  },
+  {
+   "from": "11_using_che.md:35",
+   "kind": "appendix",
+   "label": "B",
+   "context": "istry of the fixed constants (Appendix B).",
+   "target": "14_appendix_locks.md:3",
+   "target_text": "B Locked constants and hyperparameters"
+  },
+  {
+   "from": "11_using_che.md:46",
+   "kind": "appendix",
+   "label": "D",
+   "context": "he archive arrived unaltered (Appendix D). A public registry such as O",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "11_using_che.md:48",
+   "kind": "section",
+   "label": "5",
+   "context": "cibility floors are measured (§5).",
+   "target": "05_measurement.md:3",
+   "target_text": "5 Measurement protocol"
+  },
+  {
+   "from": "12_conclusion.md:19",
+   "kind": "section",
+   "label": "6.3",
+   "context": "together or apart, is read in §6.3 exactly as registered, and §6",
+   "target": "07_example_results.md:3",
+   "target_text": "6.3 Results"
+  },
+  {
+   "from": "12_conclusion.md:19",
+   "kind": "section",
+   "label": "6.5",
+   "context": ".3 exactly as registered, and §6.5 draws its lesson for how such",
+   "target": "09_example_lesson.md:3",
+   "target_text": "6.5 What the example teaches"
+  },
+  {
+   "from": "12_conclusion.md:22",
+   "kind": "section",
+   "label": "6.5",
+   "context": " varied instead of frequency (§6.5).",
+   "target": "09_example_lesson.md:3",
+   "target_text": "6.5 What the example teaches"
+  },
+  {
+   "from": "13_appendix_proofs.md:37",
+   "kind": "appendix",
+   "label": "A",
+   "context": "- Appendix A: proofs and formal statements",
+   "target": "13_appendix_proofs.md:48",
+   "target_text": "A Proofs and formal statements"
+  },
+  {
+   "from": "13_appendix_proofs.md:38",
+   "kind": "appendix",
+   "label": "B",
+   "context": "- Appendix B: locked constants and hyperpa",
+   "target": "14_appendix_locks.md:3",
+   "target_text": "B Locked constants and hyperparameters"
+  },
+  {
+   "from": "13_appendix_proofs.md:39",
+   "kind": "appendix",
+   "label": "C",
+   "context": "- Appendix C: reproducibility floors.",
+   "target": "15_appendix_floors.md:3",
+   "target_text": "C Floors"
+  },
+  {
+   "from": "13_appendix_proofs.md:40",
+   "kind": "appendix",
+   "label": "D",
+   "context": "- Appendix D: the registration timeline.",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "13_appendix_proofs.md:41",
+   "kind": "appendix",
+   "label": "E",
+   "context": "- Appendix E: additional results of the wo",
+   "target": "17_appendix_results.md:3",
+   "target_text": "E Additional results"
+  },
+  {
+   "from": "13_appendix_proofs.md:42",
+   "kind": "appendix",
+   "label": "F",
+   "context": "- Appendix F: the secondary design.",
+   "target": "18_appendix_secondary.md:3",
+   "target_text": "F The secondary design"
+  },
+  {
+   "from": "13_appendix_proofs.md:43",
+   "kind": "appendix",
+   "label": "G",
+   "context": "- Appendix G: the post hoc interaction che",
+   "target": "19_appendix_interaction.md:3",
+   "target_text": "G The interaction check in full"
+  },
+  {
+   "from": "13_appendix_proofs.md:44",
+   "kind": "appendix",
+   "label": "H",
+   "context": "- Appendix H: trained-policy episodes.",
+   "target": "20_appendix_episodes.md:3",
+   "target_text": "H Trained-policy episodes"
+  },
+  {
+   "from": "13_appendix_proofs.md:45",
+   "kind": "appendix",
+   "label": "I",
+   "context": "- Appendix I: how the literature search ra",
+   "target": "21_appendix_making.md:3",
+   "target_text": "I How the literature search ran"
+  },
+  {
+   "from": "13_appendix_proofs.md:46",
+   "kind": "appendix",
+   "label": "J",
+   "context": "- Appendix J: how this paper was made.",
+   "target": "21_appendix_making.md:25",
+   "target_text": "J How this paper was made"
+  },
+  {
+   "from": "13_appendix_proofs.md:50",
+   "kind": "section",
+   "label": "3",
+   "context": "s and proves the results that §3 uses. Where a statement depar",
+   "target": "03_environment.md:3",
+   "target_text": "3 The environment"
+  },
+  {
+   "from": "13_appendix_proofs.md:52",
+   "kind": "section",
+   "label": "3",
+   "context": "ion 2 follows Definition 7 in §3 and the only numbered remark ",
+   "target": "03_environment.md:3",
+   "target_text": "3 The environment"
+  },
+  {
+   "from": "13_appendix_proofs.md:52",
+   "kind": "section",
+   "label": "3",
+   "context": "ark is 2′. The definitions of §3 are stated as implemented, an",
+   "target": "03_environment.md:3",
+   "target_text": "3 The environment"
+  },
+  {
+   "from": "13_appendix_proofs.md:52",
+   "kind": "definition",
+   "label": "2",
+   "context": " docstrings cite; this is why Definition 2 follows Definition 7 in §3 an",
+   "target": "03_environment.md:130",
+   "target_text": "**Definition 2 (Ambient hazard).** The hazard is *ambient* if (i) the reward reads task va"
+  },
+  {
+   "from": "13_appendix_proofs.md:52",
+   "kind": "definition",
+   "label": "7",
+   "context": "s is why Definition 2 follows Definition 7 in §3 and the only numbered r",
+   "target": "03_environment.md:118",
+   "target_text": "**Definition 7 (Communication denial, as implemented).** After the agents move, each direc"
+  },
+  {
+   "from": "13_appendix_proofs.md:52",
+   "kind": "definition",
+   "label": "1",
+   "context": "our depart from the document. Definition 1 draws the observation from th",
+   "target": "03_environment.md:36",
+   "target_text": "**Definition 1 (Compound Hostile Environment).** A CHE is a Dec-POMDP $\\mathcal{M}_\\theta "
+  },
+  {
+   "from": "13_appendix_proofs.md:52",
+   "kind": "definition",
+   "label": "3",
+   "context": "e included, as the code does. Definition 3 carries the smoke update and ",
+   "target": "03_environment.md:49",
+   "target_text": "**Definition 3 (Fire and smoke).** Each cell is Fuel, Burning or Burnt. At each step, inde"
+  },
+  {
+   "from": "13_appendix_proofs.md:52",
+   "kind": "definition",
+   "label": "5",
+   "context": " parameter $\\iota \\ge 0$. For Definition 5, the document states the impu",
+   "target": "03_environment.md:67",
+   "target_text": "**Definition 5 (Coupling A, as implemented).** Weak terrain $w(g) \\in \\{0, 1\\}$ marks a cl"
+  },
+  {
+   "from": "13_appendix_proofs.md:52",
+   "kind": "definition",
+   "label": "7",
+   "context": "bourhoods do not overlap. For Definition 7, the document's range-depende",
+   "target": "03_environment.md:118",
+   "target_text": "**Definition 7 (Communication denial, as implemented).** After the agents move, each direc"
+  },
+  {
+   "from": "13_appendix_proofs.md:54",
+   "kind": "proposition",
+   "label": "1",
+   "context": "**Proposition 1 (Well-posedness and Markov cl",
+   "target": "13_appendix_proofs.md:54",
+   "target_text": "**Proposition 1 (Well-posedness and Markov closure).** For every $\\theta$, the process $s_"
+  },
+  {
+   "from": "13_appendix_proofs.md:60",
+   "kind": "listing",
+   "label": "3",
+   "context": "Listing 3, the body of       , follows ",
+   "target": "13_appendix_proofs.md:64",
+   "target_text": "**Listing 3.** One environment step in the order of Proposition 1."
+  },
+  {
+   "from": "13_appendix_proofs.md:64",
+   "kind": "listing",
+   "label": "3",
+   "context": "**Listing 3.** One environment step in th",
+   "target": "13_appendix_proofs.md:64",
+   "target_text": "**Listing 3.** One environment step in the order of Proposition 1."
+  },
+  {
+   "from": "13_appendix_proofs.md:64",
+   "kind": "proposition",
+   "label": "1",
+   "context": "ironment step in the order of Proposition 1.",
+   "target": "13_appendix_proofs.md:54",
+   "target_text": "**Proposition 1 (Well-posedness and Markov closure).** For every $\\theta$, the process $s_"
+  },
+  {
+   "from": "13_appendix_proofs.md:132",
+   "kind": "section",
+   "label": "3",
+   "context": "s 4 and 5 carry two claims of §3. In Listing 4 the reveal draw",
+   "target": "03_environment.md:3",
+   "target_text": "3 The environment"
+  },
+  {
+   "from": "13_appendix_proofs.md:132",
+   "kind": "listing",
+   "label": "4",
+   "context": "Listings 4 and 5 carry two claims of §3. In Li",
+   "target": "13_appendix_proofs.md:136",
+   "target_text": "**Listing 4.** Coupling B in the observation kernel: the reveal draw is made whatever $\\ka"
+  },
+  {
+   "from": "13_appendix_proofs.md:132",
+   "kind": "listing",
+   "label": "5",
+   "context": "Listings 4 and 5 carry two claims of §3. In Li",
+   "target": "13_appendix_proofs.md:156",
+   "target_text": "**Listing 5.** With $\\kappa_B = 0$, trajectories and rewards are bitwise those of the envi"
+  },
+  {
+   "from": "13_appendix_proofs.md:132",
+   "kind": "listing",
+   "label": "4",
+   "context": " 5 carry two claims of §3. In Listing 4 the reveal draw of Definition",
+   "target": "13_appendix_proofs.md:136",
+   "target_text": "**Listing 4.** Coupling B in the observation kernel: the reveal draw is made whatever $\\ka"
+  },
+  {
+   "from": "13_appendix_proofs.md:132",
+   "kind": "listing",
+   "label": "5",
+   "context": "d per episode from the state. Listing 5 runs the environment at $\\kap",
+   "target": "13_appendix_proofs.md:156",
+   "target_text": "**Listing 5.** With $\\kappa_B = 0$, trajectories and rewards are bitwise those of the envi"
+  },
+  {
+   "from": "13_appendix_proofs.md:132",
+   "kind": "definition",
+   "label": "6",
+   "context": " Listing 4 the reveal draw of Definition 6 is made whatever $\\kappa_B$ i",
+   "target": "03_environment.md:106",
+   "target_text": "**Definition 6 (Coupling B, as implemented).** For agent $i$ at $x_i$ and a cell $y$ of it"
+  },
+  {
+   "from": "13_appendix_proofs.md:136",
+   "kind": "listing",
+   "label": "4",
+   "context": "**Listing 4.** Coupling B in the observat",
+   "target": "13_appendix_proofs.md:136",
+   "target_text": "**Listing 4.** Coupling B in the observation kernel: the reveal draw is made whatever $\\ka"
+  },
+  {
+   "from": "13_appendix_proofs.md:156",
+   "kind": "listing",
+   "label": "5",
+   "context": "**Listing 5.** With $\\kappa_B = 0$, traje",
+   "target": "13_appendix_proofs.md:156",
+   "target_text": "**Listing 5.** With $\\kappa_B = 0$, trajectories and rewards are bitwise those of the envi"
+  },
+  {
+   "from": "13_appendix_proofs.md:175",
+   "kind": "definition",
+   "label": "3",
+   "context": "2 (Bond percolation).** Under Definition 3 with $\\iota = 0$ and a single",
+   "target": "03_environment.md:49",
+   "target_text": "**Definition 3 (Fire and smoke).** Each cell is Fuel, Burning or Burnt. At each step, inde"
+  },
+  {
+   "from": "13_appendix_proofs.md:175",
+   "kind": "proposition",
+   "label": "2",
+   "context": "**Proposition 2 (Bond percolation).** Under D",
+   "target": "13_appendix_proofs.md:175",
+   "target_text": "**Proposition 2 (Bond percolation).** Under Definition 3 with $\\iota = 0$ and a single ign"
+  },
+  {
+   "from": "13_appendix_proofs.md:181",
+   "kind": "definition",
+   "label": "3",
+   "context": "nn neighbourhood, the fire of Definition 3 with $\\iota = 0$ and a single",
+   "target": "03_environment.md:49",
+   "target_text": "**Definition 3 (Fire and smoke).** Each cell is Fuel, Burning or Burnt. At each step, inde"
+  },
+  {
+   "from": "13_appendix_proofs.md:181",
+   "kind": "proposition",
+   "label": "2",
+   "context": "tructure of bond percolation (Proposition 2, whose coupling holds on any ",
+   "target": "13_appendix_proofs.md:175",
+   "target_text": "**Proposition 2 (Bond percolation).** Under Definition 3 with $\\iota = 0$ and a single ign"
+  },
+  {
+   "from": "13_appendix_proofs.md:181",
+   "kind": "corollary",
+   "label": "1",
+   "context": "**Corollary 1 (Phase structure).** On $\\mat",
+   "target": "13_appendix_proofs.md:181",
+   "target_text": "**Corollary 1 (Phase structure).** On $\\mathbb{Z}^2$ with the von Neumann neighbourhood, t"
+  },
+  {
+   "from": "13_appendix_proofs.md:184",
+   "kind": "corollary",
+   "label": "5",
+   "context": "Garet & Marchand, 2004; their Corollary 5.4)<d-cite key=\"garet2004chemi",
+   "target": "external",
+   "target_text": "a cited work's own numbering ('their' or a possessive before it); not checked"
+  },
+  {
+   "from": "13_appendix_proofs.md:188",
+   "kind": "section",
+   "label": "4.1",
+   "context": "ce; CHE's arena is finite, so §4.1 places the levels against a m",
+   "target": "04_calibration.md:38",
+   "target_text": "4.1 Severity, placed by a measured threshold"
+  },
+  {
+   "from": "13_appendix_proofs.md:190",
+   "kind": "proposition",
+   "label": "3",
+   "context": "**Proposition 3 (Collapse events dominate haz",
+   "target": "13_appendix_proofs.md:190",
+   "target_text": "**Proposition 3 (Collapse events dominate hazard exposure).** Work in the subcritical regi"
+  },
+  {
+   "from": "13_appendix_proofs.md:203",
+   "kind": "proposition",
+   "label": "2",
+   "context": " Each collapse seed grows, by Proposition 2, a burnt cluster equal in dis",
+   "target": "13_appendix_proofs.md:175",
+   "target_text": "**Proposition 2 (Bond percolation).** Under Definition 3 with $\\iota = 0$ and a single ign"
+  },
+  {
+   "from": "13_appendix_proofs.md:211",
+   "kind": "theorem",
+   "label": "1",
+   "context": "**Theorem 1 (Memorization gap, and its er",
+   "target": "13_appendix_proofs.md:211",
+   "target_text": "**Theorem 1 (Memorization gap, and its erosion by Coupling B).** Consider the corridor toy"
+  },
+  {
+   "from": "13_appendix_proofs.md:221",
+   "kind": "definition",
+   "label": "3",
+   "context": "pdate and observation kernel (Definitions 3 and 6) on a fire cell held Burning,",
+   "target": "03_environment.md:49",
+   "target_text": "**Definition 3 (Fire and smoke).** Each cell is Fuel, Burning or Burnt. At each step, inde"
+  },
+  {
+   "from": "13_appendix_proofs.md:221",
+   "kind": "definition",
+   "label": "6",
+   "context": "pdate and observation kernel (Definitions 3 and 6) on a fire cell held Burning,",
+   "target": "03_environment.md:106",
+   "target_text": "**Definition 6 (Coupling B, as implemented).** For agent $i$ at $x_i$ and a cell $y$ of it"
+  },
+  {
+   "from": "13_appendix_proofs.md:225",
+   "kind": "proposition",
+   "label": "1",
+   "context": "he irreversible commitment in Proposition 1 of Chen et al. (2022)<d-cite ",
+   "target": "13_appendix_proofs.md:54",
+   "target_text": "**Proposition 1 (Well-posedness and Markov closure).** For every $\\theta$, the process $s_"
+  },
+  {
+   "from": "13_appendix_proofs.md:229",
+   "kind": "section",
+   "label": "4.4",
+   "context": "heorem 1 with a second agent; §4.4 refers to this remark. (i) Un",
+   "target": "04_calibration.md:94",
+   "target_text": "4.4 Communication denial"
+  },
+  {
+   "from": "13_appendix_proofs.md:229",
+   "kind": "theorem",
+   "label": "1",
+   "context": "** Extend the corridor toy of Theorem 1 with a second agent; §4.4 ref",
+   "target": "13_appendix_proofs.md:211",
+   "target_text": "**Theorem 1 (Memorization gap, and its erosion by Coupling B).** Consider the corridor toy"
+  },
+  {
+   "from": "13_appendix_proofs.md:229",
+   "kind": "remark",
+   "label": "2′",
+   "context": "**Remark 2′ (Value of communication).** E",
+   "target": "13_appendix_proofs.md:229",
+   "target_text": "**Remark 2′ (Value of communication).** Extend the corridor toy of Theorem 1 with a second"
+  },
+  {
+   "from": "13_appendix_proofs.md:243",
+   "kind": "section",
+   "label": "6.2",
+   "context": "n the isolated arm trains on (§6.2) differs from the test config",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "13_appendix_proofs.md:245",
+   "kind": "section",
+   "label": "3.5",
+   "context": " tested, since the counter of §3.5 cannot measure it.",
+   "target": "03_environment.md:193",
+   "target_text": "3.5 Instance, training and metrics"
+  },
+  {
+   "from": "14_appendix_locks.md:19",
+   "kind": "appendix",
+   "label": "D",
+   "context": "d before the main experiment; Appendix D gives when. A test in the cod",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "14_appendix_locks.md:23",
+   "kind": "section",
+   "label": "4.1",
+   "context": "500 ± 0.005                 | §4.1, with its estimator's provena",
+   "target": "04_calibration.md:38",
+   "target_text": "4.1 Severity, placed by a measured threshold"
+  },
+  {
+   "from": "14_appendix_locks.md:24",
+   "kind": "section",
+   "label": "4.1",
+   "context": "0.49 / 0.70                 | §4.1 |",
+   "target": "04_calibration.md:38",
+   "target_text": "4.1 Severity, placed by a measured threshold"
+  },
+  {
+   "from": "14_appendix_locks.md:25",
+   "kind": "section",
+   "label": "6.2",
+   "context": "^*$) | 0.49                 | §6.2 |",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "14_appendix_locks.md:26",
+   "kind": "definition",
+   "label": "5",
+   "context": "e-4, 0.06, 1                | Definition 5 |",
+   "target": "03_environment.md:67",
+   "target_text": "**Definition 5 (Coupling A, as implemented).** Weak terrain $w(g) \\in \\{0, 1\\}$ marks a cl"
+  },
+  {
+   "from": "14_appendix_locks.md:27",
+   "kind": "definition",
+   "label": "5",
+   "context": " field | 2                  | Definition 5 |",
+   "target": "03_environment.md:67",
+   "target_text": "**Definition 5 (Coupling A, as implemented).** Weak terrain $w(g) \\in \\{0, 1\\}$ marks a cl"
+  },
+  {
+   "from": "14_appendix_locks.md:28",
+   "kind": "definition",
+   "label": "6",
+   "context": "ppa_B$ | 1.0                | Definition 6; the bands below |",
+   "target": "03_environment.md:106",
+   "target_text": "**Definition 6 (Coupling B, as implemented).** For agent $i$ at $x_i$ and a cell $y$ of it"
+  },
+  {
+   "from": "14_appendix_locks.md:29",
+   "kind": "definition",
+   "label": "7",
+   "context": "       ; 16                 | Definition 7 |",
+   "target": "03_environment.md:118",
+   "target_text": "**Definition 7 (Communication denial, as implemented).** After the agents move, each direc"
+  },
+  {
+   "from": "14_appendix_locks.md:30",
+   "kind": "definition",
+   "label": "2",
+   "context": "$d_p$ | 0.5                 | Definition 2 |",
+   "target": "03_environment.md:130",
+   "target_text": "**Definition 2 (Ambient hazard).** The hazard is *ambient* if (i) the reward reads task va"
+  },
+  {
+   "from": "14_appendix_locks.md:31",
+   "kind": "definition",
+   "label": "6",
+   "context": "d by smoke                  | Definition 6 |",
+   "target": "03_environment.md:106",
+   "target_text": "**Definition 6 (Coupling B, as implemented).** For agent $i$ at $x_i$ and a cell $y$ of it"
+  },
+  {
+   "from": "14_appendix_locks.md:32",
+   "kind": "definition",
+   "label": "3",
+   "context": ".0, 0.5, 0.0                | Definition 3; not locked, fixed by convent",
+   "target": "03_environment.md:49",
+   "target_text": "**Definition 3 (Fire and smoke).** Each cell is Fuel, Burning or Burnt. At each step, inde"
+  },
+  {
+   "from": "14_appendix_locks.md:34",
+   "kind": "section",
+   "label": "6",
+   "context": "stants of the worked example (§6) are fixed the same way.",
+   "target": "06_example_design.md:3",
+   "target_text": "6 Worked example: training on stressors together or apart"
+  },
+  {
+   "from": "14_appendix_locks.md:40",
+   "kind": "section",
+   "label": "6.2",
+   "context": "eed count at which Γ is read (§6.2; history in Appendix D) |",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "14_appendix_locks.md:40",
+   "kind": "appendix",
+   "label": "D",
+   "context": "h Γ is read (§6.2; history in Appendix D) |",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "14_appendix_locks.md:65",
+   "kind": "theorem",
+   "label": "1",
+   "context": ", and the corridor toy's $q$ (Theorem 1) in [0.3, 0.7]               ",
+   "target": "13_appendix_proofs.md:211",
+   "target_text": "**Theorem 1 (Memorization gap, and its erosion by Coupling B).** Consider the corridor toy"
+  },
+  {
+   "from": "14_appendix_locks.md:73",
+   "kind": "listing",
+   "label": "6",
+   "context": "**Listing 6.** Delivered messages carry n",
+   "target": "14_appendix_locks.md:73",
+   "target_text": "**Listing 6.** Delivered messages carry no gradient, so the message encoder stays at its i"
+  },
+  {
+   "from": "15_appendix_floors.md:19",
+   "kind": "section",
+   "label": "5",
+   "context": "easures nondeterminism alone (§5). The table lists every floor",
+   "target": "05_measurement.md:3",
+   "target_text": "5 Measurement protocol"
+  },
+  {
+   "from": "15_appendix_floors.md:19",
+   "kind": "appendix",
+   "label": "D",
+   "context": "n words with its code (key in Appendix D). The confirmatory arms' floo",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "15_appendix_floors.md:24",
+   "kind": "section",
+   "label": "4.4",
+   "context": "     | the denial thresholds (§4.4); the per-GPU exhibit |",
+   "target": "04_calibration.md:94",
+   "target_text": "4.4 Communication denial"
+  },
+  {
+   "from": "15_appendix_floors.md:26",
+   "kind": "section",
+   "label": "4.3",
+   "context": "nce scale (cross-artifact) in §4.3 |",
+   "target": "04_calibration.md:82",
+   "target_text": "4.3 Coupling B"
+  },
+  {
+   "from": "15_appendix_floors.md:31",
+   "kind": "appendix",
+   "label": "D",
+   "context": "  | the registered seed rule (Appendix D) |",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "15_appendix_floors.md:33",
+   "kind": "appendix",
+   "label": "E",
+   "context": "he rerun-noise check at High (Appendix E) |",
+   "target": "17_appendix_results.md:3",
+   "target_text": "E Additional results"
+  },
+  {
+   "from": "15_appendix_floors.md:34",
+   "kind": "section",
+   "label": "8",
+   "context": "| evaluation reproducibility (§8) |",
+   "target": "11_using_che.md:3",
+   "target_text": "8 Using CHE and reproducing the paper"
+  },
+  {
+   "from": "15_appendix_floors.md:54",
+   "kind": "figure",
+   "label": "C1",
+   "context": "<figcaption><strong>Figure C1.</strong> Reproducibility floor",
+   "target": "15_appendix_floors.md:54",
+   "target_text": "<figcaption><strong>Figure C1.</strong> Reproducibility floors, one tab each. The first ta"
+  },
+  {
+   "from": "15_appendix_floors.md:58",
+   "kind": "figure",
+   "label": "C1",
+   "context": " caption=\"Static companion of Figure C1 for the printed PDF.\" %}",
+   "target": "15_appendix_floors.md:54",
+   "target_text": "<figcaption><strong>Figure C1.</strong> Reproducibility floors, one tab each. The first ta"
+  },
+  {
+   "from": "16_appendix_timeline.md:45",
+   "kind": "appendix",
+   "label": "B",
+   "context": "onstants are fixed (values in Appendix B): the severities and the deat",
+   "target": "14_appendix_locks.md:3",
+   "target_text": "B Locked constants and hyperparameters"
+  },
+  {
+   "from": "16_appendix_timeline.md:45",
+   "kind": "appendix",
+   "label": "B",
+   "context": "l with its range | dated log; Appendix B |",
+   "target": "14_appendix_locks.md:3",
+   "target_text": "B Locked constants and hyperparameters"
+  },
+  {
+   "from": "16_appendix_timeline.md:66",
+   "kind": "section",
+   "label": "6.2",
+   "context": "The design error of §6.2 runs through these rows. The ",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "16_appendix_timeline.md:85",
+   "kind": "section",
+   "label": "5",
+   "context": "gistered as an UPPER BOUND** (§5, superseded note, item 2). […",
+   "target": "05_measurement.md:3",
+   "target_text": "5 Measurement protocol"
+  },
+  {
+   "from": "16_appendix_timeline.md:100",
+   "kind": "section",
+   "label": "4.1",
+   "context": "ommitted estimator behind it (§4.1 gives the committed estimator",
+   "target": "04_calibration.md:38",
+   "target_text": "4.1 Severity, placed by a measured threshold"
+  },
+  {
+   "from": "16_appendix_timeline.md:100",
+   "kind": "section",
+   "label": "4.4",
+   "context": "tified inert at swarm scale\" (§4.4 gives the scoped phrase and i",
+   "target": "04_calibration.md:94",
+   "target_text": "4.4 Communication denial"
+  },
+  {
+   "from": "16_appendix_timeline.md:110",
+   "kind": "section",
+   "label": "6.3",
+   "context": "e the inert-share correction (§6.3); the branch label stays B, b",
+   "target": "07_example_results.md:3",
+   "target_text": "6.3 Results"
+  },
+  {
+   "from": "16_appendix_timeline.md:110",
+   "kind": "definition",
+   "label": "2",
+   "context": "alysis                . Under Definition 2 the asymmetry is between a pe",
+   "target": "03_environment.md:130",
+   "target_text": "**Definition 2 (Ambient hazard).** The hazard is *ambient* if (i) the reward reads task va"
+  },
+  {
+   "from": "16_appendix_timeline.md:128",
+   "kind": "section",
+   "label": "6",
+   "context": " measured at T = 1000 (review §6 item 1: 0.01209 per 100 updat",
+   "target": "06_example_design.md:3",
+   "target_text": "6 Worked example: training on stressors together or apart"
+  },
+  {
+   "from": "16_appendix_timeline.md:155",
+   "kind": "appendix",
+   "label": "E",
+   "context": "orted beside the primary one (Appendix E). On the RTX 5090's floors, d",
+   "target": "17_appendix_results.md:3",
+   "target_text": "E Additional results"
+  },
+  {
+   "from": "16_appendix_timeline.md:165",
+   "kind": "definition",
+   "label": "4",
+   "context": "| M3.0 | the re-test of Definition 4's prediction that outcomes va",
+   "target": "04_calibration.md:40",
+   "target_text": "**Definition 4 (Severity regimes).** For an arena of side $L$, let $\\xi(\\beta)$ be the typ"
+  },
+  {
+   "from": "16_appendix_timeline.md:166",
+   "kind": "proposition",
+   "label": "3",
+   "context": "| M3.3 | the check of Proposition 3 against its closed form |",
+   "target": "13_appendix_proofs.md:190",
+   "target_text": "**Proposition 3 (Collapse events dominate hazard exposure).** Work in the subcritical regi"
+  },
+  {
+   "from": "16_appendix_timeline.md:169",
+   "kind": "theorem",
+   "label": "1",
+   "context": "| M4.2 | the check of Theorem 1 in the corridor toy (printed ",
+   "target": "13_appendix_proofs.md:211",
+   "target_text": "**Theorem 1 (Memorization gap, and its erosion by Coupling B).** Consider the corridor toy"
+  },
+  {
+   "from": "16_appendix_timeline.md:173",
+   "kind": "remark",
+   "label": "2′",
+   "context": "| M5.2 | the check of Remark 2′ in the two-agent courier toy ",
+   "target": "13_appendix_proofs.md:229",
+   "target_text": "**Remark 2′ (Value of communication).** Extend the corridor toy of Theorem 1 with a second"
+  },
+  {
+   "from": "16_appendix_timeline.md:187",
+   "kind": "section",
+   "label": "6.1",
+   "context": "st became its worked example (§6.1). No constant, registration o",
+   "target": "06_example_design.md:49",
+   "target_text": "6.1 What was registered, and what changed"
+  },
+  {
+   "from": "17_appendix_results.md:21",
+   "kind": "section",
+   "label": "8",
+   "context": " leaves every sign unchanged (§8). On Figure E1 the registered",
+   "target": "11_using_che.md:3",
+   "target_text": "8 Using CHE and reproducing the paper"
+  },
+  {
+   "from": "17_appendix_results.md:21",
+   "kind": "figure",
+   "label": "E1",
+   "context": "every sign unchanged (§8). On Figure E1 the registered sign rule is l",
+   "target": "17_appendix_results.md:27",
+   "target_text": "<figcaption><strong>Figure E1.</strong> <strong>Sign unstable over the final half</strong>"
+  },
+  {
+   "from": "17_appendix_results.md:21",
+   "kind": "appendix",
+   "label": "D",
+   "context": "              share one sign (Appendix D). The intervals are Šidák-cor",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "17_appendix_results.md:27",
+   "kind": "figure",
+   "label": "E1",
+   "context": "<figcaption><strong>Figure E1.</strong> <strong>Sign unstable",
+   "target": "17_appendix_results.md:27",
+   "target_text": "<figcaption><strong>Figure E1.</strong> <strong>Sign unstable over the final half</strong>"
+  },
+  {
+   "from": "17_appendix_results.md:31",
+   "kind": "figure",
+   "label": "E1",
+   "context": " caption=\"Static companion of Figure E1 for the printed PDF.\" %}",
+   "target": "17_appendix_results.md:27",
+   "target_text": "<figcaption><strong>Figure E1.</strong> <strong>Sign unstable over the final half</strong>"
+  },
+  {
+   "from": "17_appendix_results.md:76",
+   "kind": "section",
+   "label": "4.4",
+   "context": "nts behind the inert label of §4.4; on it the two-agent courier ",
+   "target": "04_calibration.md:94",
+   "target_text": "4.4 Communication denial"
+  },
+  {
+   "from": "17_appendix_results.md:76",
+   "kind": "figure",
+   "label": "E2",
+   "context": "Figure E2 shows the measurements behind",
+   "target": "17_appendix_results.md:80",
+   "target_text": "{% include figure.html path=\"assets/img/submission/fig06_comms.png\" class=\"img-fluid\" alt="
+  },
+  {
+   "from": "17_appendix_results.md:76",
+   "kind": "figure",
+   "label": "E2",
+   "context": "        as perception decays (Figure E2(a)).",
+   "target": "17_appendix_results.md:80",
+   "target_text": "{% include figure.html path=\"assets/img/submission/fig06_comms.png\" class=\"img-fluid\" alt="
+  },
+  {
+   "from": "17_appendix_results.md:80",
+   "kind": "figure",
+   "label": "E2",
+   "context": "nd those contrasts.\" caption=\"Figure E2. Communication in the toy, an",
+   "target": "17_appendix_results.md:80",
+   "target_text": "{% include figure.html path=\"assets/img/submission/fig06_comms.png\" class=\"img-fluid\" alt="
+  },
+  {
+   "from": "18_appendix_secondary.md:18",
+   "kind": "section",
+   "label": "6.2",
+   "context": "or the fire-only share, as in §6.2. On the triangle of training ",
+   "target": "06_example_design.md:58",
+   "target_text": "6.2 Design"
+  },
+  {
+   "from": "18_appendix_secondary.md:18",
+   "kind": "figure",
+   "label": "7",
+   "context": "u = 2\\mu - p$               . Figure 7 prints μ as m and ν as n; the",
+   "target": "07_example_results.md:49",
+   "target_text": "<figcaption><strong>Figure 7.</strong> Left: training mixtures in p and ν, with the arms a"
+  },
+  {
+   "from": "18_appendix_secondary.md:18",
+   "kind": "appendix",
+   "label": "D",
+   "context": "rained on the GPU that ran Γ (Appendix D) with communication denial of",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "18_appendix_secondary.md:42",
+   "kind": "section",
+   "label": "6.3",
+   "context": "− ISO-4 (γ<sub>p</sub> × 1) | §6.3 | +2.69                 ; γ<s",
+   "target": "07_example_results.md:3",
+   "target_text": "6.3 Results"
+  },
+  {
+   "from": "18_appendix_secondary.md:48",
+   "kind": "section",
+   "label": "6.3",
+   "context": "rained on the GPU that ran Γ (§6.3):",
+   "target": "07_example_results.md:3",
+   "target_text": "6.3 Results"
+  },
+  {
+   "from": "18_appendix_secondary.md:57",
+   "kind": "appendix",
+   "label": "D",
+   "context": " that interval contains zero (Appendix D). Diagnosed after the run, wi",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  },
+  {
+   "from": "19_appendix_interaction.md:20",
+   "kind": "section",
+   "label": "6.4",
+   "context": "The interaction check of §6.4 is post hoc. It was proposed ",
+   "target": "08_interaction_check.md:3",
+   "target_text": "6.4 A post hoc interaction check"
+  },
+  {
+   "from": "19_appendix_interaction.md:20",
+   "kind": "section",
+   "label": "8",
+   "context": "nalysis does not run from it (§8). The check never joins the c",
+   "target": "11_using_che.md:3",
+   "target_text": "8 Using CHE and reproducing the paper"
+  },
+  {
+   "from": "19_appendix_interaction.md:26",
+   "kind": "section",
+   "label": "6.4",
+   "context": " is the contrast displayed in §6.4. An arm's estimate is the mea",
+   "target": "08_interaction_check.md:3",
+   "target_text": "6.4 A post hoc interaction check"
+  },
+  {
+   "from": "19_appendix_interaction.md:28",
+   "kind": "section",
+   "label": "8",
+   "context": "reproduce exactly on one GPU (§8) is not assumed for the other",
+   "target": "11_using_che.md:3",
+   "target_text": "8 Using CHE and reproducing the paper"
+  },
+  {
+   "from": "19_appendix_interaction.md:30",
+   "kind": "section",
+   "label": "6.4",
+   "context": "heck is blind to is listed in §6.4; the arms' training condition",
+   "target": "08_interaction_check.md:3",
+   "target_text": "6.4 A post hoc interaction check"
+  },
+  {
+   "from": "20_appendix_episodes.md:23",
+   "kind": "figure",
+   "label": "H1",
+   "context": "Figures H1 and H2 show one episode of each conf",
+   "target": "20_appendix_episodes.md:29",
+   "target_text": "<figcaption><strong>Figure H1.</strong> One episode of the ISO policy at θ&#42;. The map s"
+  },
+  {
+   "from": "20_appendix_episodes.md:23",
+   "kind": "figure",
+   "label": "H2",
+   "context": "Figures H1 and H2 show one episode of each conf",
+   "target": "20_appendix_episodes.md:42",
+   "target_text": "<figcaption><strong>Figure H2.</strong> One episode of the JOINT policy at θ&#42;, with th"
+  },
+  {
+   "from": "20_appendix_episodes.md:29",
+   "kind": "figure",
+   "label": "H1",
+   "context": "<figcaption><strong>Figure H1.</strong> One episode of the IS",
+   "target": "20_appendix_episodes.md:29",
+   "target_text": "<figcaption><strong>Figure H1.</strong> One episode of the ISO policy at θ&#42;. The map s"
+  },
+  {
+   "from": "20_appendix_episodes.md:33",
+   "kind": "figure",
+   "label": "H1",
+   "context": " caption=\"Static companion of Figure H1 for the printed PDF.\" %}",
+   "target": "20_appendix_episodes.md:29",
+   "target_text": "<figcaption><strong>Figure H1.</strong> One episode of the ISO policy at θ&#42;. The map s"
+  },
+  {
+   "from": "20_appendix_episodes.md:36",
+   "kind": "figure",
+   "label": "H2",
+   "context": "Figure H2 shows the JOINT policy's epis",
+   "target": "20_appendix_episodes.md:42",
+   "target_text": "<figcaption><strong>Figure H2.</strong> One episode of the JOINT policy at θ&#42;, with th"
+  },
+  {
+   "from": "20_appendix_episodes.md:42",
+   "kind": "figure",
+   "label": "H2",
+   "context": "<figcaption><strong>Figure H2.</strong> One episode of the JO",
+   "target": "20_appendix_episodes.md:42",
+   "target_text": "<figcaption><strong>Figure H2.</strong> One episode of the JOINT policy at θ&#42;, with th"
+  },
+  {
+   "from": "20_appendix_episodes.md:42",
+   "kind": "figure",
+   "label": "H1",
+   "context": "th the layers and panels of Figure H1. <span class=\"interact\">Play, s",
+   "target": "20_appendix_episodes.md:29",
+   "target_text": "<figcaption><strong>Figure H1.</strong> One episode of the ISO policy at θ&#42;. The map s"
+  },
+  {
+   "from": "20_appendix_episodes.md:46",
+   "kind": "figure",
+   "label": "H2",
+   "context": " caption=\"Static companion of Figure H2 for the printed PDF.\" %}",
+   "target": "20_appendix_episodes.md:42",
+   "target_text": "<figcaption><strong>Figure H2.</strong> One episode of the JOINT policy at θ&#42;, with th"
+  },
+  {
+   "from": "21_appendix_making.md:23",
+   "kind": "section",
+   "label": "2",
+   "context": "and read abstracts. The works §2 describes in detail were then",
+   "target": "02_related_work.md:3",
+   "target_text": "2 Related work"
+  },
+  {
+   "from": "21_appendix_making.md:37",
+   "kind": "appendix",
+   "label": "D",
+   "context": "tered them before unblinding (Appendix D).",
+   "target": "16_appendix_timeline.md:3",
+   "target_text": "D Registration timeline"
+  }
+ ],
+ "crossrefs_unresolved": 0,
+ "assets": 23,
+ "failures": [],
+ "warnings": [],
+ "final_only_failures": [
+  "front_matter.yaml: date is not confirmed by the owner (set date_confirmed: true once it is; review RM-23)",
+  "08_interaction_check.md:37: ledger ID IC-4 is a PENDING row (paper/v3/ledger_proposals/IC.md:21); it must be VERIFIED before final",
+  "19_appendix_interaction.md:24: ledger ID IC-1 is a PENDING row (paper/v3/ledger_proposals/IC.md:18); it must be VERIFIED before final",
+  "19_appendix_interaction.md:24: ledger ID IC-2 is a PENDING row (paper/v3/ledger_proposals/IC.md:19); it must be VERIFIED before final",
+  "19_appendix_interaction.md:26: ledger ID IC-4 is a PENDING row (paper/v3/ledger_proposals/IC.md:21); it must be VERIFIED before final",
+  "19_appendix_interaction.md:26: ledger ID IC-5 is a PENDING row (paper/v3/ledger_proposals/IC.md:22); it must be VERIFIED before final",
+  "19_appendix_interaction.md:28: ledger ID IC-3 is a PENDING row (paper/v3/ledger_proposals/IC.md:20); it must be VERIFIED before final",
+  "19_appendix_interaction.md:28: ledger ID IC-3 is a PENDING row (paper/v3/ledger_proposals/IC.md:20); it must be VERIFIED before final",
+  "sections: 23 STUB-SPEC block(s) remain"
+ ],
+ "mode": "draft",
+ "v3_checks": {
+  "scope": "paper/v3/checks/caveats.yaml (main_text_files, appendix_files) and H2 '^Appendi'",
+  "main_text": [
+   "front_matter.yaml",
+   "00_abstract.md",
+   "00_hero.md",
+   "01_introduction.md",
+   "02_related_work.md",
+   "03_environment.md",
+   "04_calibration.md",
+   "05_measurement.md",
+   "06_example_design.md",
+   "07_example_results.md",
+   "08_interaction_check.md",
+   "09_example_lesson.md",
+   "10_limitations.md",
+   "11_using_che.md",
+   "12_conclusion.md"
+  ],
+  "unlisted_files": [],
+  "end_heading": "Appendices",
+  "start_heading": "1 Introduction",
+  "terms": {
+   "terms": 73,
+   "registered": 13,
+   "hits": [],
+   "exempt_registered": [
+    {
+     "term": "cross-artifact",
+     "note": "private vocabulary; say \"from other runs\"",
+     "where": "04_calibration.md:84",
+     "match": "cross-artifact",
+     "context": "…ints from another artifact, is a reference scale (cross-artifact): a spread from other runs, shown for scale only.…",
+     "exempt_by": "reference scale (cross-artifact)"
+    },
+    {
+     "term": "cross-artifact",
+     "note": "private vocabulary; say \"from other runs\"",
+     "where": "04_calibration.md:92",
+     "match": "cross-artifact",
+     "context": "…tched band, labelled floor, is a reference scale (cross-artifact). ### 4.4 Communication denial In a denial study…",
+     "exempt_by": "reference scale (cross-artifact)"
+    }
+   ],
+   "glossed": [
+    {
+     "term": "\\bobs v\\d\\b",
+     "note": "\"obs v3\". \"the observation as masked by smoke\"",
+     "where": "00_hero.md:22",
+     "match": "obs v3",
+     "context": "…how its observation as masked by smoke (labelled “obs v3” on the figure), those cells' true state and the…",
+     "gloss": "obs v3"
+    },
+    {
+     "term": "\\bM\\d\\.\\d+[a-z]?\\b",
+     "note": "milestone/study codes M3.0 … M6.2b (v2: 6). Name the study instead",
+     "where": "04_calibration.md:92",
+     "match": "M4.4",
+     "context": "…ents of danger, in the Coupling-B grid (labelled “M4.4” on the figure). (b) The three High survival cont…",
+     "gloss": "M4.4"
+    },
+    {
+     "term": "\\bm\\d\\d[a-z]?\\b",
+     "note": "run-directory codes m44, m35, m42, m51e … (v2: 4). \"the Coupling-B calibration grid\"",
+     "where": "04_calibration.md:75",
+     "match": "m44",
+     "context": "…s, by severity, in the Coupling-B grid (labelled “m44” on the figure) and the Coupling-A grid (labelled…",
+     "gloss": "m44"
+    },
+    {
+     "term": "\\bm\\d\\d[a-z]?\\b",
+     "note": "run-directory codes m44, m35, m42, m51e … (v2: 4). \"the Coupling-B calibration grid\"",
+     "where": "04_calibration.md:75",
+     "match": "m35",
+     "context": "…on the figure) and the Coupling-A grid (labelled “m35” on the figure). Bottom: the two checks of Propos…",
+     "gloss": "m35"
+    },
+    {
+     "term": "(?i)\\bhandshakes?\\b",
+     "note": "(v2: 2). \"check against the closed form\"",
+     "where": "04_calibration.md:75",
+     "match": "handshake",
+     "context": "…two checks of Proposition 3, the second labelled “handshake” on the figure. Hover a point; table view. Collap…",
+     "gloss": "handshake"
+    },
+    {
+     "term": "\\bunits? [123n]\\b",
+     "note": "\"unit 1\", \"unit n\" for a GPU (figure labels)",
+     "where": "07_example_results.md:80",
+     "match": "unit 1",
+     "context": "…no registered test. Rows name one GPU (labelled “unit 1” on the figure) or two (labelled “cross-unit” on…",
+     "gloss": "unit 1"
+    },
+    {
+     "term": "\\bcross-unit\\b",
+     "note": "\"across GPUs\" (and only where needed)",
+     "where": "07_example_results.md:80",
+     "match": "cross-unit",
+     "context": "…abelled “unit 1” on the figure) or two (labelled “cross-unit” on the figure). Γ's stipple is ±1 floor-based st…",
+     "gloss": "cross-unit"
+    },
+    {
+     "term": "\\b(sweep|ident)_c\\d+",
+     "note": "arm code names (sweep_c50_p000 …). \"the p = 0 sweep arm …\"",
+     "where": "07_example_results.md:49",
+     "match": "sweep_c50",
+     "context": "…with the arms and the p = 0 sweep arm (labelled “sweep_c50_p000” on the figure). Right: secondary estimates…",
+     "gloss": "sweep_c50_p000"
+    },
+    {
+     "term": "(?i)\\brungs?\\b",
+     "note": "(v2: 1). \"step\"",
+     "where": "07_example_results.md:80",
+     "match": "rung",
+     "context": "…d contrasts in order, one step per row (labelled “rung” on the figure): Γ, with the registered 60-seed a…",
+     "gloss": "rung"
+    },
+    {
+     "term": "(?i)\\bknee\\b",
+     "note": "(v2: 1). \"change point\"",
+     "where": "07_example_results.md:49",
+     "match": "knee",
+     "context": "…s beside B̂, Γ₄, Γ₄′: the change point (labelled “knee” on the figure), the sweep slope (labelled “dose…",
+     "gloss": "knee"
+    },
+    {
+     "term": "(?i)\\bfloor[- ]basis\\b",
+     "note": "(v2: 3). \"the floor-based standard error of Γ\"",
+     "where": "07_example_results.md:80",
+     "match": "floor basis",
+     "context": "…ipple is ±1 floor-based standard error (labelled “floor basis” on the figure). Step the rows. Two forest plots,…",
+     "gloss": "floor basis"
+    },
+    {
+     "term": "(?i)\\bdose\\b",
+     "note": "(v2: 1). \"per-coupling frequency\" or \"realized count\"",
+     "where": "07_example_results.md:49",
+     "match": "dose",
+     "context": "…“knee” on the figure), the sweep slope (labelled “dose slope” on the figure) and the fire-only share's t…",
+     "gloss": "dose slope"
+    },
+    {
+     "term": "(?i)\\bno-element\\b",
+     "note": "terminology ruling: \"fire-only\"",
+     "where": "07_example_results.md:49",
+     "match": "no-element",
+     "context": "…figure) and the fire-only share's term (labelled “no-element share” on the figure). Switch metrics. A triangle…",
+     "gloss": "no-element share"
+    }
+   ],
+   "in_code_not_graded": [
+    {
+     "term": "(?i)\\binvariant\\s*#?\\s*\\d",
+     "note": "CLAUDE.md invariant numbers",
+     "where": "03_environment.md:98",
+     "match": "Invariant #3",
+     "context": "…chex.assert_type(collapse_increment, jnp.bool_) # Invariant #3: uniforms drawn even when kappa_A == 0. u = jax.r…"
+    }
+   ],
+   "gloss_count": {
+    "obs v3": 1,
+    "m44": 1,
+    "m35": 1,
+    "handshake": 1,
+    "M4.4": 1,
+    "per-stressor marginal": 1,
+    "sweep_c50_p000": 1,
+    "knee": 1,
+    "dose slope": 1,
+    "no-element share": 1,
+    "rung": 1,
+    "unit 1": 1,
+    "cross-unit": 1,
+    "floor basis": 1
+   },
+   "per_term": {},
+   "status": "PASS",
+   "list": "paper/v3/checks/terms.txt",
+   "registered_list": "paper/v3/checks/registered.txt",
+   "problems": [],
+   "scope": "paper/v3/checks/caveats.yaml (main_text_files, appendix_files) and H2 '^Appendi'",
+   "unlisted_files": []
+  },
+  "dates": {
+   "allow": [
+    "2026-09-26",
+    "2026-09-26",
+    "2026-09-26",
+    "2026-09-26"
+   ],
+   "context_years": [
+    "2025",
+    "2026"
+   ],
+   "hits": [],
+   "allowed": [],
+   "in_code_not_graded": [],
+   "bare_years_not_graded": [
+    {
+     "year": "2024",
+     "where": "01_introduction.md:43",
+     "context": "…currence at test time? Gao et al. (2024) studied it for imitation-learned…"
+    },
+    {
+     "year": "2018",
+     "where": "02_related_work.md:25",
+     "context": "…|---|---|---| | Haksar & Schwager (2018) | aerial agents; multi-agent deep…"
+    },
+    {
+     "year": "2025",
+     "where": "02_related_work.md:26",
+     "context": "…ate | | JaxWildfire (Çakır et al., 2025) | one air-tanker agent; JAX simul…"
+    },
+    {
+     "year": "2015",
+     "where": "02_related_work.md:27",
+     "context": "…ment learning (García & Fernández, 2015) | maximizing return under safety…"
+    },
+    {
+     "year": "2026",
+     "where": "02_related_work.md:28",
+     "context": "…, typically | | VULCAN (Liu & Yan, 2026) | proposed fire search and rescue…"
+    },
+    {
+     "year": "2026",
+     "where": "02_related_work.md:31",
+     "context": "…neighbour we found is Raut et al. (2026) , a single-agent model of public-…"
+    },
+    {
+     "year": "2024",
+     "where": "02_related_work.md:35",
+     "context": "…udy of our question is Gao et al. (2024) , who ask, in visual imitation le…"
+    },
+    {
+     "year": "2025",
+     "where": "02_related_work.md:35",
+     "context": "…inforcement learning, Erdem & Üre (2025) report that single-agent policies…"
+    },
+    {
+     "year": "2025",
+     "where": "02_related_work.md:37",
+     "context": "…reinforcement learning (Hu et al., 2025, revised 2026) calls an environmen…"
+    },
+    {
+     "year": "2026",
+     "where": "02_related_work.md:37",
+     "context": "…learning (Hu et al., 2025, revised 2026) calls an environment family highl…"
+    },
+    {
+     "year": "2020",
+     "where": "03_environment.md:197",
+     "context": "…independent PPO of de Witt et al. (2020) , in the style of Lu et al. (2022…"
+    },
+    {
+     "year": "2022",
+     "where": "03_environment.md:197",
+     "context": "…2020) , in the style of Lu et al. (2022) , at 32,768 environment steps per…"
+    },
+    {
+     "year": "2004",
+     "where": "04_calibration.md:46",
+     "context": "…ic convex shape (Garet & Marchand, 2004 ; Corollary 1, Appendix A). The ag…"
+    }
+   ],
+   "status": "PASS",
+   "list": "paper/v3/checks/dates_allow.txt",
+   "scope": "paper/v3/checks/caveats.yaml (main_text_files, appendix_files) and H2 '^Appendi'"
+  },
+  "caveats": {
+   "caveats": [
+    {
+     "id": "C01",
+     "name": "sited_where_composition_is_weak",
+     "kind": "one_home",
+     "occurrences": {
+      "01_introduction.md": 1,
+      "06_example_design.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "06_example_design.md"
+     ],
+     "also": [
+      "00_abstract.md",
+      "01_introduction.md"
+     ],
+     "patterns": [
+      "(?i)\\bsited where\\b",
+      "(?i)\\bwhere composition (is|was) weak\\b",
+      "(?i)\\bcomposition (is|was) weak\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C02",
+     "name": "delta_inert_ruled_phrase",
+     "kind": "one_home",
+     "occurrences": {
+      "01_introduction.md": 1,
+      "04_calibration.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "04_calibration.md"
+     ],
+     "also": [
+      "00_abstract.md",
+      "01_introduction.md"
+     ],
+     "patterns": [
+      "(?i)frozen random-projection"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C03",
+     "name": "delta_label_asymmetric",
+     "kind": "one_home",
+     "occurrences": {
+      "01_introduction.md": 1,
+      "04_calibration.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "04_calibration.md"
+     ],
+     "also": [
+      "01_introduction.md"
+     ],
+     "patterns": [
+      "(?i)\\basymmetric"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C04",
+     "name": "delta_train_test_mismatch",
+     "kind": "one_home",
+     "occurrences": {
+      "01_introduction.md": 1,
+      "06_example_design.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "06_example_design.md"
+     ],
+     "also": [
+      "01_introduction.md"
+     ],
+     "patterns": [
+      "(?i)\\bmismatch"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C05",
+     "name": "one_algorithm_one_map_twelve_agents",
+     "kind": "one_home",
+     "occurrences": {
+      "01_introduction.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "01_introduction.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\bone (learning )?algorithm\\b",
+      "(?i)\\bsingle (learning )?algorithm\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C06",
+     "name": "joint_twice_iso4",
+     "kind": "one_home",
+     "occurrences": {
+      "07_example_results.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "07_example_results.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\btwice as often\\b",
+      "(?i)\\btwo times as often\\b",
+      "2× as often",
+      "(?i)\\btwice (the|its|each) (per-coupling )?frequency\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C07",
+     "name": "joint_thrice_iso",
+     "kind": "one_home",
+     "occurrences": {
+      "06_example_design.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "06_example_design.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\bthree times as often\\b",
+      "3× as often",
+      "(?i)\\bthree-?fold\\b",
+      "(?i)\\bthrice\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C08",
+     "name": "active_share_identity",
+     "kind": "one_home",
+     "occurrences": {
+      "00_abstract.md": 1,
+      "06_example_design.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "06_example_design.md"
+     ],
+     "also": [
+      "00_abstract.md",
+      "09_example_lesson.md"
+     ],
+     "patterns": [
+      "μ_A\\s*\\+\\s*μ_B",
+      "\\\\mu_\\{?A\\}?\\s*\\+\\s*\\\\mu_\\{?B\\}?",
+      "μ<sub>A</sub>\\s*\\+\\s*μ<sub>B</sub>"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C09",
+     "name": "seeds_72_recorded_deviation",
+     "kind": "one_home",
+     "occurrences": {
+      "06_example_design.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "06_example_design.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\brecorded deviation\\b",
+      "(?i)\\babove the registered cap\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C10",
+     "name": "inert_third_design_error",
+     "kind": "one_home",
+     "occurrences": {
+      "00_abstract.md": 1,
+      "01_introduction.md": 1,
+      "06_example_design.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "06_example_design.md"
+     ],
+     "also": [
+      "00_abstract.md",
+      "01_introduction.md"
+     ],
+     "patterns": [
+      "(?i)\\bdesign error\\b",
+      "(?i)\\berror in (our|the) design\\b",
+      "(?i)\\bflaw in (our|the) design\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C11",
+     "name": "matched_compute_never_convergence",
+     "kind": "one_home",
+     "occurrences": {
+      "00_abstract.md": 1,
+      "01_introduction.md": 1,
+      "06_example_design.md": 1,
+      "09_example_lesson.md": 1,
+      "10_limitations.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "06_example_design.md"
+     ],
+     "also": [
+      "00_abstract.md",
+      "01_introduction.md",
+      "09_example_lesson.md",
+      "10_limitations.md"
+     ],
+     "patterns": [
+      "(?i)\\bmatched compute\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C12",
+     "name": "one_evaluation_draw",
+     "kind": "one_home",
+     "occurrences": {
+      "06_example_design.md": 1,
+      "08_interaction_check.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "06_example_design.md"
+     ],
+     "also": [
+      "08_interaction_check.md"
+     ],
+     "patterns": [
+      "(?i)\\b(one|single|the one) (registered |common )?evaluation draw\\b",
+      "(?i)\\b(one|single) (common )?draw\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C13",
+     "name": "bias_b_reverses_sign",
+     "kind": "one_home",
+     "occurrences": {
+      "06_example_design.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "06_example_design.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)reverses sign on the grid GPU",
+      "(?i)sign reverses on the grid GPU"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C14",
+     "name": "framing_change",
+     "kind": "one_home",
+     "occurrences": {
+      "06_example_design.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "06_example_design.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\bafter the (result|outcome) was known\\b",
+      "(?i)\\bemphasis (moved|shifted|changed)\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C15",
+     "name": "secondary_non_verdict_bearing",
+     "kind": "one_home",
+     "occurrences": {
+      "07_example_results.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "07_example_results.md"
+     ],
+     "also": [
+      "00_abstract.md"
+     ],
+     "patterns": [
+      "(?i)\\bnon-verdict-bearing\\b",
+      "(?i)\\bnot family-corrected\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C16",
+     "name": "sign_unstable_final_half",
+     "kind": "one_home",
+     "occurrences": {
+      "00_abstract.md": 1,
+      "01_introduction.md": 1,
+      "07_example_results.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "07_example_results.md"
+     ],
+     "also": [
+      "00_abstract.md",
+      "01_introduction.md"
+     ],
+     "patterns": [
+      "(?i)sign unstable over the final half"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C17",
+     "name": "completion_exclusion_bound",
+     "kind": "one_home",
+     "occurrences": {
+      "00_abstract.md": 1,
+      "01_introduction.md": 1,
+      "07_example_results.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "07_example_results.md"
+     ],
+     "also": [
+      "00_abstract.md",
+      "01_introduction.md"
+     ],
+     "patterns": [
+      "(?i)joint-training gain larger than"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C18",
+     "name": "inert_share_correction",
+     "kind": "one_home",
+     "occurrences": {
+      "00_abstract.md": 1,
+      "01_introduction.md": 1,
+      "07_example_results.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "07_example_results.md"
+     ],
+     "also": [
+      "00_abstract.md",
+      "01_introduction.md"
+     ],
+     "patterns": [
+      "(?i)does not survive the inert-share correction"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C19",
+     "name": "gamma4_excludes_only_large",
+     "kind": "one_home",
+     "occurrences": {
+      "07_example_results.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "07_example_results.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\bonly a large\\b",
+      "(?i)\\ba large composition effect\\b",
+      "(?i)\\bnot every (composition )?effect\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C20",
+     "name": "bhat_without_test",
+     "kind": "one_home",
+     "occurrences": {
+      "07_example_results.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "07_example_results.md"
+     ],
+     "also": [],
+     "patterns": [
+      "B̂[^.]{0,120}\\b(without a test|no test)\\b",
+      "\\\\hat\\{?B\\}?[^.]{0,120}\\b(without a test|no test)\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C21",
+     "name": "gamma_sum_by_construction",
+     "kind": "one_home",
+     "occurrences": {
+      "07_example_results.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "07_example_results.md"
+     ],
+     "also": [],
+     "patterns": [
+      "Γ\\s*=\\s*Γ₄\\s*\\+",
+      "\\\\Gamma\\s*=\\s*\\\\Gamma_\\{?4\\}?\\s*\\+"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C22",
+     "name": "cross_gpu_and_same_gpu_replicate",
+     "kind": "one_home",
+     "occurrences": {
+      "07_example_results.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "07_example_results.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\bsame-GPU replicate\\b",
+      "(?i)\\bproposed after\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C23",
+     "name": "realized_completion_power",
+     "kind": "one_home",
+     "occurrences": {
+      "07_example_results.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "07_example_results.md"
+     ],
+     "also": [],
+     "patterns": [
+      "71\\.6",
+      "(?i)\\brealized (completion )?power\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C24",
+     "name": "high_readout_a_fortiori",
+     "kind": "one_home",
+     "occurrences": {
+      "17_appendix_results.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "17_appendix_results.md"
+     ],
+     "also": [
+      "07_example_results.md"
+     ],
+     "patterns": [
+      "(?i)a-fortiori"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C25",
+     "name": "interaction_blind_to",
+     "kind": "one_home",
+     "occurrences": {
+      "08_interaction_check.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "08_interaction_check.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\bblind to\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C26",
+     "name": "interaction_post_hoc_label",
+     "kind": "label_required",
+     "occurrences": {
+      "01_introduction.md": 1,
+      "06_example_design.md": 2,
+      "08_interaction_check.md": 2,
+      "10_limitations.md": 1,
+      "11_using_che.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "status": "PASS"
+    },
+    {
+     "id": "C27",
+     "name": "cannot_isolate_co_occurrence",
+     "kind": "one_home",
+     "occurrences": {
+      "00_abstract.md": 1,
+      "01_introduction.md": 1,
+      "09_example_lesson.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "09_example_lesson.md"
+     ],
+     "also": [
+      "00_abstract.md",
+      "01_introduction.md"
+     ],
+     "patterns": [
+      "(?i)\\bisolat\\w* co-occurrence\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C28",
+     "name": "counter_all_on_only",
+     "kind": "one_home",
+     "occurrences": {
+      "03_environment.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "03_environment.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\ball-on\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C29",
+     "name": "death_price_contact_penalty",
+     "kind": "one_home",
+     "occurrences": {
+      "03_environment.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "03_environment.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\bcontact (penalty|price)\\b",
+      "(?i)\\bhazard-contact\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C30",
+     "name": "hazard_not_agent_independent",
+     "kind": "one_home",
+     "occurrences": {
+      "03_environment.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "03_environment.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\bagent-independent\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C31",
+     "name": "severity_estimator_provenance",
+     "kind": "one_home",
+     "occurrences": {
+      "04_calibration.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "04_calibration.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\bcommitted estimator"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C32",
+     "name": "fuel_limited_fall",
+     "kind": "one_home",
+     "occurrences": {
+      "01_introduction.md": 1,
+      "04_calibration.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "04_calibration.md"
+     ],
+     "also": [
+      "01_introduction.md"
+     ],
+     "patterns": [
+      "4\\.8\\d?\\s*×",
+      "(?i)4\\.8\\d?-fold",
+      "(?i)\\bfuel exhaustion\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C33",
+     "name": "smoke_high_descriptive",
+     "kind": "one_home",
+     "occurrences": {
+      "01_introduction.md": 1,
+      "04_calibration.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "04_calibration.md"
+     ],
+     "also": [
+      "01_introduction.md"
+     ],
+     "patterns": [
+      "\\b3 of 3\\b",
+      "(?i)\\bthree of three\\b",
+      "\\b3/3\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C34",
+     "name": "coupling_b_medium_measurement",
+     "kind": "one_home",
+     "occurrences": {
+      "01_introduction.md": 1,
+      "04_calibration.md": 1,
+      "06_example_design.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "04_calibration.md"
+     ],
+     "also": [
+      "01_introduction.md",
+      "06_example_design.md"
+     ],
+     "patterns": [
+      "(?i)\\bthree-seed\\b",
+      "(?i)\\b3-seed\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C35",
+     "name": "medium_variance_prediction_refuted",
+     "kind": "one_home",
+     "occurrences": {
+      "04_calibration.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "04_calibration.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\brefuted\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C36",
+     "name": "four_run_floor_uncertainty",
+     "kind": "one_home",
+     "occurrences": {
+      "05_measurement.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "05_measurement.md"
+     ],
+     "also": [],
+     "patterns": [
+      "±\\s*40\\s*%",
+      "(?i)\\b40 ?% (either way|uncertain)"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C37",
+     "name": "evaluation_reproducibility",
+     "kind": "one_home",
+     "occurrences": {
+      "11_using_che.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "11_using_che.md"
+     ],
+     "also": [],
+     "patterns": [
+      "\\b280 of 288\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C38",
+     "name": "no_theorem_joint_wins",
+     "kind": "one_home",
+     "occurrences": {
+      "10_limitations.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "10_limitations.md"
+     ],
+     "also": [],
+     "patterns": [
+      "(?i)\\bno theorem\\b"
+     ],
+     "status": "PASS"
+    },
+    {
+     "id": "C39",
+     "name": "hero_illustrative",
+     "kind": "one_home",
+     "occurrences": {
+      "00_hero.md": 1,
+      "04_calibration.md": 1
+     },
+     "violations": [],
+     "problems": [],
+     "home": [
+      "00_hero.md"
+     ],
+     "also": [
+      "04_calibration.md"
+     ],
+     "patterns": [
+      "(?i)\\billustrative\\b"
+     ],
+     "status": "PASS"
+    }
+   ],
+   "failing": 0,
+   "scope": "paper/v3/checks/caveats.yaml (main_text_files, appendix_files) and H2 '^Appendi'",
+   "scanned_main_text_files": [
+    "00_abstract.md",
+    "00_hero.md",
+    "01_introduction.md",
+    "02_related_work.md",
+    "03_environment.md",
+    "04_calibration.md",
+    "05_measurement.md",
+    "06_example_design.md",
+    "07_example_results.md",
+    "08_interaction_check.md",
+    "09_example_lesson.md",
+    "10_limitations.md",
+    "11_using_che.md",
+    "12_conclusion.md"
+   ],
+   "unlisted_files": [],
+   "status": "PASS",
+   "list": "paper/v3/checks/caveats.yaml",
+   "problems": []
+  }
+ },
+ "markers": {
+  "HOLE:INTERACTION": [
+   "00_abstract.md:44",
+   "01_introduction.md:49",
+   "08_interaction_check.md:39",
+   "08_interaction_check.md:42",
+   "09_example_lesson.md:33",
+   "12_conclusion.md:20",
+   "19_appendix_interaction.md:32"
+  ],
+  "OWNER-PENDING": [
+   "00_abstract.md:39:V3Q1",
+   "00_abstract.md:39:B3",
+   "00_abstract.md:41:V3Q7",
+   "00_abstract.md:45:V3Q7",
+   "02_related_work.md:31:v2C1",
+   "02_related_work.md:35:v2C1",
+   "02_related_work.md:35:v2C1",
+   "04_calibration.md:46:v2D2",
+   "04_calibration.md:96:V3Q14",
+   "04_calibration.md:98:V3Q4",
+   "06_example_design.md:53:wording",
+   "06_example_design.md:64:A1(ii)",
+   "06_example_design.md:69:V3Q21",
+   "11_using_che.md:41:V3Q16",
+   "11_using_che.md:44:V3_V2",
+   "13_appendix_proofs.md:50:V3Q16",
+   "13_appendix_proofs.md:50:V3Q23",
+   "13_appendix_proofs.md:209:V3Q5",
+   "13_appendix_proofs.md:235:V3Q4",
+   "13_appendix_proofs.md:241:V3Q3",
+   "16_appendix_timeline.md:39:V3Q16",
+   "16_appendix_timeline.md:67:A1(ii)",
+   "16_appendix_timeline.md:99:V3Q22",
+   "16_appendix_timeline.md:182:F1",
+   "16_appendix_timeline.md:185:V3Q19",
+   "20_appendix_episodes.md:20:V3Q10",
+   "21_appendix_making.md:28:A1",
+   "21_appendix_making.md:33:PLAN_OK"
+  ]
+ },
+ "pending_ledger_tags": [
+  "08_interaction_check.md:37 IC-4 (paper/v3/ledger_proposals/IC.md:21)",
+  "19_appendix_interaction.md:24 IC-1 (paper/v3/ledger_proposals/IC.md:18)",
+  "19_appendix_interaction.md:24 IC-2 (paper/v3/ledger_proposals/IC.md:19)",
+  "19_appendix_interaction.md:26 IC-4 (paper/v3/ledger_proposals/IC.md:21)",
+  "19_appendix_interaction.md:26 IC-5 (paper/v3/ledger_proposals/IC.md:22)",
+  "19_appendix_interaction.md:28 IC-3 (paper/v3/ledger_proposals/IC.md:20)",
+  "19_appendix_interaction.md:28 IC-3 (paper/v3/ledger_proposals/IC.md:20)"
+ ]
+}
