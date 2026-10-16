@@ -488,6 +488,21 @@ def test_refuses_a_partial_family_or_a_wrong_config(tmp_path):
     _refused(lambda: _analyse(repo, out, grid), "no partial family")
 
 
+def test_plan_commit_time_is_recorded_in_utc(tmp_path):
+    """A committer's local offset never reaches the shipped report."""
+    repo, out, grid = _synthetic(tmp_path, i_true=0.0)
+    env_tz = {**os.environ, "GIT_COMMITTER_DATE": "2026-01-02T03:04:05+03:00"}
+    subprocess.run(
+        ["git", "commit", "-q", "--amend", "--no-edit"],
+        cwd=repo,
+        env=env_tz,
+        check=True,
+        capture_output=True,
+    )
+    info = IA.plan_guard(out / "PLAN.md")
+    assert info["plan_committed_at"] == "2026-01-02T00:04:05+00:00"
+
+
 def test_refuses_a_dirty_tree_without_the_flag(tmp_path):
     repo, out, grid = _synthetic(tmp_path, i_true=0.0)
     _refused(

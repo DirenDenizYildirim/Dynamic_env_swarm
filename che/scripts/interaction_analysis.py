@@ -145,6 +145,9 @@ def plan_guard(plan: Path) -> dict:
             f"{plan} has uncommitted changes — the plan is frozen at its commit."
         )
     commit, when = _git(cwd, "log", "-1", "--format=%H %cI", "--", plan.name).split()
+    # In UTC: the committer's local offset would name a time zone in a shipped
+    # report (double-blind; the paper's App. D.1 removed the same clause).
+    when = _dt.datetime.fromisoformat(when).astimezone(_dt.UTC).isoformat()
     return {
         "plan_commit": commit,
         "plan_committed_at": when,
