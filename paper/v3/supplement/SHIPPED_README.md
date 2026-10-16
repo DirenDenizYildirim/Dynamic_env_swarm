@@ -82,6 +82,21 @@ Compare the outputs with the committed ones in `$P6/unblind/`,
 `$P6/post_unblind_analysis/` and `$P6/secondary/`. Apart from the provenance
 fields (commit, dirty-file count, timestamp), they are identical.
 
+## Verify the post hoc interaction check
+
+The post hoc interaction check has its own analysis plan,
+`che/bench/results/phase6/post_v3_interaction/PLAN.md`. Its analysis refuses to
+run outside version control, so a verification mode recomputes it here:
+
+    uv run python -m che.scripts.interaction_analysis --verify
+
+It checks that the shipped plan's sha256 is the one the evaluation run
+recorded and the report was made under. It then recomputes every number in
+`interaction_report.json` from the shipped evaluation summaries, compares, and
+prints what it cannot check without version history. The plan's and the
+results' public timestamps are `PLAN.md.ots` and `SHA256_RESULTS.txt.ots` in
+the same folder; any OpenTimestamps verifier checks them.
+
 The result directories contain `.manifest/` entries, one per evaluated run,
 which the analysis scripts require. They were reconstructed when this archive
 was packaged from each directory's `SHA256_CKPT.txt` (see

@@ -2,17 +2,19 @@
 # INTERACTION CHECK AT theta* — eval-only, POST HOC, over hash-verified archives.
 #
 # Authorized by docs/decision_log.md, PAPER V3 item 2(a); scope theta* ONLY
-# (PAPER V3 PHASE 1 START item 2). The analysis plan is
+# (PAPER V3 PHASE 1 START item 2); the links-open condition by PLAN AMENDMENT
+# item 4 (2026-10-17). The analysis plan is
 # che/bench/results/phase6/post_v3_interaction/PLAN.md, committed BEFORE this
 # runs. Nothing here trains.
 #
 #   MAIN    the final (T* = 1000) checkpoint of every ISO (72), JOINT (72) and
-#           ISO-4 (20) run, evaluated under the four conditions
-#           {neither, a_only, b_only, both} on the common draw (seed 0, 512
-#           episodes). 164 x 4 = 656 evals. 'both' is theta* itself.
+#           ISO-4 (20) run, evaluated under the five conditions
+#           {neither, a_only, b_only, both, links_open} on the common draw
+#           (seed 0, 512 episodes). 164 x 5 = 820 evals. 'both' is theta*
+#           itself; 'links_open' is theta* with delta = 0.
 #   FLOOR   the eval self-floor on THIS card (per artifact: every condition is
 #           its own artifact): iso_s1, joint_s1, iso4_s1, each condition 3 more
-#           times. 3 x 4 x 3 = 36 evals.
+#           times. 3 x 5 x 3 = 45 evals. 865 in all.
 #
 # IT REFUSES WITHOUT THE PLAN. PLAN.md must exist and be non-empty; its sha256
 # is recorded in provenance.txt, and the analysis refuses unless that hash
@@ -57,7 +59,8 @@ CFG_NEITHER=${CFG_NEITHER:-che/configs/interaction_neither.yaml}
 CFG_A_ONLY=${CFG_A_ONLY:-che/configs/interaction_a_only.yaml}
 CFG_B_ONLY=${CFG_B_ONLY:-che/configs/interaction_b_only.yaml}
 CFG_BOTH=${CFG_BOTH:-che/configs/theta_star_holdout.yaml}
-CONDITIONS="neither a_only b_only both"
+CFG_LINKS_OPEN=${CFG_LINKS_OPEN:-che/configs/interaction_links_open.yaml}
+CONDITIONS="neither a_only b_only both links_open"
 PY=${PY:-uv run --no-sync python}
 DRY_RUN=${DRY_RUN:-0}
 SCRATCH=${SCRATCH:-.interaction_scratch}
@@ -79,6 +82,7 @@ cfg_of () {
   case "$1" in
     neither) echo "$CFG_NEITHER" ;; a_only) echo "$CFG_A_ONLY" ;;
     b_only) echo "$CFG_B_ONLY" ;; both) echo "$CFG_BOTH" ;;
+    links_open) echo "$CFG_LINKS_OPEN" ;;
     *) echo "FATAL: unknown condition $1" >&2; return 1 ;;
   esac
 }
@@ -209,7 +213,7 @@ done
   echo "python: $($PY -c 'import sys; print(sys.version.split()[0])' 2>/dev/null || echo unknown)"
   echo "jax: $($PY -c 'import jax, jaxlib; print(jax.__version__, jaxlib.__version__)' 2>/dev/null || echo unknown)"
   echo "eval: n_episodes=$N_EVAL seed=$EVAL_SEED step=$T_STAR k_conf=$K_CONF k_iso4=$K_ISO4"
-  echo "conditions: neither=$CFG_NEITHER a_only=$CFG_A_ONLY b_only=$CFG_B_ONLY both=$CFG_BOTH"
+  echo "conditions: neither=$CFG_NEITHER a_only=$CFG_A_ONLY b_only=$CFG_B_ONLY both=$CFG_BOTH links_open=$CFG_LINKS_OPEN"
   echo "floor: tags=$FLOOR_TAGS reps=$FLOOR_REPS"
   echo "archives: conf=$CONF_DIR iso4=$ISO4_DIR (each verified against SHA256_CKPT.txt before extraction)"
   echo "cross-config eval: declared via --allow-hash (training-config hash)"

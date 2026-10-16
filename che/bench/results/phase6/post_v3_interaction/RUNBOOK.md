@@ -1,9 +1,11 @@
 # Interaction check: the owner's runbook (eval-only, θ\* only)
 
-For the owner, who rents the GPU and runs the job. The plan is `PLAN.md` in
-this folder. It must be **committed, and OK'd by you, before step 1**. Nothing
-here trains. Expected spend is about 1.8–2.8 GPU-hours plus setup, which is an
-estimate and not a trigger (PLAN §3).
+For the owner, who rents the GPU and runs the job (or hands the box to a
+session; decision log: *BOX HANDOVER*). The plan is `PLAN.md` in this folder,
+as amended on 2026-10-17 (*PLAN AMENDMENT*). It must be **committed, OK'd by
+you, and publicly timestamped (step 0.7) before step 1**. Nothing here trains.
+Expected spend is about 2.3–3.6 GPU-hours plus setup, which is an estimate and
+not a trigger (PLAN §3).
 
 Commands run from the repository root unless a step says otherwise. Write
 down the values marked ✎ as you go; the last step needs them.
@@ -42,6 +44,11 @@ down the values marked ✎ as you go; the last step needs them.
    paths for seeds 13–46 (`phase6_report.md` §3). **If any archive fails,
    stop.** Do not substitute another file. Tell the next session which one
    failed.
+7. The plan's public timestamp is confirmed (PLAN §10). `PLAN.md.ots` sits
+   beside `PLAN.md`, committed. In this folder, `ots upgrade PLAN.md.ots`
+   must report the proof complete, and `ots info PLAN.md.ots` must show a
+   Bitcoin block attestation. If the proof is still pending, wait: it usually
+   completes within a few hours of the stamp. Do not rent before it does.
 
 ## 1. Rent the card
 
@@ -91,7 +98,7 @@ which this job does not need.
 DRY_RUN=1 bash che/scripts/run_interaction_evals.sh | head -3
 ```
 
-It must print `interaction evals planned: 692  (blocks: main floor)`.
+It must print `interaction evals planned: 865  (blocks: main floor)`.
 
 ## 5. Run
 
@@ -120,6 +127,10 @@ committed.
 2. On the laptop, in the folder you copied them to:
    `sha256sum -c SHA256_RESULTS.txt` must say `OK`.
 3. **Only then release the box** (CLAUDE.md, artifact persistence).
+4. Timestamp the results' hash (PLAN §10): `ots stamp SHA256_RESULTS.txt`,
+   then commit `SHA256_RESULTS.txt.ots` beside it with the results. Run
+   `ots upgrade SHA256_RESULTS.txt.ots` again a few hours later, and commit
+   the completed proof.
 
 ## 7. Back in a session
 

@@ -109,11 +109,16 @@ INCLUDE: tuple[Rule, ...] = (
     Rule(
         "R5",
         re.escape(P6)
-        + r"/post_v3_interaction[^/]*/(?!.*\.tar\.zst$)(?!(?:.*/)?RUNBOOK[^/]*$).*",
-        "the post hoc interaction check (plan, evals, floors, report), all "
-        "files except .tar.zst archives (checkpoints; a results archive would "
-        "duplicate the shipped files) and the owner's RUNBOOK (operational "
-        "instructions for renting the box; names the private repository)",
+        + r"/post_v3_interaction[^/]*/(?!.*\.tar\.zst$)(?!(?:.*/)?RUNBOOK[^/]*$)"
+        + r"(?!evals/eval_(?!(?:iso_s1|joint_s1|iso4_s1)_)[^/]*\.npz$).*",
+        "the post hoc interaction check (plan, its timestamp proofs, evals, "
+        "floors, report): what its --verify mode needs (PLAN §9). All files "
+        "except .tar.zst archives (checkpoints; a results archive would "
+        "duplicate the shipped files), the owner's RUNBOOK (operational "
+        "instructions for renting the box; names the private repository), and "
+        "the main evals' per-episode NPZ files other than the three floor "
+        "checkpoints' (verification reads every main eval's JSON means, and "
+        "per-episode arrays only for the floor; size)",
     ),
     Rule(
         "R1",

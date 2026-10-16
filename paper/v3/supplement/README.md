@@ -60,7 +60,7 @@ private repository". Without the deny entry it would ship under R1.
 | D2 | `phase6_design_v2.md`, `phase6_framing_branches.md` | the registration documents (V3-V1) |
 | D3 | `docs/theory_foundations.md` | **on by default** (`--no-theory`); see the recommendation below |
 | D4 | `{severity,coupling_a,kappa_b,comms}_lock.md` | **on by default** (`--no-lock-records`): `locks.yaml` cites them as the ruling documents, and the ledger cites them as number sources |
-| R5 | `phase6/post_v3_interaction*/**` except `*.tar.zst` | the post hoc interaction check, whatever the run returns (plan, evals, floors, report) |
+| R5 | `phase6/post_v3_interaction*/**` except `*.tar.zst`, the RUNBOOK, and main-eval `*.npz` other than the three floor checkpoints' | the post hoc interaction check: what its `--verify` mode needs (plan, timestamp proofs, eval JSONs, floor NPZs, report; PLAN §9) |
 | R1 | `che/bench/results/**/*.{md,txt,json,csv,sha256,yaml}` | every text result of every phase: reports, eval summaries, provenance, timings, floors, hash lists. These are the ledger's sources (11.3 MB raw) |
 | R2 | `results/{phase1-5,e1,m05,m06}/**/*.npz` | small calibration arrays, e.g. `calibration_crossing.npz` and `estimates.npz` (4.3 MB) |
 | R3 | `phase6/{g1_conf_5090,g1_iso4_5090,g1_t2000_5090}/eval_*.npz` | per-episode eval arrays for ISO/JOINT (k = 72), ISO-4 (k = 20) and T = 2000 (7.9 MB) |
@@ -212,6 +212,10 @@ may want to see them; editing that file is not in this step's scope.
     PLAN.md's sha256 against the run's `plan_sha256:` without git, with the
     git-based checks recorded as skipped. Then add its command to
     `SHIPPED_README.md`.
+  - **Addressed 2026-10-17** (decision log: *PLAN AMENDMENT* item 5):
+    `interaction_analysis.py --verify` does this, and recomputes the committed
+    report and compares (PLAN §9). Its command is in `SHIPPED_README.md`. It
+    has nothing to verify until the run's results are committed.
 - **F3. The registered instruments need `--allow-dirty` outside git**
   (`_git` returns "UNKNOWN"). That is documented in `SHIPPED_README.md`, and
   the outputs record it.
