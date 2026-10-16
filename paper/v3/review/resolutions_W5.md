@@ -41,3 +41,11 @@ the fix. Every changed sentence has a provenance row noting "fix round: <ID>".
 
 - `provenance_check.py --root paper/v3 --strict` on all eight W5 files: OK (0 unsourced, 0 stale, 0 support problems).
 - `v3_checks.py` terms, dates and caveats: all PASS.
+
+## Final pass (step 4.3, last round, 2026-10-16)
+
+| finding | outcome | what changed (file:line) | reason |
+|---|---|---|---|
+| RC2-2 REOPEN (MUST) | FIXED (OWNER-EDITS kept) | 21_appendix_making.md:31 | "The registered design" is back in the list of decisions the authors made or ratified: the 2026-08-02 design came from the owner's own rulings, logged "human" (log:1565, :1655). The delegation sentence is replaced with RC2's text, plus "the branch rules" (log:3104-3135). The delegation covered only the remaining pre-rental decisions: the seed layout, the run order, the branch rules and the ratification of the outcome framings. "A few later rulings …" is now its own sentence. The PLAN_OK marker stays: the owner authorized commits (2026-10-16) but has not given the OK on PLAN.md. |
+| RC2-21 (SHOULD) | FIXED | 19_appendix_interaction.md:30 | The sentence now reads "What the check is blind to is listed in §6.4; the arms' training conditions are given above." |
+| RM-1 REOPEN, captions at their caps | FIXED for W5's captions | 17_appendix_results.md:21, :25-27, :76, :82 | Figure E1's caption is 40 words (was 69). Its "rule (iv)", "grid card" and "single-card curve" glosses moved into the sentence that introduces the figure. Figure E2's caption is 46 + 12 (include caption) = 58 words; its "E2C²", "M5.2" and "M5.5" glosses also moved into the introducing sentence. H1 is 57 and H2 is 24, both under the 60-word cap. No prose, caveat home or registered string was cut. Figure 9 does not exist yet. |

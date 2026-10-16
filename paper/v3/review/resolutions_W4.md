@@ -55,3 +55,17 @@ required label glosses; RM-10 added two more.
 
 Counts: FIXED 20, OWNER 1, NOT MINE 5 (part-findings counted once per row),
 DECLINED 0.
+
+## Final pass (step 4.3, last round, 2026-10-16)
+
+| finding | outcome | what changed (file:line) | reason |
+|---|---|---|---|
+| RN2-8 | FIXED | 16:38; ledger_proposals/W4.md X4-6 | D.1 now gives the time zone: "(dates in the committer's local time, UTC+3)". Row X4-6 records that the design's first commit, 2026-08-02 01:10 +0300, is 2026-08-01 22:10 UTC, and that the other four dates fall on the same day in UTC. |
+| RC2-22 | FIXED | 06:56 | (a) "calibrated survival effect" is now "survival effect in calibration". (b) "here" is now "at Medium"; the PFB quotation is unchanged. |
+| RM-19 | FIXED | 16:94, :97 | Row D's survival cell now reads "[− (either)]". The square brackets mark our addition, so the registered row stays verbatim. This also respects RC2-17. The note now says the registered table writes "− (either)" once, under completion. |
+| RM-1 (REOPEN), my part: captions | FIXED | 07:49, :80; 07:43, :56 | Figure 7 and Figure 8 captions are now 60 words each, at the cap and down from about 105 and 75. The m/n gloss and "the figure prints rates" moved into the sentences that introduce the figures. The banned-term glosses (knee, dose slope, no-element share, sweep_c50_p000, rung, unit 1, cross-unit, floor basis) stay in the captions, because the terms check exempts a gloss only inside a caption. Figure 6 is about 49 words (cap 50). |
+| RM-1, prose | — | 06, 07 | Prose stays within budget: §6.1–6.2 has 499 words (budget 500) and §6.3 has 479 (budget 480). The words the moved glosses and RC2-22 added were offset by small rewordings, each recorded in its provenance row. |
+
+Checks: `provenance_check.py --root paper/v3 --strict` on the four files is OK
+(35/35, 47/47, 156/156, 45/45). `v3_checks.py` terms, dates and caveats all
+PASS.

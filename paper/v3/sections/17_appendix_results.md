@@ -18,13 +18,13 @@ V2 MATERIAL: paper/v2/sections/14_appendix_plan_provenance.md (G); 09_compositio
 DEPENDENCIES: §6.3 points here; §4.4 points here for the comms figure.
 -->
 
-**Sign unstable over the final half**, on both co-primaries<!-- N:RES-11 -->: neither meets the registered rule that all 11<!-- N:DES-13 --> point estimates over updates 500–1000<!-- N:DES-13 --> share one sign (Appendix D). The intervals are Šidák-corrected, registered at update 1000<!-- N:DES-13 --> and descriptive before it. Checkpoints before update 1000 were evaluated after unblinding, on a different GPU of the same model; update 1000 is the main runs' own evaluation, and re-evaluating it on that GPU leaves every sign unchanged (§8).
+**Sign unstable over the final half**, on both co-primaries<!-- N:RES-11 -->: neither meets the registered rule that all 11<!-- N:DES-13 --> point estimates over updates 500–1000<!-- N:DES-13 --> share one sign (Appendix D). The intervals are Šidák-corrected, registered at update 1000<!-- N:DES-13 --> and descriptive before it. Checkpoints before update 1000 were evaluated after unblinding, on a different GPU of the same model; update 1000 is the main runs' own evaluation, and re-evaluating it on that GPU leaves every sign unchanged (§8). On Figure E1 the registered sign rule is labelled “rule (iv)” and the main runs' GPU “grid card”, and the “single-card curve” re-evaluates the last checkpoint on another GPU.
 
 <!-- FIGURE E1: block carried from paper/v2/sections/09_compositional_test.md:101 (markup, iframe height and alt text as v2 had them); caption replaced; the writer checks the alt text -->
 
 <figure class="l-page">
   <iframe src="{{ 'assets/html/submission/gamma_t_final_half.html' | relative_url }}" width="100%" height="503" style="border:none" title="Gamma over the final half of training, completion and survival" loading="lazy"></iframe>
-  <figcaption><strong>Figure E1.</strong> <strong>Sign unstable over the final half</strong>, on both co-primaries<!-- N:RES-11 -->. Γ(t) with Šidák-corrected intervals; only the last checkpoint is the registered Γ. Rings mark signs that differ from the final one, under the sign rule labelled “rule (iv)” on the figure. The main runs’ GPU is labelled “grid card” on the figure; the “single-card curve” re-evaluates the last checkpoint on another GPU. The dotted box is ±1 floor-based standard error of Γ.</figcaption>
+  <figcaption><strong>Figure E1.</strong> <strong>Sign unstable over the final half</strong>, on both co-primaries<!-- N:RES-11 -->. Γ(t) with Šidák-corrected intervals; only the last checkpoint is the registered Γ. Rings mark signs that differ from the final one. The dotted box is ±1 floor-based standard error of Γ.</figcaption>
 </figure>
 
 <div class="print-companion">
@@ -73,10 +73,10 @@ On secondary metrics outside the family, descriptive and without a floor, JOINT 
 
 Seed dispersion exceeds the rerun floor in both arms, 1.12 and 1.09 times on completion and 1.25 and 1.19 times on survival (ISO, JOINT)<!-- N:HW-1 -->. Survival Γ, at 5.40 times its floor-based standard error<!-- N:HW-1 --> (completion 1.78 times<!-- N:DX-21 -->), clears the check that an effect exceeds rerun noise.
 
-Figure E2 shows the measurements behind the inert label of §4.4. In the two-agent courier toy, the value of communication rises from 0 to 0.498<!-- N:COM-1 --> as perception decays (Figure E2(a)).
+Figure E2 shows the measurements behind the inert label of §4.4; on it the two-agent courier toy is labelled “E2C²” and “M5.2”, and the denial study “M5.5”. In the two-agent courier toy, the value of communication rises from 0 to 0.498<!-- N:COM-1 --> as perception decays (Figure E2(a)).
 
 <!-- FIGURE E2: block carried from paper/v2/sections/07_comms.md:23 (include and alt text as v2 had them); caption replaced -->
 
 {% include figure.html path="assets/img/submission/fig06_comms.png" class="img-fluid" alt="Top left, courier success rate against perception attenuation in the two-agent toy, for free and for denied communication, with the predicted curve. Top right, the denial contrasts at medium severity with their bars. Bottom, the per-run values behind those contrasts." caption="Figure E2. Communication in the toy, and denial in CHE at Medium." %}
 
-<p class="caption">(a) The two-agent courier toy (labelled “E2C²” and “M5.2” on the figure), with scripted policies: success with free and with denied communication; the shaded gap is the value of communication. (b–d) The denial study at Medium (labelled “M5.5” on the figure): contrasts between open and denied links against bars of twice<!-- N:V4-2 --> the floor sd, and the per-run values.</p>
+<p class="caption">(a) The two-agent courier toy with scripted policies: success with free and with denied communication; the shaded gap is the value of communication. (b–d) The denial study at Medium: contrasts between open and denied links against bars of twice<!-- N:V4-2 --> the floor sd, and the per-run values.</p>

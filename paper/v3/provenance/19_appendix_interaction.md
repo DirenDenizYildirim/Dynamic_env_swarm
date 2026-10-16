@@ -40,7 +40,7 @@ cross-GPU count, the main effects and the realized GPU-hours are HOLEs.
 | 29 | Otherwise it is an exclusion with its bound: $\lvert I\rvert < B$ at the family-corrected level, where $B$ is the larger absolute end of the interval, with the detection limit beside it. | che/bench/results/phase6/post_v3_interaction/PLAN.md:150-153 | new. Never "no interaction" or "additive" (PLAN:153) |
 | 30 | The pooled pair is the headline; the arm rows say whether the answer depends on how the policies were trained. | che/bench/results/phase6/post_v3_interaction/PLAN.md:154-156 | new |
 | 31 | If the floor or the comparison with the original evaluations cannot be computed, the analysis refuses rather than report part of the family. | che/bench/results/phase6/post_v3_interaction/PLAN.md:157-159 | edited; fix round RC2-6 |
-| 32 | What the check is blind to is listed once, in §6.4. | che/bench/results/phase6/post_v3_interaction/PLAN.md:161-163; paper/v3/checks/caveats.yaml (C25 home 08_interaction_check.md) | new (pointer; C25's one home is §6.4) |
+| 32 | What the check is blind to is listed in §6.4; the arms' training conditions are given above. | che/bench/results/phase6/post_v3_interaction/PLAN.md:161-199; paper/v3/checks/caveats.yaml (C25 home 08_interaction_check.md) | edited; final pass: RC2-21 (the arms' training conditions now sit in App. G, so "listed once, in §6.4" was false) |
 
 ## Markers left
 

@@ -43,3 +43,14 @@ unresolved cross-references, 0 M1 flags in my files).
 | RC1-7, RC1-8, RC1-9, RC1-17 and others in 00/01 | — | NOT MINE: W1 | — | — |
 | RC1-11, RC1-12, RC1-13, RC1-14, RN1-2, RN1-3, RN1-5 | — | NOT MINE: W1 or W3 | — | — |
 | RM-6 to RM-16, RM-OWNER-2 to RM-OWNER-4, RC2 except RC2-10 and RC2-11, RN2-* | — | NOT MINE (W1, W3, W4, W5, the supplement builder or the orchestrator) | — | — |
+
+## Final pass (re-check of fix2)
+
+| finding | outcome | what changed | reason |
+|---|---|---|---|
+| RC1-25 (MUST) / RM-18 / RN1-8 | FIXED (punctuation); scale clause NOT restored | 03_environment.md:104 now reads "… as often as an empty one." | Restoring CA-9's clause costs 12–15 words. That does not fit §3's 1,050-word budget once RC1-26's pointer is in, and the final pass forbids further prose cuts. RN1-8's fallback applies: CA-9's 0.4–1.4 % belongs where Coupling A's agent influence is next discussed (§4.2, W3), or §3 takes the clause if the owner accepts 1,063 words |
+| RC1-26 | FIXED | Def. 7's message sentence (03_environment.md, §3.2) now says the messages come "from a frozen, randomly initialized message head (Appendix B)" | The main text now defines the encoder that the ruled phrase in §1 and §4.4 names, at a cost of 8 words. It is worded so as not to repeat the ruled phrase, whose one home is §4.4 (caveat C02). W3's 4-word pointer in §4.4 remains available as well |
+| RC1-27 / RM-17 | FIXED | 13_appendix_proofs.md:52 and both alternates now read "the only numbered remark is 2′" | The transfer remark is unnumbered, so this wording is true in all three versions |
+| RM-1 (Table 2 part) | FIXED | Table 2 (03_environment.md, §3.4) | Shorter cells, cut from 109 to 91 words. "Appendix A" and the `che/tests/test_*.py` affixes are stated once, in the label; "Prop.", "Thm.", "Def." and "Cor." are abbreviated; the header says "fig.". All 9 rows are kept |
+
+Counts after the final pass: §3 prose **1,049** (budget 1,050); Figure 2 caption 50 (cap 50); Table 2 cells 91 (cap 160). I own no other caption. `provenance_check.py --strict` passes on my five files (0 problems). `v3_checks` terms, dates and caveats all PASS. Build OK, with listings 6/6 identical.

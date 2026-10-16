@@ -1,7 +1,7 @@
 {
  "zip": "paper/v3/out/che_supplement.zip",
- "zip_bytes": 37702237,
- "zip_sha256": "56863275b3b9145c695117501ee1a0a08aaa13f80c7ba30f211c6dffcbf842d1",
+ "zip_bytes": 37702298,
+ "zip_sha256": "4a73c89b57b923a0a13576fb9b0ac2f5184126ec55c5d205ce302a7ec4edcbfb",
  "files_shipped": 4167,
  "files_selected": 3519,
  "text_scrubbed": 3228,
@@ -79,13 +79,14 @@
   "che/bench/results/phase6/m62: 24 entries",
   "che/bench/results/phase6/m62b: 18 entries"
  ],
- "scrub_rewrites": 188,
+ "scrub_rewrites": 190,
  "scrub_rewrites_by_rule": {
   "NAME-HANDLE": 1,
   "COMMIT": 153,
   "REPO": 1,
   "BRANCH": 1,
   "ABS-REPO": 26,
+  "PATH-COMMIT": 2,
   "IPV4": 3,
   "INSTANCE-ID": 2,
   "GPU-UUID": 1

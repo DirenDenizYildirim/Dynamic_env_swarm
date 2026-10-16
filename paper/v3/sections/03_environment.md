@@ -101,7 +101,7 @@ def coupling_a_seed_mask(
     return near_new_collapse & (u < kappa_A)
 ```
 
-The hazard is not agent-independent: a weak cell with an agent on it collapses nine<!-- N:CA-8 --> times as often as an empty one,. Below the percolation threshold, with collapses as the fire's only source and their clusters apart, the expected burnt area grows linearly in the collapse rate (Proposition 3, checked in two<!-- N:DX-304 --> runs at parameters other than the locked ones; Appendix A).
+The hazard is not agent-independent: a weak cell with an agent on it collapses nine<!-- N:CA-8 --> times as often as an empty one. Below the percolation threshold, with collapses as the fire's only source and their clusters apart, the expected burnt area grows linearly in the collapse rate (Proposition 3, checked in two<!-- N:DX-304 --> runs at parameters other than the locked ones; Appendix A).
 
 **Definition 6 (Coupling B, as implemented).** For agent $i$ at $x_i$ and a cell $y$ of its crop,
 
@@ -121,7 +121,7 @@ $$
 \Pr\big[\, i \to j \text{ open} \,\big] = \mathbf{1}\big[\lVert x'_i - x'_j \rVert_\infty \le R_{\mathrm{comm}}\big]\,(1 - \delta),
 $$
 
-with $R_{\mathrm{comm}} = 16$<!-- N:COM-6 --> cells. Messages $m_i \in [-1, 1]^{8}$<!-- N:DX-17 --> arrive one step later as the mean over a receiver's open links.
+with $R_{\mathrm{comm}} = 16$<!-- N:COM-6 --> cells. Messages $m_i \in [-1, 1]^{8}$<!-- N:DX-17 --> from a frozen, randomly initialized message head (Appendix B) arrive one step later as the mean over a receiver's open links.
 
 $T_K$ reads positions and aliveness only, so denial is independent of the fire.
 
@@ -176,19 +176,19 @@ The test for $\kappa_A = 0$ compares fire and smoke only, since agents respond t
 
 Propositions 2 and 3, Corollary 1 and Theorem 1 are exact results that the code is tested against, in toys and at parameters other than the locked ones; the paper claims no theory beyond them.
 
-**Table 2.** Each property of CHE with the listing, test (in the code supplement's `che/tests/`) and figure that carry it.
+**Table 2.** Properties of CHE with the listing (3–5 in Appendix A), test (`che/tests/test_*.py`, code supplement) and figure carrying each.
 
-| property | listing | test | figure |
+| property | listing | test | fig. |
 |---|---|---|---|
-| fire, smoke and agents in Definition 1's order (Proposition 1) | 3 (Appendix A) | `test_hazard.py`, `test_lethality.py` | 2 |
-| the fire is bond percolation; severity by a measured threshold (Proposition 2, Corollary 1) | — | `test_percolation.py` | 3 |
-| collapse seeds the fire (Coupling A; Proposition 3) | 1 | `test_coupling_a.py`, `test_prop3.py` | 1, 4 |
-| smoke attenuates perception (Coupling B; Theorem 1) | 4 (Appendix A) | `test_coupling_b.py`, `test_e2c.py` | 1, 5 |
-| communication denial reads no hazard | 3 (Appendix A) | `test_comms.py` | — |
-| hazard-blind reward, cause-blind death price (Definition 2) | 2 | `test_reward_independence.py`, `test_lethality.py` | — |
-| ablations are bitwise-nested models | 5 (Appendix A) | `test_nesting.py`, `test_coupling_b.py`, `test_comms.py` | — |
-| locked constants are reachable from the configurations | — | `test_locks.py` | — |
-| reproducibility floors per metric, GPU and artifact (§5) | — | — | C1 |
+| step order of Definition 1 (Prop. 1) | 3 | `hazard`, `lethality` | 2 |
+| fire is bond percolation; severity by measured threshold (Prop. 2, Cor. 1) | — | `percolation` | 3 |
+| collapse seeds fire (Coupling A, Prop. 3) | 1 | `coupling_a`, `prop3` | 1, 4 |
+| smoke attenuates perception (Coupling B, Thm. 1) | 4 | `coupling_b`, `e2c` | 1, 5 |
+| communication denial reads no hazard | 3 | `comms` | — |
+| hazard-blind reward, cause-blind death price (Def. 2) | 2 | `reward_independence`, `lethality` | — |
+| ablations nest bitwise | 5 | `nesting`, `coupling_b`, `comms` | — |
+| locked constants reachable from configurations | — | `locks` | — |
+| floors per metric, GPU and artifact (§5) | — | — | C1 |
 
 ### 3.5 Instance, training and metrics
 

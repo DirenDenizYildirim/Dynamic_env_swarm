@@ -68,3 +68,24 @@ round: <ID>").
 - `V3Q14` and `V3Q4` in §4.4.
 
 DISPOSITIONS §5 still gives v2 C1 and D2 no V3Q number; this was reported in step 4.1.
+
+## Final pass (re-check of snapshot fix2)
+
+I read the "Re-check (fix2)" sections of RC1, RC2, RN1, RN2 and RM. None of my fix-round items was reopened: RC1-11, -12 and -14 are OK, as are RC2-9, RN1-2, -5 and -6, and RN2-5.
+
+| finding | outcome | what changed (file:line) | reason |
+|---|---|---|---|
+| RC1-28 (SHOULD) | FIXED | 05:28, new sentence "Not every comparison has a floor (Appendix C)." | The fix round's cut had left the rule stated universally (BRIEF §8.1). The sentence is offset by shortenings elsewhere in §5, all with meaning unchanged, which keeps §5 at 270/270 |
+| RC1-31, §2 part (SHOULD) | FIXED | 02:37 "…none found by the search of Appendix I."; 02:31 "Our search found no …" | "that search" pointed two paragraphs back. The §1 part is W1's |
+| RC2-20 (SHOULD) | FIXED | 05:36, new sentence "The registration also calls its detection limit X an exclusion bound (§6.3)." | Connects §5's interval-end definition to the registered wording for X and X₄. The registered sentence in §6.3 (W4) is unchanged |
+| RM-1 re-check: captions at their caps | FIXED (my part) | 04:60 (Fig. 3), 04:75 (Fig. 4), 04:92 (Fig. 5) | §4 captions are 210 → 180, each figure ≤ 60 words with its print-companion caption: Fig. 3 51 + 9, Fig. 4 51 + 9, Fig. 5 47 + 13. All glosses stay in their captions (the terms check exempts glosses only there). No prose cut beyond offsetting the two new §5 sentences. No figure moved |
+
+**Word counts:**
+- §2: 399 of 400.
+- §4: 700 of 700.
+- §5: 270 of 270.
+- App. C: 641, unchanged. Its Figure C1 caption (138 words) is in the appendix and has no cap.
+
+**Checks:**
+- `provenance_check.py --root paper/v3 --strict` on the four files: OK.
+- `v3_checks.py` terms, dates and caveats: all PASS.

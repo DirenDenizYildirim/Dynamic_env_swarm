@@ -14,7 +14,7 @@
 # and checks the round trip.
 
 layout: distill
-title: 'A multi-agent fire environment with coupled stressors, and a pre-registered test of training on them together or apart'
+title: 'A multi-agent fire environment with exact stressor ablations'
 description: 'A pure-JAX multi-agent environment in which collapse seeds fire, smoke attenuates perception and every stressor switches off exactly, with a pre-registered test as a worked example.'
 
 # M3: PLACEHOLDER until the owner sets it (owner question Q2). The kit's

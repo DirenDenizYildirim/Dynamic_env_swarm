@@ -1,0 +1,95 @@
+{
+ "zip": "paper/v3/out/che_supplement.zip",
+ "zip_bytes": 37702298,
+ "zip_sha256": "4a73c89b57b923a0a13576fb9b0ac2f5184126ec55c5d205ce302a7ec4edcbfb",
+ "files_shipped": 4167,
+ "files_selected": 3519,
+ "text_scrubbed": 3228,
+ "binary_copied": 291,
+ "by_rule": {
+  "C1": {
+   "files": 160,
+   "bytes": 1413203
+  },
+  "C2": {
+   "files": 2,
+   "bytes": 270022
+  },
+  "C3": {
+   "files": 1,
+   "bytes": 1075
+  },
+  "D1": {
+   "files": 1,
+   "bytes": 38953
+  },
+  "D2": {
+   "files": 2,
+   "bytes": 41895
+  },
+  "D3": {
+   "files": 1,
+   "bytes": 44978
+  },
+  "D4": {
+   "files": 4,
+   "bytes": 35839
+  },
+  "R1": {
+   "files": 2888,
+   "bytes": 11264118
+  },
+  "R2": {
+   "files": 119,
+   "bytes": 4283221
+  },
+  "R3": {
+   "files": 172,
+   "bytes": 7943304
+  },
+  "R4": {
+   "files": 168,
+   "bytes": 187069263
+  },
+  "R5": {
+   "files": 1,
+   "bytes": 11526
+  }
+ },
+ "options": {
+  "theory": true,
+  "lock_records": true,
+  "conf_logs": false,
+  "manifests": true,
+  "decision_log_section": []
+ },
+ "extras": [
+  "reconstructed 635 .manifest entries"
+ ],
+ "manifest_dirs": [
+  "che/bench/results/phase6/g1_conf_5090: 144 entries",
+  "che/bench/results/phase6/g1_floors: 24 entries",
+  "che/bench/results/phase6/g1_floors_2026-09-08: 24 entries",
+  "che/bench/results/phase6/g1_floors_5090: 24 entries",
+  "che/bench/results/phase6/g1_floors_card2: 1 entries",
+  "che/bench/results/phase6/g1_grid: 252 entries",
+  "che/bench/results/phase6/g1_iso4_5090: 20 entries",
+  "che/bench/results/phase6/g1_sec_s1_12_5090: 96 entries",
+  "che/bench/results/phase6/g1_t2000_5090: 8 entries",
+  "che/bench/results/phase6/m62: 24 entries",
+  "che/bench/results/phase6/m62b: 18 entries"
+ ],
+ "scrub_rewrites": 190,
+ "scrub_rewrites_by_rule": {
+  "NAME-HANDLE": 1,
+  "COMMIT": 153,
+  "REPO": 1,
+  "BRANCH": 1,
+  "ABS-REPO": 26,
+  "PATH-COMMIT": 2,
+  "IPV4": 3,
+  "INSTANCE-ID": 2,
+  "GPU-UUID": 1
+ },
+ "commits_redacted": 53
+}

@@ -51,3 +51,26 @@ Checks rerun:
 | RN1-3 (SHOULD) CB-9 wording | FIXED | `01_introduction.md:49` | as RC1-8 |
 | RN1-4 (SHOULD) RES-12's scope | FIXED | `00_abstract.md:42`; `01_introduction.md:47` | "detectable"; §1 no longer says "of 1000", which read as if every update had been tested, and names the checkpoints instead |
 | RN1 "Šidák-corrected 95 %" tagged DES-13 (not re-opened by RN1) | no change | — | RN1 records it as carried from v2 and not a finding |
+
+## Final pass (step 4.3, last round, 2026-10-16)
+
+| finding | outcome | what changed (file:line) | reason |
+|---|---|---|---|
+| RC1-29 (SHOULD) "that share" too far from its referent | FIXED | `sections/00_abstract.md:47` | now "Because the share of training with an active stressor equals …" (+5 words) |
+| RC1-30 (SHOULD) plain form drops the inert phrase's scope | FIXED | `sections/00_abstract.md:42` | "had no detectable effect in calibration" (+2 words) |
+| RC1-31 (SHOULD), §1 part | FIXED | `sections/01_introduction.md:47` | "Completion shows no detectable change, and the difference excludes a joint-training gain larger than 0.66 points." Registered string unchanged. The §2 part belongs to W3 |
+| RM-1 / RM-OWNER-2, shorter default title (orchestrator) | FIXED (default switched); OWNER keeps the choice | `front_matter.yaml:17`: T1 (118 characters) → T5, "A multi-agent fire environment with exact stressor ablations" (60) | the shortest candidate W1 judges accurate. All candidates stay listed in `provenance/00_abstract.md`; `OWNER-PENDING:V3Q1` kept and updated (`sections/00_abstract.md:39`) |
+| Captions (orchestrator: bring each to its cap) | no change needed | Figure 1 caption: 52 words + companion 8 = 60 against a cap of 60 (`interact` span 11, hidden in print) | already at the cap |
+
+Word counts after the final pass:
+
+| file | words | budget | room for the check's text |
+|---|---|---|---|
+| abstract | 242 | 250 | 8 words |
+| §1 | 587 | 600 | — |
+| §9 | 83 | 90 | — |
+| hero reading note | 30 | 30 | — |
+
+Checks rerun:
+- `provenance_check.py --strict`: OK.
+- `v3_checks.py` terms PASS, dates PASS, caveats PASS.

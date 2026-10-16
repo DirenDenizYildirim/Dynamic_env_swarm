@@ -57,7 +57,7 @@ Medium, the test severity of §6, lies between the 64<!-- N:DX-7 -->-cell arena'
 
 <figure class="l-page">
   <iframe src="{{ 'assets/html/submission/severity_explorer.html' | relative_url }}" width="100%" height="528" style="border:none" title="Severity explorer: spanning probability against ignition probability, and one fire at each locked level" loading="lazy"></iframe>
-  <figcaption><strong>Figure 3.</strong> Severity as a measured phase. Left: the spanning probability against β for arena sides 32, 48 and 64<!-- N:DX-7 --> (512<!-- N:DX-7 --> seeds per point); vertical rules mark the three severities, and the triangle the 64-cell arena's pseudo-critical point. Right: one illustrative random-policy episode per severity, with κ<sub>A</sub> 0.06<!-- N:CA-1 -->, κ<sub>B</sub> 1.0<!-- N:CB-1 --> and δ 0<!-- N:DX-202 -->, drawing fire and smoke only. <span class="interact">Play or drag the time slider; click a panel.</span></figcaption>
+  <figcaption><strong>Figure 3.</strong> Severity as a measured phase. Left: the spanning probability against β for sides 32, 48 and 64<!-- N:DX-7 -->; rules mark the three severities, a triangle the 64-cell arena's pseudo-critical point. Right: one illustrative random-policy episode per severity, with κ<sub>A</sub> 0.06<!-- N:CA-1 -->, κ<sub>B</sub> 1.0<!-- N:CB-1 --> and δ 0<!-- N:DX-202 -->. <span class="interact">Drag the time slider; click a panel.</span></figcaption>
 </figure>
 
 <div class="print-companion">
@@ -72,7 +72,7 @@ In the runs of the Coupling-B calibration grid with Coupling B on (500-update<!-
 
 <figure class="l-page">
   <iframe src="{{ 'assets/html/submission/coupling_a_explorer.html' | relative_url }}" width="100%" height="736" style="border:none" title="Coupling A explorer: collapse-seeded ignitions by severity, their share near agents, and the two Proposition 3 runs" loading="lazy"></iframe>
-  <figcaption><strong>Figure 4.</strong> Coupling A. Top: collapse-seeded ignitions per episode and their share inside an alive agent's crop, by severity, in the Coupling-B grid (labelled “m44” on the figure) and the Coupling-A grid (labelled “m35” on the figure); whiskers span the training seeds. Bottom: the two checks of Proposition 3, the second labelled “handshake” on the figure. <span class="interact">Hover or tab to a point; table view.</span></figcaption>
+  <figcaption><strong>Figure 4.</strong> Coupling A. Top: collapse-seeded ignitions and their share near agents, by severity, in the Coupling-B grid (labelled “m44” on the figure) and the Coupling-A grid (labelled “m35” on the figure). Bottom: the two checks of Proposition 3, the second labelled “handshake” on the figure. <span class="interact">Hover a point; table view.</span></figcaption>
 </figure>
 
 <div class="print-companion">
@@ -89,7 +89,7 @@ At Medium, the test severity, Coupling B's own survival effect was −0.03 point
 
 {% include figure.html path="assets/img/submission/fig04_coupling_b.png" class="img-fluid" alt="Left, the masked share of the agent crop at three severities, over all alive agent-steps and at danger moments, on a log scale. Right, three replicate survival contrasts at high severity and then the first estimate, against a hatched band one standard deviation wide on a reference scale measured on another artifact." caption="Figure 5. Coupling B: where the masking falls, and the High survival contrasts." %}
 
-<p class="caption">(a) Masked share of the crop by severity, over all alive agent-steps and at moments of danger, in the Coupling-B grid (labelled “M4.4” on the figure), log scale. (b) The three High survival contrasts, then the grid's first two<!-- N:DX-40 -->-seed estimate; the hatched band, labelled floor, is a reference scale (cross-artifact).</p>
+<p class="caption">(a) Masked share of the crop by severity, over all alive agent-steps and at moments of danger, in the Coupling-B grid (labelled “M4.4” on the figure). (b) The three High survival contrasts, then the first two<!-- N:DX-40 -->-seed estimate; the hatched band, labelled floor, is a reference scale (cross-artifact).</p>
 
 ### 4.4 Communication denial
 
