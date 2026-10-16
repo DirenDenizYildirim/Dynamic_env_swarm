@@ -1,0 +1,4 @@
+# Positive fixture for v3_checks.py (builder B2): a tiny paper that every v3 check passes.
+layout: distill
+title: 'A small fixture paper'
+description: 'A fixture that the v3 main-text checks pass.'

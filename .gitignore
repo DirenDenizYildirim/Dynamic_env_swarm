@@ -278,3 +278,6 @@ che/bench/results/phase5/**/ckpt_*/
 che/bench/results/phase5/**/*.tar.zst
 che/bench/results/phase6/**/*.tar.zst
 che/bench/results/phase6/**/ckpt_*/
+
+# Paper v3 supplement zip: rebuilt by paper/v3/supplement/package.py; hashes in paper/v3/out/build_summary.json
+paper/v3/out/che_supplement.zip

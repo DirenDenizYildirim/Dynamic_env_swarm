@@ -1,0 +1,42 @@
+# paper/v3/checks/dates_allow.txt — the ONLY dates allowed in the v3 MAIN TEXT (V3-S2)
+#
+# Owner: builder B1 (paper v3, step 3, 2026-10-14). B2's check reads this file.
+#
+# Rule (paper_v3_prompt.md V3-S2): "The main text carries none of [the audit
+# trail], except at most the unblinding date and the fact of registration."
+# So the main text may state THAT the test was registered before the main
+# training runs (no date), and at most ONE date: the unblinding date,
+# 2026-09-26 (ledger DES-12, paper/numbers_ledger.md; P1 §1.2). The
+# registration date (2026-08-13, DES-12) is NOT allowed: the change list
+# allows "the fact of registration", not its date. P3 §5.2 proposed allowing
+# it; B1 follows the change list (DISPOSITIONS.md, P3-T3).
+#
+# FORMAT: one allowed date per line, in every written form a writer may use.
+# Lines starting with `#` and blank lines are ignored. The check compares the
+# matched date text (after normalizing runs of whitespace to one space and
+# U+00A0 to a space) against these lines exactly.
+#
+# SCOPE: as for terms.txt — main-text files 00_abstract.md through
+# 12_conclusion.md, plus front_matter.yaml's `title` and `description`, with
+# HTML comments and fenced code bodies stripped. The appendix (13_* onward,
+# where the registration timeline lives, 16_appendix_timeline.md) is not
+# scanned. The kit's byline and cite-box `date` / `submitted_date` fields are
+# not paper text and are not scanned (B2's date_confirmed check covers them).
+#
+# WHAT COUNTS AS A DATE (guidance for B2's detector; B2 owns the patterns):
+#   - ISO dates:            \b(19|20)\d\d-\d\d-\d\d\b
+#   - day month year:       \b\d{1,2} (January|February|…|December) (19|20)\d\d\b
+#   - month day, year:      \b(January|…|December) \d{1,2},? (19|20)\d\d\b
+#   - month year:           \b(January|…|December) (19|20)\d\d\b
+#   - abbreviated months (Jan., Sept., …) in the same three shapes.
+#   Bare years are NOT dates for this check: citations print years
+#   ("Gao et al. (2024)") and must pass.
+#
+# Negative control: v2's main text has 21 ISO dates (P3 §5.2; B1's scan
+# found 21: 13 in §9, 3 in §1, one each in §4–§8). All but any 2026-09-26
+# must be reported.
+
+2026-09-26
+26 September 2026
+September 26, 2026
+September 26 2026

@@ -1,0 +1,492 @@
+# paper/v3/checks/caveats.yaml — the one-home map (V3-S5), machine-readable
+#
+# Owner: builder B1 (paper v3, step 3, 2026-10-14). B2's check reads this
+# file; B1 owns its content. The human-readable map with sources is
+# paper/v3/STRUCTURE.md §7. Reconciled from plans/P1.md §7, plans/P3.md §5.1
+# and plans/P2.md §8; each entry's `from` says which.
+#
+# SEMANTICS (for B2's check)
+# - Text is prepared as for terms.txt: HTML comments and fenced code bodies
+#   stripped; captions, alt text and table cells kept.
+# - An OCCURRENCE is one sentence (B2's sentence splitter; a table cell or a
+#   caption counts as one sentence) that matches ANY of the entry's `regex`
+#   patterns (Python `re`; case-sensitive unless the pattern starts `(?i)`).
+#   Several matches in one sentence are one occurrence.
+# - `home`: the file that holds the full statement. It must have at least 1
+#   and at most `max_home` occurrences (default 1). If `home` is an appendix
+#   file, the appendix file is scanned for this entry only.
+# - `also`: main-text files allowed at most `max_also` occurrences each
+#   (default 1): the short forms and the exceptions the rules require
+#   (registered strings in the abstract, PR:118-124; the post hoc label,
+#   PR:63-65; limitations in front, V3-F6).
+# - Every other MAIN-TEXT file must have 0 occurrences. A pointer ("§6.3",
+#   "see Appendix D") never matches, by design of the patterns.
+# - `kind: label_required` entries are different: every main-text file with a
+#   sentence matching `trigger` must also contain, in that same sentence or
+#   in the same paragraph, a match of `label`.
+# - Report, per entry: occurrences per file, and the sentence text of every
+#   occurrence outside home/also (so the writer can see what to cut).
+#
+# Writers are told the detection phrase in their stub (STUB-SPEC CAVEATS),
+# so the home sentence is written to be found. If a pattern proves too broad
+# or too narrow on real text, B2 reports it to B1/the orchestrator; it is not
+# loosened silently.
+
+version: 1
+
+main_text_files:
+  - 00_abstract.md
+  - 00_hero.md
+  - 01_introduction.md
+  - 02_related_work.md
+  - 03_environment.md
+  - 04_calibration.md
+  - 05_measurement.md
+  - 06_example_design.md
+  - 07_example_results.md
+  - 08_interaction_check.md
+  - 09_example_lesson.md
+  - 10_limitations.md
+  - 11_using_che.md
+  - 12_conclusion.md
+
+appendix_files:
+  - 13_appendix_proofs.md
+  - 14_appendix_locks.md
+  - 15_appendix_floors.md
+  - 16_appendix_timeline.md
+  - 17_appendix_results.md
+  - 18_appendix_secondary.md
+  - 19_appendix_interaction.md
+  - 20_appendix_episodes.md
+  - 21_appendix_making.md
+
+caveats:
+
+  # ---- limitations in front (V3-F6) -------------------------------------
+  - id: C01
+    name: sited_where_composition_is_weak
+    statement: The test was sited where composition is weak (Coupling B quiet at the test severity, communication denial without detectable effect); registered in advance as a limitation of every outcome; the post hoc interaction check measures it.
+    rows: [CB-9, COM-4]
+    home: 06_example_design.md
+    also: [00_abstract.md, 01_introduction.md]
+    from: P1 §5.3 item 1 and §7 (home §6.1); P3 §5.1 put the home in §1 — B1 resolution, STRUCTURE §11 row 3
+    regex:
+      - '(?i)\bsited where\b'
+      - '(?i)\bwhere composition (is|was) weak\b'
+      - '(?i)\bcomposition (is|was) weak\b'
+
+  - id: C02
+    name: delta_inert_ruled_phrase
+    statement: Communication denial is "inert under a frozen random-projection encoder at this scale", with the bars it rests on.
+    rows: [COM-4, DX-16, V4-1, V4-2]
+    home: 04_calibration.md
+    also: [00_abstract.md, 01_introduction.md]
+    from: P1 §7; P3 §5.1 (home calibration); elsewhere "inert (§4.4)"
+    regex:
+      - '(?i)frozen random-projection'
+
+  - id: C03
+    name: delta_label_asymmetric
+    statement: The inert label rests on coarse bars and is applied asymmetrically (Coupling A at High and Coupling B at Low counted active although weak there).
+    rows: [COM-4, CA-4, DX-11, CB-9]
+    home: 04_calibration.md
+    also: [01_introduction.md]
+    from: P1 §5.3 item 2 (home §4.4); P3 §5.1 put it in §1 — B1 resolution (numbers live in §4)
+    regex:
+      - '(?i)\basymmetric'
+
+  - id: C04
+    name: delta_train_test_mismatch
+    statement: ISO's Coupling-A-only and Coupling-B-only components and all of ISO-4 train with links intact (δ = 0), while θ* has δ = 1; a train/test mismatch in communication denial. Detection phrase - "mismatch".
+    rows: [NEW X4-2]
+    home: 06_example_design.md
+    also: [01_introduction.md]
+    from: orchestrator note (training δ); P1 §10 item 6; P3 §1.4 (home §1) — B1 resolution (the arms are described in §6.2)
+    regex:
+      - '(?i)\bmismatch'
+
+  - id: C05
+    name: one_algorithm_one_map_twelve_agents
+    statement: One algorithm (shared-parameter IPPO), one map (64 × 64), 12 agents, one held-out point, no heuristic baselines.
+    rows: [ENV-6, ENV-11, DX-2]
+    home: 01_introduction.md
+    also: []
+    from: P1 §7 (home §1, §7 adds detail only); P3 §5.1 (home introduction)
+    regex:
+      - '(?i)\bone (learning )?algorithm\b'
+      - '(?i)\bsingle (learning )?algorithm\b'
+
+  # ---- the worked example: design (§6.2) --------------------------------
+  - id: C06
+    name: joint_twice_iso4
+    statement: JOINT sees each coupling twice as often as ISO-4, and always combined.
+    rows: [DES-14]
+    home: 07_example_results.md
+    also: []
+    from: P1 §7; P3 §5.1; P2 §8 (the ladder's limit)
+    regex:
+      - '(?i)\btwice as often\b'
+      - '(?i)\btwo times as often\b'
+      - '2× as often'
+      - '(?i)\btwice (the|its|each) (per-coupling )?frequency\b'
+
+  - id: C07
+    name: joint_thrice_iso
+    statement: JOINT sees each coupling three times as often as ISO (the endpoint confound).
+    rows: [DES-7]
+    home: 06_example_design.md
+    also: []
+    from: P1 §7; P3 §5.1
+    regex:
+      - '(?i)\bthree times as often\b'
+      - '3× as often'
+      - '(?i)\bthree-?fold\b'
+      - '(?i)\bthrice\b'
+
+  - id: C08
+    name: active_share_identity
+    statement: Active share = μ_A + μ_B − p, with each arm's values; so no contrast in this design moves co-occurrence alone.
+    rows: [NEW X4-1, DES-7, DES-9, DES-14, DES-16]
+    home: 06_example_design.md
+    also: [00_abstract.md, 09_example_lesson.md]
+    from: P1 §5.2 and §7 (home §6.2, §6.5 one clause); P3 §5.1 put it in the lesson — B1 resolution
+    regex:
+      - 'μ_A\s*\+\s*μ_B'
+      - '\\mu_\{?A\}?\s*\+\s*\\mu_\{?B\}?'
+      - 'μ<sub>A</sub>\s*\+\s*μ<sub>B</sub>'
+
+  - id: C09
+    name: seeds_72_recorded_deviation
+    statement: 72 seeds per arm, above the registered cap of 60, a recorded deviation made before unblinding (history in App. D).
+    rows: [DES-1, DES-3]
+    home: 06_example_design.md
+    also: []
+    from: P1 §7 (one clause in §6.2); P3 §5.1 (home timeline, one clause in design)
+    regex:
+      - '(?i)\brecorded deviation\b'
+      - '(?i)\babove the registered cap\b'
+
+  - id: C10
+    name: inert_third_design_error
+    statement: A third of ISO's training episodes carried no active stressor; owned as a design error, identified before the grid and registered with its correction before unblinding (no dates in the main text).
+    rows: [DES-8, DES-15]
+    home: 06_example_design.md
+    also: [00_abstract.md, 01_introduction.md]
+    from: P1 §7; P1 §3.1 item 3 (abstract clause)
+    regex:
+      - '(?i)\bdesign error\b'
+      - '(?i)\berror in (our|the) design\b'
+      - '(?i)\bflaw in (our|the) design\b'
+
+  - id: C11
+    name: matched_compute_never_convergence
+    statement: The comparison is at matched compute, never at convergence.
+    rows: [DES-13]
+    home: 06_example_design.md
+    also: [00_abstract.md, 01_introduction.md, 09_example_lesson.md, 10_limitations.md]
+    from: P1 §7 (home §6.2, §7 one line); P3 §5.1 (results; + abstract); §6.5 needs it once (ISO-4 at 2000 updates gives up matched compute, P3 §3.1)
+    regex:
+      - '(?i)\bmatched compute\b'
+
+  - id: C12
+    name: one_evaluation_draw
+    statement: Every interval is conditional on the one registered evaluation draw.
+    rows: [DES-13]
+    home: 06_example_design.md
+    also: [08_interaction_check.md]
+    from: P1 §7; P3 §5.1; PLAN.md §8 item 4 (the check repeats its own copy)
+    regex:
+      - '(?i)\b(one|single|the one) (registered |common )?evaluation draw\b'
+      - '(?i)\b(one|single) (common )?draw\b'
+
+  - id: C13
+    name: bias_b_reverses_sign
+    statement: Bias (b) "reverses sign on the grid GPU" (registered string); full readings in App. D.
+    rows: [DES-10, V6-4]
+    home: 06_example_design.md
+    also: []
+    from: P1 §7; P3 §5.1
+    regex:
+      - '(?i)reverses sign on the grid GPU'
+      - '(?i)sign reverses on the grid GPU'
+
+  - id: C14
+    name: framing_change
+    statement: The paper's emphasis moved to the environment after the result was known; the registered outcome branches stay the record of the original framing. Two homes by ruling (V3-F5) - here and App. D.
+    rows: [NEW X4-5 (App. D only)]
+    home: 06_example_design.md
+    also: []
+    from: V3-F5; P1 §1.2; P3 §5.1 (two homes). P3 §2.2 also wanted one sentence in §1 — rejected (V3-F5 names the two homes)
+    regex:
+      - '(?i)\bafter the (result|outcome) was known\b'
+      - '(?i)\bemphasis (moved|shifted|changed)\b'
+
+  # ---- the worked example: results (§6.3) -------------------------------
+  - id: C15
+    name: secondary_non_verdict_bearing
+    statement: The plane decomposition and every secondary analysis are non-verdict-bearing; their 95 % intervals are not family-corrected.
+    rows: [SEC-1, DX-413]
+    home: 07_example_results.md
+    also: [00_abstract.md]
+    from: P1 §7; P3 §5.1; BRIEF §5.3 ("non-verdict-bearing" once)
+    regex:
+      - '(?i)\bnon-verdict-bearing\b'
+      - '(?i)\bnot family-corrected\b'
+
+  - id: C16
+    name: sign_unstable_final_half
+    statement: Registered string "sign unstable over the final half", on both co-primaries, with the shapes.
+    rows: [RES-11, RES-12, RES-13]
+    home: 07_example_results.md
+    also: [00_abstract.md, 01_introduction.md]
+    from: P1 §7; P3 §5.1
+    regex:
+      - '(?i)sign unstable over the final half'
+
+  - id: C17
+    name: completion_exclusion_bound
+    statement: Completion shows no detectable change and "excludes a joint-training gain larger than 0.66 points".
+    rows: [RES-1]
+    home: 07_example_results.md
+    also: [00_abstract.md, 01_introduction.md]
+    from: P1 §7; P3 §5.1
+    regex:
+      - '(?i)joint-training gain larger than'
+
+  - id: C18
+    name: inert_share_correction
+    statement: Registered string - the survival gain "does not survive the inert-share correction".
+    rows: [RES-6]
+    home: 07_example_results.md
+    also: [00_abstract.md, 01_introduction.md]
+    from: P1 §7; P3 §5.1
+    regex:
+      - '(?i)does not survive the inert-share correction'
+
+  - id: C19
+    name: gamma4_excludes_only_large
+    statement: Γ₄ excludes only a large composition effect (its upper bound lies above Γ's lower bound).
+    rows: [RES-6, RES-2]
+    home: 07_example_results.md
+    also: []
+    from: P1 §7 (§6.5 points); P3 §5.1
+    regex:
+      - '(?i)\bonly a large\b'
+      - '(?i)\ba large composition effect\b'
+      - '(?i)\bnot every (composition )?effect\b'
+
+  - id: C20
+    name: bhat_without_test
+    statement: B̂ = ISO-4 − ISO is reported without a test and gets no verdict.
+    rows: [RES-7]
+    home: 07_example_results.md
+    also: []
+    from: P1 §7; P3 §5.1; registered (B̂ gets no verdict)
+    regex:
+      - 'B̂[^.]{0,120}\b(without a test|no test)\b'
+      - '\\hat\{?B\}?[^.]{0,120}\b(without a test|no test)\b'
+
+  - id: C21
+    name: gamma_sum_by_construction
+    statement: Γ = Γ₄ + B̂ holds by construction for arm means and is never a finding.
+    rows: [RES-2, RES-6, RES-7]
+    home: 07_example_results.md
+    also: []
+    from: P1 §7; BRIEF §8
+    regex:
+      - 'Γ\s*=\s*Γ₄\s*\+'
+      - '\\Gamma\s*=\s*\\Gamma_\{?4\}?\s*\+'
+
+  - id: C22
+    name: cross_gpu_and_same_gpu_replicate
+    statement: Γ₄ compares runs on two GPUs; the same-GPU replicate agrees and was proposed after Γ₄ was seen (GPU blocks in App. D).
+    rows: [HW-4, RES-8, DES-15]
+    home: 07_example_results.md
+    also: []
+    from: P1 §7 (one sentence); P3 §5.1
+    regex:
+      - '(?i)\bsame-GPU replicate\b'
+      - '(?i)\bproposed after\b'
+
+  - id: C23
+    name: realized_completion_power
+    statement: Realized completion power at the motivating effect is 71.6 %, stated once beside the exclusion.
+    rows: [DES-6]
+    home: 07_example_results.md
+    also: []
+    from: P1 §7; P3 §5.1 (W4 iii)
+    regex:
+      - '71\.6'
+      - '(?i)\brealized (completion )?power\b'
+
+  - id: C24
+    name: high_readout_a_fortiori
+    statement: The High readout is an a-fortiori exclusion, not a held-out test (full statement in App. E).
+    rows: [RES-14, DX-26]
+    home: 17_appendix_results.md
+    also: [07_example_results.md]
+    from: P1 §6.1 (App. E); B1 (main text keeps at most one sentence)
+    regex:
+      - '(?i)a-fortiori'
+
+  # ---- the interaction check (§6.4) and the lesson (§6.5) ---------------
+  - id: C25
+    name: interaction_blind_to
+    statement: What the interaction check is blind to (θ* only; fixed policies; additive scale; one draw; δ held at 1; no cross-arm test; post hoc; arms' training conditions differ). The full list once.
+    note: other files say "cannot see" rather than "blind to" (e.g. §5's rule on differenced tests).
+    rows: [IC-*]
+    home: 08_interaction_check.md
+    also: []
+    from: P1 §3.3 (one home §6.4); P2 §4; PLAN.md §8
+    regex:
+      - '(?i)\bblind to\b'
+
+  - id: C26
+    name: interaction_post_hoc_label
+    kind: label_required
+    statement: Wherever the interaction check or its result appears in the main text, abstract included, it is labelled post hoc (PR:63-65).
+    from: PR:63-65; P1 §3.3; P2 §4 (Q6)
+    trigger:
+      - '(?i)\binteraction (check|contrast|test)\b'
+      - '(?i)\binteract(s|ion)? between the (two )?couplings\b'
+    label:
+      - '(?i)\bpost[ -]hoc\b'
+
+  - id: C27
+    name: cannot_isolate_co_occurrence
+    statement: Matching the active share alone cannot isolate co-occurrence; no design here isolates it (the lesson, never after "therefore").
+    rows: [NEW X4-1]
+    home: 09_example_lesson.md
+    also: [00_abstract.md, 01_introduction.md]
+    from: V3-F4; P3 §3.1 point (3) and §5.1; orchestrator note on the plane
+    regex:
+      - '(?i)\bisolat\w* co-occurrence\b'
+
+  # ---- the environment and calibration ----------------------------------
+  - id: C28
+    name: counter_all_on_only
+    statement: The coupling-co-active counter counts collapse-seeded ignitions near an agent, so it is co-active only in all-on configurations.
+    rows: [CO-4]
+    home: 03_environment.md
+    also: []
+    from: P1 §7; P3 §5.1; branch_B.md §5 item 10
+    regex:
+      - '(?i)\ball-on\b'
+
+  - id: C29
+    name: death_price_contact_penalty
+    statement: An agent dies only on a burning or collapsing cell, so the cause-blind death price is in effect a hazard-contact price, and it drives survival learning.
+    rows: [ENV-1, ENV-2]
+    home: 03_environment.md
+    also: []
+    from: P1 §7 (W7); P3 E3
+    regex:
+      - '(?i)\bcontact (penalty|price)\b'
+      - '(?i)\bhazard-contact\b'
+
+  - id: C30
+    name: hazard_not_agent_independent
+    statement: The hazard is not agent-independent - an occupied weak cell collapses about nine times as often.
+    rows: [CA-8, CA-9]
+    home: 03_environment.md
+    also: []
+    from: P1 §7 (home §3.2)
+    regex:
+      - '(?i)\bagent-independent\b'
+
+  - id: C31
+    name: severity_estimator_provenance
+    statement: The locked threshold value has no committed estimator; the committed estimators' spread and consensus are stated beside it.
+    rows: [CAL-1, DX-204]
+    home: 04_calibration.md
+    also: []
+    from: P1 P-S; P3 E4
+    regex:
+      - '(?i)\bcommitted estimator'
+
+  - id: C32
+    name: fuel_limited_fall
+    statement: Collapse-seeded ignitions fall about 4.8-fold from Low to High under trained (500-update calibration) policies; fuel exhaustion, first seen under random policies.
+    rows: [CA-4, CA-5, DX-9, DX-40]
+    home: 04_calibration.md
+    also: [01_introduction.md]
+    from: P1 P-A′; P3 §5.1 ("self-limiting" is fuel exhaustion)
+    regex:
+      - '4\.8\d?\s*×'
+      - '(?i)4\.8\d?-fold'
+      - '(?i)\bfuel exhaustion\b'
+
+  - id: C33
+    name: smoke_high_descriptive
+    statement: Smoke's survival cost at High - same direction in 3 of 3 contrasts; descriptive, ungraded.
+    rows: [CB-5, DX-13, CB-7]
+    home: 04_calibration.md
+    also: [01_introduction.md]
+    from: P1 §7; P3 §5.1
+    regex:
+      - '\b3 of 3\b'
+      - '(?i)\bthree of three\b'
+      - '\b3/3\b'
+
+  - id: C34
+    name: coupling_b_medium_measurement
+    statement: Coupling B's own survival effect at Medium (the test's severity) was not measurable against a three-seed spread - not a measured floor.
+    rows: [CB-9]
+    home: 04_calibration.md
+    also: [01_introduction.md, 06_example_design.md]
+    from: P1 §5.3 and §10 item 4; P3 §1.1 E2 and §1.4
+    regex:
+      - '(?i)\bthree-seed\b'
+      - '(?i)\b3-seed\b'
+
+  - id: C35
+    name: medium_variance_prediction_refuted
+    statement: Def. 4's prediction that outcomes vary most at Medium is refuted for survival.
+    rows: [CAL-5, DX-8]
+    home: 04_calibration.md
+    also: []
+    from: P1 P-S; P3 E4
+    regex:
+      - '(?i)\brefuted\b'
+
+  - id: C36
+    name: four_run_floor_uncertainty
+    statement: A floor from four runs is itself uncertain by about ±40 %.
+    rows: [DX-303]
+    home: 05_measurement.md
+    also: []
+    from: P1 §7
+    regex:
+      - '±\s*40\s*%'
+      - '(?i)\b40 ?% (either way|uncertain)'
+
+  - id: C37
+    name: evaluation_reproducibility
+    statement: Evaluation is bit-identical on one GPU; 280 of 288 paired evaluations agree across GPUs.
+    rows: [HW-2, HW-3]
+    home: 11_using_che.md
+    also: []
+    from: P1 §4.2 §8; v2 STRUCTURE §7
+    regex:
+      - '\b280 of 288\b'
+
+  - id: C38
+    name: no_theorem_joint_wins
+    statement: No theorem says joint training wins.
+    rows: []
+    home: 10_limitations.md
+    also: []
+    from: P1 §7 (TF:686)
+    regex:
+      - '(?i)\bno theorem\b'
+
+  - id: C39
+    name: hero_illustrative
+    statement: The hero episode is illustrative - one random-policy episode, selected by a fixed rule.
+    rows: [ENV-13]
+    home: 00_hero.md
+    also: [04_calibration.md]
+    from: P2 §8 (hero limit in the reading note); severity explorer's renders are also illustrative (P2 §2)
+    regex:
+      - '(?i)\billustrative\b'

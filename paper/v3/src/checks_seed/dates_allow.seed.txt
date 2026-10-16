@@ -1,0 +1,8 @@
+# Seed allow-list for the v3 main-text date check (v3_checks.py dates). V3-S2: the main text
+# carries at most the unblinding date and the fact of registration; P3 §5.2 allows at most
+# the registration date and the unblinding date (DES-12). Used only while
+# paper/v3/checks/dates_allow.txt (builder B1's) does not exist.
+# Format: an ISO date (YYYY-MM-DD), month (YYYY-MM) or year (YYYY), or any date as written
+# ("September 26, 2026"), or re:<regex> on the matched text. A TAB starts a note.
+2026-08-13	branches registered (DES-12: phase6_framing_branches.md:3)
+2026-09-26	unblinding (DES-12: R/phase6/phase6_report.md:70, :75)

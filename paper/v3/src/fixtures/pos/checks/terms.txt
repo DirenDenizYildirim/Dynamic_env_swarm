@@ -1,0 +1,4 @@
+# fixture term list, in B1's format (one regex per line, TAB note, case-sensitive unless (?i))
+\bGPU ?[123]\b	GPU codes
+(?i)\b(carries|carry|bears|bear|gets|get) no verdict\b	private vocabulary
+DECISION:	code tag

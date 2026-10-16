@@ -45,7 +45,16 @@ ANALYSIS_MODULE = LOCKS["analysis"]["module"]
 # Roles whose beta must be a calibrated severity — archival configs still
 # carry the pre-Phase-2 placeholder and are exempt by design, and
 # theta_star_pending carries a sentinel that does not load at all.
-CALIBRATED_ROLES = {"science", "gate", "joint", "theta_star", "protocol"}
+# interaction_check (2026-10-14): the post hoc eval conditions at theta* carry
+# theta*'s calibrated beta, so they are graded here, not skipped as archival.
+CALIBRATED_ROLES = {
+    "science",
+    "gate",
+    "joint",
+    "theta_star",
+    "protocol",
+    "interaction_check",
+}
 # Roles whose comms element is ON (delta = 1.0) rather than OFF.
 ELEMENT_ON_ROLES = {"joint", "theta_star", "theta_star_pending"}
 

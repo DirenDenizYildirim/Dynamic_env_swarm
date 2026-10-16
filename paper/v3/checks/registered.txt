@@ -1,0 +1,19 @@
+# paper/v3/checks/registered.txt — registered strings that must appear verbatim
+# where they land (BRIEF §6.1/§6.4; paper_v3_prompt.md "Registered strings stay
+# verbatim"). A terms.txt hit that falls inside one of these strings is exempt.
+# Orchestrator, 2026-10-14, from BRIEF §6 (B2 flagged that B1's
+# "(…|gets) no verdict" pattern matches "B̂ gets no verdict").
+# One literal string per non-comment line (not a regex).
+does not survive the inert-share correction
+sign unstable over the final half
+B̂ gets no verdict
+non-verdict-bearing
+second exclusion bound
+a-fortiori exclusion
+reference scale (cross-artifact)
+recorded, not graded
+excludes a joint-training gain larger than 0.66 points
+reverses sign on the grid GPU
+the branch label stays B
+no longer holds as worded
+did not occur

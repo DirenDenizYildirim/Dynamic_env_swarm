@@ -1,0 +1,8 @@
+# Seed list of registered strings that must appear verbatim (paper_v3_prompt.md, "Rules that
+# bind every agent": registered strings; PAPER V3 item 3). A term hit inside one of these is
+# exempt. Used only while paper/v3/checks/registered.txt does not exist (B1 may instead put
+# allow: lines in terms.txt). Builder B2 seed.
+does not survive the inert-share correction
+sign unstable over the final half
+B̂ gets no verdict
+non-verdict-bearing

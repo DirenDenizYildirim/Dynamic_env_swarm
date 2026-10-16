@@ -1,0 +1,46 @@
+/* ---------- Paper v2 preview additions (paper/v2/src/build_v2.py) ---------- */
+/* Owner-facing only: none of this is in the kit page. */
+d-article .math-display { grid-column: text; overflow-x: auto; overflow-y: hidden; margin: 0.4rem 0 1.2rem; }
+d-article mjx-container[display="true"] { margin: 0.6em 0 !important; }
+d-article pre { grid-column: text; white-space: pre; overflow-x: auto; overflow-wrap: normal; line-height: 1.5; }
+d-article pre code { background: none; padding: 0; color: inherit; font-size: 12px; }
+.highlight { background: transparent; }
+d-article figure.l-page, d-article figure.l-body-outset, d-article figure.l-body { margin-block: 1.6rem 2.4rem; }
+d-article figure iframe { display: block; width: 100%; border: 1px solid var(--rule); border-radius: 4px; background: #fff; }
+d-article figure figcaption { margin-top: 0.6rem; font-size: 13px; line-height: 1.55; color: var(--ink-soft); }
+d-article figure figcaption strong { color: var(--ink); font-weight: 500; }
+d-article a.citation { color: #3c6e8f; text-decoration: none; border-bottom: none; font-variant-numeric: tabular-nums; }
+d-article .cite-group { color: #3c6e8f; white-space: nowrap; }
+d-article .cite-missing { color: #a3261b; background: #fde7e4; border-radius: 3px; padding: 0 3px; }
+d-article sup.fn a { text-decoration: none; color: #3c6e8f; }
+d-article ol.footnotes, d-article ol.refs { grid-column: text; font-size: 13px; line-height: 1.55; }
+d-article ol.refs li { border-top: 1px solid var(--rule); padding-top: 8px; }
+d-article ol.refs .title { font-weight: 500; }
+d-article .emul-note { grid-column: text; font-size: 12px; color: #5a4f6b; background: #f6f3fa; border-left: 3px solid #b9a6d3; padding: 6px 10px; }
+d-article details.kit-src { grid-column: page; margin: 0.6rem 0 2.4rem; border: 1px dashed #b9a6d3; border-radius: 4px; background: #faf7fd; }
+d-article details.kit-src summary { cursor: pointer; padding: 6px 12px; font-size: 13px; font-weight: 500; color: #3b2a55; }
+d-article details.kit-src summary:focus-visible { outline: 2px solid #3b2a55; outline-offset: 2px; }
+d-article details.kit-src pre { margin: 0; border-radius: 0 0 4px 4px; max-height: 32rem; overflow: auto; font-size: 12px; color: #2b2238; background: #f3eef9; white-space: pre-wrap; }
+d-article details.kit-src code { color: inherit; background: none; }
+d-article table { display: block; overflow-x: auto; grid-column: text; }
+d-article .figure-note { display: block; margin-top: 0.35rem; font-size: 12px; color: #5a4f6b; }
+d-article p.caption { grid-column: text; font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin-top: -1rem; }
+body.show-print .print-companion { display: block; grid-column: page; border-left: 3px solid #b9a6d3; padding-left: 12px; }
+body.show-print .print-companion::before { content: "Print companion (hidden on screen in the kit; shown in the browser-printed PDF)"; display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #3b2a55; margin-bottom: 0.4rem; }
+/* Build findings: shown by default, because they are what the owner must not miss. */
+d-article .findings { grid-column: page; font-size: 13px; line-height: 1.5; background: #fff6df; border: 1px solid #edcf7e; border-radius: 4px; padding: 8px 12px; margin: 0 0 1.4rem; }
+d-article .findings h4 { margin: 0 0 0.3rem; font-size: 13px; font-weight: 700; }
+d-article .findings ul { margin: 0; padding-left: 1.2rem; }
+d-article .m1-flag { color: #a3261b; background: #fde7e4; border: 1px solid #f0a59b; border-radius: 3px; padding: 0 4px; font-size: 11px; font-weight: 700; margin-right: 4px; }
+body.hide-findings .findings, body.hide-findings .m1-flag { display: none; }
+.pv-bar { display: none; }
+d-byline .view-toggle { margin: 0 0 0.3em; }
+d-byline .view-toggle label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; }
+d-byline .view-toggle input { width: 14px; height: 14px; margin: 0; accent-color: #2698ba; }
+d-byline .status-draft { color: #8a3b00; }
+#bibtex-container { grid-column: page; font-size: 13px; }
+#bibtex-container pre { white-space: pre-wrap; }
+@media (max-width: 1400px) {
+  d-article d-contents { display: block; grid-column: text; grid-row: auto; justify-self: stretch; width: auto; padding: 0.5em 1em; margin-bottom: 1.5em; border: 1px solid var(--rule); }
+  d-article d-contents nav { grid-column: none; }
+}

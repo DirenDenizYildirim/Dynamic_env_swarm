@@ -1,0 +1,11 @@
+# files left out, by reason: count  bytes(uncompressed)  reason
+   595      505228019  training/benchmark logs no paper-number script reads (size)
+  2245      103489170  per-episode arrays of floors, grid secondary arms, Gamma(t) and High re-evals; every paper number from them is in their eval JSON (size)
+    78       95141667  renders and figures (paper-side; size)
+   821       80060241  the paper itself ships separately
+    35        4715518  byte-identical duplicate of che/bench/results/phase2/
+     1         339529  quotes the owner; only via --decision-log-section
+    24         291452  not code, registration, or a paper-number input
+     2          25416  raw spike archives
+     1           6428  owner-facing GPU runbook (laptop, backup, private-repo steps)
+    13              0  symlink (not shipped)

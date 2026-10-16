@@ -1,0 +1,127 @@
+# paper/v3/checks/terms.txt — terms banned from the v3 MAIN TEXT (V3-S3)
+#
+# Owner: builder B1 (paper v3, step 3, 2026-10-14). B2's check reads this file;
+# B1 owns the list. Sources: paper_v3_prompt.md V3-S3 (codes, vocabulary);
+# plans/P3.md §5.2 (candidate list, counts); plans/P1.md §6.3; plans/P2.md §7.1;
+# paper/v2/BRIEF.md §5.1 and §9.1 (ruled-never terms); B1's own scan of the v2
+# main text (paper/v2/sections/00_*.md–11_*.md, HTML comments and code fences
+# stripped; counts in the notes are v2 main-text matches).
+#
+# FORMAT
+# - One Python `re` pattern per non-comment line. Lines starting with `#`, and
+#   blank lines, are ignored.
+# - An optional note follows the pattern after a single TAB character. The
+#   check ignores the note; it is printed with a hit. Patterns contain no TAB.
+# - Case-sensitive unless the pattern starts with `(?i)`.
+#
+# SCOPE (what the check scans)
+# - Main text only: paper/v3/sections/00_abstract.md through 12_conclusion.md
+#   (files 13_* and later are the appendix and are NOT scanned), plus the
+#   `title` and `description` in front_matter.yaml.
+# - Captions, figcaptions, `<p class="caption">`, alt text, table cells and
+#   listing LABEL paragraphs ARE scanned (they are main text).
+# - Stripped before scanning: HTML comments (ledger tags, STUB-SPEC blocks,
+#   LISTING lines, HOLE markers) and the bodies of fenced code blocks (listings
+#   keep the code's own tags byte-identical; prose must not echo them).
+#
+# EXEMPTION (V3-S3: "Figure labels that cannot be rebuilt are glossed once")
+# - A match is allowed when it sits inside a figure-label gloss of exactly the
+#   form  labelled “TERM” on the figure  (curly quotes U+201C/U+201D), inside a
+#   figure caption (figcaption or <p class="caption">). Each glossed term may
+#   be glossed at most ONCE in the whole main text. Report the gloss count per
+#   term so the mechanics reviewer can see them. If the owner agrees to the
+#   label-only rebuilds (P2 R1–R11), the glosses go and the exemption should
+#   then match nothing.
+#
+# The terms the glossary keeps but defines at first use (floor, bar, unblinding,
+# grid, locked, co-active, sensitivity arm, fire-only, ...) are NOT here; see
+# paper/v3/BRIEF.md §5.2.
+
+# ---------------------------------------------------------------------------
+# A. Internal codes (V3-S3 "Codes")
+# ---------------------------------------------------------------------------
+\bM\d\.\d+[a-z]?\b	milestone/study codes M3.0 … M6.2b (v2: 6). Name the study instead
+\bm\d\d[a-z]?\b	run-directory codes m44, m35, m42, m51e … (v2: 4). "the Coupling-B calibration grid"
+\bG1\.\d+\b	grid stage codes G1.2, G1.3
+\bE1\.\d\b	the E1.1 prediction code
+\bGPU ?[123]\b	GPU 1/2/3 (v2: 17). GPU blocks live in App. D only (V3-S2)
+\bunits? [123n]\b	"unit 1", "unit n" for a GPU (figure labels)
+\bcross-unit\b	"across GPUs" (and only where needed)
+\b(sweep|ident)_c\d+	arm code names (sweep_c50_p000 …). "the p = 0 sweep arm …"
+\bE2C\b|E2C²	toy codes. "the corridor toy", "the two-agent courier toy"
+\bobs v\d\b	"obs v3". "the observation as masked by smoke"
+\bS[1-7]\b	registered analysis labels S1–S7. Name the analysis
+DECISION:	code-comment tag (never echoed in prose)
+(?i)\binvariant\s*#?\s*\d	CLAUDE.md invariant numbers
+\b[Pp]hase[- ]?\d\b	project stage numbers ("Phase 6"). Name the stage
+\b(DX|RES|DES|SEC|CAL|CA|CB|CO|COM|METH|HW|ENV|SUP|V\d)-\d+[a-z]?\b	ledger row IDs in visible text (tags live in comments only)
+\b[Bb]ranch(es)? [A-D]\b	outcome-branch letters (App. D only)
+\bA_c\b|\bA_\{?c\}?	the fifth outcome cell's code
+(?i)\bbranch label\b	"the branch label stays B" lives in App. D (P1 §1.2)
+\bTier [12]\b	registered-framing tiers (App. D at most)
+
+# ---------------------------------------------------------------------------
+# B. Private vocabulary (V3-S3 "Vocabulary"; P3 §5.2)
+# ---------------------------------------------------------------------------
+(?i)\bcards?\b	"card" for a GPU (v2: 5). "GPU"
+(?i)\brungs?\b	(v2: 1). "step"
+(?i)\bladders?\b	the seed rule or the readings figure (v2: 2). "the registered seed rule", "Figure N"
+(?i)\bknee\b	(v2: 1). "change point"
+(?i)\bgrades?d? nothing\b|\bgrading nothing\b	(v2: 4). Captions say what the figure shows (V3-S4)
+(?i)\bfloor[- ]basis\b	(v2: 3). "the floor-based standard error of Γ"
+(?i)\b(carries|carry|bears|bear|gets|get) no verdict\b	"reported without a test" (B̂)
+(?i)\bverdict chips?\b|\bchips?\b	figure chips are figure furniture, not prose
+(?i)\blive\b	"live", "strongly live" (v2: 7). "active", or say what was measured
+(?i)\bdose\b	(v2: 1). "per-coupling frequency" or "realized count"
+(?i)\bhandshakes?\b	(v2: 2). "check against the closed form"
+(?i)\binstruments?\b	"instrument" for an analysis script (v2: 2). "analysis script"
+(?i)\bre-?floor(ed|ing)?\b	"re-measured reproducibility floor"
+(?i)\bhurdles?\b	"check"
+(?i)\bbeat-reproducibility\b	"the check that an effect exceeds rerun noise"
+(?i)\blaunch batch\b	App. C only
+\bk_req\b|\bk-req\b	"the seed count the rule required"
+(?i)\brep sets?\b|\bidentical-run sets?\b	"identical reruns"
+(?i)\bdigests?\b	(v2: 2). "per-field trajectory hashes"
+(?i)\btraced\b	(v2: 1). code-refactor vocabulary
+(?i)\b(traced|folded|pre-refactor|two) trees?\b	"two versions of the code"
+(?i)\bplateau guard\b	"a registered convergence check, retired before the grid" (App. C)
+(?i)\bdrift channels?\b	"position-drift diagnostics (recorded, not graded)"
+(?i)\bno-element\b	terminology ruling: "fire-only"
+(?i)\bPAVA\b|\bOLS\b	App. F only
+(?i)\bpre-unblind\b|\bpost-unblind\b	"before unblinding", "after unblinding"
+(?i)\bred[- ]team\b	project process (App. D at most)
+(?i)\bspine\b	project file name
+(?i)\bbuilder\b	process vocabulary; the appendix "How this paper was made" carries it
+(?i)\bthe owner\b	main text says "we"
+(?i)\brulings?\b(?! out)	pointing at records the reader cannot see (P3 §4 item 2); "ruling out" is fine
+(?i)\bdecision log\b	same
+(?i)\block (record|ruling)s?\b	same; "fixed before the main experiment (App. B)"
+(?i)\bthe formal specification\b	same (BLIND W6; RM-11). Point to App. A
+(?i)\btheory (doc|foundations)\b	same
+(?i)\b(lock|calibration|re-test|phase) report\b	same
+(?i)\bseed ladder\b	"the registered seed rule"
+Remark 1\b	cut (V3-S6)
+\bProp(osition|\.)\s*4\b	becomes an appendix remark in words (V3-S6); not "Proposition 4" in the main text
+
+# ---------------------------------------------------------------------------
+# C. Ruled-never terms and record corrections (BRIEF §5.1, §9.1; orchestrator
+#    notes). Not vocabulary, but cheap to catch here.
+# ---------------------------------------------------------------------------
+(?i)\bcertified\b	"inert under a frozen random-projection encoder at this scale"
+(?i)\bhazard-free\b	"fire-only"
+(?i)\bswarms?\b	"multi-agent", "team", "agents" (v2: 1)
+\bPBT\b|(?i:\bpopulation-based\b)	no reported run used PBT (ENV-11)
+(?i)\bfinite Dec-POMDP\b	only "finite on its reachable states"
+(?i)\bat convergence\b|\bconverged\b|\bbudget-robust\b	matched compute, never convergence (T* ruling)
+(?i)\birreducible\b	Prop. 4 is an upper bound (PAPER V2 item 4, C3)
+(?i)\bas predicted before measurement\b	OWNER ITEM 1
+(?i)\bpre-registered correction\b	the correction was "registered before unblinding"
+(?i)\bstressor configuration\b	"environment configuration"
+(?i)\bone transition kernel\b	"one transition or observation kernel"
+(?i)\bregistered as a bias\b|\ba registered design caught it\b|\bstated before the result\b	F3 wording constraints (BRIEF §7)
+(?i)separat\w*\s+co-occurrence\s+from\s+(per-coupling\s+|each\s+coupling'?s?\s+)?frequenc	the plane separates co-occurrence from the ACTIVE SHARE only (orchestrator note; P1 §5.2; P3 §3.1)
+(?i)\bJaxMARL[- ]compatible\b|\bJaxMARL API\b	no JaxMARL wrapper exists (P3 §1.2)
+
+# Added by the orchestrator 2026-10-14 (B2 report: P3 counted 5 uses in v2;
+# exempt inside the registered string "reference scale (cross-artifact)").
+cross-artifact	private vocabulary; say "from other runs"

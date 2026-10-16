@@ -1,0 +1,40 @@
+# Seed term list for v3_checks.py terms, derived by builder B2 from paper/v3/plans/P3.md
+# §5.2 ("Candidate term list for B1 and B2"). Used ONLY if paper/v3/checks/terms.txt
+# (builder B1's, the authoritative list) is absent. Same format as B1's file: one Python
+# regex per line, an optional TAB-separated note, case-sensitive unless it starts with (?i).
+#
+# Internal codes
+\bM\d\.\d+[a-z]?\b	milestone codes (P3: 10 in v2)
+\bm(?:35|42|44)\b	study codes m44, m35, m42 (P3: 4)
+\bG\d\.\d+\b	G1.x protocol codes
+(?i)\b(?:GPU|unit)\s?[1-3]\b	"GPU 1/2/3" and "unit" for a GPU (P3: 17 and 10)
+\bsweep_c50_\w*	sweep config names
+\bident_c40_\w*	identification config names
+\bE2C(?:²|2)?(?!\w)	E2C, E2C² (P3: 4); plain: "the corridor toy"
+(?i)\bobs v3\b	(P3: 2)
+\bS[1-7]\b	S1-S7 analysis labels
+DECISION:	inside listings (P3; blind review minor 8)
+(?i)\binvariant\s*#\s*\d*	inside listings (P3)
+(?i)\bphase\s?\d\b	"Phase N" for project stages
+# Private vocabulary
+(?i)\bcards?\b	(P3: 5)
+(?i)\brungs?\b	(P3: 1)
+(?i)\bladders?\b	(P3: 2)
+(?i)\bknees?\b	(P3: 1)
+(?i)\bgrades?\s+nothing\b	(P3: 4)
+(?i)\bfloor[- ]basis\b	(P3: 3)
+(?i)\bcross-artifact\b	(P3: 5)
+(?i)\b(?:carr(?:y|ies)|bears?|gets?)\s+no\s+verdict\b	(P3: 3); the registered "B̂ gets no verdict" is exempt (registered strings)
+(?i)\b(?:strongly\s+)?live\b	(P3: "live" and "strongly live", 7)
+(?i)\bco-active\b(?!\s+(?:counter|visitation|visits?|events?))	(P3: keep for the counter only, defined)
+(?i)\bdoses?\b	(P3: 1)
+(?i)\bhandshakes?\b	(P3: 2)
+(?i)\binstruments?\b	"instrument" for a script (P3: 2)
+(?i)\bre-floor	(P3: appendix only)
+(?i)\bhurdles?\b	(P3: appendix only)
+(?i)\blaunch batch\b	(P3: appendix only)
+\bk_?\{?req\b	k_req (P3: appendix only)
+(?i)\b(?:GPU|rented|new|grid)\s+box(?:es)?\b	"box" for a rented machine
+# Not here (P3: keep, but define at first use): bar, floor, confirmatory family, unblinding,
+# branch, sensitivity arm, fire-only, VOID, non-verdict-bearing, Γ₄, Γ₄′, B̂, and "lock"
+# (P3: define once or replace; a pattern cannot tell a definition from a use).

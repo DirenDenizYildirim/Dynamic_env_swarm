@@ -6213,3 +6213,60 @@ transcribe.
 or branch reading changes. Branch B stands. The framing change is editorial,
 and the paper discloses it. HANDOFF's "No GPU spend, and none to propose"
 (2026-09-26) is superseded only for item 2(a)'s eval-only block.
+
+
+## PAPER V3 PHASE 1 START — phase 1 starts; interaction-check scope is θ\* only; no commits until the owner names the branch (owner, 2026-10-14)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before any step-0 work. The session started from `paper_v3_prompt.md`, with
+the repository at `7a5e009` (branch `claude/kind-cray-sskf8a`). The owner
+answered the prompt's two step-0 questions:
+
+1. **(a) Phase 1 starts.** The owner: "Yes, start phase 1".
+2. **(b) The interaction-check scope is θ\* only** (PAPER V3 item 5). The
+   owner chose "θ\* only" over "θ\* + Low + High".
+   - The eval set is 4 conditions (neither coupling, A only, B only, both)
+     × 164 final checkpoints (ISO 72, JOINT 72, ISO-4 20) = 656 evals.
+   - PAPER V3 item 5's cost basis applies: **1.7–2.7 GPU-h**, an estimate
+     and not a trigger. Realized time is read from the run's own
+     `timings.txt`.
+   - Low and High are not run in this session. Their interaction check is
+     not authorized.
+3. **Commits.** The owner, in the session's opening message: "Do not commit
+   or push anywhere until I've told you where." This overrides the
+   prompt's commit-and-push at the end of each step until the owner names
+   the branch. (The prompt allows the owner to change that rule at the
+   start.) The session's work stays uncommitted in the working tree until
+   then.
+4. **No GPU in this session** (the owner, same message). Step 0 is prepared
+   and tested on CPU, and the owner runs the eval job.
+
+No constant, lock, test, registration or branch reading changes.
+
+
+## COMMITS AUTHORIZED — the session's work is committed and pushed to its designated branch (owner, 2026-10-16)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before the commit. The owner, in chat: "go ahead commit". This answers the
+builder's standing request to name a branch (*PAPER V3 PHASE 1 START*
+item 3); the owner named none, so the builder's stated default applies:
+the session's designated branch `claude/fervent-newton-ws5yub`,
+fast-forwarded locally from `main` to `7a5e009` at the session's start.
+
+1. **What is committed:** the session's work to date. That covers the
+   step-0 interaction-check files: `PLAN.md`, `RUNBOOK.md`, the three
+   configs, their registry entries in `docs/locks.yaml`, the generator, the
+   run and analysis scripts, the test, and the `test_locks.py` role
+   addition. It also covers all of `paper/v3/` and this log's entries.
+2. **What is not committed:** `paper/v3/out/che_supplement.zip` (37 MB,
+   rebuilt at phase end). Its size and hashes are in the committed
+   `paper/v3/out/build_summary.json` and logs.
+3. **What this commit is not:**
+   - It is **not the owner's OK of `PLAN.md`.** The builder asked for that
+     OK separately; it is not yet given.
+   - It approves no paper text. Nothing enters `paper/finale.md` or the
+     submission until the owner rules (`paper_v3_prompt.md`, step 4.5).
+4. **Later commits.** Committing at the end of each step, as the prompt
+   asks, resumes from here, to the same branch.
+
+No constant, lock, test threshold, registration or branch reading changes.

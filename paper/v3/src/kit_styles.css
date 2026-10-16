@@ -1,0 +1,84 @@
+/* The page CSS that build_v2.py puts in the kit's YAML `_styles` field
+   (KIT_NOTES.md §S1.4; distill.html inlines it in a <style> element).
+   Comments and line breaks are removed when it is emitted, so none of this
+   text is published. Selectors were checked against the real kit build
+   (kit_build.sh; results in out/kit_checks.md). */
+
+/* Print companions (SUBMISSION FORMAT ruling): the iframe is the screen
+   figure, the static companion the print figure. */
+.print-companion { display: none; }
+@media print {
+  .print-companion { display: block; }
+  d-article figure iframe { display: none; }
+  .interact { display: none; }
+}
+
+/* Listings (paper/v2/plans/P2.md §4). kramdown + rouge emit
+   div.highlighter-rouge > div.highlight > pre.highlight > code. Smaller code
+   type on screen, the listing at page width from 1000 px, horizontal scroll
+   inside the block below that, and full wrapped lines in print. Code is not
+   wrapped on screen: wrapped Python misreads its indentation. */
+d-article div.highlighter-rouge pre { font-size: 12px; line-height: 1.5; white-space: pre; overflow-x: auto; }
+d-article div.highlighter-rouge pre code { font-size: inherit; white-space: inherit; }
+@media (min-width: 1000px) {
+  d-article > div.highlighter-rouge { grid-column: page; }
+}
+@media print {
+  d-article div.highlighter-rouge pre { white-space: pre-wrap; overflow-wrap: anywhere; overflow-x: visible; }
+}
+
+/* Display math wider than the column scrolls inside itself instead of being cut
+   off (the first kit build cut Proposition 4's display by 298 px at 1280 px). */
+d-article mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+
+/* Print cannot scroll (review RM-1 to RM-3, RM-25). In print, tables, display
+   math and listings take the page column (594 px at US Letter, against 472 px
+   for the text column); tables drop their screen scroller and print at 10 px,
+   wrapping cells between words and code paths anywhere; listings print at 9 px so 85-character lines fit
+   without wrapping. kit_checks.mjs grades print overflow. MathJax wraps each
+   display in an unclassed span, hence the :has() selector. */
+@media print {
+  d-article > table,
+  d-article > span:has(> mjx-container[display="true"]),
+  d-article > div.highlighter-rouge { grid-column: page; }
+  d-article table { display: table; overflow: visible; width: 100%; table-layout: auto; }
+  d-article table th, d-article table td { font-size: 10px; line-height: 1.35; padding: 1px 4px; overflow-wrap: break-word; }
+  d-article table code { white-space: normal; overflow-wrap: anywhere; font-size: 9px; }
+  d-article mjx-container[display="true"] { overflow: visible !important; }
+  d-article div.highlighter-rouge pre { font-size: 9px; }
+}
+
+/* The three episode explorers resize their own frame without bound (review
+   RM-4): their fit() writes documentElement.scrollHeight + 4 into the frame's
+   inline height, which fires the figure's resize handler, which calls fit()
+   again. A stylesheet !important beats that inline height, so the frame keeps
+   one height and the loop stops. Heights are the explorers' measured content
+   (body.scrollHeight) plus a margin, per Distill grid width (they sit in the
+   page column): >=1180 px: 677 -> 700; 1000-1179: 739 -> 764; 768-999: 1224
+   -> 1248; below 768 the frame width follows the screen and the content peaks
+   at 1334 (frame width 700) -> 1360. kit_checks.mjs grades that no frame grows
+   and none clips its document, at 1280, 1024 and 390 px. */
+d-article iframe[src$="/explorer_thetastar_random_seed0.html"],
+d-article iframe[src$="/explorer_thetastar_iso_s1_T1000_ep0.html"],
+d-article iframe[src$="/explorer_thetastar_joint_s1_T1000_ep0.html"] { height: 1360px !important; }
+@media (min-width: 768px) {
+  d-article iframe[src$="/explorer_thetastar_random_seed0.html"],
+  d-article iframe[src$="/explorer_thetastar_iso_s1_T1000_ep0.html"],
+  d-article iframe[src$="/explorer_thetastar_joint_s1_T1000_ep0.html"] { height: 1248px !important; }
+}
+@media (min-width: 1000px) {
+  d-article iframe[src$="/explorer_thetastar_random_seed0.html"],
+  d-article iframe[src$="/explorer_thetastar_iso_s1_T1000_ep0.html"],
+  d-article iframe[src$="/explorer_thetastar_joint_s1_T1000_ep0.html"] { height: 764px !important; }
+}
+@media (min-width: 1180px) {
+  d-article iframe[src$="/explorer_thetastar_random_seed0.html"],
+  d-article iframe[src$="/explorer_thetastar_iso_s1_T1000_ep0.html"],
+  d-article iframe[src$="/explorer_thetastar_joint_s1_T1000_ep0.html"] { height: 700px !important; }
+}
+
+/* Long captions under static figures (P2 §7.8). */
+d-article p.caption { font-size: 13px; line-height: 1.5; color: rgba(0, 0, 0, 0.6); }
+
+/* Wide tables scroll inside themselves at phone width, not the page. */
+d-article table { display: block; overflow-x: auto; }

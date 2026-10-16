@@ -1,0 +1,16 @@
+# Negative-control one-home map for v2's text (builder B2). V3-S5: in v2, "JOINT still sees
+# each coupling twice as often" is restated outside its home. The homes below are v2's
+# section 9 (the compositional test), as P3 §5.1 proposes for v3's worked example.
+DES-14-twice-as-often:
+  home: 09_compositional_test.md
+  patterns:
+    - sees each coupling twice as often
+DES-7-three-times:
+  home: 09_compositional_test.md
+  patterns:
+    - each coupling three times as often as ISO
+RES-6-inert-share:
+  home: 09_compositional_test.md
+  also: [00_abstract.md]
+  patterns:
+    - does not survive the inert-share correction

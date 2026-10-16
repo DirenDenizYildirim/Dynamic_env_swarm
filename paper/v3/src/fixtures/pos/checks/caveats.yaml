@@ -1,0 +1,11 @@
+# fixture one-home map
+DES-14:
+  home: 05_worked_example.md
+  patterns:
+    - sees each coupling twice as often
+INTERACTION-LABEL:
+  kind: label_required
+  trigger:
+    - '(?i)\binteraction check\b'
+  label:
+    - '(?i)\bpost[ -]hoc\b'

@@ -1,0 +1,43 @@
+# Provenance: sections/05_measurement.md
+
+Writer: W3 (Paper v3, step 4, 2026-10-14). Material: v2 §8
+(`paper/v2/sections/08_methodology.md`, "v2 08:<line>") and its provenance. v3
+states the floors protocol as rules, not as the history of the defects behind
+them (BLIND W9; stub); every exhibit moves to Appendix C, one line each. The
+rules' source is the project's standing rules in `CLAUDE.md` (cited by line;
+each was transcribed from a dated decision-log entry). Counted with
+`paper/v3/src/wordcount.py`: **269 prose words** against a budget of 270 (v2
+§8: about 1,250; draft1 302); one display (the cap is two).
+
+**Fix round (step 4.3, 2026-10-14).** Against the reviews of snapshot `draft1` (`paper/v3/review/`); outcomes in `paper/v3/review/resolutions_W3.md`. Changed rows say "fix round: <finding ID>". Draft1's text is in `paper/v3/snapshots/draft1/sections/`. Defines, for the whole paper
+(WRITERS §3; BRIEF §5.2): reproducibility floor (row 3), bar / acceptance
+threshold (row 4), detection limit (row 5), exclusion bound (row 8). Caveat C36
+home: row 12.
+
+| # | sentence (verbatim) | support | change from v2, and why |
+|---|---|---|---|
+| 1 | 5 Measurement protocol | framing | new (STRUCTURE §2 heading; v2 "8 Methodology: bars come with floors") |
+| 2 | GPU training is not bitwise reproducible. | che/bench/results/phase4/phase4_report.md:637-639 | edited (v2 08:20): the cause clause cut (budget); "bitwise" added (evaluation is bit-identical on one GPU, C37). Fix round, RM-1 (budget): draft1's "from run to run" cut |
+| 3 | A reproducibility floor is the standard deviation of a metric over identical reruns of one artifact (the same code, configuration and seed) on one GPU. | che/bench/results/phase5/phase5_report.md:220-221; CLAUDE.md:353, :361 | edited (v2 08:20): "of one artifact … on one GPU" added (BRIEF §5.2's definition; the per-artifact and per-GPU rules). Fix round, RC1 readability item 16: the parenthesis now defines "artifact", which the next sentence uses: draft1's "(same seed, configuration and code)" → "(the same code, configuration and seed)" |
+| 4 | Under this protocol, an acceptance threshold, or bar, needs a floor measured on the artifact it grades, for that metric and GPU, or the analysis is declared underpowered. | CLAUDE.md:333-336, :353, :361; decision log, Phase-5 close rulings (docs/decision_log.md:1241-1246); METH-1; METH-2 | edited (v2 08:33, :35, :37): v2's three rules joined; "UNDERPOWERED" in plain words (a registered verdict word). Fix round, RM-1 (budget): draft1's "Under the protocol this paper follows, an acceptance threshold, or bar, is used only with a floor measured on the artifact it grades, for that metric and on that GPU, or the analysis is declared underpowered." shortened. The scope stays a rule ("Under this protocol"): §4.2 and App. C name the analyses without floors |
+| 5 | A design-stage power statement is a detection limit: the effect a test detects with 80 % power at its family-corrected level $\alpha$, computed on the contrast's own standard error, | METH-7; CLAUDE.md:384-386, :402-407 | edited (v2 08:49, :41), joined; "detection limit" defined here (BRIEF §5.2: never called a bound). Fix round, RM-1 (budget): draft1's "computed on the standard error of the contrast itself" → "computed on the contrast's own standard error" |
+| 6 | where $z$ are standard normal quantiles and $s_A$ and $s_B$ are the two arms' seed standard deviations over $k_A$ and $k_B$ seeds. | CLAUDE.md:402-407 | edited (v2 08:41, :47): v2's two displays (sd(Γ) with ISO/JOINT subscripts, and MDE₈₀) joined into one display with generic arms A and B (Γ and the arms are defined in §6, after this section); v2's "with $z_\alpha = 2.2365$ the Šidák-corrected critical value for the two co-primaries" moves to App. C (the co-primaries are §6's); v2's "which for equal $k$ is …" cut |
+| 7 | A bare $2\sigma\sqrt{2/k}$ threshold detects an effect of its own size only about half the time, so it serves only as a labelled, after-the-fact grading of an observed effect against a floor. | V4-1; CLAUDE.md:386-391 | edited (v2 08:55): "A bare $2\sigma\sqrt{2/k}$ is the effect at which an uncorrected test would just reject, which it detects about half the time; it survives only for grading an observed effect against a floor after the fact, labelled as such." shortened. v2's k = 20 exhibit (METH-4) moves to App. C |
+| 8 | When a confidence interval contains zero, each end is an exclusion bound in its direction: at the interval's level, the data exclude a gain larger than the upper end and a loss larger than the lower end, and the larger absolute end bounds the effect's size. | BRIEF.md §5.2 (paper/v3/BRIEF.md:171); RES-1; phase6_framing_branches.md:190-195 | new (WRITERS §3: W3 defines "exclusion bound" in §5). Fix round, RC1-14 and RC2-9 (with the orchestrator's instruction to make the definition fit the registered completion sentence, which stays verbatim): draft1's "When a confidence interval contains zero, its larger absolute end is an exclusion bound: the data exclude a larger effect at the interval's level." conflicted with "excludes a joint-training gain larger than 0.66 points" (RES-1: interval [−4.12, +0.66], so the gain bound is the upper end, while the larger absolute end is 4.12). Each end now bounds the effect in its own direction, and the larger absolute end still bounds the size, the form the post hoc check uses (App. G, "|I| < B"). The registration's X (and X₄, the "second exclusion bound") are 80 %-power MDEs, detection limits under row 5 (BRIEF §9.2 trap 5); saying so beside the registered string in §6.3 is W4's (RC1-14, second part) |
+| 9 | The floor is not the test's variance: an arm mean over $k$ seeds also varies by seed, so contrasts are graded on seed dispersion, and the floor checks only that an effect exceeds rerun noise. | CLAUDE.md:419-424; DX-21 | edited (v2 08:65): "The floor and the test statistic are different variances. A floor comes from identical reruns at one seed, while a $k$-seed arm mean varies by seed as well. The confirmatory contrast is graded on the grid's own seed dispersion. The floor serves the check that an effect exceeds rerun noise, which uses the floor-based standard error of Γ …" condensed. v2's "For design-stage power, the floor gives an upper bound, labelled as one." cut (budget) |
+| 10 | A logged diagnostic becomes evidence only inside a registered family of tests, with a floor measured on its artifact; until then it is recorded, not graded. | CLAUDE.md:447-450 | edited (v2 08:71) plus the registered string's substance "recorded, not graded" (BRIEF §6.4: home `05_`). Fix round, RC1 readability item 17: draft1's "A recorded channel becomes evidence only inside a registered analysis family" ("channel" undefined) → "A logged diagnostic becomes evidence only inside a registered family of tests" |
+| 11 | A difference between arms cannot show an effect present in both. | CLAUDE.md:434-438 | edited (v2 08:69): condensed; "cannot" rather than "blind to" (C25 reserves "blind to" for §6.4). Fix round, RM-1 (budget): draft1's "A test of a difference between arms cannot see an effect present in both." shortened. Cut in the fix round (RM-1; the cut draft1's provenance named): draft1's row 12, "Floors exist for the worked example's main contrast and the denial thresholds, but not for the calibration contrasts of §4.2 and §4.3, which predate the protocol, nor for one arm of the worked example or the position-drift diagnostics (Appendix C)."; App. C carries the coverage (its "Coverage" bullet and table), and §4.2 says its contrasts have no floor |
+| 12 | A floor is itself an estimate: from four identical runs, a standard deviation is uncertain by about ±40 %. | DX-303 | edited (v2 08:77): "Every floor is itself a point estimate: measured on four identical runs, a standard deviation is uncertain by roughly ±40 %." Caveat C36 home |
+
+## Findings
+
+- **budget.** 302 prose words in draft1 against 270; 269 after the fix round (RM-1), which cut draft1's row 12 (the floor-coverage sentence, carried by App. C) and shortened.
+- **exclusion bound (fix round, RC1-14, RC2-9).** §5's definition now gives each interval end as the bound in its direction, which fits the registered completion sentence (the upper end, 0.66); X and X₄ remain detection limits.
+- **v2 08:55 named the registration's X "the exclusion bound".** v3 follows
+  BRIEF §9.2 trap 5 (X is the 80 %-power MDE, a detection limit). The §6.3
+  writer (W4) should check that the paper never calls X a bound outside the
+  verbatim registered sentence.
+
+## Alternates
+
+None for this section.
