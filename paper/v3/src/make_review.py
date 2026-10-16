@@ -1,84 +1,161 @@
-"""Compile <paper dir>/REVIEW.md: every step-4 finding, its outcome and its re-check verdicts.
+"""Compile <paper dir>/REVIEW.md: every step-4 finding, its outcome and its re-check verdict.
 
-Reads review/RC1.md, RC2.md, RN1.md, RN2.md, RM.md (finding tables, then the
-"## Re-check (draft2)" and "## Final re-check (draft3)" sections) and every
-review/resolutions_*.md, and prints the IDs that have no recorded outcome.
-Orchestrator tool from Paper v2 (2026-10-12), copied into paper/v3/src by B2 (Paper v3 step 3).
+Paper v3 version (orchestrator, 2026-10-16), adapted from paper/v2/src/make_review.py.
+The v3 reviewers wrote findings in varied layouts (bold paragraphs, ### headings,
+table rows), so this parser is layout-tolerant:
+
+- a finding is the first appearance of `<LANE>-<n>` followed closely by MUST, SHOULD
+  or OWNER, in review/<LANE>.md before "## Re-check (fix2)" (round draft1) or
+  after it (round re-check, for IDs not seen before);
+- a re-check verdict is the second cell of a table row in the re-check section
+  whose first cell names the ID (OK, OK-DECLINED, REOPEN, OWNER);
+- an outcome is any review/resolutions_*.md table row whose first cell names the
+  ID; the cell holding FIXED / DECLINED / OWNER / NOT MINE is the outcome, and
+  rows under a heading containing "final pass" count as final-pass outcomes.
+
+It prints the IDs whose state is open: no outcome and no closing verdict, a
+REOPEN with no later final-pass outcome, or a re-check finding with no outcome.
 Run: python paper/v3/src/make_review.py
 """
-import re, glob, sys
+
+import re
+import sys
 from pathlib import Path
-V2 = Path(__file__).resolve().parents[1]  # paper/v2 (or paper/v3 when copied)
-R = V2 / "review"
-LANES = {"RC1": "claims (abstract–§7)", "RC2": "claims (§8–appendix, consistency)",
-         "RN1": "numbers (abstract–§7)", "RN2": "numbers (§8–appendix, new rows)", "RM": "mechanics (whole paper)"}
-def cells(line): return [c.strip() for c in line.strip().strip("|").split("|")]
-findings = {}   # id -> dict
+
+ROOT = Path(__file__).resolve().parents[1]  # paper/v3
+R = ROOT / "review"
+LANES = {
+    "RC1": "claims (abstract–§5, App. A–C)",
+    "RC2": "claims (§6–§9, App. D–J; consistency)",
+    "RN1": "numbers (abstract–§5, §9, App. A–C)",
+    "RN2": "numbers (§6–§8, App. D–J; new rows)",
+    "RM": "mechanics (whole paper; pages; supplement)",
+}
+RECHECK = "## Re-check (fix2)"
+SEV = r"(MUST|SHOULD|OWNER)"
+OUTCOME = re.compile(r"\b(FIXED|DECLINED|OWNER|NOT MINE|PARTLY|PARTIAL)\b")
+VERDICT = re.compile(r"\b(OK-DECLINED|OK|REOPEN(?:ED)?|OWNER)\b")
+
+
+def cells(line: str) -> list[str]:
+    return [c.strip() for c in line.strip().strip("|").split("|")]
+
+
+def first_ids(cell: str, lane_re: str) -> list[str]:
+    return re.findall(rf"\b({lane_re}-(?:OWNER-)?\d+)\b", cell)
+
+
+findings: dict[str, dict] = {}
+lane_re = "(?:" + "|".join(LANES) + ")"
 for lane in LANES:
     txt = (R / f"{lane}.md").read_text()
-    main, _, rc = txt.partition("## Re-check (draft2)")
-    rc, _, fin = rc.partition("## Final re-check (draft3)")
-    for line in main.splitlines():
-        m = re.match(rf"\|\s*({lane}-\d+)\s*\|\s*(MUST|SHOULD|OWNER)\s*\|", line)
-        if m:
-            c = cells(line)
-            findings[m.group(1)] = dict(id=m.group(1), lane=lane, sev=m.group(2), loc=c[2], problem=re.sub(r"<br>|\*\*", " ", c[4])[:220],
-                                        outcome=[], verdict="", round="draft1")
-    for line in rc.splitlines():
-        m = re.match(rf"\|\s*({lane}-R\d+)\s*\|\s*(MUST|SHOULD|OWNER)\s*\|", line)
-        if m:
-            c = cells(line)
-            findings[m.group(1)] = dict(id=m.group(1), lane=lane, sev=m.group(2), loc=c[2], problem=re.sub(r"<br>|\*\*", " ", c[4])[:220],
-                                        outcome=[], verdict="", round="re-check")
-        m2 = re.match(rf"\|\s*({lane}-\d+)[^|]*\|\s*([^|]*)\|\s*([^|]*)\|", line)
-        if m2 and m2.group(1) in findings and findings[m2.group(1)]["round"] == "draft1":
-            findings[m2.group(1)]["verdict"] = re.sub(r"\*\*", "", m2.group(3)).strip()[:40]
-    for line in fin.splitlines():
-        m = re.match(rf"\|\s*({lane}-F\d+)\s*\|\s*(MUST|SHOULD|OWNER)\s*\|", line)
-        if m:
-            c = cells(line)
-            findings[m.group(1)] = dict(id=m.group(1), lane=lane, sev=m.group(2), loc=c[2], problem=re.sub(r"<br>|\*\*", " ", c[4])[:220],
-                                        outcome=[], verdict="", round="final re-check")
-            continue
-        m3 = re.match(rf"\|\s*\**({lane}-(?:R)?\d+)[^|]*\|", line)
-        if m3 and m3.group(1) in findings:
-            c = cells(line)
-            v = next((x for x in c[1:] if re.search(r"\bOK\b|NOT OK", x)), "")
-            if v:
-                findings[m3.group(1)]["verdict"] = (findings[m3.group(1)]["verdict"] + " → final: " + re.sub(r"\*\*", "", v)[:30]).strip(" →")
-for f in sorted(glob.glob(str(R / "resolutions_*.md"))):
-    who = Path(f).stem.split("_")[1]
-    for line in open(f):
-        if not line.startswith("|"): continue
-        c = cells(line)
-        if len(c) < 3: continue
-        for fid in re.findall(r"\b((?:RC1|RC2|RN1|RN2|RM)-[RF]?\d+)\b", c[0]):
+    main, _, rc = txt.partition(RECHECK)
+    for part, rnd in ((main, "draft1"), (rc, "re-check")):
+        for m in re.finditer(
+            rf"({lane}-(?:OWNER-)?\d+)\b[^\n]{{0,14}}?\b{SEV}\b([^\n]*)", part
+        ):
+            fid = m.group(1)
             if fid in findings:
-                findings[fid]["outcome"].append(f"{who}: {c[1][:30]} — {re.sub(r'[*`]', '', c[2])[:160]}")
-def key(i): a, b = i.split("-"); return (list(LANES).index(a), b[0] if b[0] in "RF" else "", int(b.lstrip("RF")))
-out = ["# REVIEW.md: every step-4 finding and its outcome (Paper v3, phase 1)", "",
-       "Generated by the orchestrator from the five step-4 reviews (`review/RC1.md`, `RC2.md`, `RN1.md`, `RN2.md`, `RM.md`), "
-       "the writers' and B2's resolutions (`review/resolutions_W*.md`; B2's in `src/VALIDATION.md` and `src/README.md`), "
-       "and the reviewers' re-check verdicts on draft2 (the `## Re-check (draft2)` section of each review). "
-       "Plan findings and their dispositions are in `DISPOSITIONS.md`. "
-       "B2's items (RM-1–RM-6 CSS/build halves, RM-23, RM-24, RM-25) are resolved in `src/` and recorded in `src/VALIDATION.md` (fix-round section).", ""]
-for lane, name in LANES.items():
-    ids = sorted([i for i in findings if findings[i]["lane"] == lane], key=key)
-    cnt = {s: sum(1 for i in ids if findings[i]["sev"] == s) for s in ("MUST", "SHOULD", "OWNER")}
-    out += [f"## {lane}: {name}", "", f"{len(ids)} findings: {cnt['MUST']} MUST, {cnt['SHOULD']} SHOULD, {cnt['OWNER']} OWNER.", "",
-            "| ID | sev | round | location | problem (short) | outcome (who: outcome — what) | re-check verdict |", "|---|---|---|---|---|---|---|"]
-    for i in ids:
-        d = findings[i]
-        oc = "<br>".join(d["outcome"]) or ("B2 (see src/VALIDATION.md)" if lane == "RM" else "**no resolution recorded**")
-        esc = lambda s: s.replace("|", "\\|")
-        out.append(f"| {i} | {d['sev']} | {d['round']} | {esc(d['loc'][:80])} | {esc(d['problem'])} | {esc(oc)} | {esc(d['verdict'])} |")
-    out.append("")
-# Keep a hand-written "## Status" section, if the existing REVIEW.md has one.
-prev = (V2 / "REVIEW.md").read_text() if (V2 / "REVIEW.md").exists() else ""
-if "\n## Status" in prev:
-    status = "\n## Status" + prev.split("\n## Status", 1)[1].split("\n## RC1:", 1)[0]
-    i = next(k for k, line in enumerate(out) if line.startswith("## RC1:"))
-    out[i:i] = status.strip("\n").split("\n") + [""]
-(V2 / "REVIEW.md").write_text("\n".join(out) + "\n")
-missing = [i for i in findings if not findings[i]["outcome"]]
-print(len(findings), "findings;", "no resolution:", sorted(missing, key=key))
+                continue
+            loc = re.sub(r"[*`|]", "", m.group(3)).strip(" .:—-)")[:110]
+            findings[fid] = dict(
+                id=fid, lane=lane, sev=m.group(2), round=rnd, loc=loc,
+                verdict="", outcomes=[], final=[],
+            )
+    for line in rc.splitlines():
+        if not line.startswith("|"):
+            continue
+        c = cells(line)
+        if len(c) < 2:
+            continue
+        for fid in first_ids(c[0], lane):
+            if fid in findings and findings[fid]["round"] == "draft1":
+                v = VERDICT.search(c[1])
+                if v and not findings[fid]["verdict"]:
+                    findings[fid]["verdict"] = v.group(1)
+
+for f in sorted(R.glob("resolutions_*.md")):
+    who = f.stem.split("_", 1)[1]
+    final = False
+    for line in f.read_text().splitlines():
+        if line.startswith("#"):
+            final = "final pass" in line.lower()
+            continue
+        if not line.startswith("|"):
+            continue
+        c = cells(line)
+        if len(c) < 2:
+            continue
+        ids = first_ids(c[0], lane_re)
+        out = next((OUTCOME.search(x).group(1) for x in c[1:4] if OUTCOME.search(x)), "")
+        for fid in ids:
+            if fid in findings and out:
+                findings[fid]["final" if final else "outcomes"].append(f"{who}: {out}")
+
+
+def state(f: dict) -> str:
+    v, outs, fin = f["verdict"], f["outcomes"], f["final"]
+    if f["round"] == "re-check":
+        return "closed" if fin or outs else "OPEN"
+    if v.startswith("REOPEN"):
+        return "closed (reopened, then final pass)" if fin else "OPEN"
+    if v in ("OK", "OK-DECLINED", "OWNER"):
+        return "closed"
+    if outs and any(o.split(": ")[1] in ("OWNER",) for o in outs):
+        return "closed"
+    return "closed" if outs else "OPEN"
+
+
+def key(fid: str):
+    a, *rest = fid.split("-")
+    return (list(LANES).index(a), len(rest), int(rest[-1]))
+
+
+rows = sorted(findings.values(), key=lambda f: key(f["id"]))
+counts: dict[tuple[str, str], int] = {}
+for f in rows:
+    counts[(f["round"], f["sev"])] = counts.get((f["round"], f["sev"]), 0) + 1
+open_ids = [f["id"] for f in rows if state(f) == "OPEN"]
+
+out = [
+    "# REVIEW.md: every step-4 finding and its outcome (Paper v3, phase 1)",
+    "",
+    "Generated by `paper/v3/src/make_review.py` from the five step-4 reviews "
+    "(`review/RC1.md`, `RC2.md`, `RN1.md`, `RN2.md`, `RM.md`: findings on snapshot "
+    "`draft1`, then each file's \"Re-check (fix2)\" section) and the writers' "
+    "`review/resolutions_W1.md`–`W5.md` (fix round, then \"final pass\"). Read the "
+    "review files for each finding's evidence and proposed fix.",
+    "",
+    "## Status",
+    "",
+    "| round | MUST | SHOULD | OWNER |",
+    "|---|---|---|---|",
+]
+for rnd in ("draft1", "re-check"):
+    out.append(
+        f"| {rnd} | {counts.get((rnd, 'MUST'), 0)} | {counts.get((rnd, 'SHOULD'), 0)} "
+        f"| {counts.get((rnd, 'OWNER'), 0)} |"
+    )
+out += [
+    "",
+    f"**Open findings (no recorded outcome or closing verdict): {len(open_ids)}**"
+    + (f": {', '.join(open_ids)}" if open_ids else "."),
+    "",
+    "OWNER findings are closed here in the sense that the writer kept the default with "
+    "an `OWNER-PENDING` marker; each still waits on the owner (`OWNER_QUESTIONS.md`).",
+    "",
+    "## Findings",
+    "",
+    "| ID | lane | sev | round | location / topic | fix-round outcome | re-check verdict "
+    "| final pass | state |",
+    "|---|---|---|---|---|---|---|---|---|",
+]
+for f in rows:
+    out.append(
+        f"| {f['id']} | {f['lane']} | {f['sev']} | {f['round']} | {f['loc']} | "
+        f"{'; '.join(f['outcomes']) or '—'} | {f['verdict'] or '—'} | "
+        f"{'; '.join(f['final']) or '—'} | {state(f)} |"
+    )
+(ROOT / "REVIEW.md").write_text("\n".join(out) + "\n")
+print(f"{len(rows)} findings; open: {open_ids or 'none'}")
+sys.exit(1 if open_ids else 0)
