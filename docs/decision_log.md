@@ -6388,6 +6388,27 @@ here".
 
 No constant, lock, test, registration or branch reading changes.
 
+**Addendum, same day: the reviewer was stopped by the memory cap and is
+resumed.**
+
+- **What happened.** The first launch ran 5 min 10 s (20:10:28 to 20:15:38
+  UTC). The reviewer read the PDF, unpacked the supplement, and reproduced
+  the registered analyses from it. Its full `pytest` run of the supplement
+  then reached the 3.5 GB cap (peak 3.4 GB), and the kernel OOM-killed
+  `pytest`. The user journal shows the scope "Failed with result
+  'oom-kill'". systemd's default policy for a scope then stopped the whole
+  unit, so the reviewer itself got SIGTERM (exit 143) before writing a
+  review. The laptop was unaffected.
+- **The owner's choice**, in a one-question form: "Resume it (Recommended)",
+  over starting a fresh reviewer.
+- **How it resumes.** The same session continues (`claude -p --resume`),
+  under the same caps plus `OOMPolicy=continue`, so a test killed at the cap
+  no longer ends the review. It gets one operational note, which says
+  nothing about the paper: "Your last step was interrupted: the full test
+  run went over this machine's 3.5 GB memory limit for your processes and
+  was killed. Continue the review; if you run tests, run them in smaller
+  groups." The note is recorded in the review's header.
+
 
 ## KIT BUILD IN THE CLOUD — the real-kit build runs later in a cloud session, not on the laptop (owner, 2026-10-16)
 
