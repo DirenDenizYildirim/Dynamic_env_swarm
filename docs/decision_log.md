@@ -6321,3 +6321,15 @@ to you".
    results archive.
 
 No constant, lock, test, registration or branch reading changes.
+
+**Addendum, same day: the box was released before any eval ran.** The
+owner released it for lack of credit: "I need to unfortunatly close the box
+and kill it … there wont be enough credits for this today". By then the
+tree was unpacked and verified on the box (`che_tree.tgz: OK`; the plan
+hashed to the committed value), and the environment was set up (Python
+3.12.3, jax and jaxlib 0.11.0, `CudaDevice(id=0)`). The checkpoint upload
+was stopped by the builder at 12 % (849 MB). **No eval ran, and no result
+exists.** The run waits for a new rental. The laptop keeps both shipped
+files with their hashes (outside the repository). The next rental restarts
+at the box checks of `RUNBOOK.md` §1. Item 1's handover covers this run on
+a new box only if the owner says so again.
