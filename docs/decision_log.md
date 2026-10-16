@@ -6387,3 +6387,26 @@ here".
    after the results are filled in. That is not decided.
 
 No constant, lock, test, registration or branch reading changes.
+
+
+## KIT BUILD IN THE CLOUD — the real-kit build runs later in a cloud session, not on the laptop (owner, 2026-10-16)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before it is acted on. The builder reported that the laptop cannot run
+`paper/v3/src/kit_build.sh`: Ruby, Bundler and Chromium are missing, and the
+script's Node default (`/opt/node22`) is a cloud-session path. The owner:
+"the cloud session can do the kit build later".
+
+1. **The real-kit build moves to a cloud session.** It runs once the
+   interaction results and the filled sections are committed. The laptop
+   session (`paper/v3/LOCAL_SESSION_PROMPT.md`) does not run it and installs
+   nothing for it.
+2. **What stays on the laptop.** The parts that need the checkpoint
+   archives or that run here: the box run, the one analysis, the IC rows,
+   filling the holes, Figure 9, the provenance and v3 checks. The supplement
+   rebuild also runs here: `package.py` reproduced the checked zip byte for
+   byte (sha256 `4a73c89b…`).
+3. **Not ruled.** Where the reviews of the changed lines and the supplement's
+   `run_checks.sh` run is not decided.
+
+No constant, lock, test, registration or branch reading changes.
