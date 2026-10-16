@@ -6290,3 +6290,34 @@ is a greenlight".
    family. Its reading rules and blind spots are the plan's §7 and §8.
 
 No constant, lock, test, registration or branch reading changes.
+
+
+## BOX HANDOVER — the owner rents the RTX 5090 and gives this session SSH access to run the interaction check (owner, 2026-10-16)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before it is acted on. The session runs on the owner's laptop and started
+from `paper/v3/LOCAL_SESSION_PROMPT.md`. The owner, in chat, after the
+builder handed over the step-3 commands: "I will rent the box and give it
+to you".
+
+1. **Who runs the job.** The owner rents the card. The builder drives
+   `RUNBOOK.md` §2–§6 over SSH from the laptop: it uploads, verifies, sets
+   up, runs the dry run and the run, and copies the results back. This
+   supersedes, for this run only, the runbook's "the owner runs the job"
+   and `paper_v3_prompt.md`'s "This session has no GPU".
+2. **What does not change.** The run is the one *PLAN OK* authorized: θ\*
+   only, 692 evals, eval-only, at commit C = `ab78b27` with
+   `PLAN_SHA256` = the committed plan's hash. Nothing on the box is edited.
+   The builder states each box command before running it (the session's
+   opening message). The box is released only after the results archive's
+   hash verifies on the laptop, and the owner releases it.
+3. **The shipped tree.** It is `git archive` at C, limited to the 176 paths
+   the box needs (`che/` without its committed results; the plan and
+   runbook; the two `SHA256_CKPT.txt` files; `docs/`; `pyproject.toml`;
+   `uv.lock`; `.python-version`; `README.md`; `LICENSE`; `CLAUDE.md`). The
+   full tree is about 985 MB, uploaded at about 1.04 MB/s. The lean tree
+   was tested on the laptop from a fresh copy before shipping: dry run 692;
+   verify-only 164 of 164; a 4-eval CPU smoke run wrote and verified its
+   results archive.
+
+No constant, lock, test, registration or branch reading changes.
