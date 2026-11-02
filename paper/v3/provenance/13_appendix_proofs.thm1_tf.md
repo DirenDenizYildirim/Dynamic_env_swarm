@@ -16,10 +16,9 @@ and Findings apply). Checked with `provenance_check.py --strict`.
 | 5 | Appendix D: the registration timeline. | framing | new: v2 D–F become D (STRUCTURE §2; V3-S2) |
 | 6 | Appendix E: additional results of the worked example. | framing | new (v2 G re-lettered; STRUCTURE §2) |
 | 7 | Appendix F: the secondary design. | framing | kept (v2 H re-lettered F) |
-| 8 | Appendix G: the post hoc interaction check in full. | framing | new (STRUCTURE §2); "post hoc" per the label rule (PR:63-65; caveats C26) |
-| 9 | Appendix H: trained-policy episodes. | framing | kept (v2 I re-lettered H) |
-| 10 | Appendix I: how the literature search ran. | framing | new (STRUCTURE §2) |
-| 11 | Appendix J: how this paper was made. | framing | new (STRUCTURE §2; PAPER V3 item 6) |
+| 8 | Appendix G: trained-policy episodes. | framing | kept (v2 I re-lettered H); NO INTERACTION CHECK (2026-10-19): re-lettered G after the interaction check's appendix was removed |
+| 9 | Appendix H: how the literature search ran. | framing | new (STRUCTURE §2); NO INTERACTION CHECK (2026-10-19): re-lettered H |
+| 10 | Appendix I: how this paper was made. | framing | new (STRUCTURE §2; PAPER V3 item 6); NO INTERACTION CHECK (2026-10-19): re-lettered I |
 | 12 | A Proofs and formal statements | framing | edited (v2 12:16 "A Proofs"; the stub's heading) |
 | 13 | This appendix states and proves the results that §3 uses. | framing | edited (v2 12:18 "Each statement is in the body, in the section named."): the statements now live here (stub JOB) |
 | 14 | Where a statement departs from the project's theory document (docs/theory_foundations.md in the code supplement), the departure is noted. | docs/theory_foundations.md:142-154; docs/theory_foundations.md:309-318; docs/theory_foundations.md:375-402; docs/theory_foundations.md:610-643; paper/v3/supplement/README.md:54 | edited (v2 12:18 "The proofs follow the formal specification … departures from it are noted"): "the formal specification" → "the project's theory document (docs/theory_foundations.md in the code supplement)", since the supplement ships it by default (supplement README rule D3) while DISPOSITIONS V3Q16's default removes such references; OWNER-PENDING V3Q16 and V3Q23 marked |
@@ -126,3 +125,5 @@ and Findings apply). Checked with `provenance_check.py --strict`.
 | 115 | An upper bound on the isolated arm's transfer does not lower-bound the realized gap; compositional generalization can emerge from isolated training, and the experiment decides. | docs/theory_foundations.md:637-643 | edited (v2 09:36): "It does not lower-bound Γ" → "does not lower-bound the realized gap" (Γ is defined in §6.2; the appendix reads standalone) |
 | 116 | The theory document displays the bound with a constant and concludes more about the isolated arm's slack than an upper bound can show; this remark draws no such conclusion. | docs/theory_foundations.md:610-625; paper_v2_prompt.md:146-150 | edited (v2 12:59): "The formal specification" → "The theory document" (V3Q16); "and draws no such conclusion (§9.1)" → "this remark draws no such conclusion"; no "irreducible" (terms list) |
 | 117 | Its prediction about exposure to that region was not tested, since the counter of §3.5 cannot measure it. | docs/theory_foundations.md:645-654; CO-4 | edited (v2 09:36): the counter's limit by pointer to its home §3.5 (caveat C28), not restated |
+
+**NO INTERACTION CHECK (2026-10-19).** The owner ruled that the post hoc interaction check is not run before submission and leaves the paper (decision log, NO INTERACTION CHECK (docs/decision_log.md:6495)). §6.4 and Appendix G were removed; §6.5 became §6.4 and Appendices H, I and J became G, H and I. This file was updated to match: the index lost 'Appendix G: the post hoc interaction check in full.' and re-lettered H, I, J as G, H, I (rows 8–10; row 11 removed).

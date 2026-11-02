@@ -1,5 +1,14 @@
 # HANDOFF — session state for the next model (rewritten 2026-09-27; updated 2026-09-28; v3 pointers 2026-10-12, 2026-10-16)
 
+> **Start here (2026-10-19).** The interaction check is not run and has left
+> the paper (decision log, *NO INTERACTION CHECK BEFORE SUBMISSION*); every
+> owner question is settled (*OWNER QUESTIONS SETTLED*). The final pass is
+> under way on `claude/fervent-newton-ws5yub`: footnote (owner) → `date` →
+> real-kit build → supplement rebuild (does the interaction code ship?) →
+> provenance, v3 and double-blind checks → staging → owner makes the repo
+> private → upload. State: `paper/v3/HANDBACK.md`, top update. The
+> 2026-10-16 pointer below is superseded where it mentions the GPU run.
+>
 > **Start here (2026-10-16).** Paper v3 phase 1 is handed back on branch
 > `claude/fervent-newton-ws5yub`. Read `paper/v3/HANDBACK.md` and the one-page
 > `paper/v3/OWNER_QUESTIONS.md`. Two things wait on the owner: the OK on the

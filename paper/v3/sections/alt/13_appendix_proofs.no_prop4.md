@@ -2,26 +2,19 @@
 
 ## Appendices
 
-<!-- STUB-SPEC
-ALTERNATE FOR OWNER CHOICE V3Q3 (V3-S6): identical to sections/13_appendix_proofs.md except that the transfer-bound remark (formerly Proposition 4) and its honesty note are dropped; then section 7 keeps "no theorem that joint training wins" alone.
-WRITER: W2. BUDGET: Appendix A's.
-KEEP IN STEP: every change to sections/13_appendix_proofs.md is mirrored here.
--->
-
 - Appendix A: proofs and formal statements.
 - Appendix B: locked constants and hyperparameters.
 - Appendix C: reproducibility floors.
 - Appendix D: the registration timeline.
 - Appendix E: additional results of the worked example.
 - Appendix F: the secondary design.
-- Appendix G: the post hoc interaction check in full.
-- Appendix H: trained-policy episodes.
-- Appendix I: how the literature search ran.
-- Appendix J: how this paper was made.
+- Appendix G: trained-policy episodes.
+- Appendix H: how the literature search ran.
+- Appendix I: how this paper was made.
 
 ### A Proofs and formal statements
 
-This appendix states and proves the results that §3 uses. Where a statement departs from the project's theory document (`docs/theory_foundations.md` in the code supplement), the departure is noted. <!-- OWNER-PENDING:V3Q16 --><!-- OWNER-PENDING:V3Q23 -->
+This appendix states and proves the results that §3 uses. Where a statement departs from the project's theory document (`docs/theory_foundations.md` in the code supplement), the departure is noted. <!-- SETTLED:V3Q16 (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) --><!-- SETTLED:V3Q23 (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) -->
 
 Definitions and results keep that document's numbers, which the code's docstrings cite; this is why Definition 2 follows Definition 7 in §3 and the only numbered remark is 2′. The definitions of §3 are stated as implemented, and four depart from the document. Definition 1 draws the observation from the post-step state, smoke included, as the code does. Definition 3 carries the smoke update and fixes $\iota = 0$<!-- N:DX-1 -->, which the document keeps as a parameter $\iota \ge 0$. For Definition 5, the document states the impulse per collapse event; the implementation draws one uniform per cell, and the two rules coincide wherever seeding neighbourhoods do not overlap. For Definition 7, the document's range-dependent link probability is implemented as a hard Chebyshev range.
 
@@ -180,7 +173,7 @@ The theory document adds a divergence rate near the critical point, which rests 
 
 Two<!-- N:DX-304 --> runs check the proposition, neither at the locked parameters, both without agents or primary ignition at the subcritical Low level ($\beta = 0.43$, $\iota = 0$<!-- N:DX-304 -->), so collapse is the fire's only birth channel. The first, a dense sweep on a 64 × 64<!-- N:CA-2 --> grid ($\kappa_A = 0.02$, $f_{\mathrm{weak}} = 0.4$<!-- N:CA-2 -->), fits burnt area against realized seeds through the origin: $R^2 = 0.998$<!-- N:CA-2 --> over a 14×<!-- N:CA-2 --> range of the expected seed count. The second, a slower test in the suite on a 32 × 32<!-- N:CA-3 --> grid ($\kappa_A = 0.003$<!-- N:CA-3 -->), divides its slope by a protocol-matched reference computed inside the test: 0.992<!-- N:CA-3 -->, inside the band [0.90, 1.02]<!-- N:CA-3 -->, with $R^2 = 0.9995$<!-- N:CA-3 -->. In both, the four factors compose to the observed slope within Monte Carlo error.
 
-<!-- OWNER-PENDING:V3Q5 -->
+<!-- SETTLED:V3Q5 (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) -->
 
 **Theorem 1 (Memorization gap, and its erosion by Coupling B).** Consider the corridor toy at attenuation strength $\kappa_B$: from a start cell, a path of $d$ steps leads to a branch $b$, from which two disjoint corridors $L$ and $R$ of length $\ell$ lead to the goal; the horizon is $T = d + \ell$ (zero slack: a wrong commitment cannot be undone). At $t = 0$ nature draws $Z \in \{L, R\}$ uniformly; corridor $Z$ burns at depth $\ell_f \ge 1$ beyond $b$, and an agent entering it is disabled. The reward is 1 for reaching the goal by $T$, else 0. At each step $t = 0, \dots, d$ the agent receives the signal $Y_t = Z$ with probability $\tau_t(\kappa_B) = e^{-\kappa_B D_t}$, else $Y_t = \varnothing$, where the optical depth $D_t > 0$ of its line of sight to the fire, per unit $\kappa_B$, does not depend on $\kappa_B$. Signals are independent across time and remembered. Let
 
@@ -206,7 +199,7 @@ $$
 \mathrm{VoC}_{\mathrm{true}}(\kappa_B) = \tfrac12\big(1 - \tilde q(\kappa_B)\big) \le \tfrac12\big(1 - q(\kappa_B)\big).
 $$
 
-Both $q$ and $\tilde q$ decrease in $\kappa_B$, so the value of communication increases with perception decay. <!-- OWNER-PENDING:V3Q4 -->
+Both $q$ and $\tilde q$ decrease in $\kappa_B$, so the value of communication increases with perception decay. <!-- SETTLED:V3Q4 (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) -->
 
 The commitment draws have different optical depths, so as $\kappa_B \to \infty$ the lowest-depth draw dominates both products and $\tilde q / q \to 1$. The correction peaks at moderate $\kappa_B$, and its relative bite on the value of communication is largest at low $\kappa_B$, where $q$ is near 1.
 

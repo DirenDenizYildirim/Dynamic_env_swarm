@@ -34,10 +34,9 @@ by design (`checks/caveats.yaml` appendix_files).
 | 5 | Appendix D: the registration timeline. | framing | new: v2 D–F become D (STRUCTURE §2; V3-S2) |
 | 6 | Appendix E: additional results of the worked example. | framing | new (v2 G re-lettered; STRUCTURE §2) |
 | 7 | Appendix F: the secondary design. | framing | kept (v2 H re-lettered F) |
-| 8 | Appendix G: the post hoc interaction check in full. | framing | new (STRUCTURE §2); "post hoc" per the label rule (PR:63-65; caveats C26) |
-| 9 | Appendix H: trained-policy episodes. | framing | kept (v2 I re-lettered H) |
-| 10 | Appendix I: how the literature search ran. | framing | new (STRUCTURE §2) |
-| 11 | Appendix J: how this paper was made. | framing | new (STRUCTURE §2; PAPER V3 item 6) |
+| 8 | Appendix G: trained-policy episodes. | framing | kept (v2 I re-lettered H); NO INTERACTION CHECK (2026-10-19): re-lettered G after the interaction check's appendix was removed |
+| 9 | Appendix H: how the literature search ran. | framing | new (STRUCTURE §2); NO INTERACTION CHECK (2026-10-19): re-lettered H |
+| 10 | Appendix I: how this paper was made. | framing | new (STRUCTURE §2; PAPER V3 item 6); NO INTERACTION CHECK (2026-10-19): re-lettered I |
 | 12 | A Proofs and formal statements | framing | edited (v2 12:16 "A Proofs"; the stub's heading) |
 | 13 | This appendix states and proves the results that §3 uses. | framing | edited (v2 12:18 "Each statement is in the body, in the section named."): the statements now live here (stub JOB) |
 | 14 | Where a statement departs from the project's theory document (docs/theory_foundations.md in the code supplement), the departure is noted. | docs/theory_foundations.md:142-154; docs/theory_foundations.md:309-318; docs/theory_foundations.md:375-402; docs/theory_foundations.md:610-643; paper/v3/supplement/README.md:54 | edited (v2 12:18 "The proofs follow the formal specification … departures from it are noted"): "the formal specification" → "the project's theory document (docs/theory_foundations.md in the code supplement)", since the supplement ships it by default (supplement README rule D3) while DISPOSITIONS V3Q16's default removes such references; OWNER-PENDING V3Q16 and V3Q23 marked |
@@ -207,3 +206,5 @@ by design (`checks/caveats.yaml` appendix_files).
   appear in the paper" becomes moot (record item R-6).
 - Recommendation: the default (general D_t), because it is the statement
   the code satisfies; for V3Q3 no recommendation (both are faithful).
+
+**NO INTERACTION CHECK (2026-10-19).** The owner ruled that the post hoc interaction check is not run before submission and leaves the paper (decision log, NO INTERACTION CHECK (docs/decision_log.md:6495)). §6.4 and Appendix G were removed; §6.5 became §6.4 and Appendices H, I and J became G, H and I. This file was updated to match: the index lost 'Appendix G: the post hoc interaction check in full.' and re-lettered H, I, J as G, H, I (rows 8–10; row 11 removed).

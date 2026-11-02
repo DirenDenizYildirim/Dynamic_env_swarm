@@ -66,6 +66,56 @@ DENY: tuple[tuple[str, str], ...] = (
     ),
 )
 
+# The post hoc interaction check's own files. The paper does not report the
+# check (decision log, NO INTERACTION CHECK BEFORE SUBMISSION, 2026-10-19), so
+# `package.py --no-interaction` leaves these out (checked like DENY) and
+# INTERACTION_EDITS removes the check's entries from the shipped copies of
+# the two files that also serve everything else. Default: shipped, as before.
+INTERACTION: tuple[str, ...] = (
+    r"che/configs/interaction_[^/]*\.yaml",
+    r"che/scripts/(?:interaction_analysis\.py|make_interaction_configs\.py"
+    r"|run_interaction_evals\.sh)",
+    r"che/tests/test_interaction_check\.py",
+    re.escape(P6) + r"/post_v3_interaction[^/]*/.*",
+)
+INTERACTION_WHY = (
+    "the post hoc interaction check, which the paper does not report "
+    "(left out with --no-interaction)"
+)
+
+# (path, regex, why): each regex must match exactly once in the staged copy;
+# the match is deleted ((?s) where a match spans lines). Applied after the
+# scrub, only with --no-interaction.
+INTERACTION_EDITS: tuple[tuple[str, str, str], ...] = (
+    (
+        "docs/locks.yaml",
+        r"#   interaction_check\n(?:#  .*\n)*?#  .*Never a training config\.\n",
+        "the interaction_check role's description",
+    ),
+    (
+        "docs/locks.yaml",
+        r"(?s)  # -- Interaction check at theta\*.*?\n"
+        r"(?=  # -- Phase-6 protocol configs)",
+        "the four interaction configs' registry entries",
+    ),
+    (
+        "che/tests/test_locks.py",
+        r"# interaction_check \(2026-10-14\):.*\n# theta\*'s calibrated beta.*\n",
+        "the comment on the interaction_check role",
+    ),
+    (
+        "che/tests/test_locks.py",
+        r'    "interaction_check",\n',
+        "the interaction_check role in CALIBRATED_ROLES",
+    ),
+    (
+        "README.md",
+        r"(?s)## Verify the post hoc interaction check\n.*?"
+        r"any OpenTimestamps verifier checks them\.\n\n",
+        "the shipped README's section on verifying the check",
+    ),
+)
+
 INCLUDE: tuple[Rule, ...] = (
     # -- code: the che/ package, its configs, tests (incl. golden), scripts
     Rule(

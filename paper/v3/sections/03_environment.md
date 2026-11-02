@@ -2,33 +2,6 @@
 
 ## 3 The environment
 
-<!-- STUB-SPEC
-JOB: CHE is the contribution: state its parts and properties, each with the rows or code that carry them (V3-F1). 3.1 state, step order, fire and smoke; 3.2 the three stressors; 3.3 the reward; 3.4 exact nesting and theory checked as tests, with the claim table; 3.5 the instance, training, metrics and the counter.
-WRITER: W2.
-BUDGET: 1,050 prose words; Figure 2 caption at most 50 words; Table 2 at most 160 words in cells; four listings (56 code lines).
-FROM: P1 §1.1 and §4.2 §3; P2 §2 (the claim table; listings instead of figures for the reward and the nesting); P3 §1.1 (verdicts) and §2.2 (definitions from v2 §5 to §7 move here).
-ORDER:
-  - 3.1 State, step order, fire and smoke: Def. 1 (state; factorized kernel; post-step observation) in at most two displays; Prop. 1 in one sentence (a well-defined Dec-POMDP whose reachable states form a finite set; proof Appendix A); the CA fire (Def. 3) and Prop. 2 in one sentence (bond percolation for the idealized kernel; grassberger1983, kesten1980); smoke outlives flame (the smoke update of Def. 3, one display); one Burning cell at reset (V3-1); Figure 2.
-  - 3.2 The stressors: Coupling A (Def. 5, Listing 1; Prop. 3's linear scaling in words, checked in two runs, CA-2, CA-3); the hazard is not agent-independent (CA-8, CA-9; HOME); Coupling B (Def. 6: Beer–Lambert transmittance in the observation kernel, Listing 2); Thm. 1 in words only, as a statement true under both V3Q5 options (in a two-agent corridor toy, the value of remembering an attenuated signal is computed exactly; Appendix A); communication denial δ (Def. 7), independent, with a frozen random-projection message encoder (ENV-12, DX-17; Listing 6 is in Appendix B); θ = (β, κ_A, κ_B, δ).
-  - 3.3 The reward: Def. 2 display; hazard-blind, deaths priced cause-blind at d_p = 0.5 (ENV-1); Listing 3; the two tests (test_reward_independence.py; test_lethality.py:143-162); then plainly: an agent dies only on a burning or collapsing cell, so the death price is in effect a contact price, and the d_p ablation shows it drives survival learning (ENV-2 to ENV-5, with its scope) (HOME, BLIND W7).
-  - 3.4 Exact nesting and theory as tests: every stochastic branch consumes its random numbers unconditionally, so κ_A = 0, κ_B = 0 or δ = 0 reproduces the nested model bitwise under the same keys on one backend; Listing 4; the limits (the κ_A test compares fire and smoke; the δ test compares with a recorded pre-channel trajectory hash on CPU); then Table 2 (claim, listing, test, figure; about 8 rows; it is the index into the code supplement).
-  - 3.5 Instance, training, metrics, counter: 64 × 64 map, 12 agents, horizon 256, 9 × 9 crop, 32 food (ENV-6); one shared-parameter IPPO policy per seed (ENV-11; dewitt2020ippo, lu2022dpo); hyperparameters in Appendix B (DX-2); budget DX-3; co-primaries completion and survival; the coupling-co-active counter counts collapse-seeded ignitions near an agent, so it is co-active only in all-on configurations (CO-4; HOME).
-ROWS: ENV-1 to ENV-12, V3-1, DX-1, DX-2, DX-3, DX-17, DX-37, CA-1, CA-2, CA-3, CA-8, CA-9, CB-1, CB-4, COM-6, CO-4, DX-14 (only through Thm. 1 in words; no number needed).
-CITATIONS: grassberger1983, kesten1980 (Prop. 2, identity only); dewitt2020ippo, lu2022dpo; bernstein2002 only if a worst-case class result is needed (Remark 1 is cut, so probably not).
-FIGURES: Figure 2, static fig01_schematic.png (block below).
-LISTINGS: Listing 1 structure.py:83-102 (3.2); Listing 2 observation.py:300-310 (3.2); Listing 3 tasks.py:31-43 (3.3); Listing 4 test_coupling_b.py:131-142 (3.4). Blocks below, byte-identical. Code comments keep their internal tags; your prose never echoes them. The 61-line step listing moved to Appendix A (STRUCTURE §11 row 14).
-LATEX: Def. 1 (at most 2 displays), Def. 2, Def. 3 (fire kernel with its smoke update), Def. 5, Def. 6, Def. 7 (one display each at most; Def. 4 is in §4, Def. 8 in §6.2). No \label, \eqref, \tag, \newcommand.
-REGISTERED STRINGS: "ambient hazard" (ruled term); "stressor"; "environment configuration"; "fire-only" if used.
-CAVEATS HOMED HERE (state each in full, once; the detection pattern, from checks/caveats.yaml, must match your home sentence):
-  C28 counter_all_on_only: The coupling-co-active counter counts collapse-seeded ignitions near an agent, so it is co-active only in all-on configurations. Pattern: (?i)\ball-on\b
-  C29 death_price_contact_penalty: An agent dies only on a burning or collapsing cell, so the cause-blind death price is in effect a hazard-contact price, and it drives survival learning. Pattern: (?i)\bcontact (penalty|price)\b
-  C30 hazard_not_agent_independent: The hazard is not agent-independent - an occupied weak cell collapses about nine times as often. Pattern: (?i)\bagent-independent\b
-EVERY OTHER CAVEAT in checks/caveats.yaml: pointer only ("§6.3", "Appendix D"), never restated. C26: any sentence about the interaction check carries "post hoc".
-NOT HERE: "finite Dec-POMDP" without "on its reachable states"; "one transition kernel" (it is "one transition or observation kernel"); Remark 1 (cut); "the formal specification"; JaxMARL compatibility; Thm. 1's v2 closed form (it does not describe the toy, BRIEF §9.2 trap 1); obs v2/v3, E2C, handshake, digest, traced (banned); PBT.
-V2 MATERIAL: paper/v2/sections/03_environment.md (most of 3.1 to 3.5), 05_coupling_a.md §5.1, 06_coupling_b.md §6.1, 07_comms.md §7.1 (definitions).
-DEPENDENCIES: Appendix A (W2) holds the proofs and Thm. 1's statement; §4 (W3) holds what each stressor does; §8 (W5) the API.
--->
-
 CHE is a grid world in which a team of agents forages while a fire burns (Figure 2).
 
 ### 3.1 State, step order, fire and smoke

@@ -2,41 +2,10 @@
 
 ### D Registration timeline
 
-<!-- STUB-SPEC
-JOB: The audit trail that leaves the main text (V3-S2): every date, ruling, provenance item, GPU block, study code, seed and archive, plus the registration statement (V3-V2) and the framing change (V3-F5's second home). Plain, dated, sourced.
-WRITER: W4.
-BUDGET: about 1,000 prose words plus tables and verbatim quotations.
-FROM: V3-S2; P1 §6.2; v2 BRIEF §7 (the F3 table); v2 Appendices D to F; P3 §3.1 point (5).
-ORDER:
-  - D.1 Registration statement (V3-V2): the record is internal and version-controlled; its dates are self-reported; the supplement carries the registration documents (phase6_design_v2.md, phase6_framing_branches.md) with a hash manifest; a public registry (OSF) next time. What a reader can check, and what rests on the authors' history (this checkout is shallow; the full-history check is the owner's, V3Q16).
-  - D.2 Dated events (table: date | event | row/source): environment locks (DX-401, DX-402); the comms axis closed as inert 2026-07-30 (V6-2); design registered 2026-08-02 with δ retained, two δ-only components of six in ISO, δ excluded from the sweeps (V6-3); co-primaries ruled 2026-08-02 (DES-12); outcome branches and falsifier 2026-08-13 (DES-12); the frozen plan amended 2026-08-13 (V6-5); the bias identified 2026-08-16 by a review of the registered design, pre-grid (V6-1); grid 2026-09-09 to 09-22 (DES-12); the bias and ISO-4 with its reading rule registered 2026-09-18, mid-grid, 120 of 252 runs, on the owner's attestation (DES-15; log:3907-3909); pre-unblind rulings and the fifth outcome cell 2026-09-26 (DX-405, DX-102); unblinding 2026-09-26 (DES-12); the secondary specification ratified after Γ and before the sweep was read (DX-413); the same-GPU replicate proposed after Γ₄ was seen (DES-15); the framing change 2026-10-12 (X4-5). Use the v2 BRIEF §7 table (copied verbatim in this BRIEF) for the F3 rows; state no day count.
-  - D.3 Quotations, verbatim, with their dates: the frozen plan's estimand and reading rules (v2 Appendix D items, trimmed to the rules the paper uses; never paraphrase inside a quotation; a "§" inside a quotation is the record's own); the registered outcome branches table (PFB:101-104, venue-lean column omitted and said so), the fifth cell A_c (DX-405, DX-102); the falsifier and its margin (RES-5); branch B's registered headline "composition is paid in agents, not task return" no longer holds as worded; "the branch label stays B"; branch A, the founding hypothesis, did not occur. If the owner agrees (V3Q22), note that the registration listed the environment items as standing on every outcome (PFB:53-76), with its overclaims flagged (PFB:69, :75, :82).
-  - D.4 The seed rule's history: k = 40 registered, 46 on the re-measured floor, cap 60, 72 realized as a recorded deviation before unblinding (DES-1 to DES-5); realized power (DES-4, DES-6).
-  - D.5 Bias (b) in full: its readings (DES-10, DES-11, V6-4), "reverses sign on the grid GPU".
-  - D.6 GPU blocks: Γ on GPU 1 (all 72 seeds of ISO and JOINT), ISO-4 and the 2000-update subsample on GPU 2, post-unblind evaluations on GPU 3, the superseded RTX PRO 6000 seeds descriptive only (HW-4, DX-5, DX-30, DX-36). "GPU 1/2/3" appear only here.
-  - D.7 Study codes, a key table: code | plain name | where used (M3.0 … M6.2b, G1.2, G1.3, m35, m44, E1.1, E2C, E2C²).
-  - D.8 Seeds and archives: shared seed integers, seed 0 reserved for floors, never in the grid (DX-416); seed-major order and chunking; 615 of 615 archive hashes matched on re-verification (DX-408; no hash quoted; v2 F1's 636-vs-615 question open).
-  - D.9 Blinding: one look per stage; analysis scripts refuse to run out of order (DX-411); the inventory of outcome-derived quantities visible before unblinding is owner-attested only (V3Q19): leave a marker, state nothing.
-  - D.10 The framing change: the owner's ruling of 2026-10-12 moved the paper's emphasis to the environment after the result was known; the registered branches stay the record of the original framing (X4-5; PAPER V3 item 3).
-ROWS: DX-401, DX-402, V6-1, V6-2, V6-3, V6-4, V6-5, DES-1 to DES-6, DES-10, DES-11, DES-12, DES-15, DX-405, DX-102, DX-413, RES-5, HW-4, DX-5, DX-30, DX-36, DX-408, DX-411, DX-416, X4-5.
-REGISTERED STRINGS: every quotation verbatim; "no longer holds as worded"; "the branch label stays B"; bias (b) "reverses sign on the grid GPU"; "registered before unblinding" for the correction.
-EVERY OTHER CAVEAT in checks/caveats.yaml: pointer only ("§6.3", "Appendix D"), never restated. C26: any sentence about the interaction check carries "post hoc".
-NEW ROWS OWED:
-  - X4-5 (W4): 2026-10-12, the framing change (the owner's environment-first ruling), VERIFIED at docs/decision_log.md:6115 and :6158-6169.
-OWNER-PENDING:
-  - D.1 full-history check and content hashes (V3Q16).
-  - D.9 blinding inventory (V3Q19).
-  - D.3 registered antecedent (V3Q22).
-  - attribution of the 2026-08-16 review (carried v2 A1(ii)).
-NOT HERE: commit hashes, hosts, GPU UUIDs, account names; any reinterpretation of a registered rule; a day count between identification and registration; "certified" outside a verbatim quotation (and flag it there).
-V2 MATERIAL: paper/v2/sections/14_appendix_plan_provenance.md (D, E, F); paper/v2/BRIEF.md §7; paper/v2/ledger_proposals/W6.md.
-DEPENDENCIES: every main-text file points here instead of giving a date.
--->
-
 This appendix holds the record that the main text leaves out: when each part of the worked example was fixed, what the registration said, which GPU ran what, and how the seeds and archives were kept. Dates are as recorded in the project's own dated log and documents.
 
 **D.1 Registration statement.** The registration is an internal, version-controlled record kept in the project's repository: the frozen design, the outcome framings, and a dated log of the decisions taken during the study. Its dates are self-reported. The code supplement carries the two registration documents, the frozen design and the outcome framings, with a hash manifest of every file it ships, so a reader can compare the quoted registration text with the shipped documents, check with the manifest that the archive arrived unaltered, and rerun the analysis scripts on the committed results. The dated log and the design review are not part of the supplement by default, so the quotations from the log (the estimand, the inert-share rule, the High readout, the 2000-update<!-- N:RES-15 --> subsample, the rulings before unblinding and the secondary specification) cannot be checked against the supplement unless log excerpts ship with it. What a reader cannot check is when the documents were written: that rests on the repository's history, which is not public. We checked that history. The frozen design was first committed on 2026-08-02 and last changed on 2026-08-13; the outcome framings were committed on 2026-08-13 and not changed afterwards; the first provenance file of the main training runs was committed on 2026-09-09, the confirmatory artifact's hash file on 2026-09-23, and the unblinding log on 2026-09-26<!-- N:X4-6 --> (calendar dates as the commits record them). These are commit dates in a private version-controlled repository, set by the committer's own clock, so they are self-reported, not externally timestamped. On a future project we would register in a public registry such as OSF.
-<!-- OWNER-PENDING:V3Q16 full-history check DONE (fix round, RC2-12; dates stated above, no commit hash in the text); still open: content hashes of the registration documents in this appendix, and decision-log excerpts in the supplement (V3-V1); review RC2-12: after V3Q16, the shallow-clone sentence becomes either "The authors checked that the registration documents' commits predate the main training runs; the history itself is not public" or "The repository's history is not part of the supplement" -->
+<!-- SETTLED:V3Q16 (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) full-history check DONE (fix round, RC2-12; dates stated above, no commit hash in the text); still open: content hashes of the registration documents in this appendix, and decision-log excerpts in the supplement (V3-V1); review RC2-12: after V3Q16, the shallow-clone sentence becomes either "The authors checked that the registration documents' commits predate the main training runs; the history itself is not public" or "The repository's history is not part of the supplement" -->
 
 **D.2 Dated events.** Each row names the record that dates it.
 
@@ -64,7 +33,7 @@ This appendix holds the record that the main text leaves out: when each part of 
 | 2026-10-12<!-- N:X4-5 --> | the framing change (D.10) | dated log |
 
 The design error of §6.2 runs through these rows. The design registered on 2026-08-02<!-- N:V6-3 --> kept a stressor it had already found inert, left it out of the sweeps for that reason, and kept it in ISO. One of its own questions for reviewers rested on the premise that "Neither protocol trains on δ = 1.0", which is false for both arms: ISO's δ-only components and both of JOINT's train at δ = 1<!-- N:X4-2 -->. The outcome branches registered on 2026-08-13<!-- N:DES-12 --> did no inert-share accounting. A review of the registered design found the bias on 2026-08-16<!-- N:V6-1 -->, noting that the confirmatory arm "applies a different rule to the same fact" as the sweeps. The main runs began without the correction. The correction was registered on 2026-09-18<!-- N:DES-15 -->, mid-run and before unblinding, on our attestation, recorded with the decision, that no outcome mean, per arm or across arms, had been computed or viewed. The confirmatory family did not change.
-<!-- OWNER-PENDING:A1(ii) attribution of the 2026-08-16 review (default "a review of the registered design") -->
+<!-- SETTLED:A1(ii) (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) attribution of the 2026-08-16 review (default "a review of the registered design") -->
 
 **D.3 The registered rules, quoted.** Emphasis is the record's own, one indented code line is set inline, and omissions are marked […]. A "§" inside a quotation refers to the record's own sections, "card" and "unit" are the record's words for a GPU, and S1–S6 are its labels for the secondary analyses.
 
@@ -96,7 +65,7 @@ The design error of §6.2 runs through these rows. The design registered on 2026
 
 In row D, "− (either)" means rejection with negative sign on either co-primary; the registered table writes it once, under completion, and square brackets mark our additions.
 
-<!-- OWNER-PENDING:V3Q22 registered antecedent (default: this note in Appendix D only, not in the main text) -->
+<!-- SETTLED:V3Q22 (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) registered antecedent (default: this note in Appendix D only, not in the main text) -->
 The same document lists the environment and measurement items as standing on every outcome, "the larger part of the paper", which "does not depend on Γ at all". Three of its entries overclaim and are not repeated in this paper: a threshold value with no committed estimator behind it (§4.1 gives the committed estimators), communication denial "certified inert at swarm scale" (§4.4 gives the scoped phrase and its bars), and floors "ordered by curriculum difficulty", an untested hypothesis.
 
 *The falsifier for branch B* (2026-08-13<!-- N:DES-12 -->):
@@ -178,10 +147,10 @@ The omitted words name the code version, which would identify the repository.
 | G1.2 | the floor-study protocol of the main runs: the launch floor study (2026-08-10<!-- N:DES-5 -->) and its re-measurements of 2026-09-08<!-- N:DES-2 --> and on the RTX 5090 |
 | G1.3 | the main training runs |
 
-**D.8 Seeds and archives.** All arms share seed integers, and seed 0, the floor seed, never enters the main runs<!-- N:DX-416 -->. Runs are ordered seed-major and chunks end on seed boundaries, so an interruption leaves a smaller balanced design and both arms of a seed share one GPU. Every checkpoint archive's recorded sha256 matched on re-verification on 2026-09-27<!-- N:DX-408 -->, 615 of 615<!-- N:DX-408 -->; the hashes ship with the supplement's result directories, not here.
-<!-- OWNER-PENDING:F1 archive count "615 of 615" against the 636 that the same report's archive table sums to (DISPOSITIONS §5 F1 carries; review RN2-1); the count is kept until the owner reconciles the record -->
+**D.8 Seeds and archives.** All arms share seed integers, and seed 0, the floor seed, never enters the main runs<!-- N:DX-416 -->. Runs are ordered seed-major and chunks end on seed boundaries, so an interruption leaves a smaller balanced design and both arms of a seed share one GPU. Every recorded checkpoint-archive sha256 matched on re-verification on 2026-09-27, with no mismatch<!-- N:DX-408 -->; the hashes ship with the supplement's result directories, not here.
+<!-- F1 / C2 settled 2026-10-19 (log: OWNER QUESTIONS SETTLED, item 3): the count is dropped because the record gives both 615 and 636; reconciling it needs the archives -->
 
 **D.9 Blinding.** The runner of the main training runs computes no cross-arm quantity, and a unit test asserts it. Each analysis stage ran once: the unblinding script refuses an unflagged artifact or a modified code version, later analysis scripts refuse to run before its log exists, and each log records one run of its stage<!-- N:DX-411 -->.
-<!-- OWNER-PENDING:V3Q19 the inventory of outcome-derived quantities visible when k = 72 and ISO-4 were decided is owner-attested only; nothing is stated beyond one look per stage -->
+<!-- SETTLED:V3Q19 (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) the inventory of outcome-derived quantities visible when k = 72 and ISO-4 were decided is owner-attested only; nothing is stated beyond one look per stage -->
 
 **D.10 The framing change.** On 2026-10-12<!-- N:X4-5 -->, after the result was known, we moved the paper's emphasis to the environment, and the pre-registered test became its worked example (§6.1). No constant, registration or registered reading changed. The registered outcome branches and their framings, quoted in D.3, remain the record of the original plan.

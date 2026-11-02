@@ -2,26 +2,19 @@
 
 ## Appendices
 
-<!-- STUB-SPEC
-ALTERNATE FOR OWNER CHOICE V3Q5 (V3-E2): identical to sections/13_appendix_proofs.md except Theorem 1, which keeps the theory document's statement (unit smoke density over the integer distance d - t + l_f; docs/theory_foundations.md:375-394) and states plainly that the implemented toy does not satisfy that signal model.
-WRITER: W2. BUDGET: Appendix A's.
-KEEP IN STEP: every change to sections/13_appendix_proofs.md is mirrored here.
--->
-
 - Appendix A: proofs and formal statements.
 - Appendix B: locked constants and hyperparameters.
 - Appendix C: reproducibility floors.
 - Appendix D: the registration timeline.
 - Appendix E: additional results of the worked example.
 - Appendix F: the secondary design.
-- Appendix G: the post hoc interaction check in full.
-- Appendix H: trained-policy episodes.
-- Appendix I: how the literature search ran.
-- Appendix J: how this paper was made.
+- Appendix G: trained-policy episodes.
+- Appendix H: how the literature search ran.
+- Appendix I: how this paper was made.
 
 ### A Proofs and formal statements
 
-This appendix states and proves the results that §3 uses. Where a statement departs from the project's theory document (`docs/theory_foundations.md` in the code supplement), the departure is noted. <!-- OWNER-PENDING:V3Q16 --><!-- OWNER-PENDING:V3Q23 -->
+This appendix states and proves the results that §3 uses. Where a statement departs from the project's theory document (`docs/theory_foundations.md` in the code supplement), the departure is noted. <!-- SETTLED:V3Q16 (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) --><!-- SETTLED:V3Q23 (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) -->
 
 Definitions and results keep that document's numbers, which the code's docstrings cite; this is why Definition 2 follows Definition 7 in §3 and the only numbered remark is 2′. The definitions of §3 are stated as implemented, and four depart from the document. Definition 1 draws the observation from the post-step state, smoke included, as the code does. Definition 3 carries the smoke update and fixes $\iota = 0$<!-- N:DX-1 -->, which the document keeps as a parameter $\iota \ge 0$. For Definition 5, the document states the impulse per collapse event; the implementation draws one uniform per cell, and the two rules coincide wherever seeding neighbourhoods do not overlap. For Definition 7, the document's range-dependent link probability is implemented as a hard Chebyshev range.
 
@@ -180,7 +173,7 @@ The theory document adds a divergence rate near the critical point, which rests 
 
 Two<!-- N:DX-304 --> runs check the proposition, neither at the locked parameters, both without agents or primary ignition at the subcritical Low level ($\beta = 0.43$, $\iota = 0$<!-- N:DX-304 -->), so collapse is the fire's only birth channel. The first, a dense sweep on a 64 × 64<!-- N:CA-2 --> grid ($\kappa_A = 0.02$, $f_{\mathrm{weak}} = 0.4$<!-- N:CA-2 -->), fits burnt area against realized seeds through the origin: $R^2 = 0.998$<!-- N:CA-2 --> over a 14×<!-- N:CA-2 --> range of the expected seed count. The second, a slower test in the suite on a 32 × 32<!-- N:CA-3 --> grid ($\kappa_A = 0.003$<!-- N:CA-3 -->), divides its slope by a protocol-matched reference computed inside the test: 0.992<!-- N:CA-3 -->, inside the band [0.90, 1.02]<!-- N:CA-3 -->, with $R^2 = 0.9995$<!-- N:CA-3 -->. In both, the four factors compose to the observed slope within Monte Carlo error.
 
-<!-- OWNER-PENDING:V3Q5 (alternate: the theory document's statement kept, the mismatch with the implemented toy stated) -->
+<!-- SETTLED:V3Q5 (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) (alternate: the theory document's statement kept, the mismatch with the implemented toy stated) -->
 
 **Theorem 1 (Memorization gap, and its erosion by Coupling B).** Consider the corridor toy at attenuation strength $\kappa_B$: from a start cell, a path of $d$ steps leads to a branch $b$, from which two disjoint corridors $L$ and $R$ of length $\ell$ lead to the goal; the horizon is $T = d + \ell$ (zero slack: a wrong commitment cannot be undone). At $t = 0$ nature draws $Z \in \{L, R\}$ uniformly; corridor $Z$ burns at depth $\ell_f \ge 1$ beyond $b$, and an agent entering it is disabled. The reward is 1 for reaching the goal by $T$, else 0. At each step $t \le d$ the agent receives the signal $Y_t = Z$ with probability $e^{-\kappa_B (d - t + \ell_f)}$ (Beer–Lambert over the current distance to the fire, unit smoke density), else $Y_t = \varnothing$; signals are independent across time and remembered. Let
 
@@ -206,13 +199,13 @@ $$
 \mathrm{VoC}_{\mathrm{true}}(\kappa_B) = \tfrac12\big(1 - \tilde q(\kappa_B)\big) \le \tfrac12\big(1 - q(\kappa_B)\big).
 $$
 
-Both $q$ and $\tilde q$ decrease in $\kappa_B$, so the value of communication increases with perception decay. <!-- OWNER-PENDING:V3Q4 -->
+Both $q$ and $\tilde q$ decrease in $\kappa_B$, so the value of communication increases with perception decay. <!-- SETTLED:V3Q4 (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) -->
 
 The commitment draws have different optical depths, so as $\kappa_B \to \infty$ the lowest-depth draw dominates both products and $\tilde q / q \to 1$. The correction peaks at moderate $\kappa_B$, and its relative bite on the value of communication is largest at low $\kappa_B$, where $q$ is near 1.
 
 In the courier variant with scripted policies, run through the production link kernel and the shared transmittance function, free communication scores 1.0000 at every $\kappa_B$<!-- N:DX-15 -->. The no-idle denied arm matches $\tfrac12 + \tfrac12 q$ (largest absolute z 0.44; χ² 0.51 on 8 degrees of freedom<!-- N:DX-15 -->), so $\mathrm{VoC}_{\mathrm{gated}} = \tfrac12(1 - q)$ rises monotonically from 0 to 0.498<!-- N:COM-1 -->. In this two-agent toy, which is not CHE (4096 episodes and 8192 Monte Carlo draws per point<!-- N:DX-15 -->), $\tilde q / q$ is 1.126 at $\kappa_B = 1.0$ and peaks at 1.235 near $\kappa_B = 2$<!-- N:DX-15 -->. The correction removes 79 %, 54 % and 7 % of $\mathrm{VoC}_{\mathrm{gated}}$ at $\kappa_B$ = 0.5, 1.0 and 3.0<!-- N:DX-15 -->.
 
-<!-- OWNER-PENDING:V3Q3 -->
+<!-- SETTLED:V3Q3 (2026-10-19, log OWNER QUESTIONS SETTLED: the default stands) -->
 
 **A transfer bound for a fixed policy (remark).** For a fixed policy and two configurations that share the reward, the difference between the policy's discounted returns is bounded above by a term that grows with how far their transition and observation kernels differ. It follows by telescoping the two models' evaluation operators along the trajectory distribution. Every configuration the isolated arm trains on (§6.2) differs from the test configuration $\theta^*$ on the states where both couplings act at once, such as a collapse increment next to Fuel with an agent within attenuation range. There $\theta^*$ places mass of order $\kappa_A$ on ignition transitions that a configuration with $\kappa_A = 0$ places elsewhere, and the observation kernels differ wherever $\kappa_B$ differs.
 

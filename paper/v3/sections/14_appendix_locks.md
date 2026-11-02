@@ -2,20 +2,6 @@
 
 ### B Locked constants and hyperparameters
 
-<!-- STUB-SPEC
-JOB: Every locked constant with its value (dates live in Appendix D), the hyperparameters and budget, the message encoder (Listing 6), and Coupling B's lock bands that did not intersect.
-WRITER: W2.
-BUDGET: about 350 prose words plus tables.
-FROM: P1 §6.1 B; B1 (Listing 6 moved here from v2 §7, page budget).
-ROWS: CAL-1, CAL-3, CA-1, CB-1, COM-6, ENV-1, ENV-12, DX-1, DX-2, DX-3, DX-17, DX-401, DX-402 (values only; dates to Appendix D), CB-2, CB-3, DX-12, DX-301, DES-13.
-LISTINGS: Listing 6, che/train/ippo.py:323-329 (stop_gradient: the message encoder is frozen; ENV-12). Block below.
-REGISTERED STRINGS: none.
-EVERY OTHER CAVEAT in checks/caveats.yaml: pointer only ("§6.3", "Appendix D"), never restated. C26: any sentence about the interaction check carries "post hoc".
-NOT HERE: ruling dates (Appendix D); study codes without the key; "lock record" phrasing aimed at a reader who cannot see it.
-V2 MATERIAL: paper/v2/sections/13_appendix_locks_floors.md (B); 06_coupling_b.md §6.3; 07_comms.md (Listing 6).
-DEPENDENCIES: §3 points here for hyperparameters and the encoder.
--->
-
 Each constant below was fixed before the main experiment; Appendix D gives when. A test in the code supplement (`che/tests/test_locks.py`) checks each against the configurations, the code defaults or the analysis scripts that must carry it.
 
 | constant | value | described in |

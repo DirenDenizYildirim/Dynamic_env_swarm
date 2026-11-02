@@ -2,19 +2,6 @@
 
 ### F The secondary design
 
-<!-- STUB-SPEC
-JOB: The secondary design in full: arms (with code names as labels matching Figure 7), the sweep, the plane fit and its coarse linearity check, the same-GPU replicate table, mediation (VOID), and what that analysis could not see.
-WRITER: W4.
-BUDGET: about 400 prose words plus tables.
-FROM: P1 §6.1 F; v2 Appendix H.
-ROWS: DES-9, DX-28, SEC-1 to SEC-7, DX-27, DX-29, DX-306, DX-417, DX-39, RES-6, RES-7, RES-8, RES-9, DX-18, DX-19.
-REGISTERED STRINGS: "non-verdict-bearing"; VOID (mediation); UNDERPOWERED (change points); "95 %, not family-corrected".
-EVERY OTHER CAVEAT in checks/caveats.yaml: pointer only ("§6.3", "Appendix D"), never restated. C26: any sentence about the interaction check carries "post hoc".
-NOT HERE: "the plane separates co-occurrence from frequency"; mediation as a finding.
-V2 MATERIAL: paper/v2/sections/14_appendix_plan_provenance.md (H).
-DEPENDENCIES: §6.3 points here.
--->
-
 Everything here is secondary and non-verdict-bearing, with 95 % intervals bootstrapped over seeds within arm (B = 2000<!-- N:DX-28 -->), conditional on the common evaluation draw and not family-corrected. Each secondary arm has k = 20<!-- N:DES-13 --> seeds, trained on the GPU that ran Γ (Appendix D) with communication denial off in every component<!-- N:X4-2 -->. Write μ for the per-coupling frequency (equal for the two couplings in every arm here), p for the co-occurrence and ν for the fire-only share, as in §6.2. On the triangle of training mixtures $\nu = 1 - 2\mu + p$<!-- N:DES-9 -->, so the active share is $1 - \nu = 2\mu - p$<!-- N:X4-1 -->. Figure 7 prints μ as m and ν as n; the arm names below are the labels of its table view.
 
 | arm | μ | p | ν | active share | survival | completion |

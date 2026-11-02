@@ -1,5 +1,44 @@
 # Paper v3, phase 1: hand-back to the owner (step 4.5)
 
+## Update, 2026-10-19 (cloud session): the check leaves the paper; every owner question settled; final pass under way
+
+- **Rulings** (decision log): *NO INTERACTION CHECK BEFORE SUBMISSION* (the
+  check is not run and leaves the paper; the δ train/test mismatch stays in
+  §6.2 as an untested limitation; no timestamp claimed) and *OWNER QUESTIONS
+  SETTLED* (N1 yes; every question at its default; C1–C6 as the builder
+  recommended).
+- **Paper:** §6.4 and Appendix G removed; §6.5 → §6.4; Appendices H, I, J →
+  G, H, I (Figures H1, H2 → G1, G2); the check's sentences gone from the
+  abstract, §1, §6.1, §6.2, §6.5, §7, §8, the conclusion, App. A's index and
+  App. I (an OWNER-EDITS block). §8 names the theory document and the lock
+  records (Q1). D.8 drops the "615 of 615" count (C2). `caveats.yaml`: C25
+  removed, C26 kept as a guard. Provenance follows every change.
+- **Final-pass mechanics:** every ruled `OWNER-PENDING` marker now reads
+  `SETTLED:` (A1 stays pending until the footnote is in). The 23 STUB-SPEC
+  blocks (21 sections, 2 alternates) are stripped; they are kept verbatim in
+  `snapshots/pre_final_specs/`.
+- **Trial real-kit build** (scratch output, before the footnote and the date):
+  40 PASS, 1 FAIL (print legibility, a recorded FAIL under Q6), 6 INFO. Main
+  text **14.32 printed pages from page 1**, 12.89 from §1 (ceiling 15).
+  Double-blind scan of the staged folder PASS; PDF has no identity string.
+- **`build_v3.py --final`** fails only on `date_confirmed`.
+- **Supplement, prepared for the owner's decision:** `package.py
+  --no-interaction` (new; default unchanged) leaves out the check's 4
+  configs, 3 scripts, test and results folder (`PLAN.md`), and removes its
+  entries from the shipped `locks.yaml`, `test_locks.py` and README (5
+  edits, each asserted to match once). Trial in scratch: 37.7 MB, 4,159
+  files, no trace of the check, `locks.yaml` parses, `test_locks.py` +
+  `test_phase6_configs.py` pass inside the staged tree, scrub check PASS.
+  Also fixed: `package.py --out` outside the repository no longer crashes.
+  Without the flag, the shipped README still promises the check's report and
+  timestamp files, which do not exist, so the default build is not
+  shippable as it stands.
+- **Waiting on the owner:** the disclosure footnote; `date` (and
+  `submitted_date`); the supplement's interaction code and `PLAN.md`; then
+  the final kit build, supplement rebuild and checks, staging; the repository
+  made private before upload. Nothing is committed until the owner says so.
+
+
 ## Update, 2026-10-17 (local session): no run yet; the blind review ran; the plan is amended
 
 - **The run has not happened.** The first rental was released before any eval

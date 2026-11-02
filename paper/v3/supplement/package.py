@@ -99,6 +99,9 @@ def select(files: list[str], opts: argparse.Namespace):
             excluded.append((f, "absent from the working tree"))
             continue
         deny = next((w for p, w in R.DENY if re.fullmatch(p, f)), None)
+        if deny is None and not opts.interaction:
+            if any(re.fullmatch(p, f) for p in R.INTERACTION):
+                deny = R.INTERACTION_WHY
         if deny is not None:
             excluded.append((f, deny))
             continue
@@ -335,6 +338,14 @@ def main(argv: list[str] | None = None) -> int:
         "instruments will then refuse to run)",
     )
     ap.add_argument(
+        "--no-interaction",
+        dest="interaction",
+        action="store_false",
+        help="leave out the post hoc interaction check: its configs, scripts, "
+        "test and results folder, and its entries in the shipped locks.yaml, "
+        "test_locks.py and README (rules.INTERACTION, INTERACTION_EDITS)",
+    )
+    ap.add_argument(
         "--decision-log-section",
         action="append",
         default=[],
@@ -390,6 +401,17 @@ def main(argv: list[str] | None = None) -> int:
             p.write_text(scrubber.scrub("docs/decision_log_excerpts.md", dl))
             extras.append("docs/decision_log_excerpts.md (owner-selected)")
         shutil.copyfile(HERE / "SHIPPED_README.md", stage / "README.md")
+        edit_log: list[str] = []
+        if not opts.interaction:
+            for rel, pat, why in R.INTERACTION_EDITS:
+                p = stage / rel
+                text = p.read_text(encoding="utf-8")
+                new, n = re.subn(pat, "", text)
+                if n != 1:
+                    raise SystemExit(f"--no-interaction: {why}: {n} matches in {rel}")
+                p.write_text(new, encoding="utf-8")
+                edit_log.append(f"{rel}: removed {why}")
+            extras.append(f"--no-interaction: {len(edit_log)} edits")
 
         sums = []
         for p in sorted(q for q in stage.rglob("*") if q.is_file()):
@@ -424,7 +446,9 @@ def main(argv: list[str] | None = None) -> int:
         for rel, rid in chosen:
             bytes_by_rule[rid] += (REPO / rel).stat().st_size
         summary = {
-            "zip": str(zpath.relative_to(REPO)),
+            "zip": str(
+                zpath.relative_to(REPO) if zpath.is_relative_to(REPO) else zpath
+            ),
             "zip_bytes": zpath.stat().st_size,
             "zip_sha256": sha256(zpath),
             "files_shipped": len(sums) + 1,
@@ -440,10 +464,12 @@ def main(argv: list[str] | None = None) -> int:
                 "lock_records": opts.lock_records,
                 "conf_logs": opts.conf_logs,
                 "manifests": opts.manifests,
+                "interaction": opts.interaction,
                 "decision_log_section": opts.decision_log_section,
             },
             "extras": extras,
             "manifest_dirs": man_log,
+            "interaction_edits": edit_log,
             "scrub_rewrites": len(scrubber.log),
             "scrub_rewrites_by_rule": dict(
                 collections.Counter(x[2] for x in scrubber.log)

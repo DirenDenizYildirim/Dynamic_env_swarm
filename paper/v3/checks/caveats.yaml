@@ -44,7 +44,6 @@ main_text_files:
   - 05_measurement.md
   - 06_example_design.md
   - 07_example_results.md
-  - 08_interaction_check.md
   - 09_example_lesson.md
   - 10_limitations.md
   - 11_using_che.md
@@ -57,7 +56,6 @@ appendix_files:
   - 16_appendix_timeline.md
   - 17_appendix_results.md
   - 18_appendix_secondary.md
-  - 19_appendix_interaction.md
   - 20_appendix_episodes.md
   - 21_appendix_making.md
 
@@ -66,7 +64,7 @@ caveats:
   # ---- limitations in front (V3-F6) -------------------------------------
   - id: C01
     name: sited_where_composition_is_weak
-    statement: The test was sited where composition is weak (Coupling B quiet at the test severity, communication denial without detectable effect); registered in advance as a limitation of every outcome; the post hoc interaction check measures it.
+    statement: The test was sited where composition is weak (Coupling B quiet at the test severity, communication denial without detectable effect); registered in advance as a limitation of every outcome.
     rows: [CB-9, COM-4]
     home: 06_example_design.md
     also: [00_abstract.md, 01_introduction.md]
@@ -194,8 +192,8 @@ caveats:
     statement: Every interval is conditional on the one registered evaluation draw.
     rows: [DES-13]
     home: 06_example_design.md
-    also: [08_interaction_check.md]
-    from: P1 §7; P3 §5.1; PLAN.md §8 item 4 (the check repeats its own copy)
+    also: []
+    from: P1 §7; P3 §5.1 (the interaction check's copy left with §6.4, NO INTERACTION CHECK, 2026-10-19)
     regex:
       - '(?i)\b(one|single|the one) (registered |common )?evaluation draw\b'
       - '(?i)\b(one|single) (common )?draw\b'
@@ -330,22 +328,13 @@ caveats:
     regex:
       - '(?i)a-fortiori'
 
-  # ---- the interaction check (§6.4) and the lesson (§6.5) ---------------
-  - id: C25
-    name: interaction_blind_to
-    statement: What the interaction check is blind to (θ* only; fixed policies; additive scale; one draw; δ held at 1 except in the fifth, links-intact condition (PLAN AMENDMENT, 2026-10-17); no cross-arm test; post hoc; arms' training conditions differ). The full list once.
-    note: other files say "cannot see" rather than "blind to" (e.g. §5's rule on differenced tests).
-    rows: [IC-*]
-    home: 08_interaction_check.md
-    also: []
-    from: P1 §3.3 (one home §6.4); P2 §4; PLAN.md §8
-    regex:
-      - '(?i)\bblind to\b'
+  # ---- the interaction check (removed, NO INTERACTION CHECK, 2026-10-19) and the lesson (§6.4) ------
+  # C25 (interaction_blind_to) removed with its home, §6.4 (NO INTERACTION CHECK, 2026-10-19).
 
   - id: C26
     name: interaction_post_hoc_label
     kind: label_required
-    statement: Wherever the interaction check or its result appears in the main text, abstract included, it is labelled post hoc (PR:63-65).
+    statement: Wherever the interaction check or its result appears in the main text, abstract included, it is labelled post hoc (PR:63-65). Kept as a guard after the check left the paper (NO INTERACTION CHECK, 2026-10-19); it passes while no sentence names the check.
     from: PR:63-65; P1 §3.3; P2 §4 (Q6)
     trigger:
       - '(?i)\binteraction (check|contrast|test)\b'

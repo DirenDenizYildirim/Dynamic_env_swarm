@@ -2,22 +2,6 @@
 
 ### E Additional results
 
-<!-- STUB-SPEC
-JOB: The results the main text points to: Γ(t) tables and figure; the k = 60 analysis; T = 2000; the High readout (home of the a-fortiori exclusion); fire deaths; seed dispersion over the floor; the communication-denial measurements figure.
-WRITER: W5.
-BUDGET: about 550 prose words plus the two Γ(t) tables; figure captions at most 60 words each.
-FROM: P1 §6.1 E; P2 §3 A1, A3.
-ROWS: DX-24, DX-25, RES-1, RES-2, RES-11, RES-12, RES-13, RES-3, DX-20, RES-15, DX-23, DES-11, RES-14, DX-26, RES-10, DX-22, HW-1, DX-21, COM-1, COM-4, DES-13.
-FIGURES: Figure E1 gamma_t_final_half (glosses: labelled “grid card”, labelled “single-card curve”); Figure E2 static fig06_comms.png (glosses: labelled “E2C²”, labelled “M5.2”, labelled “M5.5”). Blocks below.
-REGISTERED STRINGS: "sign unstable over the final half" first; UNDERPOWERED (k = 60; T = 2000; change points); "a-fortiori exclusion" with its sentence "no gap larger than X at High even where JOINT trained on the evaluated configuration and ISO never saw a composed one" (the X values are MDEs: label them, BRIEF §9.2 trap 5); descriptive for Γ(t) at t below 1000 and T = 2000.
-CAVEATS HOMED HERE (state each in full, once; the detection pattern, from checks/caveats.yaml, must match your home sentence):
-  C24 high_readout_a_fortiori: The High readout is an a-fortiori exclusion, not a held-out test (full statement in App. E). Pattern: (?i)a-fortiori
-EVERY OTHER CAVEAT in checks/caveats.yaml: pointer only ("§6.3", "Appendix D"), never restated. C26: any sentence about the interaction check carries "post hoc".
-NOT HERE: the High readout as a held-out test; T = 2000 as anything but descriptive; any Γ(t) value beyond DX-24, DX-25.
-V2 MATERIAL: paper/v2/sections/14_appendix_plan_provenance.md (G); 09_compositional_test.md §9.2 (k = 60, T = 2000, High, fire deaths); 07_comms.md (Figure 9 text).
-DEPENDENCIES: §6.3 points here; §4.4 points here for the comms figure.
--->
-
 **Sign unstable over the final half**, on both co-primaries<!-- N:RES-11 -->: neither meets the registered rule that all 11<!-- N:DES-13 --> point estimates over updates 500–1000<!-- N:DES-13 --> share one sign (Appendix D). The intervals are Šidák-corrected, registered at update 1000<!-- N:DES-13 --> and descriptive before it. Checkpoints before update 1000 were evaluated after unblinding, on a different GPU of the same model; update 1000 is the main runs' own evaluation, and re-evaluating it on that GPU leaves every sign unchanged (§8). On Figure E1 the registered sign rule is labelled “rule (iv)” and the main runs' GPU “grid card”, and the “single-card curve” re-evaluates the last checkpoint on another GPU.
 
 <!-- FIGURE E1: block carried from paper/v2/sections/09_compositional_test.md:101 (markup, iframe height and alt text as v2 had them); caption replaced; the writer checks the alt text -->

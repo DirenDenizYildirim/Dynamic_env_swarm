@@ -6490,3 +6490,168 @@ recommended". That selects 1(c), 2(c), 3(b), 4(b), 5(b) and 6(b).
    family stays at 8 intervals.
 
 No constant, lock, test threshold, registration or branch reading changes.
+
+
+## NO INTERACTION CHECK BEFORE SUBMISSION — the post hoc interaction check is not run; it leaves the paper; the δ train/test mismatch stays as a stated, untested limitation (owner, 2026-10-19)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before it is acted on. The owner, in the session's opening message:
+"the interaction check will NOT be run before submission. It is post hoc
+and outside every registered family, so no registered reading changes.
+Remove it from all 7 HOLE:INTERACTION sites (abstract, §1, §6.4 ×2, §6.5,
+conclusion, App. G). Keep the train/test mismatch in §6.2 as a stated,
+untested limitation. Don't describe the check as planned, and don't claim a
+timestamp."
+
+1. **No run before submission.** The eval-only run that *PLAN OK* and
+   *PLAN AMENDMENT* authorized does not happen before submission. No GPU is
+   rented for it. No result exists (*BOX HANDOVER*, addendum), so nothing is
+   discarded.
+2. **The paper drops the check.** The seven `HOLE:INTERACTION` sites are
+   removed: the abstract's and the conclusion's slots, §1's sentence and
+   slot, §6.4 as a whole (its two slots included), §6.5's slot, and
+   Appendix G as a whole. The paper neither reports the check nor describes
+   it as planned, prepared or pending.
+3. **No timestamp is claimed.** The amended plan was never stamped (the stamp
+   waited on the owner's OK of the amended text, which was not given). The
+   paper claims no OpenTimestamps record for any file.
+4. **The δ train/test mismatch stays in §6.2** as a stated limitation that
+   this study does not test: harmless only if δ is inert, which is the
+   premise in question.
+5. **Builder's reading of the scope, until the owner corrects it.** "Don't
+   describe the check as planned" also binds the sentences outside the seven
+   sites that describe the check: §6.1 and §6.2 (pointers to §6.4), §7's
+   first sentence, §8's verification-mode sentence, Appendix A's index, and
+   the two sentences of Appendix J (an OWNER-EDITS block) that name the
+   check's scope and its plan. With §6.4 and Appendix G gone, §6.5 becomes
+   §6.4 and Appendices H, I and J become G, H and I; cross-references follow.
+   The caveat registry (`paper/v3/checks/caveats.yaml`) drops C25 (its home,
+   §6.4, is gone), keeps C26 as a guard (it passes while no sentence names
+   the check) and rewords C01's tail. Provenance follows the text.
+6. **Not changed by this entry.** `PLAN.md`, `RUNBOOK.md`, the interaction
+   configs, their `docs/locks.yaml` entries, the run and analysis scripts and
+   their test stay in the repository as committed. Whether the code and
+   `PLAN.md` ship in the supplement is decided at the supplement rebuild.
+   The IC ledger proposals (`paper/v3/ledger_proposals/IC.md`) stay as a
+   record; no paper text cites them. *PLAN AMENDMENT* item 4(b)'s
+   links-open condition answered owner question Q9; with the check dropped,
+   the builder reads Q9 as back at its default (the ruled δ phrase with its
+   bars), to be confirmed with the open owner questions.
+
+No constant, lock, test, registration or branch reading changes. Branch B
+stands.
+
+
+## OWNER QUESTIONS SETTLED — N1 yes; every open owner question at its default; the builder's recommendations on C1–C6 accepted (owner, 2026-10-19)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before it is acted on. The builder put the open questions of
+`paper/v3/OWNER_QUESTIONS.md` to the owner, updated for *NO INTERACTION
+CHECK BEFORE SUBMISSION*, plus N1 (that entry's item 5). The owner, in chat:
+"N1 yes, all defaults. I will accept all your recommendations". C1–C6 had no
+default; the builder gave a recommendation for each in the same session,
+recorded below as accepted under that answer.
+
+1. **N1: yes.** The edits outside the seven sites (§6.1, §6.2, §7, §8,
+   Appendix A's index, Appendix I's two sentences) and the re-numbering
+   (§6.5 → §6.4; Appendices H, I, J → G, H, I) stand.
+2. **Defaults, by owner-question ID** (`OWNER_QUESTIONS.md`; options in
+   `paper/v3/DISPOSITIONS.md` §4–§5):
+   - **Q0:** moot (no run).
+   - **Q1 / V3Q16, the supplement.** It ships the code, tests, configs,
+     registration documents, analysis scripts and committed outputs, plus
+     `docs/theory_foundations.md` and the four lock records (supplement
+     rules D3, D4). Decision-log excerpts and the confirmatory training logs
+     do not ship. No content sha256s are printed in Appendix D. §8's list
+     names the theory document and the lock records (the change its
+     OWNER-PENDING note prescribes for this default). Whether the
+     interaction code and `PLAN.md` ship is decided at the supplement
+     rebuild, as the owner ordered.
+   - **Q2 / V3Q1, title:** T5, "A multi-agent fire environment with exact
+     stressor ablations". **B3:** CHE is named in full in the abstract.
+   - **Q3 / V3Q2, page measure:** from printed page 1, ceiling 15. (Moving
+     Figure 5 to Appendix C was the fallback for the interaction results;
+     it applies only if the re-measured build overflows.)
+   - **Q4 / V3Q5, V3Q23, Theorem 1:** stated for per-step optical depths,
+     proof unchanged, matching `che/env/e2c.py`; Appendix A states the
+     departures from the theory document. Amending
+     `docs/theory_foundations.md:375-394` remains the owner's edit; it is not
+     made.
+   - **Q5 / V3Q3, V3Q4:** Prop. 4 is an appendix remark in words; Remark 2′
+     is one sentence in §4.4 plus Appendix A.
+   - **Q6 / V3Q8, figures:** no rebuild; codes glossed in captions. The
+     print-legibility check stays a recorded FAIL (labels at 2.5–4.3 pt).
+   - **Q7:** the abstract does not carry a short form of the siting
+     limitation; its lesson is the identity lesson; §1 states the limitation
+     first.
+   - **Q8:** Appendix I ("How this paper was made") stands as edited on
+     2026-10-19. The disclosure footnote is the owner's next step.
+   - **Q9 / V3Q14, V3Q15:** the ruled δ phrase with its bars; no direct δ
+     check.
+   - **Q10, `date`:** asked at its own step, after the footnote.
+   - **D:** every remaining default of `DISPOSITIONS.md` §4–§5, among them
+     V3Q9 (Γ(t) and the floors explorer in the appendix), V3Q10 (ISO and
+     JOINT explorers kept, now in Appendix G), V3Q11, V3Q12, V3Q17 (no new
+     citations), V3Q18 (X4-4 used), V3Q19, V3Q20 (no third future-work
+     item), V3Q21 ("bias (b)" kept), V3Q22, V3Q24 (TMLR facts not quoted),
+     V3Q25, and v2's carried A1, A4, B4, B6, C1, C2, C3, D2–D5, E2 (comments
+     stripped at staging), E4, E5, F2–F6 and G. V3Q6, V3Q7's check-dependent
+     half and V3Q13 are moot.
+3. **C1–C6, the builder's recommendations, accepted:**
+   - **C1, accepted and recorded; the test is not amended.**
+     `test_p6_s7_blocks.py::test_science_tree_identical_to_the_frozen_base`
+     fails against `7a5e009` because commit `361bec3` (2026-10-10) changed
+     two docstrings in `che/env/config.py` ("stressor configuration" →
+     "environment configuration"). Verified this session: 4 changed lines,
+     all inside docstrings, no code. No behaviour changed. The base is not
+     amended before submission.
+   - **C2, the count leaves Appendix D.** `phase6_report.md:101` says "615
+     of 615" while its own table's verified column sums to 636 (and
+     `m62b/SHA256_CKPT.txt` has 18 lines where the table says 16). The
+     archives are not in the cloud container, so the record cannot be
+     reconciled here. D.8 keeps what both readings support (every recorded
+     hash matched, no mismatch, DX-408) and drops the count. Reconciling the
+     report against the backup stays open, on the laptop.
+   - **C3, recorded only.** `paper_v3_prompt.md:208-209` says the plane
+     decomposition separates co-occurrence from frequency; it separates it
+     from the active share only. The archival prompt is not edited, and the
+     paper does not repeat the claim.
+   - **C4, kept.** The `CALIBRATED_ROLES` addition in
+     `che/tests/test_locks.py` stays: the interaction configs stay in the
+     repository, and the test grades their β against the lock.
+   - **C5, no edit before submission.** `README.md` stays stale (the
+     repository goes private, and the supplement ships its own README);
+     `LICENSE` keeps the owner's name (the supplement scrubs it to
+     "Anonymous Authors"); `phase6_framing_branches.md:69, :75, :82` are
+     registered and never edited, and the paper does not copy the
+     overclaims.
+   - **C6, recorded only.** The one-time hang of
+     `test_pbt.py::test_population_resume`, and `.gitignore`'s `*.manifest`
+     keeping the grid's `.manifest/` entries out of git (the supplement
+     rebuilds them from `SHA256_CKPT.txt`).
+
+No constant, lock, test, registration or branch reading changes.
+
+
+## COMMIT — the session's work since 2026-10-19 is committed and pushed; the owner edits the abstract file for the footnote (owner, 2026-11-02)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before the commit. The owner, in chat: "commit it and give me the file as a
+downloadable to me so I can edit it with the disclosure footnote".
+
+1. **What is committed**, to `claude/fervent-newton-ws5yub`: the work under
+   *NO INTERACTION CHECK BEFORE SUBMISSION* and *OWNER QUESTIONS SETTLED*
+   (sections, provenance, `caveats.yaml`, the four removed files, the
+   settled markers, the stripped STUB-SPEC blocks and their snapshot
+   `paper/v3/snapshots/pre_final_specs/`, Figures G1 and G2), the supplement
+   packager's `--no-interaction` option and `--out` fix, and the updated
+   `HANDBACK.md`, `OWNER_QUESTIONS.md` and `HANDOFF.md`.
+2. **The footnote.** The builder hands the owner
+   `paper/v3/sections/00_abstract.md`; the owner writes the `<d-footnote>`
+   in it (PAPER V3 item 6). The builder writes no footnote text.
+3. **Still open:** `date` and `submitted_date`; whether the supplement ships
+   the interaction code and `PLAN.md`; then the final kit build, the
+   supplement rebuild and its checks, staging, and the repository made
+   private before upload.
+
+No constant, lock, test, registration or branch reading changes.

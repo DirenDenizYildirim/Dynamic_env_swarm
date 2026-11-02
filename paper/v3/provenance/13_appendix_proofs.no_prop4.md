@@ -16,10 +16,9 @@ and Findings apply). Checked with `provenance_check.py --strict`.
 | 5 | Appendix D: the registration timeline. | framing | new: v2 D–F become D (STRUCTURE §2; V3-S2) |
 | 6 | Appendix E: additional results of the worked example. | framing | new (v2 G re-lettered; STRUCTURE §2) |
 | 7 | Appendix F: the secondary design. | framing | kept (v2 H re-lettered F) |
-| 8 | Appendix G: the post hoc interaction check in full. | framing | new (STRUCTURE §2); "post hoc" per the label rule (PR:63-65; caveats C26) |
-| 9 | Appendix H: trained-policy episodes. | framing | kept (v2 I re-lettered H) |
-| 10 | Appendix I: how the literature search ran. | framing | new (STRUCTURE §2) |
-| 11 | Appendix J: how this paper was made. | framing | new (STRUCTURE §2; PAPER V3 item 6) |
+| 8 | Appendix G: trained-policy episodes. | framing | kept (v2 I re-lettered H); NO INTERACTION CHECK (2026-10-19): re-lettered G after the interaction check's appendix was removed |
+| 9 | Appendix H: how the literature search ran. | framing | new (STRUCTURE §2); NO INTERACTION CHECK (2026-10-19): re-lettered H |
+| 10 | Appendix I: how this paper was made. | framing | new (STRUCTURE §2; PAPER V3 item 6); NO INTERACTION CHECK (2026-10-19): re-lettered I |
 | 12 | A Proofs and formal statements | framing | edited (v2 12:16 "A Proofs"; the stub's heading) |
 | 13 | This appendix states and proves the results that §3 uses. | framing | edited (v2 12:18 "Each statement is in the body, in the section named."): the statements now live here (stub JOB) |
 | 14 | Where a statement departs from the project's theory document (docs/theory_foundations.md in the code supplement), the departure is noted. | docs/theory_foundations.md:142-154; docs/theory_foundations.md:309-318; docs/theory_foundations.md:375-402; docs/theory_foundations.md:610-643; paper/v3/supplement/README.md:54 | edited (v2 12:18 "The proofs follow the formal specification … departures from it are noted"): "the formal specification" → "the project's theory document (docs/theory_foundations.md in the code supplement)", since the supplement ships it by default (supplement README rule D3) while DISPOSITIONS V3Q16's default removes such references; OWNER-PENDING V3Q16 and V3Q23 marked |
@@ -117,3 +116,5 @@ and Findings apply). Checked with `provenance_check.py --strict`.
 | 106 | The no-idle denied arm matches $\tfrac12 + \tfrac12 q$ (largest absolute z 0.44; χ² 0.51 on 8 degrees of freedom), so $\mathrm{VoC}_{\mathrm{gated}} = \tfrac12(1 - q)$ rises monotonically from 0 to 0.498. | DX-15; COM-1; che/bench/results/phase5/phase5_report.md:540-558 | edited (v2 07:32 and 12:67): merged |
 | 107 | In this two-agent toy, which is not CHE (4096 episodes and 8192 Monte Carlo draws per point), $\tilde q / q$ is 1.126 at $\kappa_B = 1.0$ and peaks at 1.235 near $\kappa_B = 2$. | DX-15 | kept (v2 12:65) |
 | 108 | The correction removes 79 %, 54 % and 7 % of $\mathrm{VoC}_{\mathrm{gated}}$ at $\kappa_B$ = 0.5, 1.0 and 3.0. | DX-15 | kept (v2 12:66) |
+
+**NO INTERACTION CHECK (2026-10-19).** The owner ruled that the post hoc interaction check is not run before submission and leaves the paper (decision log, NO INTERACTION CHECK (docs/decision_log.md:6495)). §6.4 and Appendix G were removed; §6.5 became §6.4 and Appendices H, I and J became G, H and I. This file was updated to match: the index lost 'Appendix G: the post hoc interaction check in full.' and re-lettered H, I, J as G, H, I (rows 8–10; row 11 removed).

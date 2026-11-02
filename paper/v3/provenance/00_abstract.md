@@ -43,20 +43,19 @@ PAPER V3 item 6; BRIEF §12).
 - `<!-- OWNER: disclosure d-footnote here … -->` after sentence 1 (BRIEF §12).
 - `<!-- OWNER-PENDING:V3Q1 … -->` (title; candidates below).
 - `<!-- OWNER-PENDING:B3 … -->` (CHE named in full; carried v2 default).
-- `<!-- HOLE:INTERACTION -->` and `<!-- OWNER-PENDING:V3Q7 -->` before
-  row 11. When IC rows exist: add one sentence with the check's pooled
-  reading, labelled post hoc (P1 §3.3 rows N, Pn, Pp), before row 11, or
-  keep row 11 alone (row M). Final pass: the abstract is now 242
-  words, so a sentence of up to 8 words fits under 250; a longer one needs
-  row 11 shortened (for example, back to "that share", 5 words).
+- `<!-- OWNER-PENDING:V3Q7 -->` before row 11. The interaction check's
+  slot is removed (NO INTERACTION CHECK, 2026-10-19); row 11, the identity
+  lesson, stands alone (row M without the check). The abstract is 242
+  words, so 8 words are free under 250.
 - `<!-- OWNER-PENDING:V3Q7 also RC1-22 / RC2-18 … -->` before row 4: the
   central limitation (C01, "sited where composition is weak") is not in the
   abstract. Both claims reviewers raised it as OWNER (RC1-22, RC2-18); it is
-  allowed here but does not fit with the check's sentence still to come.
+  allowed here; with the check's sentence gone, the 8 free words could hold
+  a short form (the owner decides).
   §1 carries it first. RC1-22's proposal (17 words, "The test sits where
   composition is weak: at its severity, smoke's own survival effect was too
   small to detect in calibration.") or RC2-18's clause on row 4 are the
-  options; the owner decides, possibly inside the post-check lesson
+  options; the owner decides, possibly beside the lesson
   (RC2-18). There is no V3Q id for it, so the marker uses V3Q7, the
   abstract's lesson.
 
@@ -114,4 +113,6 @@ hazard-blind lead.
   orchestrator, per its header). W1 edited only its `title` and
   `description` lines.
 - **budget (final pass, RM-1).** The abstract is 242 words; 8 words are
-  left for the check's sentence (see "Holes" above).
+  free (the check's sentence is removed; see "Holes" above).
+
+**NO INTERACTION CHECK (2026-10-19).** The owner ruled that the post hoc interaction check is not run before submission and leaves the paper (decision log, NO INTERACTION CHECK (docs/decision_log.md:6495)). §6.4 and Appendix G were removed; §6.5 became §6.4 and Appendices H, I and J became G, H and I. This file was updated to match: the HOLE:INTERACTION marker and its fill comment were removed; no prose sentence changed.

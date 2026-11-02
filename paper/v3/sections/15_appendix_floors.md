@@ -2,20 +2,6 @@
 
 ### C Floors
 
-<!-- STUB-SPEC
-JOB: Every floor with its GPU, run length, artifact and reps; the exhibits §5 no longer tells, one line each; the floors explorer.
-WRITER: W3.
-BUDGET: about 500 prose words plus the floor table.
-FROM: P1 §6.1 C; P2 §3 A2.
-ROWS: METH-1 to METH-5, DX-34, DX-35, DX-38, DX-302, DX-403, DX-412, V5-1, V5-2, V5-3, CB-7, COM-5, HW-1, DES-13.
-FIGURES: Figure C1 floors_explorer (gloss once: labelled “M5.1e”, labelled “M6.0”, labelled “per card”, labelled “beat”). Block below.
-REGISTERED STRINGS: VOID (comms condition (iii), COM-5).
-EVERY OTHER CAVEAT in checks/caveats.yaml: pointer only ("§6.3", "Appendix D"), never restated. C26: any sentence about the interaction check carries "post hoc".
-NOT HERE: "floors grow ordered by curriculum difficulty" (an untested hypothesis, METH-5 note); "every bar has a floor".
-V2 MATERIAL: paper/v2/sections/13_appendix_locks_floors.md (C); 08_methodology.md (the exhibits).
-DEPENDENCIES: §5 points here.
--->
-
 A floor is the standard deviation of a metric over identical reruns at one seed, so it measures nondeterminism alone (§5). The table lists every floor this paper uses, with its GPU, run length, artifact and number of reruns. Paired values are ISO, then JOINT. Each study is named in plain words with its code (key in Appendix D). The confirmatory arms' floors use eight<!-- N:DX-403 --> reruns, because four leave a standard deviation uncertain by about ±40 %<!-- N:DX-303 -->.
 
 | study (code) | GPU, updates | arms or artifact | reruns | floor | use |

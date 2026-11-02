@@ -1,5 +1,10 @@
 # Owner questions after Paper v3 phase 1 (one page)
 
+> **SETTLED 2026-10-19.** Q0 is moot (*NO INTERACTION CHECK BEFORE
+> SUBMISSION*). Every other question is at its default and C1–C6 are as the
+> builder recommended (*OWNER QUESTIONS SETTLED*). This page is the record of
+> what was asked.
+
 Orchestrator, 2026-10-16. Answer by ID ("Q1 T5, Q2 b, …"); "default" accepts
 what the text does now. Full options: `DISPOSITIONS.md` §4–§5; evidence:
 `REVIEW.md` and `review/`. Every answer is transcribed into the decision log

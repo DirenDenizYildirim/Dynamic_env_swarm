@@ -10,7 +10,7 @@
 
 ## sections/01_introduction.md
 
-28 sentences, 28 rows: 0 without a row, 0 stale, 0 support problems.
+27 sentences, 27 rows: 0 without a row, 0 stale, 0 support problems.
 
 ## sections/02_related_work.md
 
@@ -30,15 +30,11 @@
 
 ## sections/06_example_design.md
 
-35 sentences, 35 rows: 0 without a row, 0 stale, 0 support problems.
+34 sentences, 34 rows: 0 without a row, 0 stale, 0 support problems.
 
 ## sections/07_example_results.md
 
 47 sentences, 47 rows: 0 without a row, 0 stale, 0 support problems.
-
-## sections/08_interaction_check.md
-
-11 sentences, 11 rows: 0 without a row, 0 stale, 0 support problems.
 
 ## sections/09_example_lesson.md
 
@@ -50,7 +46,7 @@
 
 ## sections/11_using_che.md
 
-12 sentences, 12 rows: 0 without a row, 0 stale, 0 support problems.
+11 sentences, 11 rows: 0 without a row, 0 stale, 0 support problems.
 
 ## sections/12_conclusion.md
 
@@ -58,7 +54,7 @@
 
 ## sections/13_appendix_proofs.md
 
-117 sentences, 117 rows: 0 without a row, 0 stale, 0 support problems.
+116 sentences, 116 rows: 0 without a row, 0 stale, 0 support problems.
 
 ## sections/14_appendix_locks.md
 
@@ -80,23 +76,19 @@
 
 45 sentences, 45 rows: 0 without a row, 0 stale, 0 support problems.
 
-## sections/19_appendix_interaction.md
-
-38 sentences, 38 rows: 0 without a row, 0 stale, 0 support problems.
-
 ## sections/20_appendix_episodes.md
 
 17 sentences, 17 rows: 0 without a row, 0 stale, 0 support problems.
 
 ## sections/21_appendix_making.md
 
-21 sentences, 21 rows: 0 without a row, 0 stale, 0 support problems.
+19 sentences, 19 rows: 0 without a row, 0 stale, 0 support problems.
 
 ## sections/alt/13_appendix_proofs.no_prop4.md
 
-108 sentences, 108 rows: 0 without a row, 0 stale, 0 support problems.
+107 sentences, 107 rows: 0 without a row, 0 stale, 0 support problems.
 
 ## sections/alt/13_appendix_proofs.thm1_tf.md
 
-117 sentences, 117 rows: 0 without a row, 0 stale, 0 support problems.
+116 sentences, 116 rows: 0 without a row, 0 stale, 0 support problems.
 

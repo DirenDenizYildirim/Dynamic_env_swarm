@@ -10,7 +10,7 @@ review relayed in the ruling; BRIEF §9.3).
 
 | # | sentence (verbatim) | support | change from v2, and why |
 |---|---|---|---|
-| 1 | 6.5 What the example teaches | framing | new (heading as the stub fixes it) |
+| 1 | 6.4 What the example teaches | framing | new (heading as the stub fixes it); NO INTERACTION CHECK (2026-10-19): 6.5 → 6.4 after §6.4 (the interaction check) was removed |
 | 2 | By the identity of §6.2, holding the active share fixed while co-occurrence changes forces per-coupling frequency to change with it, so matching the active share alone cannot isolate co-occurrence. | X4-1 (active share = μ_A + μ_B − p at every arm); DES-14; paper_v3_prompt.md:207 (V3-F4: "So matching the active share alone cannot isolate co-occurrence") | new; replaces v2 09:133 ("We make one recommendation ... match the share of training that contains an active stressor"). HOME of C27. Derivation in words: at fixed active share a, μ_A + μ_B = a + p, so a change in p moves the frequencies. The identity itself is not restated (home §6.2, C08) |
 | 3 | None of the study's designs isolates it. | DES-9; DES-14; X4-1; paper/v3/BRIEF.md:464 (§9.2 trap 2: "No design in the record isolates co-occurrence") | new |
 | 4 | The sweep holds each coupling's frequency fixed and moves the fire-only share with co-occurrence. | DES-9 ("sweep: m = 0.5, n = p"); SEC-5; che/bench/results/phase6/secondary/secondary.md:7-16 | new. "The sweep" matches §6.3's name for it (W4) |
@@ -22,12 +22,9 @@ review relayed in the ruling; BRIEF §9.3).
 
 ## Markers left
 
-- `<!-- HOLE:INTERACTION -->` ×1, between the identity half and the future
-  work: (b) the check-dependent half of the lesson, labelled post hoc, and (c)
-  the one advice sentence, "We suggest, from this one environment, …", never
-  after "therefore", "so" or "thus".
-- If the results are not back in time (WRITERS §4 item 4, V3Q7), the
-  section already reads as the identity lesson without the HOLE. A candidate
+- None for the check: the `<!-- HOLE:INTERACTION -->` marker was removed
+  (NO INTERACTION CHECK, 2026-10-19), and the section is the identity
+  lesson plus future work. A candidate
   advice sentence that does not depend on the check, for the owner to accept
   or drop (not written into the section): "We suggest, from this one
   environment, that studies comparing joint and isolated training report each
@@ -38,5 +35,6 @@ review relayed in the ruling; BRIEF §9.3).
 
 ## Findings
 
-- **Word budget.** 138 prose words now, against 150; the HOLE's one or two
-  sentences will bring it to about 175. Fix round: RC2-7 and RN2-4 (X5-3).
+- **Word budget.** 138 prose words, against 150 (the HOLE is removed). Fix round: RC2-7 and RN2-4 (X5-3).
+
+**NO INTERACTION CHECK (2026-10-19).** The owner ruled that the post hoc interaction check is not run before submission and leaves the paper (decision log, NO INTERACTION CHECK (docs/decision_log.md:6495)). §6.4 and Appendix G were removed; §6.5 became §6.4 and Appendices H, I and J became G, H and I. This file was updated to match: heading re-numbered; the HOLE removed; no prose sentence changed.
