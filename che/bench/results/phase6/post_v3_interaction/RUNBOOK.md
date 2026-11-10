@@ -1,11 +1,12 @@
-# Interaction check: the owner's runbook (eval-only, θ\* only)
+# Interaction check: the owner's runbook (eval-only, θ\* and High)
 
 For the owner, who rents the GPU and runs the job (or hands the box to a
 session; decision log: *BOX HANDOVER*). The plan is `PLAN.md` in this folder,
-as amended on 2026-10-17 (*PLAN AMENDMENT*). It must be **committed, OK'd by
+as amended on 2026-10-17 (*PLAN AMENDMENT*) and on 2026-11-10 (*GO/NO-GO
+PROBE*, which adds High severity). It must be **committed, OK'd by
 you, and publicly timestamped (step 0.7) before step 1**. Nothing here trains.
-Expected spend is about 2.3–3.6 GPU-hours plus setup, which is an estimate and
-not a trigger (PLAN §3).
+Expected spend is about 4.1–6.4 GPU-hours of evals, plus setup and the
+checkpoint upload (step 2), which is an estimate and not a trigger (PLAN §3).
 
 Commands run from the repository root unless a step says otherwise. Write
 down the values marked ✎ as you go; the last step needs them.
@@ -71,6 +72,11 @@ down the values marked ✎ as you go; the last step needs them.
 2. Copy the 164 archives into the same paths under the box's tree
    (`che/bench/results/phase6/g1_conf_5090/` and `.../g1_iso4_5090/`).
    The committed `SHA256_CKPT.txt` files are already there from the tree.
+   **The box bills while this copy runs.** On 2026-10-16 the laptop uploaded
+   at about 1.04 MB/s (decision log, *BOX HANDOVER*), which makes 7.4 GB
+   about 2 hours. If the 2026-09-27 backup on your cloud server can be
+   downloaded from the box directly, do that instead: it should be much
+   faster. Either way the next step checks every archive.
 3. On the box, from the repo root:
 
    ```
@@ -98,7 +104,7 @@ which this job does not need.
 DRY_RUN=1 bash che/scripts/run_interaction_evals.sh | head -3
 ```
 
-It must print `interaction evals planned: 865  (blocks: main floor)`.
+It must print `interaction evals planned: 1557  (blocks: main floor)`.
 
 ## 5. Run
 
@@ -157,5 +163,5 @@ Give the next session the three files and the ✎ values. That session:
   settings;
 - run the analysis on the box, or look at the numbers to decide anything
   about the run;
-- run Low or High: they are not authorized (*PAPER V3 PHASE 1 START*
-  item 2).
+- run Low, or anything at High beyond the plan's four conditions: they are
+  not authorized (*GO/NO-GO PROBE* item 2).

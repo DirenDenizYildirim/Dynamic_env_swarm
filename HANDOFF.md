@@ -1,5 +1,17 @@
-# HANDOFF — session state for the next model (rewritten 2026-09-27; updated 2026-09-28; v3 pointers 2026-10-12, 2026-10-16)
+# HANDOFF — session state for the next model (rewritten 2026-09-27; updated 2026-09-28; v3 pointers 2026-10-12, 2026-10-16; probe pointer 2026-11-10)
 
+> **Start here (2026-11-10).** The owner is weighing whether to rework the
+> paper, not submit the 2026-11-03 revision as it stands (decision log,
+> *GO/NO-GO PROBE*). Spending is staged. Step 1 is the interaction check,
+> reopened as an eval-only probe with High severity added: 1557 evals, about
+> $3.5–4.7 (an estimate). The code, configs, tests and amended plan are
+> committed on `claude/amazing-johnson-1vtrd1` (which now contains
+> `claude/fervent-newton-ws5yub`). **Nothing runs until the owner OKs the
+> amended `post_v3_interaction/PLAN.md`** (its §7 go/no-go reading and §12),
+> says where the checkpoints come from, and rents a box; then `RUNBOOK.md`,
+> from the laptop. Step 2 (new training runs) is not authorized and depends on
+> the probe's verdict. The 2026-11-03 revision of paper v3 is not in git.
+>
 > **Start here (2026-10-19).** The interaction check is not run and has left
 > the paper (decision log, *NO INTERACTION CHECK BEFORE SUBMISSION*); every
 > owner question is settled (*OWNER QUESTIONS SETTLED*). The final pass is

@@ -1,20 +1,23 @@
 #!/usr/bin/env bash
-# INTERACTION CHECK AT theta* — eval-only, POST HOC, over hash-verified archives.
+# INTERACTION CHECK AT theta* AND AT HIGH — eval-only, POST HOC, over
+# hash-verified archives.
 #
-# Authorized by docs/decision_log.md, PAPER V3 item 2(a); scope theta* ONLY
-# (PAPER V3 PHASE 1 START item 2); the links-open condition by PLAN AMENDMENT
-# item 4 (2026-10-17). The analysis plan is
-# che/bench/results/phase6/post_v3_interaction/PLAN.md, committed BEFORE this
-# runs. Nothing here trains.
+# Authorized by docs/decision_log.md, PAPER V3 item 2(a) (theta*; PAPER V3
+# PHASE 1 START item 2); the links-open condition by PLAN AMENDMENT item 4
+# (2026-10-17); the High-severity 2x2 by GO/NO-GO PROBE (2026-11-10). The
+# analysis plan is che/bench/results/phase6/post_v3_interaction/PLAN.md,
+# committed BEFORE this runs. Nothing here trains.
 #
 #   MAIN    the final (T* = 1000) checkpoint of every ISO (72), JOINT (72) and
-#           ISO-4 (20) run, evaluated under the five conditions
-#           {neither, a_only, b_only, both, links_open} on the common draw
-#           (seed 0, 512 episodes). 164 x 5 = 820 evals. 'both' is theta*
-#           itself; 'links_open' is theta* with delta = 0.
+#           ISO-4 (20) run, evaluated under nine conditions on the common draw
+#           (seed 0, 512 episodes): at theta*, {neither, a_only, b_only, both,
+#           links_open} ('both' is theta* itself; 'links_open' is theta* with
+#           delta = 0); at High, {high_neither, high_a_only, high_b_only,
+#           high_both} ('high_both' is joint_high.yaml itself, theta* with
+#           beta = 0.70). 164 x 9 = 1476 evals.
 #   FLOOR   the eval self-floor on THIS card (per artifact: every condition is
 #           its own artifact): iso_s1, joint_s1, iso4_s1, each condition 3 more
-#           times. 3 x 5 x 3 = 45 evals. 865 in all.
+#           times. 3 x 9 x 3 = 81 evals. 1557 in all.
 #
 # IT REFUSES WITHOUT THE PLAN. PLAN.md must exist and be non-empty; its sha256
 # is recorded in provenance.txt, and the analysis refuses unless that hash
@@ -60,7 +63,12 @@ CFG_A_ONLY=${CFG_A_ONLY:-che/configs/interaction_a_only.yaml}
 CFG_B_ONLY=${CFG_B_ONLY:-che/configs/interaction_b_only.yaml}
 CFG_BOTH=${CFG_BOTH:-che/configs/theta_star_holdout.yaml}
 CFG_LINKS_OPEN=${CFG_LINKS_OPEN:-che/configs/interaction_links_open.yaml}
-CONDITIONS="neither a_only b_only both links_open"
+# the High 2x2: 'high_both' is the all-on High config itself (PLAN.md §2).
+CFG_HIGH_NEITHER=${CFG_HIGH_NEITHER:-che/configs/interaction_high_neither.yaml}
+CFG_HIGH_A_ONLY=${CFG_HIGH_A_ONLY:-che/configs/interaction_high_a_only.yaml}
+CFG_HIGH_B_ONLY=${CFG_HIGH_B_ONLY:-che/configs/interaction_high_b_only.yaml}
+CFG_HIGH_BOTH=${CFG_HIGH_BOTH:-che/configs/joint_high.yaml}
+CONDITIONS="neither a_only b_only both links_open high_neither high_a_only high_b_only high_both"
 PY=${PY:-uv run --no-sync python}
 DRY_RUN=${DRY_RUN:-0}
 SCRATCH=${SCRATCH:-.interaction_scratch}
@@ -83,6 +91,8 @@ cfg_of () {
     neither) echo "$CFG_NEITHER" ;; a_only) echo "$CFG_A_ONLY" ;;
     b_only) echo "$CFG_B_ONLY" ;; both) echo "$CFG_BOTH" ;;
     links_open) echo "$CFG_LINKS_OPEN" ;;
+    high_neither) echo "$CFG_HIGH_NEITHER" ;; high_a_only) echo "$CFG_HIGH_A_ONLY" ;;
+    high_b_only) echo "$CFG_HIGH_B_ONLY" ;; high_both) echo "$CFG_HIGH_BOTH" ;;
     *) echo "FATAL: unknown condition $1" >&2; return 1 ;;
   esac
 }
@@ -204,7 +214,7 @@ done
 [ -n "$cur_dir" ] && rm -rf "$cur_dir"
 
 {
-  echo "stage: interaction check at theta* (POST HOC, eval-only; blocks: $BLOCKS)"
+  echo "stage: interaction check at theta* and High (POST HOC, eval-only; blocks: $BLOCKS)"
   echo "date_utc: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   echo "git_commit: ${GIT_COMMIT:-$(git rev-parse HEAD 2>/dev/null || echo UNKNOWN-PROVENANCE-GAP)}"
   echo "plan: $PLAN_FILE"
@@ -214,6 +224,7 @@ done
   echo "jax: $($PY -c 'import jax, jaxlib; print(jax.__version__, jaxlib.__version__)' 2>/dev/null || echo unknown)"
   echo "eval: n_episodes=$N_EVAL seed=$EVAL_SEED step=$T_STAR k_conf=$K_CONF k_iso4=$K_ISO4"
   echo "conditions: neither=$CFG_NEITHER a_only=$CFG_A_ONLY b_only=$CFG_B_ONLY both=$CFG_BOTH links_open=$CFG_LINKS_OPEN"
+  echo "conditions_high: high_neither=$CFG_HIGH_NEITHER high_a_only=$CFG_HIGH_A_ONLY high_b_only=$CFG_HIGH_B_ONLY high_both=$CFG_HIGH_BOTH"
   echo "floor: tags=$FLOOR_TAGS reps=$FLOOR_REPS"
   echo "archives: conf=$CONF_DIR iso4=$ISO4_DIR (each verified against SHA256_CKPT.txt before extraction)"
   echo "cross-config eval: declared via --allow-hash (training-config hash)"

@@ -1,22 +1,31 @@
-"""INTERACTION CHECK AT θ* — the analysis (POST HOC, out of every registered family).
+"""INTERACTION CHECK AT θ* AND AT HIGH — the analysis (POST HOC, out of every
+registered family).
 
 Implements `che/bench/results/phase6/post_v3_interaction/PLAN.md`, which was
 written and committed before any eval ran. Authorized by the decision log's
-PAPER V3 item 2(a); scope θ* only (PAPER V3 PHASE 1 START item 2); amended
-before the run by PLAN AMENDMENT (2026-10-17).
+PAPER V3 item 2(a) (θ*; PAPER V3 PHASE 1 START item 2); amended before the run
+by PLAN AMENDMENT (2026-10-17) and by GO/NO-GO PROBE (2026-11-10), which adds
+the High-severity 2×2, the main-effects family and the go/no-go reading.
 
-Per policy and co-primary (completion, survival rate):
+Per policy and co-primary (completion, survival rate), at each site (θ*, and
+High = the all-on config at β = 0.70):
 
     I = J(both) − J(a_only) − J(b_only) + J(neither)
+    A = J(a_only) − J(neither)           (Coupling A's effect, B off)
+    B = J(b_only) − J(neither)           (Coupling B's effect, A off)
+
+and at θ* only:
+
     D = J(links_open) − J(both)          (δ = 0 against δ = 1, both couplings on)
 
 Per arm (ISO 72, JOINT 72, ISO-4 20) and pooled (stratified by arm, weights
 k_a / 164): the mean, its SE from the artifact's own seed dispersion, and a
-Šidák interval over a family of 4 estimates × 2 co-primaries = 8. I and D are
-two separate families of 8 (PLAN §5). Main effects A and B and the logit-scale
-I are descriptive, with no reading rule (PLAN §4, §5). The eval self-floor and
-the cross-card check are PLAN §6; the reading rules, the disagreement rule and
-the context table are PLAN §7.
+Šidák interval. I at θ*, D, and I at High are three separate families of
+4 estimates × 2 co-primaries = 8 (PLAN §5). The main effects are one family of
+2 sites × 2 couplings × 2 co-primaries × 4 estimates = 32 (PLAN §5). The
+logit-scale I is descriptive, with no reading rule. The eval self-floor and the
+cross-card checks are PLAN §6; the reading rules, the disagreement rule, the
+context table and the go/no-go reading are PLAN §7.
 
 It REFUSES (exit 2) unless:
   - PLAN.md is tracked by git and unchanged since its last commit;
@@ -61,6 +70,8 @@ from che.scripts.m62_report import METRICS, T_STAR, _sidak_z
 from che.scripts.make_interaction_configs import (
     ALL_CONDITIONS,
     CONDITIONS,
+    HIGH,
+    HIGH_CONDITIONS,
     LINKS_OPEN,
     config_path,
 )
@@ -73,11 +84,22 @@ N = NormalDist()
 ARMS = (("iso", 72), ("joint", 72), ("iso4", 20))
 K_TOTAL = sum(k for _, k in ARMS)  # 164
 CONDS = tuple(CONDITIONS)  # the 2×2 of I: neither, a_only, b_only, both
-ALL_CONDS = tuple(ALL_CONDITIONS)  # + links_open (θ* with δ = 0), PLAN §2
+HIGH_CONDS = tuple(HIGH_CONDITIONS)  # the same 2×2 at High, in the same order
+ALL_CONDS = tuple(ALL_CONDITIONS)  # θ*'s 2×2, links_open, High's 2×2 (PLAN §2)
+# site -> {cell of the 2×2 -> the condition that fills it at that site}
+SITES = {
+    "theta_star": dict(zip(CONDS, CONDS, strict=True)),
+    "high": dict(zip(CONDS, HIGH_CONDS, strict=True)),
+}
+COUPLINGS = (("A", "a_only"), ("B", "b_only"))  # main effect -> its 2×2 cell
 ESTIMATES = ("iso", "joint", "iso4", "pooled")
-M_FAMILY = len(ESTIMATES) * len(FAMILY)  # 8: the I family (PLAN §5)
+M_FAMILY = len(ESTIMATES) * len(FAMILY)  # 8: the I family at θ* (PLAN §5)
 M_FAMILY_D = len(ESTIMATES) * len(FAMILY)  # 8: the D family, separate (PLAN §5)
-Z_ALPHA = _sidak_z(M_FAMILY)  # ≈ 2.73, the same for both families of 8
+M_FAMILY_HIGH = len(ESTIMATES) * len(FAMILY)  # 8: the I family at High, separate
+# 32: the main-effects family, 2 sites × 2 couplings × 2 co-primaries × 4
+M_FAMILY_MAIN = len(SITES) * len(COUPLINGS) * len(FAMILY) * len(ESTIMATES)
+Z_ALPHA = _sidak_z(M_FAMILY)  # ≈ 2.73, the same for all three families of 8
+Z_ALPHA_MAIN = _sidak_z(M_FAMILY_MAIN)  # ≈ 3.15
 Z_POWER = N.inv_cdf(0.80)
 FLOOR_TAGS = ("iso_s1", "joint_s1", "iso4_s1")
 FLOOR_REPS = 3  # extra copies per (tag, condition); the main eval is copy 0
@@ -90,6 +112,10 @@ GRID_EVAL_DIRS = {
     "iso4": P6 / "g1_iso4_5090",
 }
 GRID_EVAL_CONFIG = "che/configs/theta_star_holdout.yaml"
+# The post-unblind High readout's evals of the same checkpoints (all-on High),
+# for the High cross-card check (PLAN §6): read, not graded.
+HIGH_EVAL_DIR = P6 / "post_high"
+HIGH_EVAL_CONFIG = HIGH
 # Γ, the registered contrast, for the context table (PLAN §7): read, not graded.
 GAMMA_SOURCE = P6 / "unblind" / "unblind.json"
 # --verify compares floats to this relative tolerance (PLAN §9): the floor's
@@ -100,10 +126,13 @@ VERIFIED_KEYS = (
     "family",
     "floor",
     "cross_card",
+    "cross_card_high",
     "interaction",
+    "interaction_high",
     "links_open",
     "headline",
     "main_effects",
+    "go_no_go",
     "condition_means",
     "arm_differences",
     "logit",
@@ -227,7 +256,7 @@ def read_eval(f: Path, config: str) -> dict:
 
 
 def load_main(out: Path) -> dict[str, dict[str, dict[str, dict]]]:
-    """arm -> tag -> condition -> metric means, for all five conditions."""
+    """arm -> tag -> condition -> metric means, for all nine conditions."""
     data: dict = {}
     for arm, k in ARMS:
         data[arm] = {
@@ -242,6 +271,22 @@ def load_main(out: Path) -> dict[str, dict[str, dict[str, dict]]]:
 
 def interaction(j: dict[str, float]) -> float:
     return j["both"] - j["a_only"] - j["b_only"] + j["neither"]
+
+
+def cells(j: dict, site: str, metric: str | None = None) -> dict:
+    """One site's 2×2, keyed by cell (neither, a_only, b_only, both).
+
+    `j` maps condition -> value, or condition -> metric means with `metric`.
+    """
+    return {
+        cell: j[cond] if metric is None else j[cond][metric]
+        for cell, cond in SITES[site].items()
+    }
+
+
+def main_effect(j: dict[str, float], cell: str) -> float:
+    """A coupling's effect with the other coupling off: J(cell) − J(neither)."""
+    return j[cell] - j["neither"]
 
 
 def links_effect(j: dict[str, float]) -> float:
@@ -277,10 +322,12 @@ def pooled(per_arm: dict[str, dict]) -> dict:
     return {"k": K, "mean": m, "sd": float("nan"), "se": se}
 
 
-def grade(est: dict, floor_sd: float, what: str = "INTERACTION") -> dict:
+def grade(
+    est: dict, floor_sd: float, what: str = "INTERACTION", z_alpha: float = Z_ALPHA
+) -> dict:
     """Šidák interval, observed-SE MDE80 and the PLAN §7 reading."""
     m, se = est["mean"], est["se"]
-    lo, hi = m - Z_ALPHA * se, m + Z_ALPHA * se
+    lo, hi = m - z_alpha * se, m + z_alpha * se
     excludes0 = lo > 0 or hi < 0
     hurdle = floor_sd == 0.0 or abs(m) > 2.0 * floor_sd
     out = dict(est)
@@ -288,7 +335,7 @@ def grade(est: dict, floor_sd: float, what: str = "INTERACTION") -> dict:
         {
             "z": m / se if se > 0 else (math.copysign(math.inf, m) if m else 0.0),
             "ci_sidak": [lo, hi],
-            "mde80_observed_se": (Z_ALPHA + Z_POWER) * se,
+            "mde80_observed_se": (z_alpha + Z_POWER) * se,
             "exclusion_bound": max(abs(lo), abs(hi)),
             "floor_hurdle_met": hurdle,
         }
@@ -324,7 +371,7 @@ def headline(graded: dict[str, dict]) -> dict:
 
 
 def describe(est: dict) -> dict:
-    """Descriptive interval for a main effect: same form, no reading rule."""
+    """Descriptive interval (the logit block): same form, no reading rule."""
     out = dict(est)
     out["ci_sidak"] = [
         est["mean"] - Z_ALPHA * est["se"],
@@ -348,10 +395,17 @@ def _mean64(a: np.ndarray) -> float:
 
 
 def sec_floor(out: Path) -> dict:
-    """A-vs-A copies per (tag, condition): bitwise identity, sd, sd of I and D."""
+    """A-vs-A copies per (tag, condition): bitwise identity and sd; then the sd
+    of every graded contrast across the copies (I and the main effects at each
+    site, D at θ*)."""
     rows = []
     worst = {m: 0.0 for m in FAMILY}
     worst_d = {m: 0.0 for m in FAMILY}
+    worst_high = {m: 0.0 for m in FAMILY}
+    worst_main = {
+        site: {m: {name: 0.0 for name, _ in COUPLINGS} for m in FAMILY}
+        for site in SITES
+    }
     for tag in FLOOR_TAGS:
         copies = {c: [out / "evals" / f"eval_{tag}_{c}"] for c in ALL_CONDS}
         for c in ALL_CONDS:
@@ -369,18 +423,40 @@ def sec_floor(out: Path) -> dict:
                 means[c] = [_mean64(a) for a in arrs]
                 sds[c] = float(np.std(means[c], ddof=1))
             copy = [{c: means[c][r] for c in ALL_CONDS} for r in range(FLOOR_REPS + 1)]
-            sd_i = float(np.std([interaction(j) for j in copy], ddof=1))
+            sd_i = {
+                site: float(np.std([interaction(cells(j, site)) for j in copy], ddof=1))
+                for site in SITES
+            }
             sd_d = float(np.std([links_effect(j) for j in copy], ddof=1))
-            worst[m] = max(worst[m], sd_i)
+            sd_main = {
+                site: {
+                    name: float(
+                        np.std(
+                            [main_effect(cells(j, site), cell) for j in copy], ddof=1
+                        )
+                    )
+                    for name, cell in COUPLINGS
+                }
+                for site in SITES
+            }
+            worst[m] = max(worst[m], sd_i["theta_star"])
+            worst_high[m] = max(worst_high[m], sd_i["high"])
             worst_d[m] = max(worst_d[m], sd_d)
+            for site in SITES:
+                for name, _ in COUPLINGS:
+                    worst_main[site][m][name] = max(
+                        worst_main[site][m][name], sd_main[site][name]
+                    )
             rows.append(
                 {
                     "tag": tag,
                     "metric": m,
                     "identical": ident,
                     "copy_sd": sds,
-                    "sd_I": sd_i,
+                    "sd_I": sd_i["theta_star"],
+                    "sd_I_high": sd_i["high"],
                     "sd_D": sd_d,
+                    "sd_main": sd_main,
                 }
             )
     deterministic = all(all(r["identical"].values()) for r in rows)
@@ -388,17 +464,27 @@ def sec_floor(out: Path) -> dict:
         "rows": rows,
         "deterministic": deterministic,
         "floor_sd_I": worst,
+        "floor_sd_I_high": worst_high,
         "floor_sd_D": worst_d,
+        "floor_sd_main": worst_main,
     }
 
 
-def sec_cross_card(data: dict, grid_dirs: dict[str, Path]) -> dict:
-    """'both' evals against the grid's own θ* evals (descriptive, PLAN §6)."""
+def sec_cross_card(
+    data: dict,
+    grid_dirs: dict[str, Path],
+    cond: str = "both",
+    stem: str = "eval",
+    config: str = GRID_EVAL_CONFIG,
+) -> dict:
+    """One all-on condition against the earlier evals of the same checkpoints
+    (descriptive, PLAN §6): 'both' against the grid's own θ* evals, or
+    'high_both' against the post-unblind High readout's."""
     n_ident, diffs = 0, []
     for arm, k in ARMS:
         for t in _tags(arm, k):
-            g = read_eval(grid_dirs[arm] / f"eval_{t}.json", GRID_EVAL_CONFIG)
-            mine = data[arm][t]["both"]
+            g = read_eval(grid_dirs[arm] / f"{stem}_{t}.json", config)
+            mine = data[arm][t][cond]
             same = all(g[m] == mine[m] for m in FAMILY)
             n_ident += same
             if not same:
@@ -409,7 +495,7 @@ def sec_cross_card(data: dict, grid_dirs: dict[str, Path]) -> dict:
 # ------------------------------------------------------------------ analysis
 
 
-def sec_logit(data: dict) -> dict:
+def sec_logit(data: dict, site: str = "theta_star") -> dict:
     """I on the logit scale (PLAN §5): descriptive, no family, no reading rule.
 
     Per policy, I is recomputed on the logit of each condition's mean. A policy
@@ -423,9 +509,9 @@ def sec_logit(data: dict) -> dict:
         for arm, k in ARMS:
             xs = []
             for t in _tags(arm, k):
-                j = data[arm][t]
-                if all(0.0 < j[c][m] < 1.0 for c in CONDS):
-                    xs.append(interaction({c: _logit(j[c][m]) for c in CONDS}))
+                j = cells(data[arm][t], site, m)
+                if all(0.0 < v < 1.0 for v in j.values()):
+                    xs.append(interaction({c: _logit(v) for c, v in j.items()}))
             left_out[arm] = k - len(xs)
             per_arm[arm] = one_sample(xs) if len(xs) >= 2 else None
         est = {a: describe(v) if v else None for a, v in per_arm.items()}
@@ -452,8 +538,21 @@ def sec_context(res: dict, gamma_source: Path) -> dict:
         out[m] = {
             "I": {e: res["interaction"][m][e]["mean"] for e in ESTIMATES},
             "D": {e: res["links_open"][m][e]["mean"] for e in ESTIMATES},
-            "A": {e: res["main_effects"][m]["A"][e]["mean"] for e in ESTIMATES},
-            "B": {e: res["main_effects"][m]["B"][e]["mean"] for e in ESTIMATES},
+            "A": {
+                e: res["main_effects"]["theta_star"][m]["A"][e]["mean"]
+                for e in ESTIMATES
+            },
+            "B": {
+                e: res["main_effects"]["theta_star"][m]["B"][e]["mean"]
+                for e in ESTIMATES
+            },
+            "I_high": {e: res["interaction_high"][m][e]["mean"] for e in ESTIMATES},
+            "A_high": {
+                e: res["main_effects"]["high"][m]["A"][e]["mean"] for e in ESTIMATES
+            },
+            "B_high": {
+                e: res["main_effects"]["high"][m]["B"][e]["mean"] for e in ESTIMATES
+            },
             "gamma_registered": {
                 "k": g["k"],
                 "mean": g["gamma"],
@@ -466,70 +565,158 @@ def sec_context(res: dict, gamma_source: Path) -> dict:
     return out
 
 
-def analyse(out: Path, grid_dirs: dict[str, Path], gamma_source: Path) -> dict:
+def _sign(x: float) -> int:
+    return (x > 0) - (x < 0)
+
+
+def sec_go_no_go(res: dict, gamma_source: Path) -> dict:
+    """PLAN §7: does each coupling change trained policies' outcomes anywhere?
+
+    A coupling BITES in a cell (site, co-primary) iff its pooled main effect is
+    DETECTABLE in the main-effects family, every arm's estimate has the pooled
+    sign, and its size is at least the registered design's 80 %-power detection
+    limit for that co-primary, (z_α + z_0.8) · sd(Γ), read from the unblinding
+    output as it stands. GO: both couplings bite somewhere. PARTIAL: one.
+    NO-GO: neither. A project decision aid, not a finding.
+    """
+    if not gamma_source.is_file():
+        raise Refusal(
+            f"{gamma_source} missing — the go/no-go size bar is read from it (PLAN §7)."
+        )
+    fam = json.loads(gamma_source.read_text())["primary"]["family"]
+    bar = {m: (fam[m]["z_alpha"] + Z_POWER) * fam[m]["sd_gamma"] for m in FAMILY}
+    couplings = {}
+    for name, _ in COUPLINGS:
+        rows = []
+        for site in SITES:
+            for m in FAMILY:
+                g = res["main_effects"][site][m][name]
+                pool = g["pooled"]
+                sgn = _sign(pool["mean"])
+                same_sign = sgn != 0 and all(
+                    _sign(g[a]["mean"]) == sgn for a, _ in ARMS
+                )
+                detectable = pool["sign"] is not None
+                large = abs(pool["mean"]) >= bar[m]
+                rows.append(
+                    {
+                        "site": site,
+                        "metric": m,
+                        "pooled_mean": pool["mean"],
+                        "detectable": detectable,
+                        "arms_share_the_pooled_sign": same_sign,
+                        "at_least_the_size_bar": large,
+                        "bites": detectable and same_sign and large,
+                    }
+                )
+        couplings[name] = {"cells": rows, "bites": any(r["bites"] for r in rows)}
+    n = sum(c["bites"] for c in couplings.values())
+    return {
+        "size_bar": bar,
+        "size_bar_source": "(z_alpha + z_0.80) * sd_gamma of the registered Γ",
+        "couplings": couplings,
+        "verdict": {2: "GO", 1: "PARTIAL", 0: "NO-GO"}[n],
+        "label": "a project decision aid (PLAN §7); POST HOC; not a finding",
+    }
+
+
+def analyse(
+    out: Path, grid_dirs: dict[str, Path], gamma_source: Path, high_dir: Path
+) -> dict:
     data = load_main(out)
     floor = sec_floor(out)
     cross = sec_cross_card(data, grid_dirs)
+    cross_high = sec_cross_card(
+        data,
+        {a: high_dir for a, _ in ARMS},
+        cond="high_both",
+        stem="evalhigh",
+        config=HIGH_EVAL_CONFIG,
+    )
     res: dict = {
         "family": {
             "m": M_FAMILY,
             "m_links_open": M_FAMILY_D,
+            "m_high": M_FAMILY_HIGH,
+            "m_main": M_FAMILY_MAIN,
             "z_alpha": Z_ALPHA,
+            "z_alpha_main": Z_ALPHA_MAIN,
             "estimates": list(ESTIMATES),
             "metrics": list(FAMILY),
+            "sites": list(SITES),
         },
         "floor": floor,
         "cross_card": cross,
+        "cross_card_high": cross_high,
         "interaction": {},
+        "interaction_high": {},
         "links_open": {},
         "headline": {},
-        "main_effects": {},
+        "main_effects": {site: {} for site in SITES},
         "condition_means": {},
-        "arm_differences": {},
+        "arm_differences": {site: {} for site in SITES},
     }
+    floor_i = {"theta_star": floor["floor_sd_I"], "high": floor["floor_sd_I_high"]}
+    key_i = {"theta_star": "interaction", "high": "interaction_high"}
     for m in FAMILY:
-        per_arm, per_arm_d = {}, {}
-        for arm, k in ARMS:
-            js = [data[arm][t] for t in _tags(arm, k)]
-            per_arm[arm] = one_sample(
-                [interaction({c: j[c][m] for c in CONDS}) for j in js]
+        for site in SITES:
+            per_arm = {
+                arm: one_sample(
+                    [interaction(cells(data[arm][t], site, m)) for t in _tags(arm, k)]
+                )
+                for arm, k in ARMS
+            }
+            ests = dict(per_arm)
+            ests["pooled"] = pooled(per_arm)
+            res[key_i[site]][m] = {
+                e: grade(ests[e], floor_i[site][m]) for e in ESTIMATES
+            }
+            res["arm_differences"][site][m] = {  # descriptive only (PLAN §5)
+                "joint_minus_iso": per_arm["joint"]["mean"] - per_arm["iso"]["mean"],
+                "iso4_minus_iso": per_arm["iso4"]["mean"] - per_arm["iso"]["mean"],
+            }
+            eff = {}
+            for name, cell in COUPLINGS:
+                pa = {
+                    arm: one_sample(
+                        [
+                            main_effect(cells(data[arm][t], site, m), cell)
+                            for t in _tags(arm, k)
+                        ]
+                    )
+                    for arm, k in ARMS
+                }
+                pa["pooled"] = pooled({a: pa[a] for a, _ in ARMS})
+                eff[name] = {
+                    e: grade(
+                        pa[e],
+                        floor["floor_sd_main"][site][m][name],
+                        f"EFFECT OF COUPLING {name}",
+                        Z_ALPHA_MAIN,
+                    )
+                    for e in ESTIMATES
+                }
+            res["main_effects"][site][m] = eff
+        per_arm_d = {
+            arm: one_sample(
+                [
+                    links_effect({c: data[arm][t][c][m] for c in ALL_CONDS})
+                    for t in _tags(arm, k)
+                ]
             )
-            per_arm_d[arm] = one_sample(
-                [links_effect({c: j[c][m] for c in ALL_CONDS}) for j in js]
-            )
-        ests = dict(per_arm)
-        ests["pooled"] = pooled(per_arm)
+            for arm, k in ARMS
+        }
         ests_d = dict(per_arm_d)
         ests_d["pooled"] = pooled(per_arm_d)
-        res["interaction"][m] = {
-            e: grade(ests[e], floor["floor_sd_I"][m]) for e in ESTIMATES
-        }
         res["links_open"][m] = {
             e: grade(ests_d[e], floor["floor_sd_D"][m], "LINKS-OPEN EFFECT")
             for e in ESTIMATES
         }
         res["headline"][m] = {
             "interaction": headline(res["interaction"][m]),
+            "interaction_high": headline(res["interaction_high"][m]),
             "links_open": headline(res["links_open"][m]),
         }
-        res["arm_differences"][m] = {  # descriptive only (PLAN §5)
-            "joint_minus_iso": per_arm["joint"]["mean"] - per_arm["iso"]["mean"],
-            "iso4_minus_iso": per_arm["iso4"]["mean"] - per_arm["iso"]["mean"],
-        }
-        eff = {}
-        for name, cond in (("A", "a_only"), ("B", "b_only")):
-            pa = {
-                arm: one_sample(
-                    [
-                        data[arm][t][cond][m] - data[arm][t]["neither"][m]
-                        for t in _tags(arm, k)
-                    ]
-                )
-                for arm, k in ARMS
-            }
-            pa["pooled"] = pooled({a: pa[a] for a, _ in ARMS})
-            eff[name] = {e: describe(pa[e]) for e in ESTIMATES}
-        res["main_effects"][m] = eff
     for arm, k in ARMS:
         res["condition_means"][arm] = {
             c: {
@@ -538,8 +725,9 @@ def analyse(out: Path, grid_dirs: dict[str, Path], gamma_source: Path) -> dict:
             }
             for c in ALL_CONDS
         }
-    res["logit"] = sec_logit(data)
+    res["logit"] = {site: sec_logit(data, site) for site in SITES}
     res["context"] = sec_context(res, gamma_source)
+    res["go_no_go"] = sec_go_no_go(res, gamma_source)
     return res
 
 
@@ -551,15 +739,18 @@ def _f(x: float, p: int = 4) -> str:
 
 
 BLIND = (
-    "θ* only (nothing about Low or High); fixed policies (not whether training on "
-    "co-occurrence teaches anything — that is Γ); the additive scale on bounded "
-    "rates (the logit block is descriptive only); one eval draw (seed 0, 512 "
-    "episodes); δ = 1.0 in the 2×2, so interactions with comms denial are not "
-    "measured, and D measures opening the links only with both couplings on; the "
-    "arms met the five conditions differently in training (familiarity), which "
-    "the pool averages and does not remove; not a cross-arm test; post hoc "
-    "(PLAN §8)."
+    "θ* and High only (nothing about Low); fixed policies at 1000 updates, so an "
+    "effect here says a coupling changes these policies' outcomes at evaluation, "
+    "not that it changes what a policy learns, and not whether training on "
+    "co-occurrence teaches anything (that is Γ); a feed-forward policy with no "
+    "memory; the additive scale on bounded rates (the logit block is descriptive "
+    "only); one eval draw (seed 0, 512 episodes); δ = 1.0 in both 2×2s, so "
+    "interactions with comms denial are not measured, and D measures opening the "
+    "links only with both couplings on, at θ* only; the arms met the nine "
+    "conditions differently in training (familiarity), which the pool averages "
+    "and does not remove; not a cross-arm test; post hoc (PLAN §8)."
 )
+SITE_NAME = {"theta_star": "θ*", "high": "High"}
 
 
 def _family_table(res: dict, key: str, title: str) -> list[str]:
@@ -595,7 +786,10 @@ def _family_table(res: dict, key: str, title: str) -> list[str]:
 
 def render(res: dict) -> str:
     fam = res["family"]
-    L = ["# Interaction check at θ* — POST HOC, out of every registered family", ""]
+    L = [
+        "# Interaction check at θ* and High — POST HOC, out of every registered family",
+        "",
+    ]
     pv = res["provenance"]
     L += [
         f"git `{pv['git_commit']}` (dirty files: {pv['git_dirty_files']}) · "
@@ -605,35 +799,95 @@ def render(res: dict) -> str:
         "",
     ]
     L += [
-        "I = J(both) − J(A only) − J(B only) + J(neither) and D = J(links open) − "
-        "J(both), per policy. Two Šidák families, each of "
-        f"{fam['m']} intervals (4 estimates × 2 co-primaries), z_α = "
-        f"{fam['z_alpha']:.4f}. Normal intervals on each artifact's own seed "
-        "dispersion; pooled is stratified by arm (weights k/164). Every interval "
-        "is conditional on the common eval draw.",
+        "I = J(both) − J(A only) − J(B only) + J(neither), per policy, at θ* and "
+        "at High (the all-on config at β = 0.70), and D = J(links open) − J(both) "
+        f"at θ*. Three Šidák families, each of {fam['m']} intervals (4 estimates "
+        f"× 2 co-primaries), z_α = {fam['z_alpha']:.4f}. The main effects A = "
+        "J(A only) − J(neither) and B = J(B only) − J(neither) are one family of "
+        f"{fam['m_main']} intervals (2 sites × 2 couplings × 2 co-primaries × 4 "
+        f"estimates), z_α = {fam['z_alpha_main']:.4f}. Normal intervals on each "
+        "artifact's own seed dispersion; pooled is stratified by arm (weights "
+        "k/164). Every interval is conditional on the common eval draw.",
+        "",
+    ]
+    gn = res["go_no_go"]
+    L += [
+        f"## Go/no-go: **{gn['verdict']}** (PLAN §7; a project decision aid, not "
+        "a finding)",
+        "",
+        "A coupling bites in a cell iff its pooled main effect is detectable, "
+        "every arm's estimate has the pooled sign, and its size is at least the "
+        "registered design's 80 %-power detection limit: "
+        + ", ".join(f"{m} {v:.4f}" for m, v in gn["size_bar"].items())
+        + ". GO: both couplings bite somewhere. PARTIAL: one. NO-GO: neither.",
+        "",
+        "| coupling | site | metric | pooled effect | detectable | arms share "
+        "the sign | at least the size bar | bites |",
+        "|---|---|---|---|---|---|---|---|",
+    ]
+    for name, c in gn["couplings"].items():
+        for r in c["cells"]:
+            L.append(
+                f"| {name} | {SITE_NAME[r['site']]} | {r['metric']} | "
+                f"{_f(r['pooled_mean'])} | {r['detectable']} | "
+                f"{r['arms_share_the_pooled_sign']} | "
+                f"{r['at_least_the_size_bar']} | **{r['bites']}** |"
+            )
+    L += [
+        "",
+        "; ".join(
+            f"Coupling {name} bites somewhere: **{c['bites']}**"
+            for name, c in gn["couplings"].items()
+        )
+        + ".",
         "",
         "## Headline (PLAN §7: the pooled reading heads only if the arms agree)",
         "",
         "| metric | contrast | ISO | JOINT | ISO-4 | headline |",
         "|---|---|---|---|---|---|",
     ]
+    names = {"interaction": "I at θ*", "interaction_high": "I at High"}
+    names["links_open"] = "D at θ*"
     for m in fam["metrics"]:
-        for key in ("interaction", "links_open"):
+        for key, nm in names.items():
             h = res["headline"][m][key]
             r = h["arm_readings"]
             tail = " (pooled = an average over the arms' exposures only)"
             L.append(
-                f"| {m} | {'I' if key == 'interaction' else 'D'} | {r['iso']} | "
+                f"| {m} | {nm} | {r['iso']} | "
                 f"{r['joint']} | {r['iso4']} | **{h['headline']}**"
                 f"{tail if h['pooled_is_average_only'] else ''} |"
             )
     L += [""]
-    L += _family_table(res, "interaction", "## Interaction I")
-    L += _family_table(res, "links_open", "## Links-open contrast D (δ = 0 − δ = 1)")
+    L += _family_table(res, "interaction", "## Interaction I at θ*")
+    L += _family_table(res, "interaction_high", "## Interaction I at High")
+    L += _family_table(
+        res, "links_open", "## Links-open contrast D at θ* (δ = 0 − δ = 1)"
+    )
     L += [
-        "Reading rule (PLAN §7), for I and for D: DETECTABLE iff the Šidák CI "
-        "excludes 0 and the floor hurdle is met; otherwise an exclusion |·| < "
-        'bound, never "no interaction" or "no effect".',
+        "Reading rule (PLAN §7), for I, D and the main effects: DETECTABLE iff "
+        "the Šidák CI excludes 0 and the floor hurdle is met; otherwise an "
+        'exclusion |·| < bound, never "no interaction" or "no effect".',
+        "",
+        f"## Main effects (one family of {fam['m_main']}, z_α = "
+        f"{fam['z_alpha_main']:.4f})",
+        "",
+        "| site | metric | effect | estimate | k | mean | SE | Šidák CI | "
+        "exclusion bound | reading |",
+        "|---|---|---|---|---|---|---|---|---|---|",
+    ]
+    for site in fam["sites"]:
+        for m in fam["metrics"]:
+            for name, _ in COUPLINGS:
+                for e in fam["estimates"]:
+                    g = res["main_effects"][site][m][name][e]
+                    L.append(
+                        f"| {SITE_NAME[site]} | {m} | {name} | {e} | {g['k']} | "
+                        f"{_f(g['mean'])} | {g['se']:.5f} | "
+                        f"[{_f(g['ci_sidak'][0])}, {_f(g['ci_sidak'][1])}] | "
+                        f"{g['exclusion_bound']:.4f} | {_label(g)} |"
+                    )
+    L += [
         "",
         "## Context (PLAN §7: every reading beside A, B and Γ, same units)",
         "",
@@ -642,7 +896,7 @@ def render(res: dict) -> str:
     ]
     for m in fam["metrics"]:
         cx = res["context"][m]
-        for q in ("I", "D", "A", "B"):
+        for q in ("I", "D", "A", "B", "I_high", "A_high", "B_high"):
             v = cx[q]
             L.append(
                 f"| {m} | {q} | "
@@ -659,79 +913,84 @@ def render(res: dict) -> str:
         "",
         "Survival in agents per episode (× 12): "
         + "; ".join(
-            f"{q} {_f(sv[q]['pooled'] * N_AGENTS, 3)}" for q in ("I", "D", "A", "B")
+            f"{q} {_f(sv[q]['pooled'] * N_AGENTS, 3)}"
+            for q in ("I", "D", "A", "B", "I_high", "A_high", "B_high")
         )
         + f"; Γ {_f(sv['gamma_registered']['mean'] * N_AGENTS, 3)} (pooled / Γ).",
         "",
     ]
     fl = res["floor"]
+    worst_main = max(
+        v
+        for st in fl["floor_sd_main"].values()
+        for mm in st.values()
+        for v in mm.values()
+    )
     L += [
         "## Eval self-floor (A-vs-A on the run card, per condition)",
         "",
-        f"deterministic on this card: **{fl['deterministic']}** · floor sd of I: "
+        f"deterministic on this card: **{fl['deterministic']}** · floor sd of I "
+        "at θ*: "
         + ", ".join(f"{m} {v:.2e}" for m, v in fl["floor_sd_I"].items())
-        + " · floor sd of D: "
-        + ", ".join(f"{m} {v:.2e}" for m, v in fl["floor_sd_D"].items()),
+        + " · of I at High: "
+        + ", ".join(f"{m} {v:.2e}" for m, v in fl["floor_sd_I_high"].items())
+        + " · of D: "
+        + ", ".join(f"{m} {v:.2e}" for m, v in fl["floor_sd_D"].items())
+        + " · largest floor sd of a main effect: "
+        + f"{worst_main:.2e}",
         "",
-        "| checkpoint | metric | identical (" + "/".join(ALL_CONDS) + ") | "
-        "sd of I | sd of D |",
-        "|---|---|---|---|---|",
-    ]
-    for r in fl["rows"]:
-        ident = "/".join(str(r["identical"][c]) for c in ALL_CONDS)
-        L.append(
-            f"| {r['tag']} | {r['metric']} | {ident} | {r['sd_I']:.2e} | "
-            f"{r['sd_D']:.2e} |"
-        )
-    cc = res["cross_card"]
-    L += [
-        "",
-        "## Cross-card check: 'both' against the grid's own θ* evals",
-        "",
-        f"{cc['n_identical']} of {cc['n']} identical on both co-primaries "
-        "(descriptive).",
-        "",
-    ]
-    if cc["differences"]:
-        L += ["| tag | Δ completion | Δ survival |", "|---|---|---|"]
-        L += [
-            f"| {d['tag']} | {_f(d['completion'])} | {_f(d['survival_rate'])} |"
-            for d in cc["differences"]
-        ]
-        L.append("")
-    L += [
-        "## Main effects (descriptive, no reading rule)",
-        "",
-        "| metric | effect | estimate | mean | Šidák-width CI |",
-        "|---|---|---|---|---|",
-    ]
-    for m in fam["metrics"]:
-        for name in ("A", "B"):
-            for e in fam["estimates"]:
-                d = res["main_effects"][m][name][e]
-                L.append(
-                    f"| {m} | {name} | {e} | {_f(d['mean'])} | "
-                    f"[{_f(d['ci_sidak'][0])}, {_f(d['ci_sidak'][1])}] |"
-                )
-    L += [
-        "",
-        "## I on the logit scale (descriptive, no family, no reading rule)",
-        "",
-        "| metric | estimate | k used | left out | mean | Šidák-width CI |",
+        "| checkpoint | metric | conditions identical | sd of I at θ* | "
+        "sd of I at High | sd of D |",
         "|---|---|---|---|---|---|",
     ]
-    for m in fam["metrics"]:
-        lg = res["logit"][m]
-        for e in fam["estimates"]:
-            d = lg["estimates"][e]
-            out_n = sum(lg["left_out"].values()) if e == "pooled" else lg["left_out"][e]
-            if d is None:
-                L.append(f"| {m} | {e} | — | {out_n} | not computable | |")
-                continue
-            L.append(
-                f"| {m} | {e} | {d['k']} | {out_n} | {_f(d['mean'])} | "
-                f"[{_f(d['ci_sidak'][0])}, {_f(d['ci_sidak'][1])}] |"
-            )
+    for r in fl["rows"]:
+        n_ident = sum(bool(r["identical"][c]) for c in ALL_CONDS)
+        L.append(
+            f"| {r['tag']} | {r['metric']} | {n_ident} of {len(ALL_CONDS)} | "
+            f"{r['sd_I']:.2e} | {r['sd_I_high']:.2e} | {r['sd_D']:.2e} |"
+        )
+    for key, title in (
+        ("cross_card", "'both' against the grid's own θ* evals"),
+        ("cross_card_high", "'high_both' against the post-unblind High readout"),
+    ):
+        cc = res[key]
+        L += [
+            "",
+            f"## Cross-card check: {title}",
+            "",
+            f"{cc['n_identical']} of {cc['n']} identical on both co-primaries "
+            "(descriptive).",
+            "",
+        ]
+        if cc["differences"]:
+            L += ["| tag | Δ completion | Δ survival |", "|---|---|---|"]
+            L += [
+                f"| {d['tag']} | {_f(d['completion'])} | {_f(d['survival_rate'])} |"
+                for d in cc["differences"]
+            ]
+            L.append("")
+    L += [
+        "## I on the logit scale (descriptive, no family, no reading rule)",
+        "",
+        "| site | metric | estimate | k used | left out | mean | Šidák-width CI |",
+        "|---|---|---|---|---|---|---|",
+    ]
+    for site in fam["sites"]:
+        for m in fam["metrics"]:
+            lg = res["logit"][site][m]
+            for e in fam["estimates"]:
+                d = lg["estimates"][e]
+                out_n = (
+                    sum(lg["left_out"].values()) if e == "pooled" else lg["left_out"][e]
+                )
+                nm = SITE_NAME[site]
+                if d is None:
+                    L.append(f"| {nm} | {m} | {e} | — | {out_n} | not computable | |")
+                    continue
+                L.append(
+                    f"| {nm} | {m} | {e} | {d['k']} | {out_n} | {_f(d['mean'])} | "
+                    f"[{_f(d['ci_sidak'][0])}, {_f(d['ci_sidak'][1])}] |"
+                )
     L += [
         "",
         "## Condition means (descriptive)",
@@ -750,9 +1009,10 @@ def render(res: dict) -> str:
         "",
         "Arm differences in Ī (descriptive, no test): "
         + "; ".join(
-            f"{m}: JOINT − ISO {_f(v['joint_minus_iso'])}, ISO-4 − ISO "
-            f"{_f(v['iso4_minus_iso'])}"
-            for m, v in res["arm_differences"].items()
+            f"{SITE_NAME[site]} {m}: JOINT − ISO {_f(v['joint_minus_iso'])}, "
+            f"ISO-4 − ISO {_f(v['iso4_minus_iso'])}"
+            for site, ms in res["arm_differences"].items()
+            for m, v in ms.items()
         ),
         "",
         f"Blind to: {BLIND}",
@@ -769,6 +1029,7 @@ def run(
     log: bool = True,
     grid_dirs: dict[str, Path] | None = None,
     gamma_source: Path | None = None,
+    high_dir: Path | None = None,
 ) -> dict:
     plan_info = plan_guard(plan)
     prov = provenance_guard(out, plan_info)
@@ -777,7 +1038,9 @@ def run(
         grid_dirs = {a: repo / d for a, d in GRID_EVAL_DIRS.items()}
     if gamma_source is None:
         gamma_source = repo / GAMMA_SOURCE
-    res = analyse(out, grid_dirs, gamma_source)
+    if high_dir is None:
+        high_dir = repo / HIGH_EVAL_DIR
+    res = analyse(out, grid_dirs, gamma_source, high_dir)
     res["timestamp"] = _dt.datetime.now(_dt.UTC).isoformat(timespec="seconds")
     res["provenance"] = {**plan_info, **prov, **tree, "allow_dirty": allow_dirty}
     res["label"] = (
@@ -827,7 +1090,11 @@ def _diff(a, b, path: str = "") -> list[str]:
 
 
 def verify(
-    out: Path, plan: Path, grid_dirs: dict[str, Path], gamma_source: Path
+    out: Path,
+    plan: Path,
+    grid_dirs: dict[str, Path],
+    gamma_source: Path,
+    high_dir: Path,
 ) -> dict:
     """PLAN §9: recompute the committed report without version history.
 
@@ -862,7 +1129,7 @@ def verify(
         at_run_identical = at_run.read_bytes() == plan.read_bytes()
         if not at_run_identical:
             raise Refusal(f"{at_run} differs from {plan}.")
-    fresh = json.loads(json.dumps(analyse(out, grid_dirs, gamma_source)))
+    fresh = json.loads(json.dumps(analyse(out, grid_dirs, gamma_source, high_dir)))
     diffs = [
         d for k in VERIFIED_KEYS for d in _diff(committed.get(k), fresh.get(k), f"/{k}")
     ]
@@ -925,6 +1192,7 @@ def main(argv: list[str] | None = None) -> None:
                 plan,
                 {a: repo / d for a, d in GRID_EVAL_DIRS.items()},
                 repo / GAMMA_SOURCE,
+                repo / HIGH_EVAL_DIR,
             )
         except Refusal as r:
             print(f"REFUSED: {r.msg}")

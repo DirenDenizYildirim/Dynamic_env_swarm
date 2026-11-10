@@ -1,15 +1,18 @@
-"""The interaction check at θ* (POST HOC, eval-only; PAPER V3 item 2(a)).
+"""The interaction check at θ* and at High (POST HOC, eval-only; PAPER V3 item
+2(a); GO/NO-GO PROBE, 2026-11-10).
 
-Configs: each 2×2 condition is θ* with exactly its κ values replaced, the
-links-open condition is θ* with exactly δ set to 0 (PLAN AMENDMENT item 4), and
-'both' is θ*'s own file. Run script: refuses without the plan, plans exactly
-PLAN.md's 865 evals, declares every cross-config eval, verifies archives, and
-asserts its results archive (one real CPU end-to-end run on a tiny
-checkpoint). Analysis: refuses an uncommitted or edited plan, a run that did
-not record the committed plan, and a partial family; computes I, D, the
-stratified pool, the PLAN §7 readings, the disagreement headline, the context
-table and the logit block correctly on synthetic artifacts; and its --verify
-mode recomputes the committed report without git and catches a changed eval.
+Configs: each 2×2 condition is its base (θ*, or the all-on High config) with
+exactly its κ values replaced, the links-open condition is θ* with exactly δ
+set to 0 (PLAN AMENDMENT item 4), and 'both' / 'high_both' are the bases' own
+files. Run script: refuses without the plan, plans exactly PLAN.md's 1557
+evals, declares every cross-config eval, verifies archives, and asserts its
+results archive (one real CPU end-to-end run on a tiny checkpoint). Analysis:
+refuses an uncommitted or edited plan, a run that did not record the committed
+plan, and a partial family; computes I at both sites, D, the main effects, the
+stratified pool, the PLAN §7 readings, the disagreement headline, the go/no-go
+reading, the context table and the logit block correctly on synthetic
+artifacts; and its --verify mode recomputes the committed report without git
+and catches a changed eval.
 """
 
 from __future__ import annotations
@@ -37,6 +40,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "che" / "scripts" / "run_interaction_evals.sh"
 PLAN = REPO_ROOT / "che/bench/results/phase6/post_v3_interaction/PLAN.md"
 THETA_STAR = REPO_ROOT / MIC.THETA_STAR
+HIGH = REPO_ROOT / MIC.HIGH
 
 
 # ------------------------------------------------------------------ configs
@@ -50,13 +54,39 @@ def test_both_is_theta_star_itself():
     assert MIC.config_path("both") == "che/configs/theta_star_holdout.yaml"
 
 
+def test_high_both_is_the_all_on_high_config_itself():
+    assert MIC.config_path("high_both") == "che/configs/joint_high.yaml"
+    star, high = load_config(THETA_STAR), load_config(HIGH)
+    # the all-on High config is θ* with only β changed
+    want = dataclasses.replace(
+        star,
+        env=dataclasses.replace(
+            star.env, theta=dataclasses.replace(star.env.theta, beta=0.70)
+        ),
+    )
+    assert high == want
+
+
 KAPPA_CONDITIONS = tuple(c for c in MIC.NEW_CONDITIONS if c in MIC.CONDITIONS)
+HIGH_KAPPA_CONDITIONS = tuple(c for c in MIC.NEW_CONDITIONS if c in MIC.HIGH_CONDITIONS)
 
 
 def test_condition_sets():
     assert KAPPA_CONDITIONS == ("neither", "a_only", "b_only")
-    assert MIC.ALL_CONDITIONS == ("neither", "a_only", "b_only", "both", "links_open")
+    assert HIGH_KAPPA_CONDITIONS == ("high_neither", "high_a_only", "high_b_only")
+    assert MIC.ALL_CONDITIONS == (
+        "neither",
+        "a_only",
+        "b_only",
+        "both",
+        "links_open",
+        "high_neither",
+        "high_a_only",
+        "high_b_only",
+        "high_both",
+    )
     assert MIC.LINKS_OPEN in MIC.NEW_CONDITIONS
+    assert tuple(MIC.HIGH_CONDITIONS.values()) == tuple(MIC.CONDITIONS.values())
 
 
 @pytest.mark.parametrize("cond", KAPPA_CONDITIONS)
@@ -75,6 +105,24 @@ def test_condition_is_theta_star_with_only_its_kappas_replaced(cond):
     assert got == want
     assert got.env.theta.delta == t.delta == 1.0  # δ stays at θ*'s value
     assert got.env.theta.beta == t.beta == 0.49
+
+
+@pytest.mark.parametrize("cond", HIGH_KAPPA_CONDITIONS)
+def test_high_condition_is_all_on_high_with_only_its_kappas_replaced(cond):
+    high = load_config(HIGH)
+    got = load_config(REPO_ROOT / MIC.config_path(cond))
+    a_on, b_on = MIC.HIGH_CONDITIONS[cond]
+    t = high.env.theta
+    assert t.kappa_A > 0 and t.kappa_B > 0
+    want_theta = dataclasses.replace(
+        t, kappa_A=t.kappa_A if a_on else 0.0, kappa_B=t.kappa_B if b_on else 0.0
+    )
+    want = dataclasses.replace(
+        high, env=dataclasses.replace(high.env, theta=want_theta)
+    )
+    assert got == want
+    assert got.env.theta.delta == t.delta == 1.0
+    assert got.env.theta.beta == t.beta == 0.70
 
 
 def test_links_open_is_theta_star_with_only_delta_zero():
@@ -97,17 +145,20 @@ def test_condition_kappa_table():
         "b_only": (0.0, t.kappa_B),
         "both": (t.kappa_A, t.kappa_B),
     }
+    want.update({f"high_{c}": v for c, v in want.items()})
     want["links_open"] = (t.kappa_A, t.kappa_B)
+    assert set(want) == set(MIC.ALL_CONDITIONS)
     for cond, (ka, kb) in want.items():
         th = load_config(REPO_ROOT / MIC.config_path(cond)).env.theta
         assert (th.kappa_A, th.kappa_B) == (ka, kb), cond
         assert th.delta == (0.0 if cond == MIC.LINKS_OPEN else t.delta), cond
+        assert th.beta == (0.70 if cond in MIC.HIGH_CONDITIONS else 0.49), cond
 
 
-def test_conditions_differ_from_theta_star_text_only_in_header_and_kappa_lines():
-    star = THETA_STAR.read_text().splitlines()
-    body = star[next(i for i, ln in enumerate(star) if ln.startswith("env:")) :]
+def test_conditions_differ_from_their_base_text_only_in_header_and_kappa_lines():
     for cond in MIC.NEW_CONDITIONS:
+        star = (REPO_ROOT / MIC.base_path(cond)).read_text().splitlines()
+        body = star[next(i for i, ln in enumerate(star) if ln.startswith("env:")) :]
         new = (REPO_ROOT / MIC.config_path(cond)).read_text().splitlines()
         nbody = new[next(i for i, ln in enumerate(new) if ln.startswith("env:")) :]
         assert len(nbody) == len(body)
@@ -152,18 +203,19 @@ def _plan_lines(r) -> list[str]:
 def test_dry_run_plans_exactly_the_plan_md_evals():
     r = _run({"DRY_RUN": "1"})
     assert r.returncode == 0, r.stderr
-    assert "planned: 865" in r.stdout
+    assert "planned: 1557" in r.stdout
     lines = _plan_lines(r)
     main = [ln for ln in lines if ln.startswith("eval_")]
     floor = [ln for ln in lines if ln.startswith("floor_")]
-    assert len(main) == 164 * 5 == 820 and len(floor) == 3 * 5 * 3 == 45
+    assert len(main) == 164 * 9 == 1476 and len(floor) == 3 * 9 * 3 == 81
     assert all("step=1000" in ln for ln in lines)
+    stem = re.compile(r"eval_(?:iso|joint|iso4)_s\d+_(.+)")
     for cond in MIC.ALL_CONDITIONS:
-        mine = [ln for ln in main if ln.split()[0].endswith(f"_{cond}")]
+        mine = [ln for ln in main if stem.fullmatch(ln.split()[0]).group(1) == cond]
         assert len(mine) == 164
         assert all(f"cfg={MIC.config_path(cond)}" in ln for ln in mine)
     iso4 = [ln for ln in main if ln.startswith("eval_iso4_")]
-    assert len(iso4) == 100 and all("g1_iso4_5090/ckpt_iso4_s" in ln for ln in iso4)
+    assert len(iso4) == 180 and all("g1_iso4_5090/ckpt_iso4_s" in ln for ln in iso4)
     assert all("g1_conf_5090/ckpt_" in ln for ln in main if ln not in iso4)
     assert {ln.split()[0] for ln in floor} == {
         f"floor_{t}_{c}_rep{r}"
@@ -209,10 +261,14 @@ def test_script_defaults_mirror_the_analysis_design():
 
 def test_analysis_family_mirrors_the_plan():
     assert IA.K_TOTAL == 164 and IA.M_FAMILY == 8 and IA.M_FAMILY_D == 8
+    assert IA.M_FAMILY_HIGH == 8 and IA.M_FAMILY_MAIN == 32
     assert IA.Z_ALPHA == pytest.approx(2.7270, abs=1e-3)
+    assert IA.Z_ALPHA_MAIN == pytest.approx(3.1556, abs=1e-3)
+    assert tuple(IA.SITES) == ("theta_star", "high")
+    assert IA.SITES["high"]["both"] == "high_both"
     txt = PLAN.read_text()
-    assert "≈ 2.73" in txt and "865" in txt
-    assert "two separate families" in txt
+    assert "≈ 2.73" in txt and "≈ 3.15" in txt and "1557" in txt
+    assert "three separate families" in txt and "family of 32" in txt
 
 
 TINY = """env:
@@ -236,13 +292,14 @@ train:
 
 @pytest.mark.skipif(shutil.which("zstd") is None, reason="tar --zstd needs zstd")
 def test_end_to_end_floor_block_on_cpu(tmp_path):
-    """One real run: verify, extract, eval x 5 conditions, archive, assert;
+    """One real run: verify, extract, eval x 9 conditions, archive, assert;
     then a resume that skips everything; then a tampered archive that fails."""
     from che.train.ippo import train
 
     cfgs = {}
     for cond in MIC.ALL_CONDITIONS:
-        a_on, b_on = MIC.CONDITIONS.get(cond, (True, True))
+        on = {**MIC.CONDITIONS, **MIC.HIGH_CONDITIONS}
+        a_on, b_on = on.get(cond, (True, True))
         d = 0.0 if cond == MIC.LINKS_OPEN else 1.0
         p = tmp_path / f"{cond}.yaml"
         p.write_text(
@@ -277,7 +334,7 @@ def test_end_to_end_floor_block_on_cpu(tmp_path):
     }
     r = _run(env, cwd=REPO_ROOT)
     assert r.returncode == 0, r.stdout + r.stderr
-    assert "done=5 skipped=0 failed=0" in r.stdout and "ARCHIVE OK" in r.stdout
+    assert "done=9 skipped=0 failed=0" in r.stdout and "ARCHIVE OK" in r.stdout
     for c in MIC.ALL_CONDITIONS:
         d = json.loads((out / "floor" / f"floor_iso_s1_{c}_rep1.json").read_text())
         assert d["ckpt_step"] == 2 and d["config"] == cfgs[c]
@@ -295,7 +352,7 @@ def test_end_to_end_floor_block_on_cpu(tmp_path):
     assert "provenance.txt" in listed and "timings.txt" in listed
 
     r = _run(env, cwd=REPO_ROOT)  # resume: nothing re-evaluated
-    assert r.returncode == 0 and "done=0 skipped=5 failed=0" in r.stdout
+    assert r.returncode == 0 and "done=0 skipped=9 failed=0" in r.stdout
 
     (conf / "SHA256_CKPT.txt").write_text(f"{'0' * 64}  ckpt_iso_s1.tar.zst\n")
     shutil.rmtree(out / "floor")
@@ -335,12 +392,23 @@ def _git(cwd, *a):
 
 
 def _synthetic(
-    tmp: Path, i_true, noise: float = 0.002, floor_jitter=0.0, d_true: float = 0.0
+    tmp: Path,
+    i_true,
+    noise: float = 0.002,
+    floor_jitter=0.0,
+    d_true: float = 0.0,
+    i_high: float = 0.0,
+    a_eff=-0.02,
+    b_eff: float = -0.01,
+    a_high: float = -0.05,
+    b_high: float = -0.04,
 ):
     """A temp repo holding a committed plan and a synthetic returned run.
 
-    `i_true` is one planted I for every arm, or a dict arm -> I; `d_true` is
-    the planted links-open effect D.
+    `i_true` is one planted I at θ* for every arm, or a dict arm -> I; `d_true`
+    is the planted links-open effect D; `i_high` the planted I at High.
+    `a_eff` and `b_eff` are the planted main effects at θ* (`a_eff` may be a
+    dict arm -> effect), `a_high` and `b_high` those at High.
     """
     rng = np.random.default_rng(0)
     repo = tmp / "repo"
@@ -353,23 +421,36 @@ def _synthetic(
     _git(repo, "add", ".")
     _git(repo, "commit", "-qm", "plan")
     grid = {a: tmp / "grid" / a for a, _ in IA.ARMS}
-    effects = {"neither": 0.0, "a_only": -0.02, "b_only": -0.01}
+    high_dir = tmp / "grid" / "post_high"
+    sev = -0.1  # High's own shift: every High condition sits lower
     for arm, k in IA.ARMS:
         i_arm = i_true[arm] if isinstance(i_true, dict) else i_true
+        a_arm = a_eff[arm] if isinstance(a_eff, dict) else a_eff
         for s in range(1, k + 1):
             tag = f"{arm}_s{s}"
             base = 0.5 + rng.normal(0, 0.01)
             eps = rng.normal(0, noise)
             eps_d = rng.normal(0, noise)
-            both = -0.03 + i_arm + eps
+            eps_h = rng.normal(0, noise)
+            both = a_arm + b_eff + i_arm + eps
+            shifts = {
+                "neither": 0.0,
+                "a_only": a_arm,
+                "b_only": b_eff,
+                "both": both,
+                MIC.LINKS_OPEN: both + d_true + eps_d,
+                "high_neither": sev,
+                "high_a_only": sev + a_high,
+                "high_b_only": sev + b_high,
+                "high_both": sev + a_high + b_high + i_high + eps_h,
+            }
             for c in CONDS:
-                shift = effects.get(c, both)
-                if c == MIC.LINKS_OPEN:
-                    shift = both + d_true + eps_d
-                v = np.full(512, base + shift, np.float32)
+                v = np.full(512, base + shifts[c], np.float32)
                 _write_eval(out / "evals" / f"eval_{tag}_{c}", MIC.config_path(c), v, v)
                 if c == "both":
                     _write_eval(grid[arm] / f"eval_{tag}", IA.GRID_EVAL_CONFIG, v, v)
+                if c == "high_both":
+                    _write_eval(high_dir / f"evalhigh_{tag}", IA.HIGH_EVAL_CONFIG, v, v)
                 if tag in IA.FLOOR_TAGS:
                     for r in range(1, IA.FLOOR_REPS + 1):
                         j = v + np.float32(floor_jitter * r * (c == "both"))
@@ -391,7 +472,14 @@ def _synthetic(
     }
     gamma.write_text(json.dumps({"primary": {"family": fam}}))
     grid["gamma_source"] = gamma
+    grid["high_dir"] = high_dir
     return repo, out, grid
+
+
+def _verify(loose, grid):
+    return IA.verify(
+        loose, loose / "PLAN.md", _grid(grid), grid["gamma_source"], grid["high_dir"]
+    )
 
 
 def _refused(fn, needle: str):
@@ -414,6 +502,7 @@ def _analyse(repo, out, grid, **kw):
         log=False,
         grid_dirs=_grid(grid),
         gamma_source=grid["gamma_source"],
+        high_dir=grid["high_dir"],
         **kw,
     )
 
@@ -428,9 +517,13 @@ def test_detects_a_planted_negative_interaction(tmp_path):
         arms = {a: res["interaction"][m][a] for a, _ in IA.ARMS}
         want = sum(k / 164 * arms[a]["mean"] for a, k in IA.ARMS)
         assert pool["mean"] == pytest.approx(want)
-        ma = res["main_effects"][m]["A"]["pooled"]["mean"]
+        ma = res["main_effects"]["theta_star"][m]["A"]["pooled"]["mean"]
         assert ma == pytest.approx(-0.02, abs=1e-5)
+        # the High family is its own: nothing planted there
+        high = res["interaction_high"][m]["pooled"]
+        assert high["reading"] == "NO DETECTABLE INTERACTION"
     assert res["floor"]["deterministic"] and res["cross_card"]["n_identical"] == 164
+    assert res["cross_card_high"]["n_identical"] == 164
     assert (out / "interaction_report.md").is_file()
     assert "POST HOC" in (out / "interaction_report.md").read_text()
 
@@ -513,6 +606,7 @@ def test_refuses_a_dirty_tree_without_the_flag(tmp_path):
             log=False,
             grid_dirs=_grid(grid),
             gamma_source=grid["gamma_source"],
+            high_dir=grid["high_dir"],
         ),
         "DIRTY",
     )
@@ -566,6 +660,102 @@ def test_context_puts_every_reading_beside_a_b_and_gamma(tmp_path):
     _refused(lambda: _analyse(repo, out, grid), "context table")
 
 
+def test_detects_a_planted_interaction_at_high_only(tmp_path):
+    repo, out, grid = _synthetic(tmp_path, i_true=0.0, i_high=-0.02)
+    res = _analyse(repo, out, grid)
+    for m in IA.FAMILY:
+        high = res["interaction_high"][m]["pooled"]
+        assert high["reading"] == "DETECTABLE INTERACTION" and high["sign"] == "-"
+        assert high["mean"] == pytest.approx(-0.02, abs=1e-3)
+        star = res["interaction"][m]["pooled"]
+        assert star["reading"] == "NO DETECTABLE INTERACTION"  # θ* untouched
+        h = res["headline"][m]["interaction_high"]
+        assert h["headline"] == "DETECTABLE INTERACTION -"
+        assert res["context"][m]["I_high"]["pooled"] == high["mean"]
+    text = (out / "interaction_report.md").read_text()
+    assert "Interaction I at High" in text and "I at High" in text
+
+
+def test_main_effects_are_one_graded_family_at_both_sites(tmp_path):
+    repo, out, grid = _synthetic(tmp_path, i_true=0.0)
+    res = _analyse(repo, out, grid)
+    assert res["family"]["m_main"] == 32
+    want = {"theta_star": {"A": -0.02, "B": -0.01}, "high": {"A": -0.05, "B": -0.04}}
+    for site, effs in want.items():
+        for m in IA.FAMILY:
+            for name, v in effs.items():
+                g = res["main_effects"][site][m][name]
+                assert set(g) == set(IA.ESTIMATES)
+                pool = g["pooled"]
+                assert pool["mean"] == pytest.approx(v, abs=1e-5)
+                assert pool["reading"] == f"DETECTABLE EFFECT OF COUPLING {name}"
+                assert pool["sign"] == "-"
+    # the interval is the main-effects family's, not the families of 8
+    g = res["main_effects"]["high"]["survival_rate"]["A"]["iso"]
+    assert g["mde80_observed_se"] == pytest.approx(
+        (IA.Z_ALPHA_MAIN + IA.Z_POWER) * g["se"]
+    )
+
+
+def _bar():
+    return (2.2365 + IA.Z_POWER) * 0.0022  # the synthetic Γ's detection limit
+
+
+def test_go_no_go_go_when_both_couplings_bite_somewhere(tmp_path):
+    repo, out, grid = _synthetic(tmp_path, i_true=0.0)
+    gn = _analyse(repo, out, grid)["go_no_go"]
+    assert gn["verdict"] == "GO"
+    assert gn["size_bar"] == {m: pytest.approx(_bar()) for m in IA.FAMILY}
+    assert all(c["bites"] for c in gn["couplings"].values())
+    assert len(gn["couplings"]["A"]["cells"]) == 4  # 2 sites × 2 co-primaries
+    assert "Go/no-go: **GO**" in (out / "interaction_report.md").read_text()
+
+
+def test_go_no_go_partial_when_one_coupling_is_below_the_size_bar(tmp_path):
+    small = -0.001  # detectable in the synthetic run, but below the size bar
+    assert abs(small) < _bar()
+    repo, out, grid = _synthetic(tmp_path, i_true=0.0, b_eff=small, b_high=small)
+    res = _analyse(repo, out, grid)
+    gn = res["go_no_go"]
+    assert gn["verdict"] == "PARTIAL"
+    assert gn["couplings"]["A"]["bites"] and not gn["couplings"]["B"]["bites"]
+    for r in gn["couplings"]["B"]["cells"]:
+        assert r["detectable"] and not r["at_least_the_size_bar"] and not r["bites"]
+
+
+def test_go_no_go_no_go_when_neither_coupling_bites(tmp_path):
+    repo, out, grid = _synthetic(
+        tmp_path, i_true=0.0, a_eff=0.0, b_eff=0.0, a_high=0.0, b_high=0.0
+    )
+    gn = _analyse(repo, out, grid)["go_no_go"]
+    assert gn["verdict"] == "NO-GO"
+    assert not any(c["bites"] for c in gn["couplings"].values())
+    assert "Go/no-go: **NO-GO**" in (out / "interaction_report.md").read_text()
+
+
+def test_go_no_go_needs_every_arm_to_share_the_pooled_sign(tmp_path):
+    split = {"iso": -0.02, "joint": -0.02, "iso4": 0.02}
+    repo, out, grid = _synthetic(
+        tmp_path, i_true=0.0, a_eff=split, a_high=0.0, b_eff=0.0, b_high=0.0
+    )
+    gn = _analyse(repo, out, grid)["go_no_go"]
+    cell = next(
+        r
+        for r in gn["couplings"]["A"]["cells"]
+        if r["site"] == "theta_star" and r["metric"] == "survival_rate"
+    )
+    assert cell["detectable"] and cell["at_least_the_size_bar"]
+    assert not cell["arms_share_the_pooled_sign"] and not cell["bites"]
+    assert gn["verdict"] == "NO-GO"
+
+
+def test_go_no_go_refuses_without_the_registered_contrast(tmp_path):
+    repo, out, grid = _synthetic(tmp_path, i_true=0.0)
+    res = _analyse(repo, out, grid)
+    grid["gamma_source"].unlink()
+    _refused(lambda: IA.sec_go_no_go(res, grid["gamma_source"]), "size bar")
+
+
 def test_logit_block_is_descriptive_and_counts_what_it_leaves_out(tmp_path):
     repo, out, grid = _synthetic(tmp_path, i_true=-0.02)
     f = out / "evals" / "eval_iso_s2_neither.json"
@@ -573,7 +763,12 @@ def test_logit_block_is_descriptive_and_counts_what_it_leaves_out(tmp_path):
     d["metrics"]["completion"]["mean"] = 1.0  # no finite logit
     f.write_text(json.dumps(d))
     res = _analyse(repo, out, grid)
-    lg = res["logit"]
+    lg = res["logit"]["theta_star"]
+    assert res["logit"]["high"]["completion"]["left_out"] == {
+        "iso": 0,
+        "joint": 0,
+        "iso4": 0,
+    }
     assert lg["completion"]["left_out"] == {"iso": 1, "joint": 0, "iso4": 0}
     assert lg["survival_rate"]["left_out"] == {"iso": 0, "joint": 0, "iso4": 0}
     assert lg["completion"]["estimates"]["iso"]["k"] == 71
@@ -595,7 +790,7 @@ def test_verify_without_git_matches_then_catches_a_changed_eval(tmp_path):
     repo, out, grid = _synthetic(tmp_path, i_true=-0.02, d_true=0.01)
     _analyse(repo, out, grid)
     loose = _detach(out, tmp_path)
-    v = IA.verify(loose, loose / "PLAN.md", _grid(grid), grid["gamma_source"])
+    v = _verify(loose, grid)
     assert v["matches"] and v["n_differences"] == 0
     assert any("version history" in n for n in v["not_checked"])
     assert "VERIFIED" in IA.render_verify(v)
@@ -604,23 +799,17 @@ def test_verify_without_git_matches_then_catches_a_changed_eval(tmp_path):
     d = json.loads(f.read_text())
     d["metrics"]["survival_rate"]["mean"] += 0.01
     f.write_text(json.dumps(d))
-    v = IA.verify(loose, loose / "PLAN.md", _grid(grid), grid["gamma_source"])
+    v = _verify(loose, grid)
     assert not v["matches"] and v["n_differences"] > 0
     assert "MISMATCH" in IA.render_verify(v)
 
     (loose / "PLAN.md").write_text("another plan\n")
-    _refused(
-        lambda: IA.verify(loose, loose / "PLAN.md", _grid(grid), grid["gamma_source"]),
-        "the report was made under",
-    )
+    _refused(lambda: _verify(loose, grid), "the report was made under")
 
 
 def test_verify_refuses_without_a_report(tmp_path):
     repo, out, grid = _synthetic(tmp_path, i_true=0.0)
-    _refused(
-        lambda: IA.verify(out, out / "PLAN.md", _grid(grid), grid["gamma_source"]),
-        "nothing to verify against",
-    )
+    _refused(lambda: _verify(out, grid), "nothing to verify against")
 
 
 def test_verify_only_checks_every_needed_archive_and_evaluates_nothing(tmp_path):

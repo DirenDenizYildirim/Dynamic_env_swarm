@@ -6655,3 +6655,104 @@ downloadable to me so I can edit it with the disclosure footnote".
    private before upload.
 
 No constant, lock, test, registration or branch reading changes.
+
+
+## GO/NO-GO PROBE — the interaction check is reopened as a cheap eval-only probe, with High severity added; the amended plan waits for the owner's OK (owner, 2026-11-10)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before the commit. A Claude Code cloud session, on branch
+`claude/amazing-johnson-1vtrd1`. The owner uploaded the blind-review revision
+of paper v3 (2026-11-03, made outside the repository) and asked: "read the repo
+and the zip and tell me what do you think after that we can talk about how to
+salvage this".
+
+1. **The builder's assessment, as given. Not a ruling.** Do not submit the
+   2026-11-03 revision as it stands. The blind review's substantive points
+   stand, and that revision changed text only (its own "Not addressed" list).
+   Checked this session against committed data: in the 2000-update subsample
+   (`g1_t2000_5090/*.jsonl`, 4 seeds per arm, training-log values on each
+   arm's own mixture), completion rises from 0.817 to 0.940 (ISO) and from
+   0.792 to 0.930 (JOINT) between updates 1000 and 2000, and its between-seed
+   sd is largest during the climb (population sd over the 4 seeds, read at
+   updates 1100, 1200, 1400, 1600 and 1800: ISO 0.055, 0.059, 0.061, 0.039,
+   0.009; JOINT 0.078, 0.071, 0.056, 0.081, 0.072) and falls to 0.002 (ISO)
+   and 0.026 (JOINT) at 2000. So
+   the registered budget was read while training was still rising. The
+   builder's proposal: stage the spending. First an eval-only probe on the
+   existing checkpoints, then new training runs only if the probe shows the
+   couplings change outcomes.
+2. **The owner's rulings.**
+   - On whether to spend: "even a shot could make me spend the money since its
+     cheap but if it does not I might look elsewhere I am a student and 20
+     bucks is 20 bucks". On costing the probe from the committed plan: "yeah".
+   - On its scope, asked "the test severity only, or with high severity
+     added?": **"high severity added"**. This supersedes, for this run, the
+     "θ\* only" of *PAPER V3 PHASE 1 START* item 2. Low stays unauthorized.
+   - On where the checkpoints come from: "I am not sure about the backup maybe
+     I need to move the files to local first". **Open.**
+3. **The builder's reading, until the owner corrects it.** Item 2 reopens the
+   run that *NO INTERACTION CHECK BEFORE SUBMISSION* (2026-10-19) item 1
+   stopped. The rest of that entry stands for the v3 draft: this entry changes
+   no paper text, and it does not decide whether any number from the probe
+   enters a later paper. **No run is authorized until the owner OKs the
+   amended plan text** (item 5), as the plan itself requires.
+4. **What the builder changed this session** (all before any run; no eval has
+   ever run under any version of the plan):
+   - **Three generated configs**, `che/configs/interaction_high_{neither,
+     a_only,b_only}.yaml`: `joint_high.yaml` (θ\* with β = 0.70) with only its
+     κ lines rewritten. "high both" is `joint_high.yaml` itself. The four θ\*
+     condition files are byte-identical to before. `docs/locks.yaml` registers
+     the three under the existing `interaction_check` role with
+     `beta: beta_high`. No constant is added or changed.
+   - **The run script** plans nine conditions: 164 × 9 = 1476 main evals and
+     3 × 9 × 3 = 81 floor evals, **1557** in all (was 865).
+   - **The analysis** adds I at High as its own family of 8; grades the main
+     effects A and B at both sites as one family of 32 (they were descriptive,
+     at θ\* only); adds a second cross-card check against
+     `post_high/evalhigh_*.json`; and adds the go/no-go reading below.
+   - **The plan** (`post_v3_interaction/PLAN.md`) carries all of this in §2–§9
+     and a second amendment record, §12. Its sha256 at this commit is
+     `fc7e36ff7fdd8bf8e8474f37f387a3487a9616ab9886aa833403d53fe958c009`.
+   - **Tests:** `test_interaction_check.py` covers the new configs, the 1557
+     plan, I at High, the graded main effects and the go/no-go reading on
+     synthetic artifacts, and runs the nine conditions end to end on a CPU.
+5. **The go/no-go reading, proposed by the builder and waiting for the
+   owner's OK with the rest of the plan** (PLAN §7). A coupling *bites* in a
+   cell (a site and a co-primary) iff its pooled main effect is detectable in
+   the family of 32, every arm's estimate has the pooled sign, and its size is
+   at least the registered design's 80 %-power detection limit,
+   (z_α + z_0.80) · sd(Γ). Derived this session from
+   `phase6/unblind/unblind.json`: survival 0.006633 (sd(Γ) 0.0021550,
+   z_α 2.23648), completion 0.032877 (sd(Γ) 0.0106811). GO: both couplings
+   bite somewhere. PARTIAL: one. NO-GO: neither. The bar has a measured basis,
+   and the quantity it grades has its own per-artifact eval floor (PLAN §6),
+   per "bars come with floors". It is a decision aid, not a finding. The
+   builder's choices the owner may change before the run: one family of 32
+   (not one per site); the three conditions of "bites"; GO as "both
+   couplings"; no links-open condition at High.
+6. **Cost, derived this session. An estimate, not a trigger.**
+   - Evals: 1557 × 9.40 s = 4.07 h to 1557 × 14.8 s = 6.40 h (the per-eval
+     times of *PAPER V3* item 5).
+   - Checkpoint upload from the laptop: about 7.4 GB (`RUNBOOK.md` step 0.5)
+     at the 1.04 MB/s measured on 2026-10-16 (*BOX HANDOVER* item 3) = 1.98 h,
+     billed. A direct download from the owner's cloud copy would avoid most of
+     it, if that copy exists and the box can reach it (item 2, open).
+   - Setup and verification: about 0.25 h, **a guess, not measured**.
+   - Total 6.3–8.6 h. At $0.549/h, the RTX 5090 rate of *LADDER BRANCH C*
+     (2026-09-22), **$3.46–4.74**. The rate is a September figure and may have
+     moved. The 2026-10-16 rental was released for lack of credit, so the
+     provider's minimum top-up should be checked first.
+7. **Branch state.** `claude/amazing-johnson-1vtrd1` was fast-forwarded from
+   `main` (`ae1c390`) to `claude/fervent-newton-ws5yub` (`5632e2d`), which
+   holds paper v2, paper v3 and the interaction-check code; this session's
+   work is committed on top. **The 2026-11-03 revision is not in git on any
+   branch**: it exists only in the owner's zip. Committing it is the owner's
+   call.
+8. **Owed before any run** (owner): the OK of the amended plan text and of
+   item 5's choices; where the checkpoints come from; whether the plan's
+   public timestamp (PLAN §10, the owner's choice of 2026-10-17) is kept,
+   since it adds a wait of some hours and no cost. Then `RUNBOOK.md`, from the
+   laptop. Every archive exists only on the laptop and in the 2026-09-27
+   backup.
+
+No constant, lock, registration or branch reading changes. Branch B stands.
