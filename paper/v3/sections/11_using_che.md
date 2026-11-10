@@ -15,4 +15,4 @@ The supplement holds the package, configurations, tests, registration documents,
 
 Our registration record is internal and version-controlled, so its dates are self-reported; the hash manifest shows only that the archive arrived unaltered (Appendix D). A public registry such as OSF would remove this limit; we intend to use one next time.
 
-Evaluation reproduces closely: repeated evaluations of two checkpoints on one GPU were bit-identical and matched the main runs' own<!-- N:HW-2 -->, and across GPUs 280 of 288<!-- N:HW-3 --> paired checkpoint and metric values agreed exactly, differing by at most 2.44 × 10⁻⁴<!-- N:HW-3 -->. GPU training is not, which is why reproducibility floors are measured (§5).
+Evaluation reproduces closely: repeated evaluations of two checkpoints on one GPU were bit-identical and matched the main runs' own evaluations of them<!-- N:HW-2 -->, and across GPUs 280 of 288<!-- N:HW-3 --> paired checkpoint and metric values agreed exactly, differing by at most 2.44 × 10⁻⁴<!-- N:HW-3 -->. GPU training is not, which is why reproducibility floors are measured (§5).

@@ -43,7 +43,7 @@ $$
 \lambda_t(g) = \big(\lambda_0 + \lambda_{\mathrm{load}}\, o_t(g)\big)\, w(g),
 $$
 
-and collapse is absorbing. Coupling A then ignites, with probability $\kappa_A$, each cell still Fuel after this step's spread within Chebyshev distance $r_A$ of a cell that collapsed in this step: the fire reads the increment $c' - c$.
+and collapse is absorbing. Coupling A then ignites, with probability $\kappa_A$, each Fuel cell (after this step's spread) within Chebyshev distance $r_A$ of a cell that collapsed in this step. The fire thus reads the new collapses $c' - c$, not the collapsed stock.
 
 <!-- LISTING 1: block carried byte-for-byte from paper/v2/sections/05_coupling_a.md:48; move it, never edit it -->
 
@@ -86,7 +86,7 @@ a midpoint-rule Beer–Lambert transmittance, where $\bar\rho_i(y)$ averages $\r
 
 Because $\rho'$ is hazard state, perception degrades where and when the fire is active.
 
-In a corridor toy built on the same observation code, ignoring the attenuated signal costs exactly half the probability of being informed before committing, and this cost falls continuously to zero as $\kappa_B$ grows (Theorem 1, Appendix A); this concerns optimal values in the toy, not learners in CHE.
+In a corridor toy built on the same observation code, ignoring the attenuated signal lowers the optimal success probability by exactly $q/2$, where $q$ is the probability of being informed before committing, and this cost falls continuously to zero as $\kappa_B$ grows (Theorem 1, Appendix A); this concerns optimal values in the toy, not learners in CHE.
 
 **Definition 7 (Communication denial, as implemented).** After the agents move, each directed link between alive agents $i \ne j$ opens with probability
 
@@ -137,13 +137,13 @@ def task_step(food: jax.Array, occupancy: jax.Array) -> tuple[jax.Array, jax.Arr
 
 Two tests check that the reward reads no hazard directly: states that differ only in fire, smoke or structure, with the alive transition held equal, get equal rewards, and a death by fire or by collapse changes the reward by $-d_p$.
 
-An agent dies only on a cell that is burning or collapsing, so the cause-blind death price is in effect a hazard-contact price, and it drives survival learning. In the one ablation of $d_p$, raising it from 0<!-- N:ENV-2 --> to 0.5<!-- N:ENV-1 --> raised survival at High severity (§4.1) from 0.575 to 0.866<!-- N:ENV-2 --> (Appendix B). Survival thus enters learning as a penalized channel and completion, at +1<!-- N:ENV-9 --> per item, as a rewarded one; any asymmetry between them is read that way.
+An agent dies only on a cell that is burning or collapsing, so the cause-blind death price is in effect a hazard-contact price, and it drives survival learning. In the one ablation of $d_p$, raising it from 0<!-- N:ENV-2 --> to 0.5<!-- N:ENV-1 --> raised survival at High severity (§4.1) from 0.575 to 0.866<!-- N:ENV-2 --> (Appendix B). Survival thus enters learning as a penalized channel and completion, at +1<!-- N:ENV-9 --> per item, as a rewarded one, so an asymmetry between the two outcomes may reflect how each enters the reward.
 
 ### 3.4 Exact nesting, and theory checked as tests
 
 Each stressor is a parameter of one transition or observation kernel: setting $\kappa_A = 0$ gives a fire that ignores the structure, $\kappa_B = 0$ the observation before masking plus an all-ones visibility plane, and $\delta = 0$ free, range-limited communication.
 
-These are nested models because every stochastic branch draws its uniforms unconditionally and compares them with a probability that may be zero. A zero therefore changes comparisons only, and the same keys reproduce the nested model's trajectory bit for bit on one backend; Listing 5 (Appendix A) is the test for $\kappa_B = 0$.
+Structural collapse itself is never switched off in the worked example: weak terrain and collapse run in every one of its configurations, and $\kappa_A = 0$ removes only collapse's link to the fire. These are nested models because every stochastic branch draws its uniforms unconditionally and compares them with a probability that may be zero. A zero therefore changes comparisons only, and the same keys reproduce the nested model's trajectory bit for bit on one backend; Listing 5 (Appendix A) is the test for $\kappa_B = 0$.
 
 The test for $\kappa_A = 0$ compares fire and smoke only, since agents respond to collapses; the test for $\delta = 0$ matches, on the CPU, a trajectory hash recorded before the communication channel existed.
 
@@ -156,7 +156,7 @@ Propositions 2 and 3, Corollary 1 and Theorem 1 are exact results that the code 
 | step order of Definition 1 (Prop. 1) | 3 | `hazard`, `lethality` | 2 |
 | fire is bond percolation; severity by measured threshold (Prop. 2, Cor. 1) | — | `percolation` | 3 |
 | collapse seeds fire (Coupling A, Prop. 3) | 1 | `coupling_a`, `prop3` | 1, 4 |
-| smoke attenuates perception (Coupling B, Thm. 1) | 4 | `coupling_b`, `e2c` | 1, 5 |
+| smoke attenuates perception (Coupling B, Thm. 1) | 4 | `coupling_b`, `e2c` | 1, C2 |
 | communication denial reads no hazard | 3 | `comms` | — |
 | hazard-blind reward, cause-blind death price (Def. 2) | 2 | `reward_independence`, `lethality` | — |
 | ablations nest bitwise | 5 | `nesting`, `coupling_b`, `comms` | — |
@@ -165,10 +165,10 @@ Propositions 2 and 3, Corollary 1 and Theorem 1 are exact results that the code 
 
 ### 3.5 Instance, training and metrics
 
-Every trained policy, and every evaluation of one, uses one instance: a 64 × 64 grid, 12 agents, a horizon of 256 steps, a 9 × 9 egocentric crop and 32 food items<!-- N:ENV-6 -->.
+Every trained policy, and every evaluation of one, uses one instance: a 64 × 64 grid, 12 agents, a horizon of 256 steps, a 9 × 9 egocentric crop and 32 food items<!-- N:ENV-6 -->. Each agent picks one action per step from a finite set (Proposition 1) and observes its crop as stacked planes, with the visibility plane of Definition 6 and the mean of its received messages.
 
 Each seed trains one shared-parameter actor-critic policy<!-- N:ENV-11 --> (Appendix B) with the independent PPO of de Witt et al. (2020)<d-cite key="dewitt2020ippo"></d-cite>, in the style of Lu et al. (2022)<d-cite key="lu2022dpo"></d-cite>, at 32,768<!-- N:DX-3 --> environment steps per update.
 
 Both outcomes are per episode: *completion* is $1 - F/32$<!-- N:ENV-6 -->, with $F$ the food left at the end, and *survival* is the fraction of the 12<!-- N:ENV-6 --> agents alive at the end. Episodes always run to the horizon.
 
-A coupling-co-active counter logs the collapse-seeded ignitions within Chebyshev radius 4<!-- N:DX-37 --> of an alive agent. Only Coupling A produces them and $\kappa_B$ does not enter the count, so it is co-active only in all-on configurations.
+A coupling-co-active counter logs the collapse-seeded ignitions within Chebyshev radius 4<!-- N:DX-37 --> of an alive agent. Only Coupling A produces these ignitions and $\kappa_B$ does not enter the count, so the counter measures both couplings acting together only in configurations with both couplings on, such as the all-on test configuration.

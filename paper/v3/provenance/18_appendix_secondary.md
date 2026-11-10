@@ -14,7 +14,6 @@ prose words plus tables.
 | 3 | Each secondary arm has k = 20 seeds, trained on the GPU that ran Γ (Appendix D) with communication denial off in every component. | DES-13; DX-5; X4-2 | edited from paper/v2/sections/14_appendix_plan_provenance.md:154; fix round, RC2-13: 'GPU 1' made 'the GPU that ran Γ' (numbered GPUs only in App. D) |
 | 4 | Write μ for the per-coupling frequency (equal for the two couplings in every arm here), p for the co-occurrence and ν for the fire-only share, as in §6.2. | DES-9; paper/v3/BRIEF.md:176-179 (glossary) | new: μ, p, ν defined here as the stub asks (BRIEF §5.2) |
 | 5 | On the triangle of training mixtures $\nu = 1 - 2\mu + p$, so the active share is $1 - \nu = 2\mu - p$. | DES-9; X4-1 | edited from paper/v2/sections/14_appendix_plan_provenance.md:154 ('the triangle gives ν = 1 − 2μ + p'); the active share added (X4-1) |
-| 6 | Figure 7 prints μ as m and ν as n; the arm names below are the labels of its table view. | paper/figures/interactive/MANIFEST.md:278-280 (axes p, n; lines m) | edited from paper/v2/sections/14_appendix_plan_provenance.md:154 and paper/v2/sections/09_compositional_test.md:116 (m, n labels) |
 | 7 | arm / p / active share / survival / completion | framing | edited: header with the active-share column (X4-1) |
 | 8 | sweep_c50_p000 / 0.5 / 0 / 0 / 1 / 0.9241 / 0.7847 | DES-9; DX-28; X4-1 | kept from paper/v2/sections/14_appendix_plan_provenance.md:158, active share added |
 | 9 | sweep_c50_p125 / 0.5 / 0.125 / 0.125 / 0.875 / 0.9249 / 0.7775 | DES-9; DX-28; X4-1 | kept from paper/v2/sections/14_appendix_plan_provenance.md:159, active share added |
@@ -54,6 +53,7 @@ prose words plus tables.
 | 43 | In these mixtures it measures the Coupling-A frequency that the sweep holds fixed, and it cannot register co-occurrence. | CO-4; DX-306; che/bench/results/phase6/secondary/secondary.md:62 | edited from paper/v2/sections/09_compositional_test.md:127 ('In mixtures it measures the Coupling-A frequency that the sweep holds fixed and is blind to co-occurrence'): 'blind to' made 'cannot register' (C25's pattern is reserved for §6.4's home) |
 | 44 | Floors exist only for the sweep's p = 0.5 arm: the other sweep arms assume that floor, and the identification arms are ungraded. | DX-306 | kept (paper/v2/sections/14_appendix_plan_provenance.md:182) |
 | 45 | The counter's realized count is endogenous, so nothing here is its causal effect. | DX-306; che/bench/results/phase6/secondary/secondary.md:62 | edited from paper/v2/sections/14_appendix_plan_provenance.md:182: the VOID pointer moved up (mediation now stated here) |
+| R1 | Figure 6 prints μ as m and ν as n; the arm names below are the labels of its table view. | paper/figures/interactive/MANIFEST.md:278-280 (axes p, n; lines m) | edited (blind-review revision, 2026-11-03; was row 6: “Figure 7 prints μ as m and ν as n; the arm names below are the labels of its table view.”) |
 
 ## Findings
 

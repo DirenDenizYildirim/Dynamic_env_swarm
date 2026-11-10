@@ -2,7 +2,7 @@
 
 ### F The secondary design
 
-Everything here is secondary and non-verdict-bearing, with 95 % intervals bootstrapped over seeds within arm (B = 2000<!-- N:DX-28 -->), conditional on the common evaluation draw and not family-corrected. Each secondary arm has k = 20<!-- N:DES-13 --> seeds, trained on the GPU that ran Γ (Appendix D) with communication denial off in every component<!-- N:X4-2 -->. Write μ for the per-coupling frequency (equal for the two couplings in every arm here), p for the co-occurrence and ν for the fire-only share, as in §6.2. On the triangle of training mixtures $\nu = 1 - 2\mu + p$<!-- N:DES-9 -->, so the active share is $1 - \nu = 2\mu - p$<!-- N:X4-1 -->. Figure 7 prints μ as m and ν as n; the arm names below are the labels of its table view.
+Everything here is secondary and non-verdict-bearing, with 95 % intervals bootstrapped over seeds within arm (B = 2000<!-- N:DX-28 -->), conditional on the common evaluation draw and not family-corrected. Each secondary arm has k = 20<!-- N:DES-13 --> seeds, trained on the GPU that ran Γ (Appendix D) with communication denial off in every component<!-- N:X4-2 -->. Write μ for the per-coupling frequency (equal for the two couplings in every arm here), p for the co-occurrence and ν for the fire-only share, as in §6.2. On the triangle of training mixtures $\nu = 1 - 2\mu + p$<!-- N:DES-9 -->, so the active share is $1 - \nu = 2\mu - p$<!-- N:X4-1 -->. Figure 6 prints μ as m and ν as n; the arm names below are the labels of its table view.
 
 | arm | μ | p | ν | active share | survival | completion |
 |---|---|---|---|---|---|---|

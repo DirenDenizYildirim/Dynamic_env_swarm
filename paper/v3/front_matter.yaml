@@ -23,12 +23,12 @@ description: 'A pure-JAX multi-agent environment in which collapse seeds fire, s
 # authors cannot change it. Keep it no later than the upload day: Jekyll
 # skips a future-dated page unless the site is built with --future (the
 # kit's own preview uses --future; TMLR's build is unknown).
-date: 2026-10-11
+date: 2026-11-03
 # The owner's confirmation of `date` (review RM-23). Leave it false until the
 # owner sets the date: `build_v3.py --final` fails while it is not true; the
 # default build only notes it. The build never copies this field into the kit
 # source.
-date_confirmed: false
+date_confirmed: true
 
 # submitted_date: 2026-10-11
 #   Present but unset on purpose (owner question Q2). Unset, Distill's byline
