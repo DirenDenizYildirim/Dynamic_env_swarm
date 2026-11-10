@@ -8,16 +8,17 @@ decision log's *PAPER V3* item 2(a): eval-only, labelled post hoc. Scope:
 **θ\* and High** (*GO/NO-GO PROBE* item 2, which supersedes the "θ\* only" of
 *PAPER V3 PHASE 1 START* item 2). No training of any kind.
 
-**The amended text needs the owner's OK before any run** (§12). No eval has
-run under any version of this plan.
+**The owner OK'd this text on 2026-11-10** (decision log: *PROBE PLAN OK*),
+with the public timestamps dropped (§10, §12). No eval has run under any
+version of this plan.
 
 `che/scripts/interaction_analysis.py` implements this plan. It refuses to run
 unless this file is committed in git and unchanged since that commit. It also
 refuses unless the eval run recorded this file's sha256 in its provenance, and
 that hash matches the committed file. Any edit to this plan after the run
-therefore shows up as a refusal, not as a silent change. A public timestamp
-of this file, made before the run, lets a reader check outside this
-repository that it existed before the run's recorded start (§10).
+therefore shows up as a refusal, not as a silent change. There is no public
+timestamp of this file (§10): that it predates the run rests on this
+repository's commit history and on the run's own record.
 
 ## 1. Status: what this analysis is and is not
 
@@ -359,8 +360,7 @@ All under `che/bench/results/phase6/post_v3_interaction/`:
 - `v3_interaction_results.tar.zst` with `SHA256_RESULTS.txt`. The run script
   asserts both before it exits 0 (CLAUDE.md, artifact persistence);
 - written later by the analysis: `interaction_report.md`,
-  `interaction_report.json` and `ANALYSIS_LOG.txt`;
-- the timestamp proofs of §10: `PLAN.md.ots` and `SHA256_RESULTS.txt.ots`.
+  `interaction_report.json` and `ANALYSIS_LOG.txt`.
 
 **Verification without version history.** `uv run python -m
 che.scripts.interaction_analysis --verify` needs no git, so it runs from the
@@ -376,34 +376,35 @@ code supplement. It:
   to a relative tolerance of 10⁻⁹, which covers float64 summation order
   across platforms; everything else agrees exactly;
 - states what it cannot check: that this file was committed before the run
-  (that needs version history; §10 is the outside check), the git tree's
+  (that needs version history; there is no outside check, §10), the git tree's
   state when the report was made, and the results archive's hash if the
   archive is not shipped.
 
-It writes nothing and logs nothing. The supplement ships what it needs: this
-file, its proof, every eval JSON, the floor checkpoints' NPZ files (the main
-evals of `iso_s1`, `joint_s1` and `iso4_s1` and every `floor/` file),
-`provenance.txt`, `timings.txt`, `.plan_at_run.md`, `SHA256_RESULTS.txt` and
-its proof, and the committed report.
+It writes nothing and logs nothing. A supplement that ships the check ships
+what this needs: this file, every eval JSON, the floor checkpoints' NPZ files
+(the main evals of `iso_s1`, `joint_s1` and `iso4_s1` and every `floor/`
+file), `provenance.txt`, `timings.txt`, `.plan_at_run.md`,
+`SHA256_RESULTS.txt` and the committed report.
 
-## 10. Public timestamps
+## 10. No public timestamp
 
-- **Before the run.** Once this text has the owner's OK and is committed, its
-  sha256 is timestamped with OpenTimestamps, which anchors the hash in a
-  Bitcoin block. The proof, `PLAN.md.ots`, is committed beside this file. The
-  run does not start until the proof carries the Bitcoin attestation.
-- **After the run.** Once the results archive's hash verifies on the laptop,
-  `SHA256_RESULTS.txt` is timestamped the same way, and its proof is
-  committed.
-- **What this shows, and what it does not.** Anyone with the proofs can
-  check, outside this repository, that this plan existed no later than the
-  block that anchors it, which is before the run's recorded start, and that
-  the results existed no later than their own block. A timestamp shows only
-  that a file existed by a time. It cannot show that the run did not happen
-  earlier: that still rests on the run's own record (`provenance.txt`) and on
-  the analysis's refusal of a run dated before the plan's commit. Only the two
-  hashes leave the laptop, to the public calendar servers. No name or account
-  is involved.
+The first amendment (§11, item 6) had this plan and the results archive
+timestamped publicly with OpenTimestamps, and held the run until the plan's
+proof was anchored. **The owner dropped both on 2026-11-10, before any stamp
+was made and before any run** (decision log: *PROBE PLAN OK*): the run is a
+go/no-go probe for the owner's own decision, and the wait bought nothing for
+that use.
+
+What this leaves, and what it does not:
+
+- That this plan predates the run rests on this repository's commit history,
+  on the run's own record (`provenance.txt`, which carries this file's sha256
+  and the run's start time) and on the analysis's refusal of a run dated
+  before the plan's commit. All three are self-reported.
+- Nothing outside this repository shows when this plan or the results
+  existed. A reader who is not given the version history cannot check the
+  order "plan, then run". If a number from this run is ever reported, it is
+  reported with that limit stated.
 
 ## 11. Amendment record (2026-10-17, before any run)
 
@@ -424,7 +425,8 @@ recommended one for each (decision log: *PLAN AMENDMENT*):
    and its own family of 8. This answers owner question Q9. It raises the
    run from 692 evals to 865.
 5. **Verification without version history** (§9).
-6. **Public timestamps** (§10).
+6. **Public timestamps** (§10). *Dropped by the second amendment, before any
+   stamp was made (§12, item 7).*
 
 Two smaller changes follow from these: the floor's episode means are summed in
 float64 (§6), so verification is robust across platforms, and the blind spots
@@ -458,15 +460,18 @@ training runs, and asked for High severity to be added (decision log:
    High readout.
 6. **Blind spots** (§8): items 1, 2, 5 and 8 follow the new conditions, and
    item 9 is new.
+7. **The public timestamps are dropped** (§10), on the owner's ruling of the
+   same day. Nothing was ever stamped.
 
 **Unchanged:** the policies, the eval draw, the estimands I and D at θ\*, their
 two families of 8 and every interval in them, their floors and hurdles, their
 reading rules, the θ\* cross-card check, the logit block's form, verification
-without version history (§9), the timestamps (§10), and the labels: post hoc
-and outside every registered family.
+without version history (§9), and the labels: post hoc and outside every
+registered family.
 
-**The builder's choices in this amendment, for the owner to confirm or
-change before the run:** the main effects as one family of 32 (not one per
-site); the three conditions of "bites", among them the size bar and its
-source; GO as "both couplings", with PARTIAL left to the owner; no links-open
-condition at High.
+**The owner's OK** (2026-11-10, decision log: *PROBE PLAN OK*): "ok on the
+rule, drop the timestamp". It covers the builder's choices in this amendment,
+which were put to the owner by name: the main effects as one family of 32
+(not one per site); the three conditions of "bites", among them the size bar
+and its source; GO as "both couplings", with PARTIAL left to the owner; no
+links-open condition at High.

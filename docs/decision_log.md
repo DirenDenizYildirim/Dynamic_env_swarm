@@ -6756,3 +6756,73 @@ salvage this".
    backup.
 
 No constant, lock, registration or branch reading changes. Branch B stands.
+
+
+## PROBE PLAN OK — the amended interaction plan is approved; the public timestamps are dropped; the 2026-11-03 revision of paper v3 is committed (owner, 2026-11-10)
+
+Transcribed in the session it was issued, per the meta-rule (2026-07-28),
+before it is acted on. Same session as *GO/NO-GO PROBE*. The builder had asked
+three things: the OK on the go/no-go rule, whether to keep the public
+timestamp step, and whether to commit the revision from the owner's zip. The
+owner: **"ok on the rule, drop the timestamp, commit the zip"**.
+
+1. **The plan is OK'd.** The OK covers the amended
+   `post_v3_interaction/PLAN.md` and the builder's choices that *GO/NO-GO
+   PROBE* item 5 put to the owner by name: the main effects as one family of
+   32; the three conditions of "bites", with the size bar read from the
+   registered contrast; GO as "both couplings", PARTIAL left to the owner; no
+   links-open condition at High. This closes *GO/NO-GO PROBE* item 8's first
+   and third points. **The run is authorized** as `RUNBOOK.md` describes it:
+   1557 evals, θ\* and High, on the existing checkpoints, eval-only.
+2. **The public timestamps are dropped.** This supersedes *PLAN AMENDMENT*
+   (2026-10-17) on the OpenTimestamps of the plan and of the results. Nothing
+   was ever stamped. PLAN §10 now says so and states the cost: that the plan
+   predates the run rests on this repository's history, the run's own
+   `provenance.txt` and the analysis's refusal of a run dated before the
+   plan's commit, all self-reported, with no check outside the repository.
+   `RUNBOOK.md` loses its steps 0.7 and 6.4. The analysis and the run script
+   never read a proof file, so no code changes.
+   - The plan's sha256 with items 1 and 2 written in is
+     `9d539af1a7c8367a8cbc8f32eaa53ae33256599b3b77f7cf32f742599b821b11`. It
+     supersedes the hash in *GO/NO-GO PROBE* item 4. The owner notes the plan's
+     hash again at `RUNBOOK.md` step 0.3, from the commit the run uses.
+   - **Left as it is:** `paper/v3/supplement/SHIPPED_README.md` still
+     describes the two proof files. That paragraph ships only in a supplement
+     built *with* the check, which the v3 paper does not use
+     (`package.py --no-interaction` removes it). If a later supplement ships
+     the check, that paragraph must go first.
+3. **The 2026-11-03 revision is committed** into `paper/v3/`, from the
+   owner's zip (`CHE_paper_v3_revised2`): 38 files changed (18 sections, 18
+   provenance tables, `front_matter.yaml`, `submission.bib`) and 2 added
+   (`REVISION_2026-11-03.md`, `RELATED_WORK_ADDITIONS_2026-11-03.md`). Every
+   other tracked file under `paper/v3/` outside `out/` and `snapshots/` was
+   byte-identical to the zip's. Not committed: a compiled `.pyc`, and the
+   zip's two top-level diff files, which the commit's own diff replaces.
+   - **The revision was made outside the repository,** in a session without
+     it. `REVISION_2026-11-03.md` records four owner rulings of 2026-11-03
+     (the ledger is not updated for the revision's new numbers; the disclosure
+     A1 settled; `date: 2026-11-03` confirmed; the seven bibliography blocks).
+     They enter the record through that file. This session did not witness
+     them and has not checked the revision's sentences against their sources.
+   - **Checks run on it this session, as committed. Nothing was fixed.**
+     - `build_v3.py --final`: build OK, 0 failures, 0 warnings; v3 terms,
+       dates and caveats PASS (38 of 38 caveat entries); 0 unresolved of 265
+       cross-references.
+     - `provenance_check.py --strict`: **FAIL.** Every sentence has a row and
+       no row is stale, but 11 support cells in 8 sections are not in an
+       accepted form (for example "owner statement, 2026-11-03"): abstract,
+       §2, §6.3, §6.4, §9, App. A and App. D one each, App. I four.
+     - `bib_diff.py`: **FAIL (7).** Six entries are not in
+       `paper/related_work_verification.md` (FireCommander, PyroRL, DRQN,
+       CARL, DIAL, CommNet), as the revision file says. A seventh,
+       `mendez2022composuite`, is in that file already and **differs** from
+       the revision's entry.
+     - Not run: the real-kit build, so the page count is not re-measured.
+   - **Committing it does not adopt it.** The builder's assessment in
+     *GO/NO-GO PROBE* item 1 stands: this revision is not recommended for
+     submission as it is.
+4. **Still open:** where the checkpoints come from (*GO/NO-GO PROBE* item 2);
+   who drives the run on the box. Every archive is on the owner's laptop and
+   in the 2026-09-27 backup only, so the run starts from the laptop.
+
+No constant, lock, registration or branch reading changes. Branch B stands.

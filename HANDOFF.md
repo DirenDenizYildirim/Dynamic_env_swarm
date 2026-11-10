@@ -6,11 +6,16 @@
 > reopened as an eval-only probe with High severity added: 1557 evals, about
 > $3.5–4.7 (an estimate). The code, configs, tests and amended plan are
 > committed on `claude/amazing-johnson-1vtrd1` (which now contains
-> `claude/fervent-newton-ws5yub`). **Nothing runs until the owner OKs the
-> amended `post_v3_interaction/PLAN.md`** (its §7 go/no-go reading and §12),
-> says where the checkpoints come from, and rents a box; then `RUNBOOK.md`,
-> from the laptop. Step 2 (new training runs) is not authorized and depends on
-> the probe's verdict. The 2026-11-03 revision of paper v3 is not in git.
+> `claude/fervent-newton-ws5yub`). **The owner OK'd the amended
+> `post_v3_interaction/PLAN.md` and dropped its public timestamps** (*PROBE
+> PLAN OK*, same day), so the run is authorized: the owner brings the 164
+> checkpoint archives to the laptop, verifies them, rents an RTX 5090 and
+> follows `RUNBOOK.md`. After the results return, a session verifies them and
+> runs `che.scripts.interaction_analysis` once; its report opens with the
+> go/no-go verdict. Step 2 (new training runs) is not authorized and depends
+> on that verdict. The 2026-11-03 revision of paper v3 is committed in
+> `paper/v3/` (not adopted; its strict provenance check and `bib_diff.py`
+> fail, see *PROBE PLAN OK* item 3).
 >
 > **Start here (2026-10-19).** The interaction check is not run and has left
 > the paper (decision log, *NO INTERACTION CHECK BEFORE SUBMISSION*); every

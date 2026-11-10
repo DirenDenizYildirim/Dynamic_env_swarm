@@ -3,8 +3,9 @@
 For the owner, who rents the GPU and runs the job (or hands the box to a
 session; decision log: *BOX HANDOVER*). The plan is `PLAN.md` in this folder,
 as amended on 2026-10-17 (*PLAN AMENDMENT*) and on 2026-11-10 (*GO/NO-GO
-PROBE*, which adds High severity). It must be **committed, OK'd by
-you, and publicly timestamped (step 0.7) before step 1**. Nothing here trains.
+PROBE*, which adds High severity), and OK'd by you on 2026-11-10 (*PROBE PLAN
+OK*, which also drops the public timestamps). It must be **committed before
+step 1**, at the commit you note in step 0.2. Nothing here trains.
 Expected spend is about 4.1–6.4 GPU-hours of evals, plus setup and the
 checkpoint upload (step 2), which is an estimate and not a trigger (PLAN §3).
 
@@ -45,12 +46,6 @@ down the values marked ✎ as you go; the last step needs them.
    paths for seeds 13–46 (`phase6_report.md` §3). **If any archive fails,
    stop.** Do not substitute another file. Tell the next session which one
    failed.
-7. The plan's public timestamp is confirmed (PLAN §10). `PLAN.md.ots` sits
-   beside `PLAN.md`, committed. In this folder, `ots upgrade PLAN.md.ots`
-   must report the proof complete, and `ots info PLAN.md.ots` must show a
-   Bitcoin block attestation. If the proof is still pending, wait: it usually
-   completes within a few hours of the stamp. Do not rent before it does.
-
 ## 1. Rent the card
 
 - An **RTX 5090**, the class the grid and every Phase-6 eval ran on
@@ -133,10 +128,6 @@ committed.
 2. On the laptop, in the folder you copied them to:
    `sha256sum -c SHA256_RESULTS.txt` must say `OK`.
 3. **Only then release the box** (CLAUDE.md, artifact persistence).
-4. Timestamp the results' hash (PLAN §10): `ots stamp SHA256_RESULTS.txt`,
-   then commit `SHA256_RESULTS.txt.ots` beside it with the results. Run
-   `ots upgrade SHA256_RESULTS.txt.ots` again a few hours later, and commit
-   the completed proof.
 
 ## 7. Back in a session
 
